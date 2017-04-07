@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromBaseinfo">
+
+	<sql id="queryPromoteActivitys">
+    <![CDATA[
+    select *from (
+    select t0.actId,
+           t0.name,
+           t0.startTime,
+           t0.endTime,
+           t0.createTime,
+           t0.status,
+           (case when TIMESTAMPDIFF(SECOND ,SYSDATE(),t0.startTime)>0 then '2'
+                 when TIMESTAMPDIFF(SECOND ,t0.endTime,SYSDATE())>0 then '1' 
+                 else '3' end) rstatus
+           <#if supplierId?exists && supplierId!="">
+           ,(select status from prom_act_supplier_ref t3 
+                          where t3.supplierId=:supplierId
+                            and t3.actId=t0.actId ) attendStatus
+           </#if>
+      from prom_baseinfo t0
+     where t0.isLastest = '1'
+       and t0.status='1'
+      
+     <#if type?exists && type!="">
+       and t0.type=:type
+     </#if>
+     <#if supplierId?exists && supplierId!="">
+       and exists (select 1
+      from prom_act_supplier_ref t1
+     where t0.actId = t1.actId
+       and t1.supplierId = :supplierId)
+     </#if>
+     order by t0.createTime desc limit :startRow, :endRow
+     ) t2
+     order by t2.rstatus desc
+    ]]>
+	</sql>
+
+
+	<sql id="getTotal">
+	<![CDATA[
+		select 
+			  count(1)  
+		 from 
+			  prom_baseinfo t0
+		where t0.isLastest='1'
+	      and t0.status='1'
+		 <#if type?exists && type!="">
+	          and t0.type=:type
+		 </#if>
+		 <#if supplierId?exists && supplierId!="">
+          and exists (select 1
+         from prom_act_supplier_ref t1
+        where t0.actId = t1.actId
+          and t1.supplierId = :supplierId)
+     </#if>
+	]]>
+	</sql>
+	
+	<sql id="getDetail">
+	<![CDATA[
+	   select t0.actId,
+              t0.name,
+              t0.introduction,
+              t0.startTime,
+              t0.endTime,
+              (case when TIMESTAMPDIFF(SECOND ,SYSDATE(),t0.startTime)>0 then '2'
+                 when TIMESTAMPDIFF(SECOND ,t0.endTime,SYSDATE())>0 then '1' 
+                 else '3' end) rstatus
+              <#if supplierId?exists && supplierId!="">
+                ,(select status from prom_act_supplier_ref t3 
+                          where t3.supplierId=:supplierId
+                            and t3.actId=t0.actId ) attendStatus
+              </#if>
+		 from prom_baseinfo t0
+		where t0.isLastest='1'
+	      and t0.status='1'
+		  and t0.actId=:actId
+	]]>
+	</sql>
+
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT
+			actId,
+			NAME as name,
+			introduction,
+			type,
+			status,
+			startTime,
+			endTime,
+			version,
+			isLastest,
+			createUserId,
+			createTime,
+			url
+		FROM
+			prom_baseinfo
+		WHERE
+			1=1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if actId?exists && actId!="">
+			AND actId=:actId
+		</#if>
+		<#if marketName?exists && marketName!="">
+			and actId in (select distinct(actId) from prom_market where marketId in 
+			(select id from gudeng.market where marketName like "%":marketName"%"))
+		</#if>
+		<#if marketId?exists && marketId!="">
+			and actId in (select distinct(actId) from prom_market where marketId=:marketId)
+		</#if>
+		<#if type?exists && type!="">
+			AND type = :type
+		</#if>
+		<#if actStartDate?exists && actStartDate!="">
+			AND startTime >= :actStartDate
+		</#if>
+		<#if actEndDate?exists && actEndDate!="">
+			AND endTime <= :actEndDate
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+		ORDER BY createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotalCountByCondition">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM
+			prom_baseinfo
+		WHERE
+			1=1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if marketName?exists && marketName!="">
+			and actId in (select distinct(actId) from prom_market where marketId in 
+			(select id from gudeng.market where marketName like "%":marketName"%"))
+		</#if>
+		<#--精确匹配-->
+		<#if name2?exists && name2!="">
+			AND name = :name2
+		</#if>
+		<#if marketId?exists && marketId!="">
+			and actId in (select distinct(actId) from prom_market where marketId=:marketId)
+		</#if>
+		<#if type?exists && type!="">
+			AND type = :type
+		</#if>
+		<#if notActId?exists && notActId!="">
+			AND actId <> :notActId
+		</#if>
+		<#if actStartDate?exists && actStartDate!="">
+			AND startTime >= :actStartDate
+		</#if>
+		<#if actEndDate?exists && actEndDate!="">
+			AND endTime <= :actEndDate
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="updatePromBaseinfo">
+	<![CDATA[
+		UPDATE
+			prom_baseinfo
+		SET
+			NAME = :name,
+			introduction=:introduction,
+			startTime = :startTime,
+			endTime = :endTime,
+			version=version+1,
+			url=:url,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE
+			actId = :actId
+	]]>
+	</sql>
+	
+	<sql id="queryPromMarketByActId">
+	<![CDATA[
+		select p.id,p.actId,p.marketId,m.marketName from prom_market p,gudeng.market m
+		where p.marketId=m.id and p.actId=:actId
+	]]>
+	</sql>
+	
+	<sql id="deletePictureRef">
+		<![CDATA[
+		delete from gudeng.picture_ref where refId=:refId
+		]]>
+	</sql>
+	<sql id="insertPictureRef">
+		<![CDATA[
+		INSERT INTO
+		gudeng.picture_ref(
+			refId,type,urlOrg,url650,url400,url160,url120,url60,createUserId,createTime,updateUserId,updateTime
+		) VALUES (
+			:refId,:type,:urlOrg,:url650,:url400,:url160,
+			:url120,:url60,:createUserId,:createTime,:updateUserId,:updateTime
+		)
+	]]>
+	</sql>
+	
+	<sql id="deletePromMarkte">
+		<![CDATA[
+		delete from prom_market where actId=:actId
+		]]>
+	</sql>
+	
+	<sql id="insertPromMarkte">
+		<![CDATA[
+		INSERT INTO
+		prom_market(
+			actId,marketId
+		) VALUES (
+			:actId,:marketId
+		)
+	]]>
+	</sql>
+</sqlMap>

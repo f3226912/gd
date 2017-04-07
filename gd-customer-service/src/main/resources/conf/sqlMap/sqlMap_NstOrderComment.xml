@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NstOrderComment">
+
+	<sql id="insert">                 
+ 	<![CDATA[
+ 		INSERT INTO 
+ 			nst_order_comment
+ 			(
+ 				orderNo,
+ 				type,
+ 				memberId,
+ 				serviceEvaluate,
+ 				evaluateType,
+ 				comment,
+ 				createTime,
+ 				createUserId,
+ 				updateTime,
+ 				updateUserId
+ 			)
+ 		VALUES
+ 			(
+ 				:orderNo,
+ 				:type,
+ 				:memberId,
+ 				:serviceEvaluate,
+ 				:evaluateType,
+ 				:comment,
+ 				sysdate(),
+ 				:createUserId,
+ 				sysdate(),
+ 				:updateUserId
+ 			)
+ 	]]>
+ 	</sql>
+
+	<sql id="getAvgByMemberId">                 
+ 	<![CDATA[ 
+ 		SELECT 
+ 			floor(avg(serviceEvaluate)) 
+ 		FROM 
+ 			nst_order_comment 
+ 		WHERE
+ 			memberId = :memberId
+ 	]]>
+ 	</sql>
+ 	
+ 	<sql id="getById">                 
+ 	<![CDATA[ 
+ 		SELECT 
+ 			orderNo,type ,serviceEvaluate,evaluateType,comment,createTime
+ 		FROM 
+ 			nst_order_comment 
+ 		WHERE
+ 		    id= :id
+ 	]]>
+ 	</sql>
+ 	
+ 	<sql id="getUserCommentPage">                 
+ 	<![CDATA[
+		SELECT 
+			noc.id, 
+			noc.orderNo,
+			noc.memberId, 
+			(CASE mb2.userType WHEN 2 THEN mc2.linkMan ELSE mb2.realName END) as memberName,
+			noc.type, 
+			(CASE noc.createUserId WHEN :userId THEN 1 ELSE 2 END)as commentType, 
+			noc.serviceEvaluate, noc.evaluateType, 
+		    noc.comment, 
+			noc.createTime, 
+		    noc.createUserId, 
+			noc.updateTime,
+			(CASE mb.userType WHEN 2 THEN mc.linkMan ELSE mb.realName END) as createUserName
+		FROM
+			nst_order_comment noc
+		LEFT JOIN 
+			member_baseinfo mb ON mb.memberId = noc.createUserId
+		LEFT JOIN 
+			member_certifi mc ON mc.memberId = mb.memberId	
+		LEFT JOIN 
+			member_baseinfo mb2 ON mb2.memberId = noc.memberId
+		LEFT JOIN 
+			member_certifi mc2 ON mc2.memberId = mb2.memberId
+		WHERE
+			noc.createUserId = :userId OR noc.memberId = :userId
+		ORDER BY noc.createTime DESC
+		<#if startRow?exists && startRow!="" && endRow?exists && endRow!="">
+		LIMIT :startRow,:endRow
+		</#if>
+ 	]]>
+ 	</sql>
+ 	
+ 	<sql id="getUserCommentCount">                 
+ 	<![CDATA[
+		SELECT 
+			count(*)
+		FROM 
+			nst_order_comment
+		WHERE
+			memberId = :userId OR createUserId = :userId
+ 	]]>
+ 	</sql>
+</sqlMap>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="FarmersMarket">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			farmersmarket t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="updateDTO">
+	<![CDATA[
+	    UPDATE 
+	    	farmersmarket t 
+	    SET 
+	    	t.name=:name,t.provinceId=:provinceId,t.cityId=:cityId,t.areaId=:areaId,t.status=:status,
+	    	t.description=:description,t.updateUserId=:updateUserId,,t.updateUserName=:updateUserName
+			t.updateTime=SYSDATE(),t.lon=:lon,t.lat=:lat,t.address=:address 
+	    WHERE 
+	    	t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			farmersmarket t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if name?exists && name!="" >
+			      AND t.name = :name 
+			</#if>
+			<#if provinceId?exists && provinceId!="" >
+			      AND t.provinceId = :provinceId 
+			</#if>
+			<#if cityId?exists && cityId!="" >
+			      AND t.cityId = :cityId 
+			</#if>
+			<#if areaId?exists && areaId!="" >
+			      AND t.areaId = :areaId 
+			</#if>
+			<#if status?exists && status!="" >
+			      AND t.status = :status 
+			</#if>
+			<#if startdate?exists && startdate!="" >
+			      AND t.createTime > :startdate
+			</#if>
+			<#if enddate?exists && enddate!="" >
+			      AND t.createTime < :enddate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if description?exists && description!="" >
+			      AND t.description = :description 
+			</#if>
+			<#if lon?exists && lon!="" >
+			      AND t.lon = :lon 
+			</#if>
+			<#if lat?exists && lat!="" >
+			      AND t.lat = :lat 
+			</#if>
+			<#if address?exists && address!="" >
+			      AND t.address = :address 
+			</#if> 
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.id,t.name,t.provinceId,t.cityId,t.areaId,t.status,t.createUserId,t.createUserName,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime,t.description,t.lon,t.lat,t.address 
+		FROM 
+			farmersmarket t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.id,t.name,t.provinceId,t.cityId,t.areaId,t.status,t.createUserId,t.createUserName,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime,t.description,t.lon,t.lat,t.address 
+		FROM 
+			farmersmarket t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if name?exists && name!="" >
+			      AND t.name = :name 
+			</#if>
+			<#if provinceId?exists && provinceId!="" >
+			      AND t.provinceId = :provinceId 
+			</#if>
+			<#if cityId?exists && cityId!="" >
+			      AND t.cityId = :cityId 
+			</#if>
+			<#if areaId?exists && areaId!="" >
+			      AND t.areaId = :areaId 
+			</#if>
+			<#if status?exists && status!="" >
+			      AND t.status = :status 
+			</#if>
+			<#if startdate?exists && startdate!="" >
+			      AND t.createTime > :startdate
+			</#if>
+			<#if enddate?exists && enddate!="" >
+			      AND t.createTime < :enddate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if description?exists && description!="" >
+			      AND t.description = :description 
+			</#if>
+			<#if lon?exists && lon!="" >
+			      AND t.lon = :lon 
+			</#if>
+			<#if lat?exists && lat!="" >
+			      AND t.lat = :lat 
+			</#if>
+			<#if address?exists && address!="" >
+			      AND t.address = :address 
+			</#if> 
+		ORDER BY 
+			t.createTime 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.id,t.name,t.provinceId,t.cityId,t.areaId,t.status,t.createUserId,t.createUserName,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime,t.description,t.lon,t.lat,t.address 
+		FROM 
+			farmersmarket t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if name?exists && name!="" >
+			      AND t.name = :name 
+			</#if>
+			<#if provinceId?exists && provinceId!="" >
+			      AND t.provinceId = :provinceId 
+			</#if>
+			<#if cityId?exists && cityId!="" >
+			      AND t.cityId = :cityId 
+			</#if>
+			<#if areaId?exists && areaId!="" >
+			      AND t.areaId = :areaId 
+			</#if>
+			<#if status?exists && status!="" >
+			      AND t.status = :status 
+			</#if>
+			<#if startdate?exists && startdate!="" >
+			      AND t.createTime > :startdate
+			</#if>
+			<#if enddate?exists && enddate!="" >
+			      AND t.createTime < :enddate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if description?exists && description!="" >
+			      AND t.description = :description 
+			</#if>
+			<#if lon?exists && lon!="" >
+			      AND t.lon = :lon 
+			</#if>
+			<#if lat?exists && lat!="" >
+			      AND t.lat = :lat 
+			</#if>
+			<#if address?exists && address!="" >
+			      AND t.address = :address 
+			</#if> 
+		ORDER BY 
+			t.createTime 
+	]]>
+	</sql>
+</sqlMap>

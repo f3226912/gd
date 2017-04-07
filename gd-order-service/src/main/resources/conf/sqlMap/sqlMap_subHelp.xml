@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="subHelp">
+	<sql id="getAllSubAmount">
+	<![CDATA[
+		SELECT 
+		  IFNULL(SUM(a.`subAmount`), 0) 
+		FROM
+		  order_baseinfo b 
+		  LEFT JOIN sub_audit a 
+		    ON a.orderNo = b.orderNo 
+		WHERE a.`subStatus` IN ('1', '3')
+		  AND b.marketId = :marketId
+		  AND EXISTS 
+		  (SELECT 
+		    1
+		  FROM
+		    (SELECT 
+		      p.`orderNo`,
+		      MIN(p.`payTime`) AS payTime 
+		    FROM
+		      pay_serialnumber p 
+		    GROUP BY p.`orderNo`) s 
+	  	WHERE b.`orderNo` = s.`orderNo`
+	  	<#if type?exists && type == "1">
+	      	AND s.`payTime` >= CURDATE()
+	      	AND s.`payTime` < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+		</#if>
+		<#if type?exists && type == "2">
+		    AND s.`payTime` >= DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) + 0 DAY)
+		    AND s.`payTime` < DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) - 7 DAY)
+		</#if>
+		<#if type?exists && type == "3">
+	      	AND s.`payTime` >= DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		    AND s.`payTime` < DATE_ADD(CURDATE()-DAY(CURDATE())+1,INTERVAL 1 MONTH)
+		</#if>
+		<#if type?exists && type == "4">
+	      	AND s.`payTime` >= STR_TO_DATE(:timeStartStr,'%Y-%m-%d')
+		    AND s.`payTime` < DATE_ADD(STR_TO_DATE(:timeEndStr,'%Y-%m-%d'), INTERVAL 1 DAY)
+		</#if>
+		)
+	]]>
+	</sql>
+	
+	<sql id="getSubAmountByMemberId">
+	<![CDATA[
+		SELECT 
+		<#if memberType?exists && memberType=="3">
+		  IFNULL(SUM(b.`subAmount`), 0)
+		</#if>
+		<#if memberType?exists && memberType=="2">
+	  	  IFNULL(SUM(b.`sellSubAmount`), 0) 
+	  	</#if>
+		FROM
+		  order_baseinfo b 
+		  LEFT JOIN sub_audit a 
+		    ON a.orderNo = b.orderNo 
+		WHERE a.`subStatus` IN ('1', '3')
+		  AND b.marketId = :marketId 
+		  <#if memberType?exists && memberType=="3">
+		  	AND b.memberId = :memberId 
+		  </#if>
+		  <#if memberType?exists && memberType=="2">
+		  	AND b.`sellMemberId` = :memberId
+		  </#if>
+		  AND EXISTS 
+		  (SELECT 
+		    1
+		  FROM
+		    (SELECT 
+		      p.`orderNo`,
+		      MIN(p.`payTime`) AS payTime 
+		    FROM
+		      pay_serialnumber p 
+		    GROUP BY p.`orderNo`) s 
+		WHERE b.`orderNo` = s.`orderNo` 
+	  	<#if type?exists && type == "1">
+	      	AND s.`payTime` >= CURDATE()
+	      	AND s.`payTime` < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+		</#if>
+		<#if type?exists && type == "2">
+		    AND s.`payTime` >= DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) + 0 DAY)
+		    AND s.`payTime` < DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) - 7 DAY)
+		</#if>
+		<#if type?exists && type == "3">
+	      	AND s.`payTime` >= DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		    AND s.`payTime` < DATE_ADD(CURDATE()-DAY(CURDATE())+1,INTERVAL 1 MONTH)
+		</#if>
+		<#if type?exists && type == "4">
+	      	AND s.`payTime` >= STR_TO_DATE(:timeStartStr,'%Y-%m-%d')
+		    AND s.`payTime` < DATE_ADD(STR_TO_DATE(:timeEndStr,'%Y-%m-%d'), INTERVAL 1 DAY)
+		</#if>
+		)
+	]]>
+	</sql>
+	
+	<sql id="getTradingFrequency">
+	<![CDATA[
+		SELECT 
+		  COUNT(1)
+		FROM
+		  order_baseinfo b 
+		  LEFT JOIN sub_audit a 
+		    ON a.orderNo = b.orderNo 
+		WHERE a.`subStatus` IN ('1', '3')
+		  AND b.marketId = :marketId 
+		  <#if memberType?exists && memberType=="3">
+		  	AND b.memberId = :memberId 
+		  </#if>
+		  
+		  <#if memberType?exists && memberType=="2">
+		  	AND b.`sellMemberId` = :memberId
+		  </#if>
+		  AND EXISTS 
+		  (SELECT 
+		    1
+		  FROM
+		    (SELECT 
+		      p.`orderNo`,
+		      MIN(p.`payTime`) AS payTime 
+		    FROM
+		      pay_serialnumber p 
+		    GROUP BY p.`orderNo`) s 
+	  	WHERE b.`orderNo` = s.`orderNo` 
+	  	<#if type?exists && type == "1">
+	      	AND s.`payTime` >= CURDATE()
+	      	AND s.`payTime` < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+		</#if>
+		<#if type?exists && type == "2">
+		    AND s.`payTime` >= DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) + 0 DAY)
+		    AND s.`payTime` < DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) - 7 DAY)
+		</#if>
+		<#if type?exists && type == "3">
+	      	AND s.`payTime` >= DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		    AND s.`payTime` < DATE_ADD(CURDATE()-DAY(CURDATE())+1,INTERVAL 1 MONTH)
+		</#if>
+		<#if type?exists && type == "4">
+	      	AND s.`payTime` >= STR_TO_DATE(:timeStartStr,'%Y-%m-%d')
+		    AND s.`payTime` < DATE_ADD(STR_TO_DATE(:timeEndStr,'%Y-%m-%d'), INTERVAL 1 DAY)
+		</#if>
+		)
+	]]>
+	</sql>
+	
+	<sql id="getTwoTradingFrequency">
+	<![CDATA[
+	
+		SELECT 
+		  COUNT(1)
+		FROM
+		  order_baseinfo b 
+		  LEFT JOIN sub_audit a 
+		    ON a.orderNo = b.orderNo 
+		WHERE a.`subStatus` IN ('1', '3')
+		  AND b.marketId = :marketId 
+		  AND b.memberId = :memberId AND b.`sellMemberId` = :sellMemberId
+		  AND EXISTS 
+		  (SELECT 
+		    1
+		  FROM
+		    (SELECT 
+		      p.`orderNo`,
+		      MIN(p.`payTime`) AS payTime 
+		    FROM
+		      pay_serialnumber p 
+		    GROUP BY p.`orderNo`) s 
+		WHERE b.`orderNo` = s.`orderNo` 
+		<#if type?exists && type == "1">
+	      	AND s.`payTime` >= CURDATE()
+	      	AND s.`payTime` < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+		</#if>
+		<#if type?exists && type == "2">
+		    AND s.`payTime` >= DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) + 0 DAY)
+		    AND s.`payTime` < DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) - 7 DAY)
+		</#if>
+		<#if type?exists && type == "3">
+	      	AND s.`payTime` >= DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		    AND s.`payTime` < DATE_ADD(CURDATE()-DAY(CURDATE())+1,INTERVAL 1 MONTH)
+		</#if>
+		<#if type?exists && type == "4">
+	      	AND s.`payTime` >= STR_TO_DATE(:timeStartStr,'%Y-%m-%d')
+		    AND s.`payTime` < DATE_ADD(STR_TO_DATE(:timeEndStr,'%Y-%m-%d'), INTERVAL 1 DAY)
+		</#if>
+		)
+	]]>
+	</sql>
+	
+	<sql id="getSubOutMarketBuyer">
+	<![CDATA[
+		SELECT 
+		  COUNT(1)
+		FROM
+		  (SELECT 
+		    * 
+		  FROM
+		    car_baseinfo a 
+		  WHERE a.`carNumber` = :carNumber) b 
+		  LEFT JOIN weigh_car c 
+		    ON c.`carId` = b.`carId` 
+		  LEFT JOIN order_outmarketinfo ot 
+		    ON ot.`weighCarId` = c.`weighCarId` 
+		  LEFT JOIN re_order_outmark oo 
+		    ON oo.`omId` = ot.`omId` 
+		  LEFT JOIN sub_audit a 
+		    ON oo.`orderNo` = a.`orderNo`
+		WHERE a.`subStatus` IN ('1', '3')
+		  AND c.marketId = :marketId 
+		  AND EXISTS 
+		  (SELECT 
+		    1
+		  FROM
+		    (SELECT 
+		      p.`orderNo`,
+		      MIN(p.`payTime`) AS payTime 
+		    FROM
+		      pay_serialnumber p 
+		    GROUP BY p.`orderNo`) s 
+		WHERE a.`orderNo` = s.`orderNo` 
+	    <#if type?exists && type == "1">
+	      	AND s.`payTime` >= CURDATE()
+	      	AND s.`payTime` < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+		</#if>
+		<#if type?exists && type == "2">
+		    AND s.`payTime` >= DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) + 0 DAY)
+		    AND s.`payTime` < DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) - 7 DAY)
+		</#if>
+		<#if type?exists && type == "3">
+	      	AND s.`payTime` >= DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		    AND s.`payTime` < DATE_ADD(CURDATE()-DAY(CURDATE())+1,INTERVAL 1 MONTH)
+		</#if>
+		<#if type?exists && type == "4">
+	      	AND s.`payTime` >= STR_TO_DATE(:timeStartStr,'%Y-%m-%d')
+		    AND s.`payTime` < DATE_ADD(STR_TO_DATE(:timeEndStr,'%Y-%m-%d'), INTERVAL 1 DAY)
+		</#if>
+		)
+	]]>
+	</sql>
+	
+	<sql id="getSubOutMarket">
+	<![CDATA[
+		SELECT 
+			count(wc.memberId) 
+		FROM 
+			weigh_car wc 
+		LEFT JOIN 
+			car_baseinfo cb 
+		ON 
+			wc.carId = cb.carId 
+		WHERE
+			cb.carNumber = :carNumber
+		<#if status?exists && status != "">
+		      AND wc.status=:status
+		</#if>
+		<#if marketId?exists && marketId != "">
+		      and wc.marketId = :marketId
+		</#if>
+		<#if type?exists && type == "1">
+		      AND wc.createTime >= :countDate
+	      	  AND wc.createTime < DATE_ADD(CURDATE(), INTERVAL 1 DAY)
+		</#if>
+		<#if type?exists && type == "2">
+			  AND wc.createTime >= DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) + 0 DAY)  
+		      AND wc.createTime < DATE_SUB(CURDATE(),INTERVAL WEEKDAY(CURDATE()) - 7 DAY)
+		</#if>
+		<#if type?exists && type == "3">
+			  AND wc.createTime >= DATE_ADD(CURDATE(),INTERVAL -DAY(CURDATE())+1 DAY)
+		      AND wc.createTime < DATE_ADD(CURDATE()-DAY(CURDATE())+1,INTERVAL 1 MONTH)
+		</#if>
+	]]>
+	</sql>
+</sqlMap>

@@ -1,0 +1,81 @@
+body {
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	background: #214790;
+
+}
+.clear{ clear: both;}
+.mui-content-login{height: 100%; background: url(../images/login.jpg) no-repeat center; background-size:100%; position: relative;}
+.mui-bar{ background: none;}
+.mui-bar-nav{ box-shadow: none;}
+.mui-input-group{ background: none; margin: 0 5%;}
+.mui-input-group .mui-input-row{ margin-top: 2rem; background: #fff; border-radius: 0.5rem;}
+.mui-table-view{ background: #fff; border-radius: 0.5rem; border: none;}
+.mui-input-group .mui-input-row{ height: 4.4rem;}
+.mui-content-padded{margin:2rem 5% 0 5%;}
+.mui-btn-block{ height: 4.4rem; background: #6689da; padding-top: .6rem; border:solid 1px #567cc4; font-family: "Microsoft YaHei"}
+.mui-content-padded button.mui-btn-primary{ transition-duration: 0s;}
+/*.mui-btn{ padding:20px;}*/
+.mui-input-group .mui-input-row:after ,.mui-input-group:after ,.mui-input-group:before{ background: none;}
+.mui-input-row label{ padding: 21px 15px; font-family: "Microsoft YaHei";}
+.input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea{ height: 4.4rem; font-family: "Microsoft YaHei"}
+
+.mui-input-row label~input, .mui-input-row label~select, .mui-input-row label~textarea{ background: #ebebea; border-left:solid 1px #d0d0d0; padding-left: 1rem;}
+.mui-btn-blue.mui-active:enabled, .mui-btn-blue:enabled:active, .mui-btn-primary.mui-active:enabled, .mui-btn-primary:enabled:active, input.mui-active[type="submit"]:enabled, input[type="submit"]:enabled:active{ background: #6491db; border:#6491db solid 1px;}
+.mui-input-label{ text-indent: -99999px; width: 1.3rem; height: 1.3rem; background-size: 1.55rem 3.95rem; background: url(../images/icon.png) no-repeat 0 0; margin-top: 0.75rem; position: absolute; left: 7%;}
+.mui-btn, button, input[type="button"], input[type="reset"], input[type="submit"]{ border-radius: 0.5rem; font-family: "Microsoft YaHei"; font-size:2rem; }
+.mui-input-label-b{ background-position: 0 -45px; width: 2.4rem; height: 2.6rem;}
+.mui-bar-nav ~ .mui-content{ padding-top: 12rem;}
+.mui-bar .mui-title{ margin-top: 4rem; font-family: "Microsoft YaHei"; font-size:2.1rem; color: #fff; }
+.mui-titie-line{ background: url(../images/line.png) no-repeat center;/* width: 31rem; */height: 1rem; display:block; margin-top: -3.4rem;}
+.mui-title-p{ color: #fff; text-align: center; margin-top: 6rem; font-size: 1.2rem; padding-top: 2rem; font-family: "Microsoft YaHei"; }
+/*我的账户页面*/
+.mui-account{ width: 100%; background-color: #f5f5f9;}
+.mui-account-input-user-name{ width: 100%; background-color: #fff; height: 4rem; line-height: 4rem; margin-top: 1rem; border-top: solid 1px #eeeef1; border-bottom: solid 1px #eeeef1; font-family: "Microsoft YaHei"; font-size: 1.4rem;}
+.mui-name-box{ width: 100%; background-color: #fff; margin-top: 1rem; border-top: solid 1px #eeeef1; border-bottom: solid 1px #eeeef1;}
+.mui-account-input-user{ background-color: #fff; height: 4rem; line-height: 4rem; width: 100%; display: block; font-family: "Microsoft YaHei"; font-size: 1.4rem; position: relative;}
+.mui-account-input-password{background-color: #fff; float: left; height: 4rem; line-height: 4rem; width: 100%; display: block; margin-top: 1rem; border-top: solid 1px #eeeef1; border-bottom: solid 1px #eeeef1; position: relative;}
+.mui-input-account-clear{ width: 100%; display: block; font-family: "Microsoft YaHei"; color: #363636; background: url(../images/pg.png) no-repeat 95% center; font-size: 1.4rem;  position: absolute; padding-left: 2.5rem;}
+.mui-input-account-clear:active{ color: #2e2e2e;}
+.mui-sz-user-sp{ position: absolute; left:2.5rem;}
+.mui-input-label-icon-1{ background: url(../images/icon-2.png) no-repeat -0.4rem -0.85rem; background-size: 2.35rem 17.45rem; width: 1.7rem; height: 1.7rem; display: inline-block; position: absolute; top: 2.25rem; left: .5rem;}
+.mui-input-label-icon-2{ background-position: -0.4rem -4.45rem; position: absolute; top: 1.2rem; left: .5rem;}
+.mui-input-label-icon-3{ background-position: -0.4rem -8.35rem; position: absolute; top: 1.2rem; left: .5rem;}
+.mui-input-label-icon-4{ background-position: -0.4rem -12.2rem; position: absolute; top: 1.2rem; left: .5rem;}
+.mui-input-label-icon-5{ background-position: -0.4rem -15.5rem; position: absolute; top: 1.2rem; left: .5rem;}
+.bottom-lines{ height: 0.05rem; width: 92%; background: #ececec; display: block; margin: .1rem auto;}
+.mui-account-sp{ float: right; padding-right: 1.5rem; color: #888; font-size: 1.4rem;}
+/*首页*/
+.mui-upd-date{ font-size: 1rem;font-family: "Microsoft YaHei"; text-align: center; width: 100%; margin:0; padding:0; height: 3rem; line-height: 3rem;}
+.mui-look-edition{ background-color:#fff; border-bottom: solid 1px #ececec; width: 100%; font-family: "Microsoft YaHei"; padding-top: 1.1rem; margin-bottom: 1rem; float: left;}
+.mui-lonk-title{ position: relative;  width: 100%; height:2.96rem; margin-bottom: 2rem; border-bottom: solid 1px #5dbbe5;}
+.mui-lonk-title-h2{ background: url(../images/link_03.jpg) no-repeat center center; background-size: 15.5rem 2.95rem; width: 100%; position: absolute; top: -.5rem; height: 2.95rem; line-height: 2.59rem; padding-top: .3rem; text-align: center; font-size: 1.4rem; color: #149edb; font-weight:normal;}
+.mui-look-span-icon{ background: url(../images/icon-3.png) no-repeat 0 -9.85rem; width: 1.3rem; height: 1.5rem; background-size: 2.35rem 11.55rem; display: inline-block; position: relative; top: .2rem; margin-right: .5rem;}
+
+.mui-lonk-title-icon{ width: 1.1rem; height:1.2rem; background-position: 0 -7.55rem; position: absolute; z-index: 2; right: 1rem; top: 1rem; display: inline-block;}
+.mui-table-sz-center{ width: 100%;}
+.mui-table-td{ color: #fac200; font-size: 1.3rem;list-style: none; margin: 1rem 0; padding:0;}
+.mui-table-td li{width:33.3%; display:inline-block; height: 6rem; text-align: center; border-bottom: solid 1px #ececec;}
+.mui-table-td-span2{ color: #6e6e6e;}
+.mui-table-td-hs-bed{ height: 6rem; width: 100%; float: left;}
+.mui-table-td .mui-table-td-hs-bed{ margin-bottom: -1px;}
+.mui-table-div-box{border-right: solid 1px #ececec; margin-top: 1rem; }
+.mui-look-edition-shop{ background: #fff; margin-bottom: 1rem; border-top:solid 1px #eeeef1; border-bottom:solid 1px #eeeef1; font-family: "Microsoft YaHei"; width: 100%; float: left;}
+.mui-look-edition-box1{ width: 100%; background: #fff; height:2.95rem; margin-top:-.5rem; border-bottom: solid 1px #ffc000; position:relative;}
+
+.mui-box-div{ width: auto; float: left; height: 2.95rem; position: relative;}
+.mui-box-div-st{ background: url(../images/bg_01.png) no-repeat; background-size: 0.75rem 2.95rem; width: .75rem; height: 2.95rem;display: inline-block; float: left; margin-left: 1rem;}
+.mui-look-edition-dp{ color: #fff; font-size: 1.4rem; background:#ffc000; width: auto; height: 2.95rem; line-height: 2.95rem; display: inline-block; float: left;}
+.mui-box-div-ed{ background: url(../images/bg_03.png) no-repeat; background-size: 3.8rem 2.95rem; width: 3.2rem; height: 2.95rem; display: inline-block; float: left;}
+
+.mui-look-edition-dp-icon{background: url(../images/icon-3.png) no-repeat 0 -3.1rem; display: inline-block; width: 1.1rem; height: 1.2rem; background-size: 2.35rem 11.55rem; margin-right: .5rem;}
+.mui-lonk-title-icon3{  background-position: 0 -7.55rem; display: inline-block; width: 1.1rem; height: 1.2rem; margin-top: 1rem;}
+.mui-lonk-i-icon3{ background-position: 0 -.25rem; display: inline-block; width: 2rem; height: 2rem; position: absolute; right: 1rem; top:.5rem;}
+.mui-table-td-shp{ color: #2a2a2a;}
+.mui-table-td-hs{ color: #2a2a2a;}
+.mui-look-edition-car-icon{ background-position: 0 -5.6rem; width: 1.65rem; height: 1.06rem; left: 1rem;}
+.mui-bar-nav.mui-bar .mui-icon{ font-size: 1.3rem !important; font-family: "Microsoft YaHei"; font-weight: normal;}
+/*js判断*/
+#login-form-true-false{ position: absolute; top:-2.5rem; left: 0; display:none; font-size:1.5rem; color:red; margin:0; padding:0;}

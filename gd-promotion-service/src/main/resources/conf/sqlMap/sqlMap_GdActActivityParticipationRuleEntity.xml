@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GdActActivityParticipationRuleEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO gd_act_activity_participation_rule(
+	max_cost,activity_id,min_cost
+	) VALUES (
+	:max_cost,:activity_id,:min_cost
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE gd_act_activity_participation_rule SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if max_cost?exists && max_cost!="" >
+		max_cost=:max_cost,
+	</#if>	
+	<#if activity_id?exists && activity_id!="" >
+		activity_id=:activity_id,
+	</#if>	
+	<#if min_cost?exists && min_cost!="" >
+		min_cost=:min_cost,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,max_cost,activity_id,min_cost
+	FROM gd_act_activity_participation_rule WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,max_cost,activity_id,min_cost
+	FROM gd_act_activity_participation_rule WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if max_cost?exists && max_cost!="" >
+		AND max_cost=:max_cost
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if min_cost?exists && min_cost!="" >
+		AND min_cost=:min_cost
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,max_cost,activity_id,min_cost
+	FROM gd_act_activity_participation_rule WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if max_cost?exists && max_cost!="" >
+		AND max_cost=:max_cost
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if min_cost?exists && min_cost!="" >
+		AND min_cost=:min_cost
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM gd_act_activity_participation_rule WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if max_cost?exists && max_cost!="" >
+		AND max_cost=:max_cost
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if min_cost?exists && min_cost!="" >
+		AND min_cost=:min_cost
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM gd_act_activity_participation_rule WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

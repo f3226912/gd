@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GdActActivityEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO gd_act_activity(
+	startTime,id,updateUserId,createTime,updateTime,name,state,
+	code,endTime,type,createUserId,version,isReverse
+	) VALUES (
+	:startTime,:id,:updateUserId,:createTime,:updateTime,:name,:state,
+	:code,:endTime,:type,:createUserId,:version,:isReverse
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE gd_act_activity SET 
+	<#if startTime?exists && startTime!="" >
+		startTime=:startTime,
+	</#if>		
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if name?exists && name!="" >
+		name=:name,
+	</#if>	
+	<#if state?exists && state!="" >
+		state=:state,
+	</#if>	
+	<#if code?exists && code!="" >
+		code=:code,
+	</#if>	
+	<#if endTime?exists && endTime!="" >
+		endTime=:endTime,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+	<#if version?exists && version!="" >
+		version=:version,
+	</#if>
+	<#if isNew?exists && isNew!="" >
+		isNew=:isNew,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if isReverse?exists && isReverse!="" >
+		AND isReverse=:isReverse
+	</#if>
+	
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	startTime,id,updateUserId,createTime,updateTime,name,state,
+	code,endTime,type,createUserId,version,isNew,isReverse
+	FROM gd_act_activity WHERE id=:id
+	]]>
+</sql>
+
+<!--获取活动编号 -->
+<sql id="getCodeSequence">
+   <![CDATA[
+	select gd_promotion.nextval('gd_activity') 
+	]]>
+</sql>
+
+<sql id="getTotalForActivityList">
+	<![CDATA[
+		SELECT 
+			count(1) as count
+		FROM 
+			gd_act_activity gaa, gd_act_activity_market gam
+		WHERE 
+			gaa.id = gam.activity_id
+	<#if id?exists && id!="" >
+		AND gaa.id=:id
+	</#if>
+	<#if code?exists && code!="" >
+		AND gaa.code LIKE "%":code"%"
+	</#if>
+	<#if type?exists && type!="" >
+		AND gaa.type=:type
+	</#if>
+	<#if name?exists && name!="" >
+		AND gaa.name LIKE "%":name"%"
+	</#if>
+	<#if state?exists && state!="" >
+		AND gaa.state=:state
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND gam.market_id = :marketId
+	</#if>	
+	<#if startDate?exists && startDate!="" >
+		AND gaa.startTime >= :startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND gaa.endTime <= :endDate
+	</#if>
+	<#if queryState?exists && queryState=="2">
+		AND gaa.endTime <SYSDATE()
+	    </#if>
+	<#if queryState?exists && queryState=="1">
+		AND gaa.endTime >=SYSDATE()
+	</#if>
+	<#if isNew?exists && isNew!="">
+		AND gaa.isNew=:isNew
+	</#if>
+	]]>
+</sql>
+<sql id="getActivityList">
+	<![CDATA[
+		SELECT 
+			gaa.id, gaa.`code`, gaa.name, gaa.type, gaa.createTime, DATE_FORMAT(gaa.createTime,'%Y-%m-%d %T') as createTimeString, gaa.state,
+			gam.market_id as marketId, gaa.startTime, DATE_FORMAT(gaa.startTime,'%Y-%m-%d %T') as startTimeString, gaa.endTime, 
+			DATE_FORMAT(gaa.endTime,'%Y-%m-%d %T') as endTimeString, gaa.createUserId
+		FROM 
+			gd_act_activity gaa
+		LEFT JOIN 
+			gd_act_activity_market gam
+		ON 
+			gaa.id = gam.activity_id
+		WHERE 
+			1=1
+		<#if id?exists && id!="" >
+			AND gaa.id=:id
+		</#if>
+		<#if code?exists && code!="" >
+			AND gaa.code LIKE "%":code"%"
+		</#if>
+		<#if type?exists && type!="" >
+			AND gaa.type=:type
+		</#if>
+		<#if name?exists && name!="" >
+			AND gaa.name LIKE "%":name"%"
+		</#if>
+		<#if state?exists && state!="" && state!="2">
+			AND gaa.state=:state
+		</#if>
+		<#if state?exists && state=="2">
+			AND gaa.endTime < now()
+		</#if>		
+		<#if marketId?exists && marketId!="" >
+			AND gam.market_id = :marketId
+		</#if>	
+		<#if startDate?exists && startDate!="" >
+			AND gaa.startTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+			AND gaa.endTime <= :endDate
+		</#if>
+		<#if queryState?exists && queryState=="2">
+		    AND gaa.endTime <SYSDATE()
+	    </#if>
+	    <#if queryState?exists && queryState=="1">
+		    AND gaa.endTime >=SYSDATE()
+	    </#if>
+	    <#if isNew?exists && isNew!="">
+		    AND gaa.isNew=:isNew
+	    </#if>
+	    ORDER BY updateTime desc
+		<#if enablePage?exists && enablePage=="1" >
+			LIMIT :startRow, :endRow
+		</#if>
+	]]>
+</sql>
+
+	
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	startTime,id,updateUserId,createTime,updateTime,name,state,
+	code,endTime,type,createUserId,version
+	FROM gd_act_activity WHERE 1=1
+	<#if startTime?exists && startTime!="" >
+		AND startTime=:startTime
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name=:name
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND endTime=:endTime
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if version?exists && version!="" >
+		AND version=:version
+	</#if>
+	<#if isNew?exists && isNew!="" >
+		AND isNew=:isNew
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	startTime,id,updateUserId,createTime,updateTime,name,state,
+	code,endTime,type,createUserId,version
+	FROM gd_act_activity WHERE 1=1
+	<#if startTime?exists && startTime!="" >
+		AND startTime=:startTime
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name=:name
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND endTime=:endTime
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if version?exists && version!="" >
+		AND version=:version
+	</#if>
+	ORDER BY updateTime Desc
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) 
+	FROM gd_act_activity gaa
+	LEFT JOIN 
+		gd_act_activity_user_rule gaau
+	ON gaau.activity_id = gaa.id
+	LEFT JOIN gd_act_activity_market gaam
+	ON gaam.activity_id = gaa.id
+	 WHERE 1=1
+	<#if startTime?exists && startTime!="" >
+		AND startTime=:startTime
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name=:name
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND endTime=:endTime
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if user_type?exists && user_type!="" >
+		AND gaau.user_type=:user_type
+	</#if>
+	<#if refer_id?exists && refer_id!="" >
+		AND gaau.refer_id=:refer_id
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND (gaam.market_id=:marketId AND NOT EXISTS (SELECT gaaur1.id FROM gd_act_activity_user_rule gaaur1 WHERE gaaur1.activity_id = gaa.id))
+	</#if>
+	
+	<#if isExistStartTime?exists && isExistStartTime!="" && isExistEndTime?exists && isExistEndTime!="" >
+		AND ((gaa.startTime <= :isExistStartTime AND gaa.endTime >= :isExistStartTime)
+		OR (gaa.startTime <= :isExistEndTime AND gaa.endTime >= :isExistEndTime))
+	</#if>
+	
+	<#if isNew?exists && isNew!="" >
+		AND isNew=:isNew
+	</#if>
+	<#if version?exists && version!="" >
+		AND version=:version
+	</#if>
+	<#if type?exists && type!="" >
+		AND gaa.type=:type
+	</#if>
+	]]>
+</sql>
+
+
+<sql id="getExistList">
+	<![CDATA[
+	SELECT gaa.code,gaa.id 
+	FROM gd_act_activity gaa
+	LEFT JOIN 
+		gd_act_activity_user_rule gaau
+	ON gaau.activity_id = gaa.id
+	LEFT JOIN gd_act_activity_market gaam
+	ON gaam.activity_id = gaa.id
+	 WHERE 1=1
+	<#if startTime?exists && startTime!="" >
+		AND startTime=:startTime
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name=:name
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND endTime=:endTime
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if user_type?exists && user_type!="" >
+		AND gaau.user_type=:user_type
+	</#if>
+	<#if refer_id?exists && refer_id!="" >
+		AND gaau.refer_id=:refer_id
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND (gaam.market_id=:marketId AND   EXISTS (SELECT gaaur1.id FROM gd_act_activity_user_rule gaaur1 WHERE gaaur1.activity_id = gaa.id))
+	</#if>
+	
+	<#if isExistStartTime?exists && isExistStartTime!="" && isExistEndTime?exists && isExistEndTime!="" >
+		AND LEAST(gaa.endTime,:isExistEndTime)>GREATEST(gaa.startTime,:isExistStartTime)
+	</#if>
+	
+	<#if isNew?exists && isNew!="" >
+		AND isNew=:isNew
+	</#if>
+	<#if version?exists && version!="" >
+		AND version=:version
+	</#if>
+	<#if type?exists && type!="" >
+		AND gaa.type=:type
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM gd_act_activity WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getActivityUserList">
+	<![CDATA[
+		SELECT
+			gur.id, gur.activity_id, gur.user_type, gur.refer_id, gaa.`name` AS actName
+		FROM
+			gd_act_activity_user_rule gur, gd_act_activity gaa
+		WHERE
+			gur.activity_id = gaa.id
+		AND gaa.state = 1
+		<#if activityId?exists && activityId!="" >
+			AND	gur.activity_id = :activityId
+		</#if>
+		<#if userType?exists && userType!="" >
+			AND gur.user_type = :userType
+		</#if>
+		<#if referId?exists && referId!="" >
+			AND gur.refer_id = :referId
+		</#if>
+		ORDER BY gaa.createTime DESC
+	]]>
+</sql>
+
+<sql id="getEffectiveActivityList">
+	<![CDATA[
+		SELECT 
+			gaa.id, gaa.`name`, gaa.type as activityType, gpr.max_cost as maxAmount, gpr.min_cost as minAmount, gar.cost
+		FROM 
+			gd_act_activity gaa, gd_act_activity_rules gar, gd_act_activity_participation_rule gpr
+		WHERE
+			gaa.id = gpr.activity_id AND gaa.id = gar.activity_id
+		AND EXISTS(SELECT gur.activity_id FROM gd_act_activity_user_rule gur 
+			WHERE gur.activity_id = gaa.id AND gur.user_type = :buyer AND gur.refer_id = :memberId)
+		AND EXISTS(SELECT gur.activity_id FROM gd_act_activity_user_rule gur 
+			WHERE gur.activity_id = gaa.id AND gur.user_type = :business AND gur.refer_id = :businessId)
+		<#if transportType?exists && transportType!="" >
+			AND EXISTS(SELECT 1 FROM gd_act_activity_distribution_mode gdm 
+				WHERE gdm.activity_id = gaa.id AND gdm.type = :transportType)
+		<#else>
+			AND EXISTS(SELECT 1 FROM gd_act_activity_distribution_mode gdm 
+				WHERE gdm.activity_id = gaa.id)
+		</#if>			
+		<#if orderAmount?exists && orderAmount!="" >
+			AND gpr.min_cost <= :orderAmount AND gpr.max_cost >= :orderAmount
+		</#if>
+		<#if costUserType?exists && costUserType!="" >
+			AND gar.user_type = :costUserType
+		</#if>
+		<#if expenseType?exists && expenseType!="" >
+			AND gar.expense_type = :expenseType
+		</#if>
+		<#if billingMethod?exists && billingMethod!="" >
+			AND gar.billing_method = :billingMethod
+		</#if>
+		
+	]]>
+</sql>
+
+<!-- 供农速通使用 -->
+<sql id="getTotalForActivityInfo">
+	<![CDATA[
+		SELECT 
+			count(1) as count
+		FROM 
+			gd_act_activity gaa, gd_act_activity_distribution_mode gdm, gd_act_activity_market am
+		WHERE 
+			gaa.id = gdm.activity_id 
+		AND gaa.id = am.activity_id 
+		AND gaa.endTime > DATE_ADD(NOW(),INTERVAL -4 DAY)
+			<#if activityType?exists && activityType!="" >
+				AND gdm.type = :activityType
+			</#if>
+			<#if activityId?exists && activityId!="" >
+				AND gaa.id = :activityId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+				AND am.market_id = :marketId
+			</#if>			
+	]]>
+</sql>
+<!-- 供农速通使用 -->
+<sql id="getActivityInfo">
+	<![CDATA[
+		SELECT 
+			gaa.id, gaa.`code`, gaa.type as activityType, gaa.`name`,gaa.startTime, gaa.endTime, 
+			gaa.state, gaa.version, gaa.isNew, gaa.createTime, gaa.updateTime, gam.market_id, 
+			CASE WHEN t.activity_id IS NOT NULL THEN 0  ELSE 1 END isMarketAct,
+			CASE WHEN s.activity_id IS NOT NULL THEN 1  ELSE 0 END isLimitBuyerAct
+		FROM 
+			gd_act_activity gaa 
+		LEFT JOIN gd_act_activity_market gam 
+			ON gaa.id = gam.activity_id 
+		LEFT JOIN (SELECT activity_id FROM gd_act_activity_user_rule WHERE user_type != 1  GROUP BY activity_id) t 
+			ON t.activity_id = gaa.id
+		LEFT JOIN (SELECT activity_id FROM gd_act_activity_user_rule WHERE user_type = 1 GROUP BY activity_id, user_type) s 
+			ON s.activity_id = gaa.id
+		WHERE 
+			gaa.endTime > DATE_ADD(NOW(),INTERVAL -4 DAY) AND gam.market_id IS NOT NULL 
+			<#if transportType?exists && transportType!="" >
+				AND EXISTS(SELECT 1 FROM gd_act_activity_distribution_mode gdm 
+					WHERE gdm.activity_id = gaa.id AND gdm.type = :transportType)
+			</#if>
+			<#if activityId?exists && activityId!="" >
+				AND gaa.id = :activityId
+			</#if>
+			<#if type?exists && type!="" >
+				AND gaa.type = :type
+			</#if>
+			<#if marketId?exists && marketId!="" >
+				AND gam.market_id = :marketId
+			</#if>
+		ORDER BY gaa.createTime DESC, gaa.version DESC
+	]]>
+</sql>
+
+<!-- 管理后台-查看活动 -->
+<sql id="getSpecificActivityInfo">
+	<![CDATA[
+		SELECT 
+			gaa.id,gaa.isReverse, gaa.`code`,gaa.type , gaa.type as activityType, gaa.`name`,gam.market_id as marketId,gam.id as activity_market_id,
+			DATE_FORMAT(gaa.startTime,'%Y-%m-%d %T') as startTimeString, DATE_FORMAT(gaa.endTime,'%Y-%m-%d %T') as endTimeString, 
+			gpr.min_cost as minAmount, gpr.max_cost as maxAmount  ,gpr.id as activity_participation_rule_id
+		FROM 
+			gd_act_activity gaa
+		LEFT JOIN 
+			gd_act_activity_market gam
+		ON gam.activity_id=gaa.id 
+		LEFT JOIN
+			gd_act_activity_participation_rule gpr
+		ON gaa.id = gpr.activity_id
+		WHERE 1=1
+			<#if activityId?exists && activityId!="" >
+				AND gaa.id = :activityId
+			</#if>
+			<#if transportType?exists && transportType!="" >
+				AND gdm.type = :transportType
+			</#if>
+			<#if marketId?exists && marketId!="" >
+				AND gam.market_id = :marketId
+			</#if>
+			<#if costUserType?exists && costUserType!="" >
+				AND gar.user_type = :costUserType
+			</#if>
+			<#if expenseType?exists && expenseType!="" >
+				AND gar.expense_type = :expenseType
+			</#if>
+			<#if billingMethod?exists && billingMethod!="" >
+				AND gar.billing_method = :billingMethod
+			</#if>			
+	]]>
+</sql>
+
+<sql id="getActivityProductInfo">
+	<![CDATA[
+	SELECT
+		pb.productId, pb.businessId
+		<#if cateType?exists && cateType == "1" >
+			, pc1.categoryId AS cateId
+		</#if>
+		<#if cateType?exists && cateType == "2" >
+			, pc2.categoryId  AS cateId
+		</#if>
+		<#if cateType?exists && cateType == "3" >
+			, pc3.categoryId  AS cateId
+		</#if>
+		<#if cateType?exists && cateType == "0" >
+			, pb.cateId  AS cateId
+		</#if>
+	FROM
+		gudeng.product_baseinfo pb
+	LEFT JOIN gudeng.product_category pc3 ON pb.cateId = pc3.categoryId
+	LEFT JOIN gudeng.product_category pc2 ON pc3.parentId = pc2.categoryId
+	LEFT JOIN gudeng.product_category pc1 ON pc2.parentId = pc1.categoryId
+	WHERE pb.productType = '1'
+	<#if cate1List?exists>
+		<#assign n = cate1List?size />
+		<#if n gt 0>
+			AND(
+			<#list cate1List as cateId>
+				<#if cateId_index != n-1>
+					pc1.categoryId = '${cateId}' OR
+				<#else>
+					pc1.categoryId = '${cateId}'  
+				</#if>
+			</#list>
+			) 
+		</#if>
+	</#if>
+	<#if cate2List?exists>
+		<#assign n = cate2List?size />
+		<#if n gt 0>
+			AND(
+			<#list cate2List as cateId>
+				<#if cateId_index != n-1>
+					pc2.categoryId = '${cateId}' OR
+				<#else>
+					pc2.categoryId = '${cateId}'  
+				</#if>
+			</#list>
+			) 
+		</#if>
+	</#if>
+	<#if cate3List?exists>
+		<#assign n = cate3List?size />
+		<#if n gt 0>
+			AND(
+			<#list cate3List as cateId>
+				<#if cateId_index != n-1>
+					pc3.categoryId = '${cateId}' OR
+				<#else>
+					pc3.categoryId = '${cateId}'  
+				</#if>
+			</#list>
+			) 
+		</#if>
+	</#if>
+	<#if bIdList?exists>
+		<#assign n = bIdList?size />
+		<#if n gt 0>
+			AND(
+			<#list bIdList as bId>
+				<#if bId_index != n-1>
+					pb.businessId = '${bId}' OR
+				<#else>
+					pb.businessId = '${bId}'  
+				</#if>
+			</#list>
+			) 
+		</#if>
+	</#if>
+	]]>
+</sql>
+</sqlMap>

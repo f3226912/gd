@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdPurchasegiftEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_purchasegift(
+	amount,count,status,purchaseNO,giftNO,purchaseGiftId,unitPrice
+	
+	) VALUES (
+	:amount,:count,:status,:purchaseNO,:giftNO,:purchaseGiftId,:unitPrice
+	
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_purchasegift SET 
+	<#if amount?exists && amount!="" >
+		amount=:amount,
+	</#if>	
+	<#if count?exists && count!="" >
+		count=:count,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if purchaseNO?exists && purchaseNO!="" >
+		purchaseNO=:purchaseNO,
+	</#if>	
+	<#if giftNO?exists && giftNO!="" >
+		giftNO=:giftNO,
+	</#if>	
+	<#if purchaseGiftId?exists && purchaseGiftId!="" >
+		purchaseGiftId=:purchaseGiftId,
+	</#if>	
+	<#if unitPrice?exists && unitPrice!="" >
+		unitPrice=:unitPrice
+	</#if>	
+	WHERE purchaseGiftId=:purchaseGiftId
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	amount,count,status,purchaseNO,giftNO,purchaseGiftId,unitPrice
+	
+	FROM grd_purchasegift WHERE purchaseGiftId=:purchaseGiftId
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	amount,count,status,purchaseNO,giftNO,purchaseGiftId,unitPrice
+	
+	FROM grd_purchasegift WHERE purchaseGiftId=:purchaseGiftId
+	<#if amount?exists && amount!="" >
+		AND amount=:amount,
+	</#if>
+	<#if count?exists && count!="" >
+		AND count=:count,
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status,
+	</#if>
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND purchaseNO=:purchaseNO,
+	</#if>
+	<#if giftNO?exists && giftNO!="" >
+		AND giftNO=:giftNO,
+	</#if>
+	<#if purchaseGiftId?exists && purchaseGiftId!="" >
+		AND purchaseGiftId=:purchaseGiftId,
+	</#if>
+	<#if unitPrice?exists && unitPrice!="" >
+		AND unitPrice=:unitPrice
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	amount,count,status,purchaseNO,giftNO,purchaseGiftId,unitPrice
+	
+	FROM grd_purchasegift WHERE purchaseGiftId=:purchaseGiftId
+	<#if amount?exists && amount!="" >
+		AND amount=:amount,
+	</#if>
+	<#if count?exists && count!="" >
+		AND count=:count,
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status,
+	</#if>
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND purchaseNO=:purchaseNO,
+	</#if>
+	<#if giftNO?exists && giftNO!="" >
+		AND giftNO=:giftNO,
+	</#if>
+	<#if purchaseGiftId?exists && purchaseGiftId!="" >
+		AND purchaseGiftId=:purchaseGiftId,
+	</#if>
+	<#if unitPrice?exists && unitPrice!="" >
+		AND unitPrice=:unitPrice
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_purchasegift WHERE 1=1
+	<#if amount?exists && amount!="" >
+		AND amount=:amount,
+	</#if>
+	<#if count?exists && count!="" >
+		AND count=:count,
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status,
+	</#if>
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND purchaseNO=:purchaseNO,
+	</#if>
+	<#if giftNO?exists && giftNO!="" >
+		AND giftNO=:giftNO,
+	</#if>
+	<#if purchaseGiftId?exists && purchaseGiftId!="" >
+		AND purchaseGiftId=:purchaseGiftId,
+	</#if>
+	<#if unitPrice?exists && unitPrice!="" >
+		AND unitPrice=:unitPrice
+	</#if>
+	<#if giftNos?exists>
+	<#assign n = giftNos?size />
+	<#if n gt 0>
+		AND (
+		<#list giftNos as singleId>
+		<#if singleId_index != n-1>
+			giftNo =${singleId}  OR
+		<#else>
+			giftNo =${singleId}
+		</#if>
+		</#list>
+		)
+	</#if>
+</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_purchasegift WHERE purchaseGiftId=:purchaseGiftId
+	]]>
+</sql>
+
+<sql id="updateGiftPrice">
+	<![CDATA[
+	update grd_gd_gift set newPrice=:unitPrice where giftNo=:giftNO
+	]]>
+</sql>
+
+<sql id="findGiftByPurchaseNoList">
+<![CDATA[
+
+SELECT
+	ggg.*, gp.amount,
+	gp.count,
+	gp.unitPrice,
+	gp.purchaseNO
+FROM
+	grd_gd_gift ggg
+left JOIN
+	grd_purchasegift gp
+on
+	ggg.giftNo = gp.giftNO and  gp.purchaseNO =:purchaseNo
+where 1=1
+ 	<#if ids?exists &&ids!="" >
+ 	and ggg.giftNo in(${ids})
+	 	
+	 <#else>
+	and gp.purchaseNO=:purchaseNo
+	</#if>
+ LIMIT :startRow, :endRow
+ 	]]>
+</sql>
+
+<sql id="findGiftByPurchaseNoCount">
+<![CDATA[
+SELECT
+count(0)
+FROM
+	grd_gd_gift ggg
+left JOIN
+	grd_purchasegift gp
+on
+	ggg.giftNo = gp.giftNO and  gp.purchaseNO =:purchaseNo
+where 1=1
+ 	<#if ids?exists &&ids!="" >
+	 	and ggg.giftNo in(${ids})
+	 <#else>
+	  	and gp.purchaseNO=:purchaseNo
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteByPurchaseNo">
+	<![CDATA[
+	DELETE FROM grd_purchasegift WHERE purchaseNO=:purchaseNo
+	]]>
+</sql>
+
+</sqlMap>

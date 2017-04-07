@@ -1,0 +1,239 @@
+/*公共样式*/
+
+body{}
+.clear {
+	clear:both;
+	
+}
+.head-wrap {
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+    background-color: #f4f4f4;
+}
+.wrap1280{ width: 1280px; height: auto;position: relative; margin: 0 auto; padding-top:-40px;}
+.fl{float: left;}
+.fr{float: right;}
+
+.bg-head{
+	background:#f21147 url(../images/tuiguang0811/bg_head.jpg) no-repeat center center;
+	height: 600px;
+	position: relative;
+	width: 100%;
+	z-index:-1;
+	padding-top: 80px;
+}
+.down-count{
+	background: url(../images/tuiguang0811/timer.png) no-repeat center center;
+	height: 130px;
+	position: absolute;
+	bottom: 0px;
+	left: 50%;
+	width: 728px;
+	margin-left: -364px;
+	display: none;
+}
+.down-count span{
+	position: absolute;
+	right: 120px;
+	top: 35px;
+	display: block;
+	color: #000;
+	font-size: 20px;
+	letter-spacing: 7px;
+}
+.down-count span em{
+	color: #de151d;
+	font-size: 32px;
+
+}
+.bg-box{
+	background: #f21147;
+}
+.box{
+	background: url(../images/tuiguang0811/box.png) no-repeat center center;
+	height: 256px;
+	font-family:"Microsoft YaHei";
+
+}
+.box a{
+	width: 350px;
+	height: 85px;
+	position: absolute;
+	right: 105px;
+	top: 47px;
+	display: block;
+}
+.box p{
+	color: #dc131d;
+	font-size: 24px;
+	position: absolute;
+	top: 52px;
+	left: 320px;
+	line-height: 40px;
+	letter-spacing: 5px;
+	font-weight: bold;
+}
+.box span{
+	display: block;
+	color: #a83f00;
+	font-size: 20px;
+	position: absolute;
+	top: 160px;
+	left: 320px;
+	line-height: 30px;
+	width: 855px;
+}
+.box span em{
+	font-size: 28px;
+	color: #da1927;
+}
+.bg-main{
+	background: #f21147;
+}
+.main{
+	background: url(../images/tuiguang0811/repeat-bg.jpg) repeat center center;
+	width: 1240px;
+	margin:0 auto;
+	overflow: hidden;
+	padding-bottom: 40px;
+	
+}
+.store-title{
+	background: url(../images/tuiguang0811/title.png) no-repeat center left;
+	width: 728px;
+	height: 130px;
+	color: #cc092c;
+	line-height: 130px;
+	font-weight: bold;
+	text-align: center;
+	font-size: 36px;
+	margin:20px auto;
+	font-family: "Microsoft YaHei";
+	
+}
+
+.store-lay{
+	margin: 0 30px;
+}
+.lay-left{
+	padding: 10px;
+	background: #fff;
+	width: 710px;
+	box-shadow: 10px 10px 5px #888888;
+	-webkit-box-shadow: 0px 0px 10px #888888;
+	-ms-box-shadow: 0px 0px 10px #888888;
+	-o-box-shadow: 0px 0px 10px #888888;
+	-moz-box-shadow: 0px 0px 10px #888888;
+	position: relative;
+	float: left;
+}
+.lay-left .grey{
+	background: rgba(0,0,0,0.5);
+	position: absolute;
+	bottom:10px;
+	width: 709px;
+	height: 50px;
+	color:#fff;
+	font-size:24px;
+	text-align:left;
+	line-height:50px;
+	font-family: "Microsoft YaHei";
+	text-indent:2em;
+}
+.lay-right{
+	float: right;
+	width: 415px;
+	color: #666666;
+	font-size: 20px;
+	line-height: 35px;
+	font-family:"Microsoft YaHei";
+}
+.lay-right p{
+	padding-left: 40px;
+	margin-top: 20px;
+	position: relative;
+}
+.lay-right p .point{
+	position: absolute;
+	top: 9px;
+	left: 5px;
+	width: 20px;
+	height: 20px;
+	border-radius: 25px;
+	-webkit-border-radius: 25px;
+	-ms-border-radius: 25px;
+	-o-border-radius: 25px;
+	-moz-border-radius: 25px;
+	display: block;
+	background: #de151d;
+
+}
+.lay-right span{
+	color: #de151d;
+	font-size:24px;
+}
+.lay-right i{
+	margin-top: 30px;
+	display: inline-block;
+}
+.lay-right em{
+	margin-left: 85px;
+	display: inline-block;
+}
+.activity-obj{
+	padding: 35px 0;
+	position: relative;
+	color: #fff;
+	font-size: 20px;
+	line-height: 30px;
+	font-family:"Microsoft YaHei";
+}
+.activity-obj p{
+	padding-left: 28px;
+	margin-bottom: 35px;
+	margin-left: 100px;
+	position: relative;
+}
+.activity-obj p em{
+	position: absolute;
+	top: 9px;
+	left: 5px;
+	width: 10px;
+	height: 10px;
+	border-radius: 25px;
+	-webkit-border-radius: 25px;
+	-ms-border-radius: 25px;
+	-o-border-radius: 25px;
+	-moz-border-radius: 25px;
+	display: block;
+	background: #fff;
+}
+.activity-obj span{
+	margin-left: 100px;
+}
+.bg-foot {
+	background: url(../images/tuiguang0811/bg_foot.jpg) no-repeat bottom center;
+	width: 100%;
+    overflow: hidden;
+    background: #f21147;
+    padding-bottom: 60px;
+}
+.bg-foot .tips{
+	border-bottom: 1px solid #fff;
+	border-top: 1px solid #fff;
+	border-right: 1px solid #fff;
+	width: 950px;
+	padding: 35px 0;
+	color: #fff;
+	font-size: 20px;
+	position: relative;
+	top: 20px;
+	background: #f21147;
+	font-family:"Microsoft YaHei";
+}
+.bg-foot .tips p{
+	line-height: 35px;
+	margin-left: 30px;
+
+}

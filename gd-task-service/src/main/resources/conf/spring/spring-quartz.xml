@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+    xmlns:context="http://www.springframework.org/schema/context"   
+    xmlns:task="http://www.springframework.org/schema/task"   
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+        http://www.springframework.org/schema/fex  
+        http://www.springframework.org/schema/fex/spring-fex-1.5.xsd  
+        http://www.springframework.org/schema/task   
+        http://www.springframework.org/schema/task/spring-task-3.0.xsd   
+        http://www.springframework.org/schema/context  
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd"> 
+        
+	<!-- 推送关注产品信息 每隔4小时执行  -->	
+	<!-- 20160321 先关闭该功能 -->	
+<!-- 	<task:scheduled-tasks>
+		<task:scheduled ref="pushMessageTaskService" method="PushMessageTask"
+			cron="0 0 0/4 * * ?" /> 
+	</task:scheduled-tasks> -->
+	
+	<!-- 导入交易账单任务 每3小时一次  -->
+	<task:scheduled-tasks>
+		<!-- <task:scheduled ref="orderBillTaskService" method="importData" 
+			cron="0 0 0/3 * * ?" /> -->
+		<task:scheduled ref="orderBillTaskService" method="importData" 
+			cron="0 0 0/1 * * ?" />
+<!-- 		<task:scheduled ref="orderBillTaskService" method="importData"  -->
+<!-- 			cron="0 0/10 * * * ?" /> -->
+	</task:scheduled-tasks>
+	
+	<!-- 生产静态页任务 每天凌晨0:30点开始  -->	
+	<task:scheduled-tasks>
+		<task:scheduled ref="staticHtmlService" method="generatorHtml"
+			cron="0 30 0 * * ?" /> 
+	</task:scheduled-tasks>	
+	
+	<!-- 查询订单超过三天未付预付款的订单，关闭订单并通知农速通关闭货运订单 -->
+	<!-- 每隔30分触发 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="orderAdvanceTaskService" method="HandleExpireOrderAdvance"
+			cron="0 0/30 * * * ?" /> 
+	</task:scheduled-tasks>	
+	
+	<!-- 过期，启动相应的广告 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="adTaskService" method="HandleExpireAd"
+			cron="0 0 0/1 * * ?" /> 
+	</task:scheduled-tasks>
+	
+	<!-- 启动,禁用补贴 规则 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="timeStartRuleTaskService" method="timeStartRule"
+			cron="0 0 0/1 * * ?" /> 
+	</task:scheduled-tasks>	
+
+	<!-- 禁用补贴 限制规则 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="timeStartRuleTaskService" method="ExpireLimitRule"
+			cron="0 0 0 * * ?" /> 
+	</task:scheduled-tasks>		
+	
+	<!-- 清算任务 每天早上1:30分开始  -->
+	 <!--  <task:scheduled-tasks>
+		<task:scheduled ref="pushMessageTaskService" method="testTask"
+			cron="0 30 1 * * ?" /> 
+	</task:scheduled-tasks>   -->
+	
+	<!-- 任务队列 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="taskCallService" method="invoke" fixed-delay="${TASK_INTERVAL}"  /> 
+	</task:scheduled-tasks>
+	
+	<!-- 定时任务队列 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="timeTaskCallService" method="invoke" cron="${TIME_TASK_CRON}" /> 
+	</task:scheduled-tasks>
+	
+	<!-- 定时插入自动撤单任务队列 -->
+	<!-- 每天凌晨0:20点开始-->
+	<task:scheduled-tasks>
+		<task:scheduled ref="autoOrderRevokeCallTask" method="invoke" cron="0 20 0 * * ?" /> 
+	</task:scheduled-tasks>
+	
+	<!-- 定时修改2小时后卖家未确认付款，设置成自动完成-->
+	<!-- 每10分钟跑一次 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="twoAlreadyPayOrderCallTask" method="invoke" cron="0 0/10 * * * ?" /> 
+	</task:scheduled-tasks>
+	
+	<!-- 定时取消72小时后未付款订单-->
+	<!-- 每1小时跑一次 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="cancelUnpaidOrderTaskImpl" method="invoke" cron="0 0 0/1 * * ?" /> 
+	</task:scheduled-tasks>
+	
+	<!-- 补贴规则审核定时任务 -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="subLimitRuleTimeService" method="invoke" cron="${SUB_LIMIT_RULE_TIME_TASK_CRON}" /> 
+	</task:scheduled-tasks>
+	
+	<!-- 农速通订单定时任务（已成交订单7天后自动变成已完成） -->
+	<!-- 每天0点开始-->
+	<task:scheduled-tasks>
+		<task:scheduled ref="nstComfirmOrderTaskService" method="call" cron="0 0 0 * * ?" /> 
+	</task:scheduled-tasks>	
+	<!-- 农速通订单定时任务（同城货源20分钟内未被确定接单，自动取消） -->
+	<!--农速通每30秒执行一次  -->
+	<task:scheduled-tasks>
+		<task:scheduled ref="nstAutoCancleOrderTaskService" method="call" cron="0/30 * * * * ?" /> 
+	</task:scheduled-tasks>
+	<!--处理e农异常账单,每天12:30,23:30执行-->
+	<task:scheduled-tasks>
+		<task:scheduled ref="eNongBillTaskService" method="handle" cron="0 0 12,23 * * ?" /> 
+	</task:scheduled-tasks>
+	<task:scheduled-tasks>
+		<task:scheduled ref="sendMQTask" method="call" cron="0 0/1 * * * ?" /> 
+	</task:scheduled-tasks>
+   <!--报价信息通知 每天18：00-->
+	<task:scheduled-tasks>		
+	<!--<task:scheduled ref="npsOfferPriceTaskService" method="execute" cron="*/30 * * * * ?" /> -->
+<task:scheduled ref="npsOfferPriceTaskService" method="execute" cron="0 0 18 * * ?" />  
+	</task:scheduled-tasks>
+</beans>

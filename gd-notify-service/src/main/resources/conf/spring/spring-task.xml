@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd"
+	>
+	
+	<bean id="statisPaymentBusinessTask"
+		class="com.gudeng.commerce.gd.notify.pay.StatisPaymentBusinessTask"></bean>
+		
+	
+	<bean id="payTaskTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<bean id="payDinJinOuterTimeDetail"
+				class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+				<property name="targetObject" ref="statisPaymentBusinessTask" />
+				<property name="targetMethod" value="paymentDayStatis" />
+				<property name="concurrent" value="false" />
+			</bean>
+		</property>
+		<!-- cron表达式[每5分钟] -->
+		<property name="cronExpression" value="0 0/5 * * * ?" />
+	</bean>	
+
+	<!-- bean id="quartzScheduler" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="payTaskTrigger" />
+			</list>
+		</property>
+	</bean>			 -->
+</beans>

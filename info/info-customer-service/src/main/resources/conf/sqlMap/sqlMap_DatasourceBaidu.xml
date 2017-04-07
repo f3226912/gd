@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="DatasourceBaidu">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			datasource_baidu 
+		WHERE 
+			id=:id
+	]]>
+	</sql>
+	
+	<sql id="update">
+	<![CDATA[
+	    UPDATE 
+	    	datasource_baidu t 
+	    SET 
+	    	t.PVcount=:PVcount,t.UVcount=:UVcount,t.IPcount=:IPcount,t.linkUrl=:linkUrl,t.client=:client,
+	    	t.updateUserId=:updateUserId,t.updateUserName=:updateUserName,t.client,
+			t.updateTime=SYSDATE()
+	    WHERE 
+	    	t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			datasource_baidu t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if PVcount?exists && PVcount!="" >
+			      AND t.PVcount like "%":PVcount"%" 
+			</#if>
+			<#if UVcount?exists && UVcount!="" >
+			      AND t.UVcount = :UVcount 
+			</#if>
+			<#if IPcount?exists && IPcount!="" >
+			      AND t.IPcount = :IPcount 
+			</#if>
+			<#if signout?exists && signout!="" >
+			      AND t.signout = :signout 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.lastUpdateTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.lastUpdateTime < :endDate
+			</#if>
+			<#if avstop?exists && avstop!="" >
+			      AND t.avstop = :avstop 
+			</#if>
+			<#if newuser?exists && newuser!="" >
+			      AND t.newuser = :newuser 
+			</#if>
+			<#if olduser?exists && olduser!="" >
+			      AND t.olduser = :olduser 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if client?exists && client!="" >
+			      AND t.client = :client 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.id,t.PVcount,t.UVcount,t.IPcount,t.lastUpdateTime,t.signout,t.avstop,t.newuser,
+			t.olduser,t.state,t.createUserID,t.createTime ,t.updateUserID ,t.updateTime,t.client
+		FROM 
+			datasource_baidu t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.id,t.PVcount,t.UVcount,t.IPcount,t.lastUpdateTime,t.signout,t.avstop,t.newuser,
+			t.olduser,t.state,t.createUserID,t.createTime ,t.updateUserID,t.client,t.updateTime 
+		FROM 
+			datasource_baidu t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if PVcount?exists && PVcount!="" >
+			      AND t.PVcount like "%":PVcount"%" 
+			</#if>
+			<#if UVcount?exists && UVcount!="" >
+			      AND t.UVcount = :UVcount 
+			</#if>
+			<#if IPcount?exists && IPcount!="" >
+			      AND t.IPcount = :IPcount 
+			</#if>
+			<#if signout?exists && signout!="" >
+			      AND t.signout = :signout 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.lastUpdateTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.lastUpdateTime < :endDate
+			</#if>
+			<#if avstop?exists && avstop!="" >
+			      AND t.avstop = :avstop 
+			</#if>
+			<#if newuser?exists && newuser!="" >
+			      AND t.newuser = :newuser 
+			</#if>
+			<#if olduser?exists && olduser!="" >
+			      AND t.olduser = :olduser 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if client?exists && client!="" >
+			      AND t.client = :client 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+		ORDER BY 
+			t.lastUpdateTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.id,t.PVcount,t.UVcount,t.IPcount,t.lastUpdateTime,t.signout,t.avstop,t.newuser,
+			t.olduser,t.state,t.createUserID,t.createTime ,t.updateUserID ,t.updateTime,t.client 
+		FROM 
+			datasource_baidu t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if PVcount?exists && PVcount!="" >
+			      AND t.PVcount like "%":PVcount"%" 
+			</#if>
+			<#if UVcount?exists && UVcount!="" >
+			      AND t.UVcount = :UVcount 
+			</#if>
+			<#if IPcount?exists && IPcount!="" >
+			      AND t.IPcount = :IPcount 
+			</#if>
+			<#if signout?exists && signout!="" >
+			      AND t.signout = :signout 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.lastUpdateTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.lastUpdateTime < :endDate
+			</#if>
+			<#if avstop?exists && avstop!="" >
+			      AND t.avstop = :avstop 
+			</#if>
+			<#if newuser?exists && newuser!="" >
+			      AND t.newuser = :newuser 
+			</#if>
+			<#if olduser?exists && olduser!="" >
+			      AND t.olduser = :olduser 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if client?exists && client!="" >
+			      AND t.client = :client 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+		ORDER BY 
+			t.lastUpdateTime desc 
+	]]>
+	</sql>
+	<sql id="importDTO">
+	<![CDATA[
+	    INSERT INTO datasource_baidu (
+			PVcount,UVcount,IPcount,lastUpdateTime,signout,avstop,newuser,
+			olduser,state,createUserID,createTime,client 
+		)
+		VALUES(
+			:PVcount,:UVcount,:IPcount,:lastUpdateTimeStr,
+			:signout,:avstop,:newuser,:olduser,:state,:createUserID,
+			SYSDATE(),:client
+		)
+	]]>
+	</sql>
+</sqlMap>

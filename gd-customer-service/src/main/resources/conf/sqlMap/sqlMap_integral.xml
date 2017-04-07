@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="integral">
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT i.id, i.type, i.integral, i.giftId, i.memberId, i.createUserId, i.createTime, i.description, i.isReturn, a.name activityName,m.account memberAccount, m.userType,c.companyName,
+		(
+				CASE m.userType
+				WHEN 1 THEN
+					m.realName
+				WHEN 2 THEN
+					c.linkMan
+				ELSE
+					''
+				END
+		) AS linkMan
+		from integral i
+		LEFT JOIN activity a on i.activityId = a.id 
+		LEFT JOIN member_baseinfo m on i.memberId = m.memberId 
+		LEFT JOIN member_certifi c ON i.memberId = c.memberId
+		WHERE 1 = 1
+		<#if activityId?exists && activityId!="">
+		     AND i.activityId = :activityId
+		</#if>
+		<#if memberAccount?exists && memberAccount!="">
+		     AND m.account like "%":memberAccount"%"
+		</#if>
+		<#if userType?exists && userType!="">
+		     AND m.userType = :userType
+		</#if>
+		<#if type?exists && type!="" >
+		     AND i.type = :type
+		</#if>
+		<#if queryStartDate?exists && queryStartDate!="">
+			AND DATE_FORMAT(i.createTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d')
+		</#if>
+		<#if queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(i.createTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d')
+		</#if>
+		ORDER BY i.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getByCondition2">
+	<![CDATA[
+		SELECT i.id, i.type, i.integral, i.giftId, i.memberId, i.createUserId, i.createTime, i.description, i.isReturn, a.name activityName,m.account memberAccount, m.userType,c.companyName,
+		(
+				CASE m.userType
+				WHEN 1 THEN
+					m.realName
+				WHEN 2 THEN
+					c.linkMan
+				ELSE
+					''
+				END
+		) AS linkMan
+		from integral i
+		LEFT JOIN activity a on i.activityId = a.id 
+		LEFT JOIN member_baseinfo m on i.memberId = m.memberId 
+		LEFT JOIN member_certifi c ON i.memberId = c.memberId
+		WHERE 1 = 1
+		
+		<#if activityId?exists && activityId!="">
+		     AND i.activityId = :activityId
+		</#if>
+		<#if memberAccount?exists && memberAccount!="">
+		     AND m.account like "%":memberAccount"%"
+		</#if>
+		<#if userType?exists && userType!="">
+		     AND m.userType = :userType
+		</#if>
+		<#if type?exists && type!="" >
+		     AND i.type = :type
+		</#if>
+		<#if queryStartDate?exists && queryStartDate!="">
+			AND DATE_FORMAT(i.createTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d')
+		</#if>
+		<#if queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(i.createTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d')
+		</#if>
+		ORDER BY i.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT count(1)
+		from integral i
+		LEFT JOIN activity a on i.activityId = a.id 
+		LEFT JOIN member_baseinfo m on i.memberId = m.memberId 
+		LEFT JOIN member_certifi c ON i.memberId = c.memberId
+		WHERE 1 = 1
+		<#if memberAccount?exists && memberAccount!="">
+		     AND m.account like "%":memberAccount"%"
+		</#if>
+		<#if userType?exists && userType!="">
+		     AND m.userType = :userType
+		</#if>
+		<#if type?exists && type!="">
+		     AND i.type = :type
+		</#if>
+		<#if queryStartDate?exists && queryStartDate!="">
+			AND DATE_FORMAT(i.createTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d')
+		</#if>
+		<#if queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(i.createTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d')
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="addIntegral">
+	<![CDATA[
+		INSERT integral 
+    	(
+    		type,
+    		activityId,
+    		memberId, 
+    		memberId_ed, 
+    		integral,
+    		giftId,
+    		createTime, 
+    		createUserId, 
+    		description
+    	) 
+    	VALUES 
+    	(	:type, 
+    		:activityId, 
+    		:memberId, 
+    		:memberId_ed, 
+    		:integral, 
+    		:giftId,
+    		SYSDATE(), 
+    		:createUserId, 
+    		:description
+    	)
+	]]>
+	</sql>
+	
+	
+	<sql id="getIntegralEntityById">
+	<![CDATA[
+		SELECT 
+			id,
+			type,
+    		activityId,
+    		memberId, 
+    		memberId_ed, 
+    		integral,
+    		giftId,
+    		createTime, 
+    		createUserId, 
+    		updateUserId, 
+    		updateTime, 
+    		description
+    	FROM
+    	    integral
+    	WHERE 
+    		id = :id
+	]]>
+	</sql>
+	
+	<!-- 修改推荐人 -->
+	<sql id="updateIntegralMemberId">
+	<![CDATA[
+		update integral set memberId = :memberId where memberId_ed = :memberId_ed
+	]]>
+	</sql>
+	
+	<!-- 修改会员积分 -->
+	<sql id="updateMemberIntegral">
+	<![CDATA[
+		update member_baseinfo set integral = integral - :integral where memberId = :memberId
+	]]>
+	</sql>
+	
+	<!-- 修改积分明细记录isReturn字段 -->
+	<sql id="updateIntegralIsReturn">
+	<![CDATA[
+		update integral 
+		set isReturn = :isReturn, updateUserId = :updateUserId, updateTime = SYSDATE()
+		where id = :integralId
+	]]>
+	</sql>
+	
+	
+	<!-- api接口查询积分流水表 -->
+	<sql id="selectIntegralFlow">
+	<![CDATA[
+		SELECT
+	i.id,
+	i.memberId,
+	m.account memberAccount,
+	m.userType,
+	c.companyName,
+	(
+		CASE m.userType
+		WHEN 1 THEN
+			m.realName
+		WHEN 2 THEN
+			c.linkMan
+		ELSE
+			''
+		END
+	) AS linkMan,
+	i.type,
+	i.integral,
+	a. NAME activityName,
+	i.description,
+	i.createUserId,
+	i.createTime
+	FROM
+	integral i
+	LEFT JOIN activity a ON i.activityId = a.id
+	LEFT JOIN member_baseinfo m ON i.memberId = m.memberId
+	LEFT JOIN member_certifi c ON i.memberId = c.memberId
+	where 1=1
+	and i.type IN (1,2,5)
+	AND i.isReturn  IS  NULL
+	<#if memberId?exists && memberId!="">
+		     and i.memberId =:memberId
+	</#if>	
+	ORDER BY i.createTime DESC
+	]]>
+	</sql>
+</sqlMap>

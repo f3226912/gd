@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>现场采销</title>
+    <link href="lib/css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/purchase.css" />
+    <script type="text/javascript" src="lib/mui.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/rem.js"></script>
+    <!--  <script type="text/javascript" src="lib/baidu.statistics.min.js"></script> -->
+    <script type="text/javascript" src="js/basic.js"></script>
+</head>
+
+<body style="height: 100%;">
+    <header id="header" class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">现场采销</h1>
+        <button class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left"><span class="mui-icon mui-icon-left-nav"></span>返回</button>
+    </header>
+    <div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <div class="pleasechose">请选择标准商品</div>
+            <div id="box"></div>
+            <div class="goods">
+                <div id="VTabbedPanels" class="TabbedPanels mui-row">
+                    <div class="mui-col-xs-3" style="height: 100%;">
+                        <div id="segmentedControls" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-vertical" style="height: 100%;">
+                        </div>
+                    </div>
+                    <div id="segmentedControlContents" class="mui-col-xs-9" style="min-height: 9.6rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="edit-footer"><span class="con-wc">完成</span></div>
+    <script type="text/javascript" charset="utf-8">
+    /*var obj_str = $.get("obj_str");
+                    var objh = JSON.parse(obj_str);*/
+    var memberId = $.get("sellMemberId");
+    var shopName = $.get("shopName");
+    var businessId = $.get("businessId");
+    var delData = {
+        id: '',
+        memberId: memberId
+    };
+    //var memberId = window.localStorage.getItem("memberId");
+    var memData = {
+        memberId: memberId
+    };
+    //var mem = JSON.stringify(memData);
+    var anVal = JSON.stringify(memData);
+    //$("#box").html(anVal)
+    // ios查询参数串
+    var iosVal = {
+        data: memData,
+        fun: "handleData"
+    };
+    var hdata = $.enCode(anVal, JSON.stringify(iosVal), 'handleData', function(hdata) {
+        //$("#box").html(data)
+        getData(hdata);
+    });
+    if ($.appVersion.android) {
+        //$("#box").html(data)
+        getData(hdata);
+    };
+    mui.init({
+        pullRefresh: {
+            contentdown: "下拉可以刷新",
+            contentover: "释放立即刷新",
+            contentrefresh: '正在刷新...',
+            container: '#pullrefresh',
+            down: {
+                callback: pulldownRefresh
+            }
+
+        }
+    });
+
+    function pulldownRefresh() {
+        setTimeout(function() {
+            mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+        }, 500);
+        var sxdata = $.enCode(anVal, JSON.stringify(iosVal), 'handleData', function(sxdata) {
+
+            getData(sxdata);
+        });
+        if ($.appVersion.android) {
+
+            getData(sxdata);
+        };
+
+    };
+    //mui.init();
+    //var CONTEXT = getRootPath_web();
+    //var CONTEXT="https://test201.gdeng.cn:8086";
+    //ios导航处理
+    if ($.appVersion.ios) {
+        $('.mui-bar').addClass('ios');
+        $('.mui-content').addClass('ios')
+    };
+
+    /* if ($.appVersion.ios) {
+          handleIos(memberId); 
+     } else if ($.appVersion.android) {
+         handleAn(mem);
+     };*/
+    // 安卓查询处理
+    /* function handleAn(param) {
+         alert("param"+param)
+         $("#aaa").html("aa "+param);
+         var params = JavaH5WebInterface.enCode(JSON.stringify({"sourceId": param}));
+         var params = JsBridge.encode(param);
+         var params = JsBridge.encode(JSON.stringify({"memberId": param}));
+         $("#boxx").text(params);
+         getData(params);
+     };*/
+    // ios查询处理
+    /* function handleIos(param) {
+
+              // window.webkit.messageHandlers.NativeEncrypt.postMessage('{"data":'+'"{\'memberId\':'+param+'}'+'","fun":"handleData"}');
+
+         window.webkit.messageHandlers.NativeEncrypt.postMessage('{"data":"+'param+'","fun":"handleData"}');
+         window["handleData"] = function(data) {
+             getData(data);
+         }
+     };*/
+
+    function getData(param) {
+        //var curWwwPath = "https://test201.gdeng.cn:8086";
+        // $("#boxx").text(param);
+        $.ajax({
+            url: "/quickMakeSheet/getStandardLibraryProductList",
+            //url: "/gd-m/quickMakeSheet/getStandardLibraryProductList",
+            //url: curWwwPath+"/quickMakeSheet/getStandardLibraryProductList",
+            data: {
+                "param": param
+            },
+            type: "get",
+            dataType: "text",
+            contentType: "application/json",
+            cache: false,
+            success: function(data) {
+                    //$("#boxx").html(1111);
+                    //$("#box").html(data);
+                    //alert(111)
+                    if ($.appVersion.ios) {
+                        window.webkit.messageHandlers.NativeDecrypt.postMessage('{"data":"' + data + '","fun":"decryptCompleted"}');
+
+                        window["decryptCompleted"] = function(data) {
+                            var datasVal = JSON.stringify(data).replace(/\\| /g, "");
+                            datasVal = JSON.parse(datasVal.substring(1, datasVal.length - 1));
+                            render(datasVal);
+                        }
+                    } else if ($.appVersion.android) {
+                        // $("#boxx").html(data);
+                        var adata = JSON.parse(JsBridge.decode(data));
+                        //var ad = JsBridge.decode(data);
+                        // alert(JSON.stringify(adata))
+                        //$("#box").text(ad);
+                        render(adata);
+
+                    }
+                }
+                /*,error:function(error) {
+                                 $("#boxx").html("error");
+                            };*/
+        })
+    };
+
+    function render(data) {
+        var shopData;
+        shopData = data.object;
+        //console.log(shopData);
+        //渲染左侧导航右侧div
+        var str = '';
+        var strr = '';
+        $.each(shopData, function(index, el) {
+            str += '<a class="mui-control-item">' + el.categoryName + '</a>';
+        });
+        $("#segmentedControls").html(str);
+        //添加右侧分类内容
+        $.each(shopData, function(index, el) {
+            strr += '<div class="mui-control-content"><div class="goodslist clearfix">';
+            if (el.productList.length == 0) {
+                strr += '<img src="images/icon_common_blank.png" style="width: 70%;margin: 2rem .6rem 3rem .7rem;"/>';
+            } else {
+                $.each(el.productList, function(i, et) {
+                    // console.log(et);
+                    //debugger;
+                    strr += '<div class="wrap"><div class="goodskist_item" data-id="' + et.id + '">' + et.productName + '</div><a href="javascript:void(0);"></a></div>';
+
+                })
+            }
+            strr += '</div></div>';
+        });
+
+
+        $("#segmentedControlContents").html(strr);
+        //点击编辑时候跳转至编辑页面
+        /* $('button.mui-pull-right').on('tap', function() {
+             window.location.href = 'edit.html'
+         });*/
+        //点击返回按钮返回
+        $('button.mui-pull-left').on('tap', function() {
+            if (location.search.indexOf('app=2') != -1) {
+                window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+            } else {
+                window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId;
+            }
+            //window.history.back(-1);
+            //window.opener.location.reload();
+            /*   window.history.go(-1);
+              window.opener.location.reload(true); */
+            //window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId+ '&app=2';
+        });
+        //选项卡切换事件
+        $("#segmentedControls").on("tap", ".mui-control-item", function() {
+            var $this = $(this),
+                index = $this.index();
+            $.set('indeo', index);
+            $this.addClass("mui-active").siblings(".mui-control-item").removeClass("mui-active");
+            $("#segmentedControlContents .mui-control-content").eq(index).addClass("mui-active").siblings(".mui-control-content").removeClass("mui-active");
+        });
+        //点击X关闭提示框
+        /* $(".close").on("tap", ".close_icon", function() {
+             $(this).parent(".close").hide();
+         });*/
+
+        //默认显示第一个导航和第一块儿内容
+        var getindeo = $.get('indeo') ? $.get('indeo') : 0;
+        $('.mui-control-item').eq(getindeo).addClass('mui-active');
+        $('.mui-control-content').eq(getindeo).addClass('mui-active');
+        //点击完成返回
+        $('.edit-footer').on('tap', '.con-wc', function() {
+            if (location.search.indexOf('app=2') != -1) {
+                window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+            } else {
+                window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId;
+            }
+            //window.history.go(-1);
+            //window.opener.location.reload(true); 
+            //window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+        });
+
+
+        // 点击删除弹框
+        $(".wrap").on("tap", "a", function() {
+            delData.id = $(this).parent().find('.goodskist_item').attr('data-id');
+            //console.log(delData);
+            //$("#box").text(delData);
+
+            //var del = JSON.stringify(delData);
+            var btnArray = ['取消', '确认'];
+            var andel = JSON.stringify(delData);
+            //$("#box").text(andel);
+            // ios查询参数串
+            var iosdel = {
+                data: delData,
+                fun: "handleData"
+            };
+            mui.confirm('确认移除该商品吗？', '提示', btnArray, function(e) {
+                if (e.index == 1) {
+
+                    var scdata = $.enCode(andel, JSON.stringify(iosdel), 'handleData', function(scdata) {
+                        request(scdata);
+                    });
+                    if ($.appVersion.android) {
+                        request(scdata);
+                    }
+                } else {}
+            })
+        });
+    }
+
+    function request(param) {
+        //var curWwwPath = "https://test201.gdeng.cn:8086";
+        $.ajax({
+            url: "/quickMakeSheet/delProduct",
+            //url: "/gd-m/quickMakeSheet/delProduct",
+            //url: curWwwPath+"/quickMakeSheet/delProduct",
+            data: {
+                "param": param
+            },
+            type: "get",
+            dataType: "text",
+            contentType: "application/json",
+            cache: false,
+            success: function(res) {
+                /*if (res.result > 0) {
+                    window.location = 'purchase.html';
+                }*/ //$("#box").text(res);
+                //window.location.reload();
+                var smdata = $.enCode(anVal, JSON.stringify(iosVal), 'handleData', function(smdata) {
+
+                    getData(smdata);
+                });
+                if ($.appVersion.android) {
+
+                    getData(smdata);
+                };
+            }
+        })
+
+        //window.location = 'purchase.html'
+    }
+    </script>
+</body>
+
+</html>

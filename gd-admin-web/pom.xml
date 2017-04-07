@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.gudeng.commerce.gd</groupId>
+		<artifactId>gd-admin-pom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../gd-admin-pom/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>gd-admin-web</artifactId>
+	<packaging>war</packaging>
+	<version>${gd.admin.version}</version>
+	<name>gd-admin-web Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-admin-intf</artifactId>
+			<version>${gd.admin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-admin-service</artifactId>
+			<version>${gd.admin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.xbean</groupId> -->
+<!-- 			<artifactId>xbean</artifactId> -->
+<!-- 			<version>3.7</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.poi</groupId> -->
+<!-- 			<artifactId>poi</artifactId> -->
+<!-- 			<version>3.12</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.poi</groupId> -->
+<!-- 			<artifactId>poi-ooxml</artifactId> -->
+<!-- 			<version>3.12</version> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.12</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jxls</groupId>
+			<artifactId>jxls-core</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>gd-admin</finalName>
+	</build>
+</project>

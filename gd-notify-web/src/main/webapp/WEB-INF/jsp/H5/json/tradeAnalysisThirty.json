@@ -1,0 +1,174 @@
+{
+    "datajson": {
+        "buyerAvgTradeAmt": 4.8,
+        "buyerNum": 1,
+        "closeOrderNum": 0,
+        "closeTradeAmt": 0,
+        "goodsNum": 2,
+        "nogCloseOrderNum": 0,
+        "nogCloseTradeAmt": 0,
+        "nogNonPayOrderNum": 0,
+        "nogNonPayTradeAmt": 0,
+        "nogPayedOrderNum": 0,
+        "nogPayedTradeAmt": 0,
+        "nonPayOrderNum": 0,
+        "nonPayTradeAmt": 0,
+        "orderAvgTradeAmt": 2.4,
+        "payedOrderNum": 2,
+        "payedTradeAmt": 4.8,
+        "tradeResultList": [
+            {
+                "orderNum": 20,
+                "time": "20160601",
+                "tradeAmt": 2222
+            },
+            {
+                "orderNum": 30,
+                "time": "20160602",
+                "tradeAmt": 222
+            },
+            {
+                "orderNum": 10,
+                "time": "20160603",
+                "tradeAmt": 5222
+            },
+            {
+                "orderNum": 40,
+                "time": "20160604",
+                "tradeAmt": 1122
+            },
+            {
+                "orderNum": 50,
+                "time": "20160605",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 10,
+                "time": "20160606",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 20,
+                "time": "20160607",
+                "tradeAmt": 3220
+            },
+             {
+                "orderNum": 30,
+                "time": "20160608",
+                "tradeAmt": 222
+            },
+            {
+                "orderNum": 10,
+                "time": "20160609",
+                "tradeAmt": 5222
+            },
+            {
+                "orderNum": 40,
+                "time": "20160610",
+                "tradeAmt": 1122
+            },
+            {
+                "orderNum": 50,
+                "time": "20160611",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 10,
+                "time": "20160612",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 20,
+                "time": "20160613",
+                "tradeAmt": 3220
+            },
+            {
+                "orderNum": 30,
+                "time": "20160614",
+                "tradeAmt": 222
+            },
+            {
+                "orderNum": 10,
+                "time": "20160615",
+                "tradeAmt": 5222
+            },
+            {
+                "orderNum": 40,
+                "time": "20160616",
+                "tradeAmt": 1122
+            },
+            {
+                "orderNum": 50,
+                "time": "20160617",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 10,
+                "time": "20160618",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 20,
+                "time": "20160619",
+                "tradeAmt": 3220
+            },
+             {
+                "orderNum": 30,
+                "time": "20160620",
+                "tradeAmt": 222
+            },
+            {
+                "orderNum": 10,
+                "time": "20160621",
+                "tradeAmt": 5222
+            },
+            {
+                "orderNum": 40,
+                "time": "20160622",
+                "tradeAmt": 1122
+            },
+            {
+                "orderNum": 50,
+                "time": "20160623",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 10,
+                "time": "20160624",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 20,
+                "time": "20160625",
+                "tradeAmt": 3220
+            },
+             {
+                "orderNum": 10,
+                "time": "20160626",
+                "tradeAmt": 5222
+            },
+            {
+                "orderNum": 40,
+                "time": "20160627",
+                "tradeAmt": 1122
+            },
+            {
+                "orderNum": 50,
+                "time": "20160628",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 10,
+                "time": "20160629",
+                "tradeAmt": 1220
+            },
+            {
+                "orderNum": 20,
+                "time": "20160630",
+                "tradeAmt": 3220
+            }           
+        ]
+    },
+    "resultcode": "0000",
+    "resultmsg": "操作成功"
+}

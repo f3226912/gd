@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="BillDetail">
+	<!-- 查询账单列表 -->
+	<sql id="getBillDetailList">
+	<![CDATA[
+		SELECT 
+			orderNo,subject,payTime,tradeAmount,
+			CASE 
+				WHEN DATE_FORMAT(payTime,'%e') = DATE_FORMAT(now(),'%e') THEN concat('今天 ', DATE_FORMAT(payTime,'%H:%i'))
+				WHEN DATE_FORMAT(payTime,'%e') = DATE_FORMAT(date_sub(now(), interval 1 day),'%e') THEN concat('昨天 ', DATE_FORMAT(payTime,'%H:%i'))
+				WHEN DATE_FORMAT(payTime,'%w') = 1 THEN CONCAT('周一 ', DATE_FORMAT(payTime,'%m-%d'))
+				WHEN DATE_FORMAT(payTime,'%w') = 2 THEN CONCAT('周二 ', DATE_FORMAT(payTime,'%m-%d'))
+				WHEN DATE_FORMAT(payTime,'%w') = 3 THEN CONCAT('周三 ', DATE_FORMAT(payTime,'%m-%d'))
+				WHEN DATE_FORMAT(payTime,'%w') = 4 THEN CONCAT('周四 ', DATE_FORMAT(payTime,'%m-%d'))
+				WHEN DATE_FORMAT(payTime,'%w') = 5 THEN CONCAT('周五 ', DATE_FORMAT(payTime,'%m-%d'))
+				WHEN DATE_FORMAT(payTime,'%w') = 6 THEN CONCAT('周六 ', DATE_FORMAT(payTime,'%m-%d'))
+				WHEN DATE_FORMAT(payTime,'%w') = 0 THEN CONCAT('周日 ', DATE_FORMAT(payTime,'%m-%d')) 
+			END as payTimeDesc
+		FROM 
+			bill_detail
+		WHERE
+			account = :account 
+			AND DATE_FORMAT(payTime, '%Y%m') = :payTime 
+			AND channelType = :channelType
+		ORDER BY payTime DESC
+	]]>
+	</sql>
+	
+	<!-- 查询月金额-->
+	<sql id="getMonthAmount">
+	<![CDATA[
+		SELECT 	CASE 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 1 AND 7 THEN 1 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 8 AND 14 THEN 2 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 15 AND 21 THEN 3 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 22 AND 28 THEN 4 
+					ELSE 5 
+				END as period,
+				round(SUM(tradeAmount)/10000, 2) as sumAmount 
+		FROM 
+			bill_detail
+		WHERE
+			account = :account 
+			AND DATE_FORMAT(payTime, '%Y%m') = :payTime 
+			AND channelType = :channelType
+		GROUP BY period
+	]]>
+	</sql>
+	
+	<!-- 查询月金额-->
+	<sql id="getMonthOrder">
+	<![CDATA[
+		SELECT 	CASE 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 1 AND 7 THEN 1 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 8 AND 14 THEN 2 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 15 AND 21 THEN 3 
+					WHEN DATE_FORMAT(payTime,'%e') BETWEEN 22 AND 28 THEN 4 
+					ELSE 5 
+				END as period,
+				COUNT(1) as sumOrder 
+		FROM 
+			bill_detail
+		WHERE
+			account = :account 
+			AND DATE_FORMAT(payTime, '%Y%m') = :payTime 
+			AND channelType = :channelType
+		GROUP BY period
+	]]>
+	</sql>
+	
+	<!-- 统计交易金额-->
+	<sql id="countTradeAmount">
+	<![CDATA[
+		SELECT IFNULL(SUM(d.`tradeAmount`), 0) AS tradeAmount FROM bill_detail d 
+		WHERE d.channelType = '2'
+		AND d.`account` IN (SELECT b.`account` FROM member_baseinfo b WHERE b.`memberId` = :memberId) 
+
+	]]>
+	</sql>
+	
+	<sql id="queryOrderSubjectList">
+	<![CDATA[
+		SELECT p.orderNo, GROUP_CONCAT(p.productName) AS subject FROM order_product_detail p WHERE 1 = 1
+		<#if orderNos?exists>
+			<#assign n = orderNos?size />
+			<#if n gt 0>
+				AND p.orderNo in (
+				<#list orderNos as orderNo>
+					<#if orderNo_index != n-1>
+						${orderNo} ,
+					<#else>
+						${orderNo}
+					</#if>
+				</#list>
+				)
+			</#if>
+		</#if>
+		GROUP BY p.orderNo 
+	]]>
+	</sql>
+</sqlMap>

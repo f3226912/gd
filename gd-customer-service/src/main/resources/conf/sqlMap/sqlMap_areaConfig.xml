@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AreaConfig">
+	<sql id="getById">
+	<![CDATA[
+		SELECT id ,
+		       areaID,   
+               areaName,
+               status     
+		FROM 
+			area_config t
+		WHERE id=:id
+	]]>
+	</sql>
+	
+	
+	<sql id="getByAreaName">
+	<![CDATA[
+		SELECT id ,
+               areaID,   
+               areaName,
+               status     
+		FROM 
+			area_config t
+		WHERE areaName like "%":areaName"%"
+	]]>
+	</sql>
+	
+	
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT id ,
+               areaID,   
+               areaName,
+               status     
+		FROM 
+			   area_config t
+		WHERE  1=1  
+		   <#if areaName?exists && areaName!="" >
+			      AND areaName like "%":areaName"%"
+		   </#if>
+		    <#if status?exists && status!="" >
+			      AND status  =:status
+		   </#if>
+		     ORDER BY id DESC
+		     LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			area_config t
+	  WHERE 1=1
+		   <#if areaName?exists && areaName!="" >
+			      AND areaName like "%":areaName"%"
+		   </#if>
+		    <#if status?exists && status!="" >
+			      AND status  =:status
+		   </#if>
+	]]>
+	</sql>
+	
+	
+	<sql id="addAreaConfigDTO">
+	<![CDATA[
+	    INSERT INTO  area_config
+	          (areaID ,
+	           areaName,
+               status     
+              )
+	        values
+	         ( :areaID,
+	           :areaName,
+               :status
+              )
+	        
+	]]>
+	</sql>
+	 
+   <sql id="deleteAreaConfigDTO">
+	<![CDATA[
+	  DELETE FROM area_config WHERE id=:id
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="updateAreaConfigDTO">
+	<![CDATA[
+	    UPDATE area_config 
+	    SET  
+               status     =:status
+	    WHERE  id=:id
+	]]>
+	</sql>
+	 
+	
+</sqlMap>

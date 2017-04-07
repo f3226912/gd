@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReCarMember">
+	<sql id="addEntity">
+	<![CDATA[
+		INSERT INTO re_car_member
+			(
+				carID, memberId, createTime, createUserId
+			)
+		VALUES
+			(
+				:carID, :memberId, NOW(), :createUserId
+			)
+	]]>
+	</sql>
+
+	<sql id="countByCondition">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			re_car_member
+		WHERE 
+			1 = 1
+		<#if carId?exists && carId !="">
+			AND carID = :carId
+		</#if>
+		<#if carId?exists && carId !="">
+			AND memberId = :memberId
+		</#if>
+	]]>
+	</sql>
+</sqlMap>

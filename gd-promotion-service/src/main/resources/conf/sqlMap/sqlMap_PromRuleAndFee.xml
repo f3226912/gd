@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromRuleFee">
+
+	<sql id="queryPromRule">
+	<![CDATA[
+		select ruleId,actId,maxProdNum,prepayAmt
+		from prom_rule where actId=:actId
+	]]>
+	</sql>
+	
+	<sql id="queryPromFee">
+	<![CDATA[
+		select id,actId,feeSource,feeType,fee,orderPayAmt,feeScale
+		from prom_fee where actId=:actId
+	]]>
+	</sql>
+	
+
+	<sql id="getPromRuleTotalByActId">
+	<![CDATA[
+		select count(*) from prom_rule where actId=:actId
+	]]>
+	</sql>
+	
+	<sql id="getPromFeeTotalByActId">
+	<![CDATA[
+		select count(*) from prom_fee where actId=:actId
+	]]>
+	</sql>
+	
+	<sql id="deletePromFee">
+		<![CDATA[
+		delete from prom_fee where actId=:actId
+		]]>
+	</sql>
+	
+	<sql id="updatePromRule">
+		<![CDATA[
+		update prom_rule set maxProdNum=:maxProdNum,
+							prepayAmt=:prepayAmt,
+							updateUserId = :updateUserId,
+							updateTime = SYSDATE()
+			where actId=:actId
+	]]>
+	</sql>
+</sqlMap>

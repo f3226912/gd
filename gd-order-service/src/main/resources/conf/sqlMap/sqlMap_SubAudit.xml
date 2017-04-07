@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SubAudit">
+	<sql id="getSubListTotal">
+	<![CDATA[
+		SELECT 
+			count(1)
+		FROM
+			sub_audit sa,
+			order_baseinfo ob
+		WHERE
+			sa.orderNo = ob.orderNo
+			<#if subStatus?exists && subStatus == "0">
+				AND (sa.subStatus = 2 OR sa.subStatus = 4)
+			</#if>
+			<#if subStatus?exists && subStatus == "1">
+				AND sa.subStatus = 3
+			</#if>
+			<#if orderStatus?exists && orderStatus!="">
+				AND ob.orderStatus = :orderStatus
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND ob.memberId = :memberId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND ob.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND ob.marketId = :marketId 
+			</#if>
+			<#if isBuyer?exists && isBuyer == "0">
+				AND ob.sellSubAmount > 0
+			</#if>
+			<#if isBuyer?exists && isBuyer == "1">
+				AND ob.subAmount > 0
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getSubList">
+	<![CDATA[
+		SELECT
+			sa.orderNo, sa.createTime, ob.subAmount, ob.sellSubAmount,
+			ob.businessId, ob.shopName AS buyerShop, ob.orderAmount,
+			sa.subStatus, sa.subComment
+		FROM
+			sub_audit sa,
+			order_baseinfo ob
+		WHERE
+			sa.orderNo = ob.orderNo
+			<#if subStatus?exists && subStatus == "0">
+				AND (sa.subStatus = 2 OR sa.subStatus = 4)
+			</#if>
+			<#if subStatus?exists && subStatus == "1">
+				AND sa.subStatus = 3
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND ob.memberId = :memberId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND ob.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND ob.marketId = :marketId 
+			</#if>
+			<#if isBuyer?exists && isBuyer == "0">
+				AND ob.sellSubAmount > 0
+			</#if>
+			<#if isBuyer?exists && isBuyer == "1">
+				AND ob.subAmount > 0
+			</#if>
+		ORDER BY
+			sa.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getBySearch">
+	<![CDATA[
+		SELECT 
+			sa.auditId,sa.orderNo, 
+			ob.orderAmount,ob.discountAmount,ob.payAmount,ob.createTime AS orderTime,
+			ob.payType,
+			sa.memberID,mb.account AS buyerAccount, sa.buyerName, sa.buyerShop,
+			sa.subStatus
+		FROM sub_audit sa
+		INNER JOIN order_baseinfo ob on ob.orderNo=sa.orderNo
+		INNER JOIN member_baseinfo mb on mb.memberId=sa.memberID
+		WHERE 1=1
+			<#if orderNo?exists && orderNo!="">
+				AND sa.orderNo=:orderNo
+			</#if>
+			<#if orderAmount?exists && orderAmount!="">
+				AND ob.orderAmount=:orderAmount
+			</#if>
+			<#if payType?exists && payType!="">
+				AND ob.payType=:payType
+			</#if>
+			<#if buyerName?exists && buyerName!="">
+				AND sa.buyerName LIKE "%":buyerName"%"
+			</#if>
+			<#if orderStatus?exists && orderStatus!="">
+				AND ob.orderStatus=:orderStatus
+			</#if>
+			<#if subStatus?exists && subStatus!="">
+				AND sa.subStatus=:subStatus
+			</#if>
+			<#if buyerShop?exists && buyerShop!="">
+				AND sa.buyerShop LIKE "%":buyerShop"%"
+			</#if>
+			<#if orderLike?exists && orderLike!="">
+				AND CONCAT_WS(',', ob.orderNo, ob.orderAmount, ob.discountAmount, ob.subAmount, ob.payAmount, ob.orderTime, ob.shopName, ob.createTime) LIKE "%":orderLike"%"
+			</#if>
+			ORDER BY
+				sa.createTime DESC
+			<#if startRow?exists && endRow?exists && startRow!="" && endRow!="">
+				LIMIT :startRow,:endRow
+			</#if>
+			
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM sub_audit sa
+		INNER JOIN order_baseinfo ob on ob.orderNo=sa.orderNo
+		INNER JOIN member_baseinfo mb on mb.memberId=sa.memberID
+		WHERE 1=1
+			<#if orderNo?exists && orderNo!="">
+				AND sa.orderNo=:orderNo
+			</#if>
+			<#if orderAmount?exists && orderAmount!="">
+				AND ob.orderAmount=:orderAmount
+			</#if>
+			<#if payType?exists && payType!="">
+				AND ob.payType=:payType
+			</#if>
+			<#if buyerName?exists && buyerName!="">
+				AND sa.buyerName=:buyerName
+			</#if>
+			<#if orderStatus?exists && orderStatus!="">
+				AND ob.orderStatus=:orderStatus
+			</#if>
+			<#if subStatus?exists && subStatus!="">
+				AND sa.subStatus=:subStatus
+			</#if>
+			<#if buyerShop?exists && buyerShop!="">
+				AND sa.buyerShop=:buyerShop
+			</#if>
+			<#if orderLike?exists && orderLike!="">
+				AND CONCAT_WS(',', ob.orderNo, ob.orderAmount, ob.discountAmount, ob.subAmount, ob.payAmount, ob.orderTime, ob.shopName, ob.createTime) LIKE "%":orderLike"%"
+			</#if>
+	]]>
+	
+	</sql>
+
+	<sql id="updateSubStatusById">
+	<![CDATA[
+		UPDATE sub_audit SET
+			subStatus =:subStatus,
+			subComment =:subComment,
+			updateTime =SYSDATE(),
+			updateUserId =:updateUserId
+		WHERE auditId =:auditId
+	]]>
+	</sql>
+	
+	<sql id="getSubAuditById">
+	<![CDATA[
+		SELECT
+			auditId,orderNo,
+			subAmount,memberID,buyerName,buyerShop,
+			subStatus,subComment,
+			createTime,createUserId,updateTime,updateUserId
+		FROM sub_audit
+		WHERE
+			auditId =:auditId
+	]]>
+	</sql>
+	
+	<sql id="getSubAuditWithMemInfoById">
+	<![CDATA[
+		SELECT
+			sa.auditId,sa.orderNo,
+			sa.subAmount,sa.memberID,sa.buyerName,sa.buyerShop,
+			sa.subStatus,sa.subComment,
+			sa.createTime,sa.createUserId,sa.updateTime,sa.updateUserId,
+			ob.subAmount as buyerSubAmount,ob.sellSubAmount as sellSubAmount,ob.suppSubAmount as suppSubAmount,
+			ob.memberId as buyerMemberId,ob.sellMemberId,ob.suppMemberId,ob.marketId,ob.subRuleId,
+			buyer.accId as buyerAccId,
+			seller.accId as sellAccId,
+			supp.accId as suppAccId
+		FROM sub_audit sa
+		INNER JOIN order_baseinfo ob ON ob.orderNo=sa.orderNo
+		LEFT JOIN acc_info buyer ON buyer.memberId=ob.memberId
+		LEFT JOIN acc_info seller ON seller.memberId=ob.sellMemberId
+		LEFT JOIN acc_info supp ON supp.memberId=ob.suppMemberId
+		WHERE
+			sa.auditId = :auditId
+	]]>
+	</sql>
+	
+	<sql id="getSubAuditWithMemInfoByIds">
+	<![CDATA[
+		SELECT
+			sa.auditId,sa.orderNo,
+			sa.subAmount,sa.memberID,sa.buyerName,sa.buyerShop,
+			sa.subStatus,sa.subComment,
+			sa.createTime,sa.createUserId,sa.updateTime,sa.updateUserId,
+			ob.subAmount as buyerSubAmount,ob.sellSubAmount as sellSubAmount,ob.suppSubAmount as suppSubAmount,
+			ob.memberId as buyerMemberId,ob.sellMemberId,ob.suppMemberId,ob.marketId,ob.subRuleId,
+			buyer.accId as buyerAccId,
+			seller.accId as sellAccId,
+			supp.accId as suppAccId
+		FROM sub_audit sa
+		INNER JOIN order_baseinfo ob ON ob.orderNo=sa.orderNo
+		LEFT JOIN acc_info buyer ON buyer.memberId=ob.memberId
+		LEFT JOIN acc_info seller ON seller.memberId=ob.sellMemberId
+		LEFT JOIN acc_info supp ON supp.memberId=ob.suppMemberId
+		WHERE
+			sa.auditId IN
+			<#assign n = auditIds?size />
+			<#if n gt 0>
+				(
+					<#list auditIds as auditId>
+						<#if auditId_index != n-1>
+							${auditId},
+						<#else>
+							${auditId}
+						</#if>
+					</#list>
+				)
+			</#if>
+	]]>
+	</sql>
+	
+	
+	<sql id="getSubAuditByIds">
+	<![CDATA[
+		SELECT
+			auditId,orderNo,
+			subAmount,memberID,buyerName,buyerShop,
+			subStatus,subComment,
+			createTime,createUserId,updateTime,updateUserId
+		FROM sub_audit
+		WHERE
+			auditId IN
+			<#assign n = auditIds?size />
+			<#if n gt 0>
+				(
+					<#list auditIds as auditId>
+						<#if auditId_index != n-1>
+							${auditId},
+						<#else>
+							${auditId}
+						</#if>
+					</#list>
+				)
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getSubAuditDTOByOrderNo">
+	<![CDATA[
+		SELECT 
+			auditId,orderNo,
+			subAmount,memberID,buyerName,buyerShop,
+			subStatus,subComment,
+			createTime,createUserId,updateTime,updateUserId
+		FROM sub_audit
+		WHERE
+			orderNo =:orderNo
+	]]>
+	</sql>
+	
+	
+	<sql id="updateMemAmount">
+	<![CDATA[
+		UPDATE acc_info
+		SET
+			balTotal= balTotal + :subAmount,
+			balAvailable= balAvailable + :subAmount,
+			subAmountStay= subAmountStay - :subAmount,
+			subAmountPaid= subAmountPaid + :subAmount,
+			updateUserId= :updateUserId,
+			updateTime= NOW()
+		WHERE
+			memberId=:memberId	
+	]]>
+	</sql>
+	
+	<sql id="getBalToalByMemberIds">
+ 	<![CDATA[
+	   SELECT memberId,balTotal
+	   FROM acc_info
+	   WHERE memberId IN
+	   <#assign n = memberIds?size />
+		<#if n gt 0>
+		(
+			<#list memberIds as memberId>
+				<#if memberId_index != n-1>
+					${memberId},
+				<#else>
+					${memberId}
+				</#if>
+			</#list>
+		)
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="addAccTransInfo">
+ 	<![CDATA[
+	    INSERT INTO  acc_trans_info
+	    (
+		  	accId,memberId,orderNo,tradeType,
+			peType,tradeAmount,balTotal,
+			createTime,createUserId,updateTime,updateUserId
+        )
+		values
+	    (
+			:accId,:memberId,:orderNo,:tradeType,
+			:peType,:tradeAmount,:balTotal,
+			NOW(),:createUserId,NOW(),:updateUserId
+        )
+	]]>
+	</sql>
+	
+	
+	<sql id="addAccInfo">
+ 	<![CDATA[
+	    INSERT INTO acc_info (memberId,createTime) VALUES (:memberId,NOW())
+	]]>
+	</sql>
+	
+	<sql id="getAccInfoByMemId">
+ 	<![CDATA[
+	    SELECT
+			accId, memberId, balTotal,balAvailable,balBlock,subAmountStay
+		FROM
+			acc_info
+		WHERE memberId=:memberId
+	]]>
+	</sql>
+	
+	<sql id="addSubAudit">
+		<![CDATA[
+			INSERT INTO sub_audit(orderNo,subAmount,memberID,buyerName,buyerShop,subStatus,subComment,createUserId)
+			SELECT b.orderNo,
+			       :subAmount,
+                   b.memberId,
+                   m.realName,
+                   b.shopName,
+                   :subStatus,
+                   :subComment,
+                   :createUserId
+			FROM order_baseinfo b
+			LEFT JOIN member_baseinfo m ON b.memberId = m.memberId
+			WHERE b.orderNo = :orderNo
+		]]>
+	</sql>
+	
+	
+	<!-- ==========使用新的补贴总额表================= -->
+	
+	<!-- 根据市场id获取(可用的)补贴额记录 -->
+	<sql id="getSubTotalAmountByMarkeId">
+	<![CDATA[
+		SELECT
+			subAmountId,subAmountBal,subAmountTotal,
+			marketId,marketName,isAvailable,hasSubBalance,
+			createTime,createUserId,updateTime,updateUserId
+			FROM sub_amount
+		WHERE
+			isAvailable='1' AND marketId=:marketId
+	]]>
+	</sql>
+	
+	<!-- 设置某市场的可用余额不可用 -->
+	<sql id="setUnavailableTotalAmountByMarkeId">
+	<![CDATA[
+		UPDATE sub_amount
+		SET
+			isAvailable='0',
+			updateTime=NOW(),
+			updateUserId=:updateUserId
+		WHERE
+			isAvailable='1' AND marketId=:marketId
+	]]>
+	</sql>
+	
+	<!-- 为某市场增加一个补贴记录(注意调用该方法前应该市场的其它补贴额记录设置为不可用) -->
+	<sql id="addTotalAmount">
+	<![CDATA[
+		INSERT INTO sub_amount (
+			subRuleId,subAmountBal,subAmountTotal,
+			marketId,marketName,isAvailable,hasSubBalance,
+			createTime,createUserId,updateTime,updateUserId
+		)
+		VALUE (
+			:subRuleId,:subAmountBal,:subAmountTotal,
+			:marketId,:marketName,:isAvailable,:hasSubBalance,
+			NOW(),:createUserId,NOW(),:updateUserId
+		);
+	]]>
+	</sql>
+	
+	<!-- 减去某市场的剩余补贴额 (废弃)-->
+	<sql id="subTotalAmountByMarketId">
+	<![CDATA[
+		UPDATE sub_amount
+		SET
+			subAmountBal = subAmountBal - :amount,
+			updateTime=NOW(),
+			updateUserId=:updateUserId
+		WHERE
+			isAvailable='1' AND marketId=:marketId
+	]]>		
+	</sql>
+	
+	<!-- 减去某市场的剩余补贴额 -->
+	<sql id="subTotalAmountBySubRuleId">
+	<![CDATA[
+		UPDATE sub_amount
+		SET
+			subAmountBal = subAmountBal - :amount,
+			updateTime=NOW(),
+			updateUserId=:updateUserId
+		WHERE
+			subRuleId=:subRuleId
+	]]>		
+	</sql>
+	
+	<!-- 查询市场的可用余额 -->
+	<sql id="getBalAmount">
+		SELECT marketId, subAmountBal
+		FROM sub_amount
+		WHERE isAvailable=1
+	</sql>
+	
+	<sql id="getBalAmountWithSubRuleId">
+		SELECT subRuleId, subAmountBal
+		FROM sub_amount
+	</sql>
+	
+	<!-- 更新 -->
+	<sql id="updateSubAmount">
+	<![CDATA[
+		UPDATE sub_amount
+		SET
+			updateTime=NOW()
+			<#if updateUserId?exists && updateUserId!="">
+				,updateUserId=:updateUserId
+			</#if>
+			<#if hasSubBalance?exists && hasSubBalance!="">
+				,hasSubBalance=:hasSubBalance
+			</#if>
+		WHERE
+			isAvailable='1' AND marketId=:marketId
+	]]>		
+	</sql>
+	
+	<!-- 根据订单号查询车辆出岗时的照片和车牌号 -->
+	<sql id="queryOutmartetImage">
+	<![CDATA[
+	SELECT roo.orderNo, oo.carNumberImage, cb.carNumber
+	FROM re_order_outmark roo
+	LEFT JOIN order_outmarketinfo oo ON oo.omId=roo.omId
+	LEFT JOIN weigh_car wc ON wc.weighCarId=oo.weighCarId
+	LEFT JOIN car_baseinfo cb ON cb.carId=wc.carId
+	WHERE orderNo=:orderNo
+	]]>
+	</sql>
+	
+	
+</sqlMap>

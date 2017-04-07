@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AppactivitystatEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO appactivitystat(
+	teamName,createTime,cellphoneRAM,type,teamId,id,
+	marketName,deviceIMEI,nsyUserType,deviceUUID,appType,isLogin,
+	marketId,managementtype,cellphoneModel,cellphoneROM,deviceICCID,system,
+	systemVersion,appVersion,deviceMEID,account,memberId,regetype,
+	appChannel,userCreateTime,mobile
+	) VALUES (
+	:teamName,:createTime,:cellphoneRAM,:type,:teamId,:id,
+	:marketName,:deviceIMEI,:nsyUserType,:deviceUUID,:appType,:isLogin,
+	:marketId,:managementtype,:cellphoneModel,:cellphoneROM,:deviceICCID,:system,
+	:systemVersion,:appVersion,:deviceMEID,:account,:memberId,:regetype,
+	:appChannel,:userCreateTime,:mobile
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE appactivitystat SET 
+	<#if teamName?exists && teamName!="" >
+		teamName=:teamName,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if cellphoneRAM?exists && cellphoneRAM!="" >
+		cellphoneRAM=:cellphoneRAM,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>	
+	<#if teamId?exists && teamId!="" >
+		teamId=:teamId,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if deviceIMEI?exists && deviceIMEI!="" >
+		deviceIMEI=:deviceIMEI,
+	</#if>	
+	<#if nsyUserType?exists && nsyUserType!="" >
+		nsyUserType=:nsyUserType,
+	</#if>	
+	<#if deviceUUID?exists && deviceUUID!="" >
+		deviceUUID=:deviceUUID,
+	</#if>	
+	<#if appType?exists && appType!="" >
+		appType=:appType,
+	</#if>	
+	<#if isLogin?exists && isLogin!="" >
+		isLogin=:isLogin,
+	</#if>	
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if managementtype?exists && managementtype!="" >
+		managementtype=:managementtype,
+	</#if>	
+	<#if cellphoneModel?exists && cellphoneModel!="" >
+		cellphoneModel=:cellphoneModel,
+	</#if>	
+	<#if cellphoneROM?exists && cellphoneROM!="" >
+		cellphoneROM=:cellphoneROM,
+	</#if>	
+	<#if deviceICCID?exists && deviceICCID!="" >
+		deviceICCID=:deviceICCID,
+	</#if>	
+	<#if system?exists && system!="" >
+		system=:system,
+	</#if>	
+	<#if systemVersion?exists && systemVersion!="" >
+		systemVersion=:systemVersion,
+	</#if>	
+	<#if appVersion?exists && appVersion!="" >
+		appVersion=:appVersion,
+	</#if>	
+	<#if deviceMEID?exists && deviceMEID!="" >
+		deviceMEID=:deviceMEID,
+	</#if>	
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if regetype?exists && regetype!="" >
+		regetype=:regetype,
+	</#if>	
+	<#if appChannel?exists && appChannel!="" >
+		appChannel=:appChannel,
+	</#if>	
+	<#if userCreateTime?exists && userCreateTime!="" >
+		userCreateTime=:userCreateTime,
+	</#if>	
+	<#if mobile?exists && mobile!="" >
+		mobile=:mobile
+	</#if>	
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	teamName,createTime,cellphoneRAM,type,teamId,id,
+	marketName,deviceIMEI,nsyUserType,deviceUUID,appType,isLogin,
+	marketId,managementtype,cellphoneModel,cellphoneROM,deviceICCID,system,
+	systemVersion,appVersion,deviceMEID,account,memberId,regetype,
+	appChannel,userCreateTime,mobile
+	FROM appactivitystat WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	teamName,createTime,cellphoneRAM,type,teamId,id,categoryName,categoryId,
+	marketName,deviceIMEI,nsyUserType,deviceUUID,appType,isLogin,
+	marketId,managementtype,cellphoneModel,cellphoneROM,deviceICCID,system,
+	systemVersion,appVersion,deviceMEID,account,memberId,regetype,
+	appChannel,userCreateTime,mobile
+	FROM appactivitystat WHERE 1=1
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND categoryId=:categoryId
+	</#if>
+	<#if startTime?exists && startTime!="" >
+		AND createTime>=:startTime
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND createTime<=:endTime
+	</#if>
+	<#if cellphoneRAM?exists && cellphoneRAM!="" >
+		AND cellphoneRAM=:cellphoneRAM
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if deviceIMEI?exists && deviceIMEI!="" >
+		AND deviceIMEI=:deviceIMEI
+	</#if>
+	<#if nsyUserType?exists && nsyUserType!="" >
+		AND nsyUserType=:nsyUserType
+	</#if>
+	<#if deviceUUID?exists && deviceUUID!="" >
+		AND deviceUUID=:deviceUUID
+	</#if>
+	<#if appType?exists && appType!="" >
+		AND appType=:appType
+	</#if>
+	<#if isLogin?exists && isLogin!="" >
+		AND isLogin=:isLogin
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if managementtype?exists && managementtype!="" >
+		AND managementtype=:managementtype
+	</#if>
+	<#if cellphoneModel?exists && cellphoneModel!="" >
+		AND cellphoneModel=:cellphoneModel
+	</#if>
+	<#if cellphoneROM?exists && cellphoneROM!="" >
+		AND cellphoneROM=:cellphoneROM
+	</#if>
+	<#if deviceICCID?exists && deviceICCID!="" >
+		AND deviceICCID=:deviceICCID
+	</#if>
+	<#if system?exists && system!="" >
+		AND system=:system
+	</#if>
+	<#if systemVersion?exists && systemVersion!="" >
+		AND systemVersion=:systemVersion
+	</#if>
+	<#if appVersion?exists && appVersion!="" >
+		AND appVersion=:appVersion
+	</#if>
+	<#if deviceMEID?exists && deviceMEID!="" >
+		AND deviceMEID=:deviceMEID
+	</#if>
+	<#if account?exists && account!="" >
+		AND account like "%":account"%" 
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if appChannel?exists && appChannel!="" >
+		AND appChannel=:appChannel
+	</#if>
+	<#if userCreateTime?exists && userCreateTime!="" >
+		AND userCreateTime=:userCreateTime
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile like "%":mobile"%" 
+	</#if>
+	  order by createTime desc
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	teamName,createTime,cellphoneRAM,type,teamId,id,categoryName,categoryId,
+	marketName,deviceIMEI,nsyUserType,deviceUUID,appType,isLogin,
+	marketId,managementtype,cellphoneModel,cellphoneROM,deviceICCID,system,
+	systemVersion,appVersion,deviceMEID,account,memberId,regetype,
+	appChannel,userCreateTime,mobile
+	FROM appactivitystat WHERE 1=1
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND categoryId=:categoryId
+	</#if>	
+	<#if startTime?exists && startTime!="" >
+		AND createTime>=:startTime
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND createTime<=:endTime
+	</#if>
+	<#if cellphoneRAM?exists && cellphoneRAM!="" >
+		AND cellphoneRAM=:cellphoneRAM
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if deviceIMEI?exists && deviceIMEI!="" >
+		AND deviceIMEI=:deviceIMEI
+	</#if>
+	<#if nsyUserType?exists && nsyUserType!="" >
+		AND nsyUserType=:nsyUserType
+	</#if>
+	<#if deviceUUID?exists && deviceUUID!="" >
+		AND deviceUUID=:deviceUUID
+	</#if>
+	<#if appType?exists && appType!="" >
+		AND appType=:appType
+	</#if>
+	<#if isLogin?exists && isLogin!="" >
+		AND isLogin=:isLogin
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if managementtype?exists && managementtype!="" >
+		AND managementtype=:managementtype
+	</#if>
+	<#if cellphoneModel?exists && cellphoneModel!="" >
+		AND cellphoneModel=:cellphoneModel
+	</#if>
+	<#if cellphoneROM?exists && cellphoneROM!="" >
+		AND cellphoneROM=:cellphoneROM
+	</#if>
+	<#if deviceICCID?exists && deviceICCID!="" >
+		AND deviceICCID=:deviceICCID
+	</#if>
+	<#if system?exists && system!="" >
+		AND system=:system
+	</#if>
+	<#if systemVersion?exists && systemVersion!="" >
+		AND systemVersion=:systemVersion
+	</#if>
+	<#if appVersion?exists && appVersion!="" >
+		AND appVersion=:appVersion
+	</#if>
+	<#if deviceMEID?exists && deviceMEID!="" >
+		AND deviceMEID=:deviceMEID
+	</#if>
+	<#if account?exists && account!="" >
+		AND account like "%":account"%" 
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if appChannel?exists && appChannel!="" >
+		AND appChannel=:appChannel
+	</#if>
+	<#if userCreateTime?exists && userCreateTime!="" >
+		AND userCreateTime=:userCreateTime
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile  like "%":mobile"%" 
+	</#if>
+	order by createTime desc
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM appactivitystat WHERE 1=1
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND categoryId=:categoryId
+	</#if>	
+	<#if startTime?exists && startTime!="" >
+		AND createTime>=:startTime
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND createTime<=:endTime
+	</#if>
+	<#if cellphoneRAM?exists && cellphoneRAM!="" >
+		AND cellphoneRAM=:cellphoneRAM
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if deviceIMEI?exists && deviceIMEI!="" >
+		AND deviceIMEI=:deviceIMEI
+	</#if>
+	<#if nsyUserType?exists && nsyUserType!="" >
+		AND nsyUserType=:nsyUserType
+	</#if>
+	<#if deviceUUID?exists && deviceUUID!="" >
+		AND deviceUUID=:deviceUUID
+	</#if>
+	<#if appType?exists && appType!="" >
+		AND appType=:appType
+	</#if>
+	<#if isLogin?exists && isLogin!="" >
+		AND isLogin=:isLogin
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if managementtype?exists && managementtype!="" >
+		AND managementtype=:managementtype
+	</#if>
+	<#if cellphoneModel?exists && cellphoneModel!="" >
+		AND cellphoneModel=:cellphoneModel
+	</#if>
+	<#if cellphoneROM?exists && cellphoneROM!="" >
+		AND cellphoneROM=:cellphoneROM
+	</#if>
+	<#if deviceICCID?exists && deviceICCID!="" >
+		AND deviceICCID=:deviceICCID
+	</#if>
+	<#if system?exists && system!="" >
+		AND system=:system
+	</#if>
+	<#if systemVersion?exists && systemVersion!="" >
+		AND systemVersion=:systemVersion
+	</#if>
+	<#if appVersion?exists && appVersion!="" >
+		AND appVersion=:appVersion
+	</#if>
+	<#if deviceMEID?exists && deviceMEID!="" >
+		AND deviceMEID=:deviceMEID
+	</#if>
+	<#if account?exists && account!="" >
+		AND account like "%":account"%" 
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if appChannel?exists && appChannel!="" >
+		AND appChannel=:appChannel
+	</#if>
+	<#if userCreateTime?exists && userCreateTime!="" >
+		AND userCreateTime=:userCreateTime
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile like "%":mobile"%" 
+	</#if>
+	order by createTime desc
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM appactivitystat WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

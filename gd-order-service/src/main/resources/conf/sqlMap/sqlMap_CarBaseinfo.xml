@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CarBaseinfo">
+	<sql id="getByCarNumber">
+	<![CDATA[
+		SELECT 
+			carId, carNumber,cwpId
+		FROM
+			car_baseinfo
+		WHERE
+			carNumber = :carNumber
+	]]>
+	</sql>
+
+
+	<sql id="update">
+	<![CDATA[
+		UPDATE
+			car_baseinfo
+		SET
+			<#if carNumber?exists && carNumber!="" >
+			carNumber = :carNumber,
+			</#if>
+			cwpid = :cwpId,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE
+			carId = :carId
+	]]>
+	</sql>
+</sqlMap>

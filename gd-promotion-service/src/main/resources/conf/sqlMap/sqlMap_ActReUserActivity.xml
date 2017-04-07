@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReUserActivity">
+
+	<sql id="queryByIdentities">
+	<![CDATA[
+		SELECT t.id, t.userid, t.activity_id, t.score, t.firstJoin, t.join_times_left, t.account, t.mobile
+		FROM
+			act_re_user_activity t
+		WHERE
+			t.userid = :userid and t.activity_id = :activityId
+	]]>
+	</sql>
+
+	<sql id="updateReUserActivity">
+	<![CDATA[
+		 UPDATE
+		 	act_re_user_activity t
+		 SET
+		 	<#if score?exists && score!="" >
+			    t.score = :score,
+			</#if>
+			<#if firstJoin?exists && firstJoin!="" >
+			    t.firstJoin = :firstJoin,
+			</#if>
+			<#if joinTimesLeft?exists && joinTimesLeft!="" >
+		 		t.join_times_left = :joinTimesLeft,
+			</#if>
+				userid = :userid
+		 WHERE
+		 	userid = :userid and activity_id = :activityId
+	]]>
+	</sql>
+
+	<sql id="exists">
+	<![CDATA[
+		SELECT 
+			count(*)
+		FROM
+			act_re_user_activity t
+		WHERE
+			t.userid = :userid and t.activity_id = :activityId
+	]]>
+	</sql>
+	
+	<sql id="updateUserScore">
+	<![CDATA[
+		 UPDATE
+		 	act_re_user_activity 
+		 SET
+			score = :score
+		 WHERE
+		 	userid = :userid and activity_id = :activityId
+	]]>
+	</sql>
+	
+	<sql id="queryUserActivityByUserid">
+	<![CDATA[
+		 SELECT * FROM (
+			SELECT (@rownum:=@rownum+1) AS rownum, 
+				arua.userid AS userid,
+				arua.`activity_id` AS activityId,
+				arua.`score` AS score,
+				arua.`join_times_left` AS joinTimesLeft,
+				arua.`firstJoin` AS firstJoin,
+				arua.`account` AS account,
+				arua.`mobile` AS mobile
+			FROM `act_re_user_activity` arua, (SELECT @rownum:= 0 ) r  
+			WHERE arua.activity_id = :activityId ORDER BY arua.`score` DESC,arua.userid ASC 
+		) AS b  WHERE userid= :userid
+	]]>
+	</sql>
+	
+	<sql id="getWechatUserInfoByUserid">
+	<![CDATA[
+			 SELECT wu.nickname AS nickname,
+       				wu.`headimgurl` AS headimgurl,
+      				wm.`openId` AS openId,
+       				wm.`unionId` AS unionId,
+					arua.userid AS userid,
+					arua.`activity_id` AS activityId,
+					arua.`score` AS score
+				FROM `act_re_user_activity` arua
+				LEFT JOIN wechat_member wm ON wm.memberId = arua.`userid` AND wm.actId=arua.`activity_id`
+				LEFT JOIN wechat_userinfo wu ON wu.`openid`=wm.`openId`  
+				WHERE arua.activity_id =:activityId 
+				GROUP BY arua.userid,arua.`activity_id`
+				ORDER BY arua.`score` DESC,arua.userid ASC 
+				LIMIT :startRow,:endRow			
+	]]>
+	</sql>
+
+	<!--获取用户活动总积分 -->
+	<sql id="getUserScore">
+		<![CDATA[
+			 SELECT
+				SUM(score)
+			FROM
+				act_activity_score_record t
+			WHERE
+				t.userid = :userid
+			AND t.activity_id = :activity_id
+				]]>
+	</sql>
+</sqlMap>

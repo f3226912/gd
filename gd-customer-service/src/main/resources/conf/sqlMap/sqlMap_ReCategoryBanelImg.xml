@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReCategoryBanelImg">
+	<!-- 根据ID 精确查找 
+	
+		<sql id="getCountByCategoryId">
+	<sql id="getByCategoryId">
+	-->
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+		  r.id,r.categoryId,r.banelImgUrl,r.groupId,r.groupName,c.cateName
+		FROM 
+		  re_category_banel_img r 
+		LEFT JOIN 
+		  product_category c
+		ON 
+		  r.categoryId=c.categoryId
+		WHERE
+		  r.id=:id
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="getByGroupId">
+	<![CDATA[
+		SELECT
+		  r.id,r.categoryId,r.banelImgUrl,r.groupId,r.groupName,c.cateName
+		FROM 
+		  re_category_banel_img r 
+		LEFT JOIN 
+		  product_category c
+		ON 
+		  r.categoryId=c.categoryId
+		WHERE
+		  r.groupId=:groupId
+	]]>
+	</sql>
+	
+	
+	<sql id="getByCategoryId">
+	<![CDATA[
+		SELECT
+		  r.id,r.categoryId,r.banelImgUrl,r.groupId,r.groupName,c.cateName
+		FROM 
+		  re_category_banel_img r 
+		LEFT JOIN 
+		  product_category c
+		ON 
+		  r.categoryId=c.categoryId
+		WHERE
+		  r.categoryId=:categoryId
+	]]>
+	</sql>
+	
+	<sql id="getAllGroups">
+	<![CDATA[
+		select 
+			DISTINCT(r.groupId),r.groupName 
+		from 
+		re_category_banel_img r
+	]]>
+	</sql>
+	
+	
+	<sql id="getCountByMap">
+	<![CDATA[
+	
+		SELECT
+		 count(1)
+		FROM 
+		  re_category_banel_img r 
+	
+		WHERE
+			1=1
+		<#if categoryId?exists && categoryId!="" >
+		 and r.categoryId=:categoryId
+		</#if>
+		<#if groupId?exists && groupId!="" >
+		 and r.groupId=:groupId
+		</#if>
+		 
+	]]>
+	</sql>
+	
+	<sql id="getCountByCategoryId">
+	<![CDATA[
+		SELECT
+		 count(1)
+		FROM 
+		  re_category_banel_img r 
+		WHERE
+		  r.categoryId=:categoryId
+	]]>
+	</sql>
+	  
+	 <sql id="getAllByPage">
+	<![CDATA[
+		SELECT
+		  r.id,r.categoryId,r.banelImgUrl,r.groupId,r.groupName,c.cateName
+		FROM 
+		  re_category_banel_img r 
+		LEFT JOIN 
+		  product_category c
+		ON 
+		  r.categoryId=c.categoryId
+		WHERE
+			1=1
+			<#if categoryId?exists && categoryId!="" >
+			 and r.categoryId=:categoryId
+			</#if>
+			<#if groupId?exists && groupId!="" >
+			 and r.groupId=:groupId
+			</#if>
+		order by 
+		  groupId asc
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	 <sql id="getAll">
+	<![CDATA[
+		SELECT
+		  r.id,r.categoryId,r.banelImgUrl,r.groupId,r.groupName,c.cateName
+		FROM 
+		  re_category_banel_img r 
+		LEFT JOIN 
+		  product_category c
+		ON 
+		  r.categoryId=c.categoryId
+		order by 
+		  groupId asc
+	]]>
+	</sql>
+	
+</sqlMap>

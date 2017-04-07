@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PvStatisticBusinessService">
+	<sql id="getPvStatisticBusiness">
+	<![CDATA[
+ 		SELECT 
+		  bp.`id`,
+		  bp.`businessId`,
+		  bp.`fromPage`,
+		  bp.`pv`,
+		  bp.`statisTime`,
+		  bp.`createUserId`,
+		  bp.`createTime`,
+		  bp.`updateUserId`,
+		  bp.`updateTime`,
+		  mb.`memberGrade`,
+		  mb.`memberId`,
+		  mb.`realName`,
+		  mb.mobile,
+		  mb.account
+		FROM
+		  `business_pv_statis`  bp
+		LEFT JOIN
+		  `business_baseinfo` bb
+		ON (bb.businessId = bp.businessId)
+		LEFT JOIN
+		  `member_baseinfo` mb
+		ON (mb.memberId = bb.userId)
+		WHERE 1=1
+			<#if fromPage?exists && fromPage!="" > 
+ 				AND bp.fromPage=:fromPage
+ 			</#if>
+ 			<#if businessId?exists && businessId!="" > 
+		  		AND bp.`businessId` = :businessId
+ 			</#if>
+		 ]]>
+	</sql>
+	
+	<sql id="getPvStatisticBusinessCount">
+	<![CDATA[
+ 		SELECT 
+		  SUM(bp.`pv`)
+		FROM
+		  `business_pv_statis`  bp
+		WHERE 1=1
+ 			<#if businessId?exists && businessId!="" > 
+		  		AND bp.`businessId` = :businessId
+ 			</#if>
+		 ]]>
+	</sql>
+	
+	<sql id="addPvStatisticBusiness">
+ 	<![CDATA[
+		INSERT INTO `business_pv_statis` (
+		  `businessId`,
+		  `fromPage`,
+		  `pv`,
+		  `createUserId`,
+		  `updateUserId`
+		) 
+		VALUES
+		  (
+		  :businessId,
+		  :fromPage,
+		  1,
+		  :createUserId,
+		  :updateUserId
+		)
+		]]>
+	</sql>
+	
+	<sql id="updatePvStatisticBusiness">
+ 	 <![CDATA[
+ 	 	UPDATE 
+		  `business_pv_statis` 
+		SET
+		  `pv` = `pv` + :addPv 
+		WHERE `id` = :id 
+		]]>
+	</sql>
+	
+	<sql id="addPvForProduct">
+ 	 <![CDATA[
+		UPDATE 
+		  `product_baseinfo` 
+		SET
+		  `visitCount` = IFNULL(`visitCount`,0) + :addPv 
+		WHERE `productId` = :productId 
+		]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)
+		from business_pv_statis pv 
+		join business_baseinfo b on pv.businessId = b.businessId
+		join member_baseinfo u on u.memberId = b.userId
+		left join re_business_market bm on b.businessId = bm.businessId
+		left join market m on bm.marketId = m.id
+		WHERE  1=1 
+			<#if account?exists && account!="" >
+			     AND u.account like "%":account"%"
+			</#if>
+			<#if shopsName?exists && shopsName!="" >
+			     AND b.shopsName like "%":shopsName"%"
+			</#if>     
+			<#if mobile?exists && mobile!="" >
+			     AND u.mobile like  "%":mobile"%"
+			</#if>	        
+			<#if marketId?exists && marketId!="">
+				And m.id = :marketId
+			</#if>
+	]]>
+	</sql>
+	
+    <sql id="getBySearch" >
+	 	<![CDATA[
+		select pv.id, b.shopsName, u.account, u.mobile, u.createTime, m.marketName, pv.fromPage, pv.pv shopPv, pv.statisTime
+		from business_pv_statis pv 
+		join business_baseinfo b on pv.businessId = b.businessId
+		join member_baseinfo u on u.memberId = b.userId
+		left join re_business_market bm on b.businessId = bm.businessId
+		left join market m on bm.marketId = m.id
+		WHERE  1=1 
+			<#if account?exists && account!="" >
+			     AND u.account like "%":account"%"
+			</#if>
+			<#if shopsName?exists && shopsName!="" >
+			     AND b.shopsName like "%":shopsName"%"
+			</#if>     
+			<#if mobile?exists && mobile!="" >
+			     AND u.mobile like  "%":mobile"%"
+			</#if>	        
+			<#if marketId?exists && marketId!="">
+				And m.id = :marketId
+			</#if>
+		 	ORDER BY 
+		 		pv.statisTime desc 
+			LIMIT :startRow,:endRow
+		]]>
+    </sql>
+    
+	<sql id="getAmountTotal">
+	<![CDATA[
+	SELECT count(1) from (select 1 from bi_base_order_bill_data pv 
+		join business_baseinfo b on pv.businessId = b.businessId
+		join member_baseinfo u on u.memberId = b.userId
+		left join re_business_market bm on b.businessId = bm.businessId
+		left join market m on bm.marketId = m.id
+		WHERE  1=1 
+			<#if account?exists && account!="" >
+			     AND u.account like "%":account"%"
+			</#if>
+			<#if shopsName?exists && shopsName!="" >
+			     AND b.shopsName like "%":shopsName"%"
+			</#if>     
+			<#if mobile?exists && mobile!="" >
+			     AND u.mobile like  "%":mobile"%"
+			</#if>	        
+			<#if marketId?exists && marketId!="">
+				And m.id = :marketId
+			</#if>
+			<#if startdate?exists && startdate!="" >
+			     AND DATE_FORMAT(CAST(pv.tradeDay as date),'%Y-%m-%d') >= DATE_FORMAT(CAST(:startdate as date),'%Y-%m-%d')
+			</#if>
+			<#if enddate?exists && enddate!="" >
+			     AND DATE_FORMAT(CAST(pv.tradeDay as date),'%Y-%m-%d') <= DATE_FORMAT(CAST(:enddate as date),'%Y-%m-%d')
+			</#if>
+		group by pv.businessId,pv.tradeDay) t
+	]]>
+	</sql>
+    
+    <sql id="getAmountBySearch" >
+	 	<![CDATA[
+		select b.shopsName, u.status, u.account, u.mobile, u.createTime, m.marketName, sum(pv.tradeMoney) tradeMoney, CAST(pv.tradeDay as date) tradeDay
+		from bi_base_order_bill_data pv 
+		join business_baseinfo b on pv.businessId = b.businessId
+		join member_baseinfo u on u.memberId = b.userId
+		left join re_business_market bm on b.businessId = bm.businessId
+		left join market m on bm.marketId = m.id
+		WHERE  1=1 
+			<#if account?exists && account!="" >
+			     AND u.account like "%":account"%"
+			</#if>
+			<#if shopsName?exists && shopsName!="" >
+			     AND b.shopsName like "%":shopsName"%"
+			</#if>     
+			<#if mobile?exists && mobile!="" >
+			     AND u.mobile like  "%":mobile"%"
+			</#if>	        
+			<#if marketId?exists && marketId!="">
+				And m.id = :marketId
+			</#if>
+			<#if startdate?exists && startdate!="" >
+			     AND DATE_FORMAT(CAST(pv.tradeDay as date),'%Y-%m-%d') >= DATE_FORMAT(CAST(:startdate as date),'%Y-%m-%d')
+			</#if>
+			<#if enddate?exists && enddate!="" >
+			     AND DATE_FORMAT(CAST(pv.tradeDay as date),'%Y-%m-%d') <= DATE_FORMAT(CAST(:enddate as date),'%Y-%m-%d')
+			</#if>
+			group by pv.businessId,pv.tradeDay
+		 	ORDER BY pv.tradeDay desc 
+			LIMIT :startRow,:endRow
+		]]>
+    </sql>
+    
+	<sql id="updatePv">
+ 	 <![CDATA[
+ 	 	UPDATE 
+		  `business_pv_statis` 
+		SET
+		  `pv` = :pv,
+		  `updateTime` = SYSDATE(),
+		  `updateUserId` = :updateUserId
+		WHERE `id` = :id 
+		]]>
+	</sql>
+	
+	<sql id="addPvForBusiness">
+ 	 <![CDATA[
+		UPDATE 
+		  `business_baseinfo` 
+		SET
+		  `browseCount` = IFNULL(`browseCount`, 0) + :addPv 
+		WHERE `businessId` = :businessId 
+		]]>
+	</sql>
+	
+	<sql id="searchBusinessId">
+ 	 <![CDATA[
+		SELECT 
+		  `businessId`
+		FROM
+		  `product_baseinfo` 
+		WHERE `productId` = :productId 
+		]]>
+	</sql>
+</sqlMap>

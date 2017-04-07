@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Sysmessageuser">
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT
+			r.rmID,
+			r.messageID,
+			r.userID,
+			r.createUserID,
+			r.createTime,
+			r.isread,
+			r.isdel
+		FROM
+			sysmessageuser r
+		WHERE
+			1 = 1
+		<#if messageID?exists && messageID!="">
+			AND r.messageID =:messageID
+		</#if>
+		<#if userID?exists && userID!="">
+			AND r.userID = :userID
+		</#if>
+		<#if isread?exists && isread!="">
+			AND r.isread = :isread
+		</#if>
+		ORDER BY createtime DESC 
+		LIMIT
+		:startRow, :endRow
+	]]>
+	</sql>
+
+	<sql id="getTotalByCondition">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			sysmessageuser r
+		WHERE
+			1 = 1
+		<#if messageID?exists && messageID!="">
+			AND r.messageID =:messageID
+		</#if>
+		<#if userID?exists && userID!="">
+			AND r.userID = :userID
+		</#if>
+		<#if isread?exists && isread!="">
+			AND r.isread = :isread
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="insert">
+	<![CDATA[
+		INSERT INTO sysmessageuser(messageID,userID,createUserID,createTime) 
+		VALUES (:messageID,:userID,:createUserID,SYSDATE())
+	]]>
+	</sql>
+	<sql id="deleteByMessageID">
+	<![CDATA[
+		DELETE FROM sysmessageuser WHERE messageID=:messageID
+	]]>
+	</sql>
+	<sql id="deleteByUserID">
+	<![CDATA[
+		DELETE FROM sysmessageuser WHERE userID=:userID
+	]]>
+	</sql>
+	<sql id="deleteByUserIdAndMessageID">
+	<![CDATA[
+		DELETE FROM sysmessageuser WHERE userID=:userID AND messageID=:messageID
+	]]>
+	</sql>
+
+	<sql id="updateSysmessageIsread">
+		<![CDATA[
+			UPDATE sysmessageuser messageUser
+			SET 
+			messageUser.isread=2
+		WHERE messageUser.userID=:userID
+		AND messageUser.messageID=:messageID
+		]]>
+	</sql>
+	<sql id="updateSysmessageIsdel">
+		<![CDATA[
+			UPDATE sysmessageuser messageUser
+			SET 
+			messageUser.isdel=2
+		WHERE messageUser.userID=:userID
+		AND messageUser.messageID=:messageID
+		]]>
+	</sql>
+
+	<sql id="update">
+	<![CDATA[
+		UPDATE sysmessageuser set isread=2 WHERE rmID=:rmID
+	]]>
+	</sql>
+
+</sqlMap>

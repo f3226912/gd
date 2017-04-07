@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GdActActivityComm">
+	<sql id="insert">
+		<![CDATA[
+			INSERT INTO `gd_act_activity_comm` (
+			  `actId`,
+			  `commRuleType`,
+			  `ruleJson`,
+			  `creatUserId`,
+			  `updateUserId`
+			) 
+			VALUES
+			  (
+			  :actId,
+			  :commRuleType,
+			  :ruleJson,
+			  :creatUserId,
+			  :updateUserId
+			  ) ;
+		]]>
+	</sql>
+
+	<sql id="getTotal">
+		<![CDATA[
+			SELECT 
+			  COUNT(`id`)
+			FROM
+			  `gd_act_activity_comm` 
+			WHERE 
+				1=1
+			<#if id?exists && id!="" >
+				AND id=:id
+			</#if>
+			<#if actId?exists && actId!="" >
+				AND actId=:actId
+			</#if>
+			<#if commRuleType?exists && commRuleType!="" >
+				AND commRuleType=:commRuleType
+			</#if>
+		]]>
+	</sql>
+	<sql id="getListPage">
+		<![CDATA[
+			SELECT 
+			  `id`,
+			  `actId`,
+			  `commRuleType`,
+			  `ruleJson`,
+			  `creatUserId`,
+			  `createTime`,
+			  `updateUserId`,
+			  `updateTime` 
+			FROM
+			  `gd_act_activity_comm` 
+			WHERE 
+				1=1
+			<#if id?exists && id!="" >
+				AND id=:id
+			</#if>
+			<#if actId?exists && actId!="" >
+				AND actId=:actId
+			</#if>
+			<#if commRuleType?exists && commRuleType!="" >
+				AND commRuleType=:commRuleType
+			</#if>
+			LIMIT :startRow :endRow
+		]]>
+	</sql>
+
+	<sql id="getIntegralByActivityId">
+		<![CDATA[
+	select t.activity_id,t.userId,t.integralRate,gac.ruleJson,gac.commRuleType from(
+	select gaa.id as activity_id,gaur.integralRate,gaur.refer_id as userId from gd_act_activity gaa 
+	LEFT JOIN 
+	gd_act_activity_user_rule gaur
+	ON
+	gaa.id=gaur.activity_id
+	WHERE 1=1 AND 
+    gaa.type=6 AND
+	gaa.state=1 and gaa.isNew=1
+	<#if activityId?exists && activityId!="" >
+	  and gaa.id=:activityId
+	</#if>
+	<#if memberId?exists && memberId!="" >
+	  AND gaur.refer_id=:memberId
+	</#if>
+) t LEFT JOIN gd_act_activity_comm gac on t.activity_id=gac.actId 
+  where gac.commRuleType=10  
+ORDER by gac.createTime DESC 
+		]]>
+	</sql>
+
+
+	<sql id="getList">
+		<![CDATA[
+			SELECT 
+				  gac.id,
+				  gac.actId,
+				  gac.commRuleType,
+				  gac.ruleJson,
+				  gac.creatUserId,
+				  gac.createTime,
+				  gac.updateUserId,
+				  gac.updateTime 
+				FROM
+				  gd_act_activity_comm gac 
+				LEFT JOIN gd_act_activity gaa ON gaa.id = gac.actId
+				WHERE 1=1
+				<#if id?exists && id!="" >
+					AND gac.id = :id
+				</#if>
+				<#if actId?exists && actId!="" >
+					AND gac.actId = :actId
+				</#if>
+				<#if type?exists && type!="" >
+					AND gaa.type = :type
+				</#if>
+				<#if commRuleType?exists && commRuleType!="" >
+					AND gac.commRuleType = :commRuleType
+				</#if>
+				<#if ruleType?exists && ruleType == "1" >
+					AND gac.commRuleType IN (3, 4)
+				</#if>
+				<#if ruleType?exists && ruleType == "2" >
+					AND gac.commRuleType IN (1, 2)
+				</#if>
+		]]>
+	</sql>
+</sqlMap>

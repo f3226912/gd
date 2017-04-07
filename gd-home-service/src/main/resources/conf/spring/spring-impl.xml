@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>${maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="demoService" class ="com.gudeng.commerce.gd.home.service.impl.DemoServiceImpl"></bean>
+	<bean id="SystemCodeService" class ="com.gudeng.commerce.gd.home.service.impl.SystemCodeServiceImpl"></bean>
+	
+	<bean id="businessProducttypeToolService" class ="com.gudeng.commerce.gd.home.service.impl.BusinessProducttypeToolServiceImpl"></bean>
+	
+	<bean id="businessBaseinfoToolService" class ="com.gudeng.commerce.gd.home.service.impl.BusinessBaseinfoToolServiceImpl"></bean>
+		<!-- 文件上传-->
+	<bean id="fileUploadToolService" class="com.gudeng.commerce.gd.home.service.impl.FileUploadToolServiceImpl"></bean>
+	<bean id="productToolService" class ="com.gudeng.commerce.gd.home.service.impl.ProductToolServiceImpl"></bean>
+	
+	<bean id="usercollectShopToolService" class ="com.gudeng.commerce.gd.home.service.impl.UsercollectShopToolServiceImpl"></bean>
+	
+	<bean id="detectionToolService" class ="com.gudeng.commerce.gd.home.service.impl.DetectionToolServiceImpl"></bean>
+	<bean id="queryAreaService" class ="com.gudeng.commerce.gd.home.service.impl.QueryAreaToolServiceImpl"></bean>
+	
+	<bean id="loginToolService" class ="com.gudeng.commerce.gd.home.service.impl.LoginToolServiceImpl"></bean>
+	<bean id="indexToolService" class ="com.gudeng.commerce.gd.home.service.impl.IndexToolServiceImpl"></bean>
+	
+	<bean id="memberBaseinfoToolService" class ="com.gudeng.commerce.gd.home.service.impl.MemberBaseinfoToolServiceImpl"></bean>
+	
+	<bean id="reBusinessMarketToolService" class ="com.gudeng.commerce.gd.home.service.impl.ReBusinessMarketToolServiceImpl"></bean>
+	
+	<bean id="reBusinessCategoryToolService" class ="com.gudeng.commerce.gd.home.service.impl.ReBusinessCategoryToolServiceImpl"></bean>
+	
+	<bean id="proCategoryToolService" class ="com.gudeng.commerce.gd.home.service.impl.FriendsLinksToolServiceImpl"></bean>
+	
+	<bean id="friendsLinksToolService" class ="com.gudeng.commerce.gd.home.service.impl.ProCategoryToolServiceImpl"></bean>
+	
+	<bean id="marketToolService" class ="com.gudeng.commerce.gd.home.service.impl.MarketToolServiceImpl"></bean>
+	
+	<bean id="usercollectProductToolService" class ="com.gudeng.commerce.gd.home.service.impl.UsercollectProductToolServiceImpl"></bean>
+
+
+	<bean id="pushRecordToolService" class ="com.gudeng.commerce.gd.home.service.impl.PushRecordToolServiceImpl"></bean>
+
+	<bean id="pushOffLineToolService" class ="com.gudeng.commerce.gd.home.service.impl.PushOffLineToolServiceImpl"></bean>
+
+	<bean id="memberCerifiToolService" class ="com.gudeng.commerce.gd.home.service.impl.MemberCerifiToolServiceImpl"></bean>
+	
+	<!--物流服务  -->
+   <bean id="transportationService" class ="com.gudeng.commerce.gd.home.service.impl.TransportationServiceImpl"></bean>
+   <bean id="addressManageService" class ="com.gudeng.commerce.gd.home.service.impl.MemberAddressManageServiceImpl"></bean>
+   	<!--物流服务  -->
+   	
+   	<!--农市行情-->
+	<bean id="pricesToolService" class ="com.gudeng.commerce.gd.home.service.impl.PricesToolServiceImpl"/>
+	
+	<bean id="promotionManageService" class ="com.gudeng.commerce.gd.home.service.impl.PromotionManageServiceImpl"/>
+	
+	<bean id="messageAopUtil" class ="com.gudeng.commerce.gd.home.util.MessageAopUtil"></bean>
+	
+	
+	<bean id="reCategoryBanelImgToolService" class ="com.gudeng.commerce.gd.home.service.impl.ReCategoryBanelImgToolServiceImpl"></bean>
+	<!-- 市场交易额 -->
+	<bean id="marketSaleService" class ="com.gudeng.commerce.gd.home.service.impl.MarketSaleServiceImpl"/>
+	
+	<!-- 用户管理日志AOP  -->
+ 	<bean id="memberBaseinfoAopUtil" class ="com.gudeng.commerce.gd.home.util.systemlog.MemberBaseinfoAopUtil"/>	
+ 	<!-- 用户管理日志AOP  -->
+ 	<bean id="businessBaseinfoAopUtil" class ="com.gudeng.commerce.gd.home.util.systemlog.BusinessBaseinfoAopUtil"/>	
+ 	<!-- 产品管理日志AOP  -->
+ 	<bean id="productAopUtil" class ="com.gudeng.commerce.gd.home.util.systemlog.ProductAopUtil"/>
+
+	<bean id="ipAddressService" class="com.gudeng.commerce.gd.home.service.impl.IpAddressServiceImpl"/>
+	<!-- 特殊字符过滤 -->	
+	<bean id="specialcharacterToolService" class ="com.gudeng.commerce.gd.home.service.impl.SpecialcharacterToolServiceImpl"/>
+	<bean id="memberLoginLogToolService" class ="com.gudeng.commerce.gd.home.service.impl.MemberLoginLogToolServiceImpl"/>
+	<bean id="sensitiveLogToolService" class ="com.gudeng.commerce.gd.home.service.impl.SensitiveLogToolServiceImpl"/>
+</beans>

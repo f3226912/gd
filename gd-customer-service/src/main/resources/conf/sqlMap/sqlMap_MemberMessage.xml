@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberMessage">
+	<sql id="addMemberMessage">
+	<![CDATA[
+	INSERT INTO `member_message` 
+	  (
+	    `memberId`,
+	    `type`,
+	    `content`,
+	    `createUserId`,
+	    `updateUserId`
+	  ) 
+	VALUES
+	  (
+	  :memberId,
+	  :type,
+	  :content,
+	  :createUserId,
+	  :updateUserId
+	  )
+	 ]]>
+	</sql>
+	
+</sqlMap>

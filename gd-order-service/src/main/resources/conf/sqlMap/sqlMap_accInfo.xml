@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="accInfo">
+	<sql id="getWalletIndexById">
+ 		SELECT 
+			  ai.accId,
+			  ai.transPwd,
+		  	  ai.memberId,
+			  ai.realName,
+			  ai.idCard,
+			  ai.balTotal,
+			  ai.balAvailable,
+			  ai.balblock,
+			  ai.subAmountStay,
+			  ai.subAmountPaid,
+			  ai.transPwdQue,
+			  ai.transPwdAnswer,
+			  ai.createTime,
+			  ai.createuserId,
+			  ai.updateTime,
+			  ai.updateuserId,
+			  mb.subShow
+		FROM 
+			 acc_info ai
+		LEFT JOIN 
+			 member_baseinfo mb
+		ON 
+			ai.memberId=mb.memberId
+		WHERE 
+		 	ai.memberId=:memberId
+	</sql>
+	
+	
+	<sql id="updateAccInfo">
+	<![CDATA[
+ 		 UPDATE 
+	   		acc_info
+	  	 SET
+			<#if realName?exists && realName!="" >
+					     realName=:realName,
+			</#if>	
+			<#if transPwd?exists && transPwd!="" >
+					     transPwd=:transPwd,
+			</#if>		
+			<#if idCard?exists && idCard!="" >
+					     idCard=:idCard,
+			</#if>	
+			<#if transPwdAnswer?exists && transPwdAnswer!="" >
+					     transPwdAnswer=:transPwdAnswer,
+			</#if>	
+			 <#if balTotal?exists && balTotal!="" >
+					     balTotal=:balTotal,
+			</#if>	
+			 <#if balAvailable?exists && balAvailable!="" >
+					     balAvailable=:balAvailable,
+			</#if>	
+			 <#if balblock?exists && balblock!="" >
+					     balblock=:balblock,
+			</#if>	
+			 <#if subAmountStay?exists && subAmountStay!="" >
+					     subAmountStay=:subAmountStay,
+			</#if>	
+			 <#if subAmountPaid?exists && subAmountPaid!="" >
+					     subAmountPaid=:subAmountPaid,
+			</#if>	
+			 <#if transPwdQue?exists && transPwdQue!="" >
+					     transPwdQue=:transPwdQue,
+			</#if>	
+			 <#if transPwdAnswer?exists && transPwdAnswer!="" >
+					     transPwdAnswer=:transPwdAnswer,
+			</#if>	
+			 <#if updateuserId?exists && updateuserId!="" >
+					     updateuserId=:updateuserId,
+			</#if>	
+			 updateTime=SYSDATE() 
+		]]>
+		WHERE 
+		 	 memberId=:memberId
+	</sql>
+	
+	<sql id="addAccInfo">
+	<![CDATA[
+ 		  INSERT INTO  acc_info
+	          (	memberId
+				<#if accStatus?exists && accStatus!="" >
+				     ,accStatus
+				</#if>
+				<#if transPwd?exists && transPwd!="" >
+				     ,transPwd
+				</#if>
+				<#if realName?exists && realName!="" >
+				     ,realName
+				</#if>
+				<#if idCard?exists && idCard!="" >
+				     ,idCard
+				</#if>
+				<#if balTotal?exists && balTotal!="" >
+				     ,balTotal
+				</#if>
+				<#if balAvailable?exists && balAvailable!="" >
+				     ,balAvailable
+				</#if>
+				<#if balblock?exists && balblock!="" >
+				     ,balblock
+				</#if>
+				<#if subAmountStay?exists && subAmountStay!="" >
+				     ,subAmountStay
+				</#if>
+				<#if subAmountPaid?exists && subAmountPaid!="" >
+				     ,subAmountPaid
+				</#if>
+				<#if transPwdQue?exists && transPwdQue!="" >
+				     ,transPwdQue
+				</#if>
+				<#if transPwdAnswer?exists && transPwdAnswer!="" >
+				     ,transPwdAnswer
+				</#if>
+				,createTime
+				<#if createuserId?exists && createuserId!="" >
+				     ,createuserId
+				</#if>
+				,updateTime
+				<#if updateuserId?exists && updateuserId!="" >
+				     ,updateuserId
+				</#if>
+              )
+	        values
+	         (
+	       	 	  :memberId
+				<#if accStatus?exists && accStatus!="" >
+				     ,:accStatus
+				</#if>
+				<#if transPwd?exists && transPwd!="" >
+				     ,:transPwd
+				</#if>
+				<#if realName?exists && realName!="" >
+				     ,:realName
+				</#if>
+				<#if idCard?exists && idCard!="" >
+				     ,:idCard
+				</#if>
+				<#if balTotal?exists && balTotal!="" >
+				     ,:balTotal
+				</#if>
+				<#if balAvailable?exists && balAvailable!="" >
+				     ,:balAvailable
+				</#if>
+				<#if balblock?exists && balblock!="" >
+				     ,:balblock
+				</#if>
+				<#if subAmountStay?exists && subAmountStay!="" >
+				     ,:subAmountStay
+				</#if>
+				<#if subAmountPaid?exists && subAmountPaid!="" >
+				     ,:subAmountPaid
+				</#if>
+				<#if transPwdQue?exists && transPwdQue!="" >
+				     ,:transPwdQue
+				</#if>
+				<#if transPwdAnswer?exists && transPwdAnswer!="" >
+				     ,:transPwdAnswer
+				</#if>
+				,SYSDATE()
+				<#if createuserId?exists && createuserId!="" >
+				     ,:createuserId
+				</#if>
+				,SYSDATE()
+				<#if updateuserId?exists && updateuserId!="" >
+				     ,:updateuserId
+				</#if>
+              )
+	        
+		]]>
+	</sql>
+	
+	
+		<sql id="validateTransPwd">
+		<![CDATA[
+	 		 SELECT transPwd 
+	 		 	FROM acc_info
+			WHERE memberId=:memberId
+		]]>
+	</sql>
+	
+	
+	
+		<sql id="updateTransPwd">
+	<![CDATA[
+ 		 UPDATE 
+	   		acc_info
+	  	 SET
+		      transPwd=:transPwd,
+			 updateTime=SYSDATE() 
+		]]>
+		WHERE 
+		 	 memberId=:memberId
+	</sql>
+	
+	<sql id="updateMemAmount">
+	<![CDATA[
+		UPDATE acc_info
+		SET
+			updateTime= NOW()
+			,subAmountStay= subAmountStay + :subAmountStay
+			,updateUserId= :updateuserId
+		WHERE
+			memberId=:memberId	
+	]]>
+	</sql>
+	
+	
+</sqlMap>

@@ -1,0 +1,191 @@
+body{
+	 background-color: #eeeeee; 
+	-webkit-text-size-adjust: 100%;
+	font-family: "Helvetica Neue", Helvetica, sans-serif,Microsoft Yahei;
+	color:#666666; 
+	font-size: 16px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	padding: 0;
+	margin: 0;
+}
+@media screen and (min-width:1200px){html{font-size: 125%;/*10 ÷ 16 × 100% × 2 = 62.5%  pc chrom最小字体12px所以为了调试方便，rem定为20px*/}}
+@media screen and (min-width: 980px) and (max-width: 1199px) {html{font-size: 125%;}}
+@media screen and (min-width: 768px) and (max-width: 979px) {html{font-size: 100%;}}
+@media screen and (max-width: 767px){html{font-size: 75%;}}
+@media screen and (max-width: 480px) {html{font-size: 62.5%;}}
+.row{
+	background-color: #fff;
+	/* padding-right: 15px;
+	    padding-left: 25px;
+	    margin-left: -15px;
+	    margin-right: -15px; */
+	position: relative;
+}
+*{
+
+}
+.clearfix:before, .clearfix:after
+{
+    display: table;
+
+    content: ' ';
+}
+.clearfix:after
+{
+    clear: both;
+}
+.head-day{
+	width: 25%;
+    height: 30px;
+    text-align: center;
+    float: left;
+    border-top: 1px solid #5ec796;
+    border-bottom: 1px solid #5ec796;
+    border-left: 1px solid #5ec796;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box
+}
+.head-outline{
+	padding-bottom: 8px;
+	padding-top: 8px;
+	width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.head-row{
+	text-align: center;
+	background-color: #eeeeee;
+}
+.tapped{
+	background-color: #5ec796;
+	color: #eee;
+}
+.not-tapped{
+	background-color: #fff;
+	color: #5ec796;
+}
+.thirty-days{
+	border-right:1px solid #5ec796; 
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+.one-day{
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+
+/* 从这里是表格的样式 */
+.table-outline{
+	margin-top: 5px;
+	box-sizing: border-box;
+	background-color: #fff;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 30px;
+}
+.table{
+	width: 95%;
+    border: #dcdcdc;
+    font-size: 13px;
+    margin-left: auto;
+    margin-right: auto;
+	}
+th{
+	background-color: #eeeeee;
+}
+.td-rank{
+	background-color: #eeeeee;
+	text-align: left;
+	width: 80px; 
+}
+.td-amount{
+	text-align: right;
+	/* width: 67px; */
+}
+
+.chart-row{
+	position: relative;
+	text-align: center;
+	width: 100%;
+	background-color: #fff;
+}
+.chart-inner{
+	width: 90%;
+	height:300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.chart-instruction{
+	position: absolute;
+	left: 0;
+	text-align: center;
+	width: 100%;
+	bottom: 18px;
+    font-size: 12px;
+}
+.chart-instruction2{
+	position: absolute;
+	left: 0;
+	text-align: center;
+	width: 100%;
+	bottom: 18px;
+    font-size: 12px;
+    text-align: right;
+
+}
+.table-ins{
+	text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.table-in1{
+	color: #000;
+	font-weight: 700;
+	font-size: 15px;
+}
+.table-in2{
+	font-size: 12px;
+}
+.chart-ins-in{
+	width: 86%;
+	text-align: right;
+}
+.trade-amount{
+	text-align: center;
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 10px;
+    padding-bottom: 15px;
+}
+.td-re{
+	text-align: right;
+}
+.td-unre{
+	text-align: right;
+}
+.out-OA{
+	position: relative;
+}
+.order-left{
+	color: #e46b51;
+	left: 5%;
+	top: 0px;
+	position: absolute;
+}
+.amount-right{
+	color:#59c895;
+	top: 0px;
+	right: 5%;
+	position: absolute;
+}
+.td-goods{
+	text-align: center;
+}
+.td-sales{
+	text-align: center;
+}

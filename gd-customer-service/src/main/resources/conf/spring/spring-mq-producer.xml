@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+          <property name="properties" >
+            <props>
+                <prop key="ProducerId">${gd.MQ.member.ProducerID}</prop>
+                <prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+                <prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+            </props>
+        </property>
+    </bean>
+    <!-- 从谷登后台同步数据到支付中心后台的会员表 -->
+    <bean id="accMmemberProducer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+          <property name="properties" >
+            <props>
+                <prop key="ProducerId">${gd.MQ.member.nsy.ProducerID}</prop>
+                <prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+                <prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+            </props>
+        </property>
+    </bean>
+	<bean id="accBankProducer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+          <property name="properties" >
+            <props>
+                <prop key="ProducerId">${gd.MQ.accBank.ProducerID}</prop>
+                <prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+                <prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+            </props>
+        </property>
+    </bean>    
+	<bean id="posMachineProducer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+          <property name="properties" >
+            <props>
+                <prop key="ProducerId">${gd.MQ.posmachine.ProducerID}</prop>
+                <prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+                <prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+            </props>
+        </property>
+    </bean>    
+    
+</beans>

@@ -1,0 +1,82 @@
+/**reset**/
+@media screen and (min-width:1200px){html{font-size: 125%;/*10 ÷ 16 × 100% × 2 = 62.5%  pc chrom最小字体12px所以为了调试方便，rem定为20px*/}}
+@media screen and (min-width: 980px) and (max-width: 1199px) {html{font-size: 125%;}}
+@media screen and (min-width: 768px) and (max-width: 979px) {html{font-size: 100%;}}
+@media screen and (max-width: 767px){html{font-size: 75%;}}
+@media screen and (max-width: 480px) {html{font-size: 62.5%;}}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+input,button,select,textarea{outline:none}
+img{vertical-align:top;border:none;}
+textarea{overflow: auto;vertical-align: top;resize:none;}
+button,input,select,textarea {font-size:100%;}
+h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+table {border-collapse:collapse;border-spacing:0}
+em,i,b{ font-style:normal; font-weight:normal;}
+body {
+	overflow-x:hidden;
+	font-family: "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;  /*为了让电脑上和手机一样字体效果。手机是没有"Microsoft YaHei",'Helvetica Neue'*/
+	/***min-width: 300px;设置最小宽HTCG7***/
+	-webkit-text-size-adjust:none;/**避免重力感应时文字随分辨率增大而增大**/ 
+	/** display:-webkit-box;/**流布局**/
+	color:#666;
+	background: #fff;
+	line-height: 1;
+}
+article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}
+ul, li, ol, dl, dd, dt{list-style:none;list-style-position:outside;}
+img	{ border:none;max-width: 100%;height: auto;}
+a{color:#565656;}
+a:link, a:hover{text-decoration:none;color:#666}
+a:link *, a:hover *{text-decoration:none;}
+@-ms-viewport {width: device-width;}
+.clear{clear:both}
+.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+.clearfix{zoom:1}
+.fl{float: left;}
+.fr{float: right;}
+
+/**gdmslide**/
+.js-slider{overflow:hidden;position:relative;}
+.js-slider-img-wrap{overflow:hidden;}
+.js-slider-h .js-slider-img{float:left;}
+.js-slider-num-wrap{position:absolute;bottom:5px;right:5px;z-index:1000;}
+.js-slider-num{float:left;}
+.js-slider-num-cur{color:#f00;}
+.js-slider-pic img{width:100%;height:auto;}
+.js-slider-num li{margin-left: 4px;width: 12px;height: 12px;border-radius: 6px;text-indent: -9999px;background-color: #3c1809;}
+.js-slider-num .js-slider-num-cur{background-color:#f00;}
+
+.head-title {display: block;text-align: center;height: 5rem;font-size: 2rem;background: #3bb650;color: #fff;line-height: 5rem;position: fixed;width: 100%;top: 0;left: 0;}
+.head-title a {position: absolute;font-size: 1.6rem;color: #fff;margin-left: 1rem;left: 0;background: url(../images/icon-1.png) no-repeat 0 1.6rem;background-size: 1.2rem auto;padding-left: 1.5rem;}
+.logisticsDetails{width:100%;padding:5rem 0 0;}
+ .line{width:100%;background-color:#eeeeee;height:.5rem;}
+ .lineBig1{width:100%;background-color:#eeeeee;height:1.5rem;}
+ .lineBig2{width:100%;background-color:#eeeeee;height:5rem;}
+ .orderDetails{width:100%;}
+ .orderDetails>.num{width:94%;margin: 0 auto;border-bottom:1px solid #eeeeee;overflow: hidden;font-size:1rem;padding:1rem 0;}
+ .orderDetails>.num>.left{float: left;color:#666666;}
+ .orderDetails>.num>.right{float: right;color:#fc6c21;}
+ .orderDetails>.details{width:90%;margin:1rem auto;color: #999999;}
+ .orderDetails>.details li{overflow: hidden;}
+ .orderDetails>.details li .left{float:left;}
+ .orderDetails>.details li .right{float:left;margin-left:31%;}
+ .orderDetails>.address{width:100%;border-top:1px solid #eeeeee;border-bottom:1px solid #eeeeee;overflow:hidden;font-size:2rem;padding:1rem 0;color:#41b555;}
+ .orderDetails>.address>.left{float:left;width:28%;text-align:right;}
+ .orderDetails>.address>.car{float:left;width:28%;margin:.4rem 8% 0;}
+ .orderDetails>.address>.right{float: left;width:28%;text-align: left;}
+ .orderDetails>.buttom{text-align:center;line-height:4rem;font-size:1.5rem;color:#ff6c00;}
+
+.allDetails{width:100%;overflow: hidden;}
+.allDetails>ul{width:100%;overflow: hidden;}
+.allDetails>ul li{width:100%;border-top:1px solid #eeeeee;overflow:hidden;line-height:3.7rem;padding:0 4%;}
+.allDetails>ul li .left{float:left;color:#737373;}
+.allDetails>ul li .right{float:right;color:#999999;}
+ .allDetails>ul .frist{background-color:#eeeeee;line-height:2rem;color:#999999;}
+ .intentionalPrice{width:100%;border-top:1px solid #eeeeee;overflow:hidden;line-height:3.7rem;padding:0 4%;}
+ .intentionalPrice>.left{float:left;color:#737373;}
+ .intentionalPrice>.right{float:right;color:#999999;}
+ .remarks{width:100%;border-top:1px solid #eeeeee;overflow:hidden;line-height:1.5rem;padding:1rem 4%;}
+ .remarks>.left{width:30%;text-align:left;float:left;color:#737373;}
+ .remarks>.right{width:70%;text-align:left;float:right;color:#999999;}
+ .phone{width:100%;text-align: center;color:#fc6c21;line-height:3rem;padding:1rem 0;font-size:1.5rem;}
+ .phone>img{height:2rem;display:inline;vertical-align:middle;margin-right: .5rem;}

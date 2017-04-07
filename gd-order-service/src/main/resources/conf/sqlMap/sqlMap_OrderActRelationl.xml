@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderActRelation">
+	<sql id="batchInsertEntity">
+	<![CDATA[
+		insert into order_act_relation (
+		    orderNo, productId, actId, actType, actVersion, createUserId, createTime
+	    ) 
+		values 
+		(
+		    :orderNo, :productId, :actId, :actType, :actVersion, :createUserId, SYSDATE()
+		)
+	]]>
+	</sql>
+	
+	<sql id="getListByOrderNo">
+	<![CDATA[
+		SELECT 
+			id, orderNo, productId, actId, actVersion, actType 
+		FROM 
+			order_act_relation t
+		WHERE  
+			t.orderNo = :orderNo
+		ORDER BY 
+			t.createTime DESC 
+	]]>
+	</sql>
+</sqlMap>

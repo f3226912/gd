@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta name="format-detection" content="telephone=no">
+		<meta http-equiv="x-rim-auto-match" content="none">
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<meta http-equiv="pragma" content="no-cache"> 
+		<meta http-equiv="cache-control" content="no-cache"> 
+		<meta http-equiv="expires" content="0">
+		<title>谷登科技用户支付协议</title>
+		<style>
+			@charset "utf-8";body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+		input,button,select,textarea{outline:none}
+		img{vertical-align:top;border:none;}
+		textarea{overflow: auto;vertical-align: top;resize:none;}
+		button,input,select,textarea {font-size:100%;}
+		h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+		table {border-collapse:collapse;border-spacing:0}
+		em,i,b{ font-style:normal; font-weight:normal;}
+		body {
+			overflow-x:hidden;
+			font: normal 100% "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;  /*为了让电脑上和手机一样字体效果。手机是没有"Microsoft YaHei",'Helvetica Neue'*/
+			/***min-width: 300px;设置最小宽HTCG7***/
+			-webkit-text-size-adjust:none;/**避免重力感应时文字随分辨率增大而增大**/ 
+			/** display:-webkit-box;/**流布局**/
+			color:#404040;
+			background: #f5f5f5;
+
+		}
+		article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}
+		ul, li, ol, dl, dd, dt{list-style:none;list-style-position:outside;}
+		img	{ border:none;max-width: 100%;height: auto;}
+		a{color:#565656;}
+		a:link, a:hover{text-decoration:none;}
+		a:link *, a:hover *{text-decoration:none;}
+		@-ms-viewport {width: device-width;}
+		.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+		.clearfix{zoom:1}
+		html{ font-family: sans-serif; -webkit-text-size-adjust: 100%;}
+		@media screen and (min-width:1200px){html{font-size: 125%;/*10 ÷ 16 × 100% × 2 = 62.5%  pc chrom最小字体12px所以为了调试方便，rem定为20px*/}}
+		@media screen and (min-width: 980px) and (max-width: 1199px) {html{font-size: 125%;}}
+		@media screen and (min-width: 768px) and (max-width: 979px) {html{font-size: 100%;}}
+		@media screen and (max-width: 767px){html{font-size: 75%;}}
+		@media screen and (max-width: 480px) {html{font-size: 62.5%;}}
+		
+		.clear:after {
+		　　visibility: hidden;
+		　　clear: both;
+		　　display: block;
+		　　height: 0px;
+		　　content: "."
+		}
+		.clear {
+		　　zoom: 1;
+		}
+
+		.fl{
+			float: left;
+		}
+
+		.fr{
+			float: right;
+		}
+
+		.c999{
+			color: #999999;
+		}
+
+		/*农速通支付*/
+		.pay-index .payHeader{width: 100%;background: url(../images/nstZhifuTitleBg.jpg) repeat;position: relative;}
+		.pay-index .payHeader .header{color:#666666;text-align:center;font-size:1.6rem;padding:3rem 0 1rem 0;font-weight:500;}
+		.pay-index .payHeader .headerMoney{color:#ff6c00;text-align:center;font-size:2rem;padding-bottom:2rem;}
+		.pay-index .payHeader .headerMoney span{font-size:2.8rem;}
+		.pay-index .payHeader .payHeaderLine{width:100%;height:13px;background: url(../images/payHeaderLine.png) repeat;position: absolute;left:0;bottom:-13px;}
+		.pay-index .pay-remind{text-align:center;line-height:3.4rem;margin-top:7px;color:#999999;}
+		.pay-index .choice-pay{border-bottom:1px solid #eeeeee;border-top:1px solid #eeeeee;background-color:#fff;}
+		.pay-index .choice-pay li{border-bottom:1px solid #eeeeee;overflow:hidden;}
+		.pay-index .choice-pay li .con{float:left;margin:1rem 0 1rem 3%;width:50%;}
+		.pay-index .choice-pay li .con p{font-size:1.2rem;color:#999999;line-height:2.3rem;}
+		.pay-index .choice-pay li .con .big{font-size: 2rem;color:#666666;}
+		.pay-index .choice-pay li img{width:3rem;display: block;margin:1.65rem 5% 0 5%;}
+		.pay-index .choice-pay li .logo{float: left;}
+		.pay-index .choice-pay li .choice-logo{float: right;}
+		.pay-index .footer{width:100%;position: fixed;bottom:0;left:0;background-color:#FFFFFF;}
+		.pay-index .footer .bottom{width:94%;margin:.5rem 3%;background-color:#ff6c00;color:#FFFFFF;text-align: center;line-height:4rem;border-radius:5px;font-size:1.5rem;}
+		.paySuccess{width: 100%;}
+		.paySuccess>img{width: 4rem;display: block;margin:39% auto 2rem;}
+		.paySuccess>.con{width:100%;text-align: center;font-size:2.5rem;color:#ff6c00;}
+		.paySuccess>ul{width: 100%;text-align: center;margin:6rem 0 0 0;color:#666666;}
+		.paySuccess>ul>li{font-size:1.3rem;}
+		.paySuccess .details{text-align: center;margin-top:2rem;}
+		.paySuccess .details a{color:#ff6c00;font-size:1.3rem;}
+		.payFailure{width: 100%;}
+		.payFailure>img{width: 4rem;display: block;margin:39% auto 2rem;}
+		.payFailure>.con{width:100%;text-align: center;font-size:2.5rem;color:#ff6c00;}
+		.payFailure>ul{width: 100%;text-align: center;margin:6rem 0 0 0;color:#666666;}
+		.payFailure>ul>li{font-size:1.2rem;}
+		.payFailure .details{text-align: center;margin-top:2rem;}
+		.payFailure .details a{color:#ff6c00;font-size:1.3rem;}
+		.payFailure .footerBottom{width: 100%;position: fixed;left: 0;bottom: 0;background-color:#FFFFFF;}
+		.payFailure .footerBottom a{display: block;width:94%;margin:.5rem auto;background-color:#ff6c00;color:#FFFFFF;text-align: center;line-height:4rem;border-radius:5px;font-size:1.5rem;}
+		/*农速通关于我们*/
+		.aboutUs{width:100%;color:#666666;font-weight:500;}
+		.aboutUs .top{padding:0 5%;background-color:#FFFFFF;margin:1rem auto;border-bottom:1px solid #EEEEEE;border-top:1px solid #EEEEEE;line-height:4.5rem;font-size:1.7rem;}
+		.aboutUs .con{background-color:#FFFFFF;}
+		.aboutUs .con li{padding:0 5%;overflow: hidden;border-top:1px solid #EEEEEE;line-height:4.5rem;font-size:1.7rem;}
+		.aboutUs .icon-arrowright{color:#999999;}
+		.aboutUs a{display: block;width:100%;height:100%;background-color:#FFFFFF;}
+		/*农速通-司机*/
+		.aboutUsDriver{width:95%;margin:0 auto;}
+		.aboutUsDriver .tital{width:100%;text-align:center;font-size:2rem;margin-top:1rem;}
+		.aboutUsDriver .con{width:100%;font-size:1.5rem; text-indent:2em;margin-top:.5rem;line-height:2rem;}
+		/*农速通关于我们软件许可协议*/
+		.aboutUsSoftware{width:95%;margin:0 auto;}
+		.aboutUsSoftware .tital{width:100%;text-align:center;font-size:2rem;margin-top:1rem;}
+		.aboutUsSoftware .common{width:100%;font-size:1.5rem; text-indent:2em;margin-top:.5rem;line-height:2rem;}
+		.aboutUsSoftware .line{width:100%;font-size:1.5rem; text-indent:2em;margin-top:.5rem;line-height:2rem;font-weight:700;text-decoration:underline;}
+		.aboutUsSoftware h1{font-size:1.6rem;font-weight:600;}
+		.aboutUsSoftware h2{font-size:1.8rem;font-weight:600;}
+		.aboutUsSoftware ul{width:100%;margin-top:.5rem;}
+		.aboutUsSoftware ul li{width:100%;font-size:1.5rem;margin-top:.5rem;overflow: hidden;}
+		.aboutUsSoftware ul li .num{float: left;width:5%;}
+		.aboutUsSoftware ul li .commonLital{float: left;width:95%;}
+		.aboutUsSoftware .liS .num{margin-left:1em;}
+		.aboutUsSoftware .liS .commonLital{width: 90%;}
+		</style>
+	</head>
+	<body>
+		<div class="aboutUsSoftware">
+			<p class="tital">谷登科技用户支付协议</p>
+			<p class="common">谷登科技用户支付服务协议（以下简称“本协议”）是深圳谷登科技有限公司（以下简称“谷登科技”）与谷登用户(以下简称“用户”或“您”)就谷登科技交易支付服务（以下简称“本服务”）的使用等相关事项所订立的有效合约。用户通过移动端APP、Web网络页面点击确认或其他方式选择接受本协议，即表示用户与谷登科技已达成协议并同意接受本协议的全部约定内容。</p>
+			<p class="line">在接受本协议之前，请您仔细阅读本协议的全部内容（特别是以粗体下划线标注的内容）。如果您不同意本协议的任意内容，或者无法准确理解谷登科技对条款的解释，请不要进行后续操作。</p>
+			<p class="common">您应确保您在使用本服务时的银行卡为您本人的银行卡，确保您使用银行卡的行为合法、有效，未侵犯任何第三方合法权益；否则因此造成谷登科技、持卡人损失的，您应负责赔偿并承担全部法律责任，包括但不限于冻结您的资金、从您的支付账户扣除相应的款项等。</p>
+			<p class="common">您应妥善保管银行卡、卡号、有效日期、卡背后三位数字、银行卡密码信息以及谷登科技产品账户相关信息。如您遗失银行卡，您应及时通知发卡行及/或谷登科技，以减少可能发生的损失。因泄露密码、丢失银行卡或手机等所致损失需由您自行承担。</p>
+			<p class="common">您不应将本服务用于任何非法的或违反本协议的目的。您如使用本服务进行支付的，应当在认真确认金额后输入密码进行支付。</p>
+			<p class="line">您认可和同意：输入密码或手机验证码即视为您确认交易和交易金额并已不可撤销地向谷登科技发出指令，谷登科技有权根据用户的该指令委托银行或第三方从用户银行卡中划扣资金给收款人。届时您不应以未在交易单据中签名、签名不符、非本人意愿交易等原因要求谷登科技退款或承担其他责任。</p>
+			<p class="line">您认可和同意：在使用无线设备（包括但不限于手机、便携式电脑等能够连接并使用WIFI、2G/3G网络等无线网络的电子设备），通过无线网络向“谷登科技”计算机系统发送构成授权付款指示的指令跳转到合作银行或第三方进行支付。您需自行承担因自己管理银行卡、登录密码、无线终端等与支付有关的信息和设备不善所造成的后果。届时您不应以未在交易单据中签名、非本人意愿交易等原因要求谷登科技退款或承担其他责任。</p>
+			<p class="common">您在对使用本服务过程中发出指令的真实性及有效性承担全部责任；您承诺，谷登科技依照您的指令进行操作的一切风险由您承担。</p>
+			<p class="line">用户认可谷登科技账户的使用记录数据、交易金额数据等均以谷登科技系统平台记录的数据为准。</p>
+			<p class="common">同时您授权谷登科技有权留存您在谷登科技网站或客户端填写的相应信息，以供后续向您持续性地提供相应服务（包括但不限于将本信息用于向您推广、提供其他优质产品或服务）。</p>
+			<p class="line">您同意并授权谷登科技依据其自身判断对涉嫌欺诈或被他人控制并用于欺诈目的的谷登科技账户采取相应的措施，上述措施包括但不限于冻结账户及资金、处置涉嫌欺诈的资金。出现下列情况之一的，谷登科技有权立即终止您使用谷登科技相关服务而无需承担任何责任：（1）违反本协议的约定；（2）违反支付及合作关联公司网站的条款、协议、规则、通告等相关规定，而被上述任一网站终止提供服务的；（3）谷登科技认为向您提供本服务存在风险的；（4）您的银行卡有效期届满。</p>
+			<p class="common">您同意，本协议适用中华人民共和国大陆地区法律。因谷登科技与您就本协议的签订、履行或解释发生争议，双方应努力友好协商解决。如协商不成，谷登科技和用户同意由谷登科技住所地法院管辖审理双方的纠纷或争议。</p>
+			<p class="common">本协议内容包括协议正文及所有谷登科技已经发布的或将来可能发布的谷登钱包服务的使用规则。所有规则为本协议不可分割的一部分，与协议正文具有相同法律效力。若您在本协议内容发生修订后，继续使用本服务的，则视为您同意最新修订的协议内容；否则您须立即停止使用本服务。</p>
+			<p class="common" style="color: red;">谷登平台向您提供的服务付出了大量的成本，除谷登平台明示的收费业务外，其他向您提供的服务目前是免费的。本公司保留日后就服务向您收费的权利。如果我们决定收取此类费用，我们将向您发送通知，并允许您选择继续履行或终止本协议。如果您拒绝支付相关费用，本公司有权不向您提供该等收费服务。</p>
+			<p class="common">本协议未尽事宜，您需遵守谷登科技网站上公布的《谷登用户支付服务协议》及相关规则。</p>
+		</div>
+	</body>
+</html>

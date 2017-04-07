@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GdActActivityUserRuleEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO gd_act_activity_user_rule(
+	id,refer_id,activity_id,user_type
+	) VALUES (
+	:id,:refer_id,:activity_id,:user_type
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE gd_act_activity_user_rule SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if refer_id?exists && refer_id!="" >
+		refer_id=:refer_id,
+	</#if>	
+	<#if activity_id?exists && activity_id!="" >
+		activity_id=:activity_id,
+	</#if>	
+	<#if user_type?exists && user_type!="" >
+		user_type=:user_type,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,refer_id,activity_id,user_type
+	FROM gd_act_activity_user_rule WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+		gaur.id, gaur.refer_id, gaur.activity_id, gaur.user_type, gaur.remark,gaur.integralRate
+	FROM 
+		gd_act_activity_user_rule gaur
+	LEFT JOIN gd_act_activity gaa ON gaa.id = gaur.activity_id
+	WHERE 1=1
+	<#if id?exists && id!="" >
+		AND gaur.id=:id
+	</#if>
+	<#if refer_id?exists && refer_id!="" >
+		AND gaur.refer_id=:refer_id
+	</#if>
+	<#if activityId?exists && activityId!="" >
+		AND gaur.activity_id = :activityId
+	</#if>
+	<#if userType?exists && userType!="" >
+		AND gaur.user_type = :userType
+	</#if>
+	<#if type?exists && type!="" >
+		AND gaa.type = :type
+	</#if>
+	<#if actIdList?exists>
+		AND gaur.user_type != 1 
+		<#assign n = actIdList?size />
+		<#if n gt 0>
+			AND(
+			<#list actIdList as actId>
+				<#if actId_index != n-1>
+					gaur.activity_id = '${actId}' OR
+				<#else>
+					gaur.activity_id = '${actId}'  
+				</#if>
+			</#list>
+			) 
+		</#if>
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,refer_id,activity_id,user_type
+	FROM gd_act_activity_user_rule WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if refer_id?exists && refer_id!="" >
+		AND refer_id=:refer_id
+	</#if>
+	<#if activityId?exists && activityId!="" >
+		AND activity_id = :activityId
+	</#if>
+	<#if userType?exists && userType!="" >
+		AND user_type = :userType
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(1) FROM gd_act_activity_user_rule 
+	WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if refer_id?exists && refer_id!="" >
+		AND refer_id = :refer_id
+	</#if>
+	<#if activityId?exists && activityId!="" >
+		AND activity_id = :activityId
+	</#if>
+	<#if userType?exists && userType!="" >
+		AND user_type = :userType
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM gd_act_activity_user_rule WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getRuleEntitys">
+	<![CDATA[
+	select gaur.* from gd_act_activity_market gam 
+left join 
+gd_act_activity gaa 
+on gam.activity_id=gaa.id
+left join gd_act_activity_user_rule gaur 
+on gaur.activity_id=gaa.id
+where gaa.type=6
+and gaa.state=1
+and gaa.isNew=1
+and gaa.startTime<=NOW() 
+AND gaa.endTime>=NOW()
+<#if marketId?exists && marketId!="" >
+		and gam.market_id=:marketId
+</#if>
+	]]>
+</sql>
+</sqlMap>

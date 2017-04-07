@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GdActActivityMarketEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO gd_act_activity_market(
+	activity_id,market_id
+	) VALUES (
+	:activity_id,:market_id
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE gd_act_activity_market SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if activity_id?exists && activity_id!="" >
+		activity_id=:activity_id,
+	</#if>	
+	<#if market_id?exists && market_id!="" >
+		market_id=:market_id,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,activity_id,market_id
+	FROM gd_act_activity_market WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,activity_id,market_id
+	FROM gd_act_activity_market WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if market_id?exists && market_id!="" >
+		AND market_id=:market_id
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,activity_id,market_id
+	FROM gd_act_activity_market WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if market_id?exists && market_id!="" >
+		AND market_id=:market_id
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM gd_act_activity_market WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if market_id?exists && market_id!="" >
+		AND market_id=:market_id
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM gd_act_activity_market WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

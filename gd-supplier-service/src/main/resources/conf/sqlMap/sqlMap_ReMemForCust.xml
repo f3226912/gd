@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReMemForCust">
+	<sql id="insert">
+		<![CDATA[
+			INSERT INTO
+			re_mem_for_cust(
+				id,type,name,busiMemberId,custMemberId,createUserId,createTime,updateUserId,updateTime
+			) VALUES (
+				:id,:type,:name,:busiMemberId,:custMemberId,:createUserId,SYSDATE(),:updateUserId,SYSDATE()
+			)
+		]]>
+	</sql>
+	
+	<sql id="queryByBusiIdAndCustId">
+		<![CDATA[
+			SELECT 
+				r.id,r.type,busiMemberId,custMemberId,r.createUserId,r.createTime,r.updateUserId,r.updateTime
+				
+			FROM 
+				re_mem_for_cust r
+			WHERE
+				r.busiMemberId = :busiMemberId
+				AND r.custMemberId = :custMemberId
+			<#if type?exists && type!="" >
+				AND type=:type
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="addCustInfo">
+		<![CDATA[
+			INSERT INTO
+			re_cust_info(
+				id,reCustId,mobile,address,type,createUserId,createTime,updateUserId,updateTime
+			) VALUES (
+				:id,:reCustId,:mobile,:address,:type,:createUserId,SYSDATE(),:updateUserId,SYSDATE()
+			)
+		]]>
+	</sql>
+	
+	<sql id="queryCustInfo">
+		<![CDATA[
+			SELECT 
+				id,reCustId,mobile,address,type,createUserId,createTime,updateUserId,updateTime
+			FROM 
+				re_cust_info
+			WHERE 1=1
+			<#if id?exists && id!="" >
+				AND id=:id
+			</#if>
+			<#if reCustId?exists && reCustId!="" >
+				AND reCustId=:reCustId
+			</#if>
+			<#if type?exists && type!="" >
+				AND type=:type
+			</#if>
+			ORDER BY createTime
+		]]>
+	</sql>
+	
+	<sql id="deleteCustInfo">
+		<![CDATA[
+			DELETE FROM 
+				re_cust_info 
+			WHERE 1=1
+			<#if id?exists && id!="" >
+				AND id=:id
+			</#if>
+			<#if reCustId?exists && reCustId!="" >
+				AND reCustId=:reCustId
+			</#if>
+			<#if type?exists && type!="" >
+				AND type=:type
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="update">
+		<![CDATA[
+			UPDATE 
+				re_mem_for_cust
+			SET 
+				<#if type?exists && type!="" >
+					type=:type,
+				</#if>
+				<#if busiMemberId?exists && busiMemberId!="" >
+					busiMemberId=:busiMemberId,
+				</#if>
+				<#if name?exists && name!="" >
+					name=:name,
+				</#if>
+				<#if custMemberId?exists && custMemberId!="" >
+					custMemberId=:custMemberId,
+				</#if>
+				<#if createUserId?exists && createUserId!="" >
+					createUserId=:createUserId,
+				</#if>
+				<#if updateUserId?exists && updateUserId!="" >
+					updateUserId=:updateUserId,
+				</#if>
+					createTime=SYSDATE(), updateTime=SYSDATE()
+				WHERE 
+					id = :id
+		]]>
+	</sql>
+	
+	<sql id="queryById">
+		<![CDATA[
+			SELECT 
+				r.id,r.type,busiMemberId,custMemberId,r.createUserId,r.createTime,r.updateUserId,r.updateTime,
+				mb.realName realName,r.name, mb.mobile baseMobile, m.marketName,
+				bb.shopsName shopsName, bb.shopsDesc shopsDesc, bb.address address,
+				bb.businessModel businessModel,bb.mainProduct mainProduct,bb.businessId businessId,a1.area provinceName,
+				a2.area cityName, a3.area areaName, bb.managementType managementType
+				
+			FROM 
+				re_mem_for_cust r
+			LEFT JOIN
+				member_baseinfo mb
+			ON
+				(mb.memberId=r.custMemberId)
+			LEFT JOIN
+				business_baseinfo bb
+			ON
+				(bb.userId=mb.memberId)
+			LEFT JOIN
+				re_business_market rbm
+			ON
+				(rbm.businessId=bb.businessId)
+			LEFT JOIN
+				market m
+			ON
+				(m.id=rbm.marketId)
+			LEFT JOIN
+				area a1
+			ON
+				(a1.areaID=bb.provinceId)
+			LEFT JOIN
+				area a2
+			ON
+				(a2.areaID=bb.cityId)
+			LEFT JOIN
+				area a3
+			ON
+				(a3.areaID=bb.areaId)
+			WHERE
+				r.id = :id
+		]]>
+	</sql>
+	
+	
+
+	<sql id="queryByCondition">
+		<![CDATA[
+			SELECT 
+				r.id,r.type,busiMemberId,custMemberId,r.createUserId,r.createTime,r.updateUserId,r.updateTime,
+				mb.realName realName,r.name, bb.mainProduct mainProduct, m.marketname marketname, bb.shopsName shopsName,
+				mb.mobile baseMobile, bb.businessId
+			FROM 
+				re_mem_for_cust r
+			LEFT JOIN
+				member_baseinfo mb
+			ON
+				(mb.memberId=r.custMemberId)
+			LEFT JOIN
+				business_baseinfo bb
+			ON
+				(bb.userId=mb.memberId)
+			LEFT JOIN
+				re_business_market rbm
+			ON
+				(rbm.businessId=bb.businessId)
+			LEFT JOIN
+				market m
+			ON
+				(m.id=rbm.marketId)
+				
+			WHERE 1=1
+			
+			<#if id?exists && id!="" >
+			AND r.id=:id
+			</#if>
+			<#if type?exists && type!="" >
+			AND type=:type
+			</#if>
+			<#if busiMemberId?exists && busiMemberId!="" >
+			AND busiMemberId=:busiMemberId
+			</#if>
+			<#if searchName?exists && searchName!="" >
+			AND CONCAT(IFNULL(r.name,''),IFNULL(mb.realName,'')) like "%":searchName"%"
+			</#if>
+			<#if custMemberId?exists && custMemberId!="" >
+			AND custMemberId=:custMemberId
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			AND createUserId=:createUserId
+			</#if>
+			<#if createTime?exists && createTime!="" >
+			AND createTime=:createTime
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			AND updateUserId=:updateUserId
+			</#if>
+			<#if updateTime?exists && updateTime!="" >
+			AND updateTime=:updateTime
+			</#if>
+			<#if order?exists && order!="" && order="time" >
+			ORDER BY createTime DESC
+			</#if>
+			LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	<sql id="getTotal">
+		<![CDATA[
+			SELECT 
+				COUNT(r.id)
+			FROM 
+				re_mem_for_cust r
+			LEFT JOIN
+				member_baseinfo mb
+			ON
+				(mb.memberId=r.custMemberId)
+			WHERE 1=1
+			
+			<#if id?exists && id!="" >
+				AND r.id=:id
+			</#if>
+			<#if type?exists && type!="" >
+				AND type=:type
+			</#if>
+			<#if busiMemberId?exists && busiMemberId!="" >
+				AND busiMemberId=:busiMemberId
+			</#if>
+			<#if searchName?exists && searchName!="" >
+				AND CONCAT(IFNULL(r.name,''),IFNULL(mb.realName,'')) like "%":searchName"%"
+			</#if>
+			<#if custMemberId?exists && custMemberId!="" >
+				AND custMemberId=:custMemberId
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+				AND createUserId=:createUserId
+			</#if>
+			<#if createTime?exists && createTime!="" >
+				AND createTime=:createTime
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+				AND updateUserId=:updateUserId
+			</#if>
+			<#if updateTime?exists && updateTime!="" >
+				AND updateTime=:updateTime
+			</#if>
+		]]>
+	</sql>
+	<sql id="queryCategoriesBybusinessId">
+		<![CDATA[
+			SELECT 
+				pc.categoryId,pc.cateName
+			FROM product_category pc
+			LEFT JOIN
+				re_business_category rbc
+			ON
+				(rbc.categoryId=pc.categoryId)
+			WHERE
+				rbc.businessId=:businessId
+		]]>
+	</sql>
+	<sql id="queryByConditionPage">
+		<![CDATA[
+			SELECT 
+				r.id,r.type,busiMemberId,custMemberId,r.createUserId,r.createTime,r.updateUserId,r.updateTime,
+				mb.realName realName,r.name, bb.mainProduct mainProduct, m.marketname marketname, bb.businessId
+			FROM 
+				re_mem_for_cust r
+			LEFT JOIN
+				member_baseinfo mb
+			ON
+				(mb.memberId=r.custMemberId)
+			LEFT JOIN
+				business_baseinfo bb
+			ON
+				(bb.userId=mb.memberId)
+			LEFT JOIN
+				re_business_market rbm
+			ON
+				(rbm.businessId=bb.businessId)
+			LEFT JOIN
+				market m
+			ON
+				(m.id=rbm.marketId)
+			WHERE 1=1
+			<#if id?exists && id!="" >
+			AND r.id=:id
+			</#if>
+			<#if type?exists && type!="" >
+			AND type=:type
+			</#if>
+			<#if searchName?exists && searchName!="" >
+			AND CONCAT(IFNULL(r.name,''),IFNULL(mb.realName,'')) like "%":searchName"%"
+			</#if>
+			<#if busiMemberId?exists && busiMemberId!="" >
+			AND busiMemberId=:busiMemberId
+			</#if>
+			<#if custMemberId?exists && custMemberId!="" >
+			AND custMemberId=:custMemberId
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			AND createUserId=:createUserId
+			</#if>
+			<#if createTime?exists && createTime!="" >
+			AND createTime=:createTime
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			AND updateUserId=:updateUserId
+			</#if>
+			<#if updateTime?exists && updateTime!="" >
+			AND updateTime=:updateTime
+			</#if>
+			<#if order?exists && order!="" && order="time" >
+			ORDER BY createTime DESC
+			</#if>
+			LIMIT :startRow ,:endRow
+		]]>
+	</sql>
+
+</sqlMap>

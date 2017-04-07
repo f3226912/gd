@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CertifSpProduct">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO certif_sp_product(
+	createTime,signs,certifNo,updateTime,status,specialImg,certifOrg,
+	stockCount,companyName,optionUser,units,city,productId,
+	id,updateUserId,area,address,productImg,commitTime,
+	province,account,brand,memberId,productName,createUserId
+
+	) VALUES (
+	:createTime,:signs,:certifNo,:updateTime,:status,:specialImg,:certifOrg,
+	:stockCount,:companyName,:optionUser,:units,:city,:productId,
+	:id,:updateUserId,:area,:address,:productImg,:commitTime,
+	:province,:account,:brand,:memberId,:productName,:createUserId
+
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE certif_sp_product SET
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>
+	<#if signs?exists && signs!="" >
+		signs=:signs,
+	</#if>
+	<#if certifNo?exists && certifNo!="" >
+		certifNo=:certifNo,
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>
+	<#if specialImg?exists && specialImg!="" >
+		specialImg=:specialImg,
+	</#if>
+	<#if certifOrg?exists && certifOrg!="" >
+		certifOrg=:certifOrg,
+	</#if>
+	<#if stockCount?exists && stockCount!="" >
+		stockCount=:stockCount,
+	</#if>
+	<#if companyName?exists >
+		companyName=:companyName,
+	</#if>
+	<#if optionUser?exists && optionUser!="" >
+		optionUser=:optionUser,
+	</#if>
+	<#if units?exists && units!="" >
+		units=:units,
+	</#if>
+	<#if city?exists && city!="" >
+		city=:city,
+	</#if>
+	<#if productId?exists && productId!="" >
+		productId=:productId,
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>
+	<#if area?exists && area!="" >
+		area=:area,
+	</#if>
+	<#if address?exists && address!="" >
+		address=:address,
+	</#if>
+	<#if productImg?exists && productImg!="" >
+		productImg=:productImg,
+	</#if>
+	<#if commitTime?exists && commitTime!="" >
+		commitTime=:commitTimeString,
+	</#if>
+	<#if province?exists && province!="" >
+		province=:province,
+	</#if>
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>
+	<#if brand?exists >
+		brand=:brand,
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>
+	<#if productName?exists && productName!="" >
+		productName=:productName,
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT
+		sp.createTime, sp.signs, sp.certifNo, sp.updateTime, sp.status, sp.specialImg, sp.certifOrg, sp.stockCount,
+		sp.companyName, sp.optionUser, sp.units, sp.city, sp.productId,	sp.id, sp.updateUserId, sp.area, sp.address,
+		sp.productImg, sp.commitTime, sp.province, sp.account, sp.brand, sp.memberId, sp.productName, sp.createUserId,
+		sp.optionUser, DATE_FORMAT(sp.commitTime,'%Y-%m-%d-%T') as commitTimeString, sp.shopsName, m.`status` as userStatus,
+		a1.area as provinceStr ,a2.area as  cityStr,a3.area as areaStr  
+	FROM
+		certif_sp_product sp, member_baseinfo m,area a1,area a2,area a3 
+	WHERE
+		sp.id = :id
+		and sp.memberId = m.memberId
+		and sp.province=a1.areaID 
+		and sp.city=a2.areaID 
+		and	sp.area=a3.areaID  
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT
+		sp.createTime, sp.signs, sp.certifNo, sp.updateTime, sp.status, sp.specialImg, sp.certifOrg, sp.stockCount,
+		sp.companyName, sp.optionUser, sp.units, sp.city, sp.productId,	sp.id, sp.updateUserId, sp.area, sp.address,
+		sp.productImg, sp.commitTime, sp.province, sp.account, sp.brand, sp.memberId, sp.productName, sp.createUserId,
+		sp.optionUser, DATE_FORMAT(sp.commitTime,'%Y-%m-%d-%T') as commitTimeString, sp.shopsName,
+		(case sp.status  WHEN '2' THEN 
+			(SELECT clog.reason FROM certif_log clog WHERE clog.optionId = sp.id AND clog.type= 6 AND clog.status = 2 ORDER BY clog.createTime DESC LIMIT 0,1) 
+		 ELSE '' END) as reason		
+	FROM
+		certif_sp_product sp
+	WHERE
+		1 = 1
+	<#if signs?exists && signs!="" >
+		AND sp.signs=:signs
+	</#if>
+	<#if certifNo?exists && certifNo!="" >
+		AND sp.certifNo=:certifNo
+	</#if>
+	<#if certifStatus?exists && certifStatus!="" >
+		AND sp.status=:certifStatus
+	</#if>
+	<#if certifOrg?exists && certifOrg!="" >
+		AND sp.certifOrg=:certifOrg
+	</#if>
+	<#if stockCount?exists && stockCount!="" >
+		AND sp.stockCount=:stockCount
+	</#if>
+	<#if companyName?exists && companyName!="" >
+		AND sp.companyName=:companyName
+	</#if>
+	<#if optionUser?exists && optionUser!="" >
+		AND sp.optionUser=:optionUser
+	</#if>
+	<#if city?exists && city!="" >
+		AND sp.city=:city
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND sp.productId=:productId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND sp.updateUserId=:updateUserId
+	</#if>
+	<#if area?exists && area!="" >
+		AND sp.area=:area
+	</#if>
+	<#if address?exists && address!="" >
+		AND sp.address=:address
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(sp.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(sp.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if province?exists && province!="" >
+		AND sp.province=:province
+	</#if>
+	<#if account?exists && account!="" >
+		AND sp.account=:account
+	</#if>
+	<#if brand?exists && brand!="" >
+		AND sp.brand=:brand
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND sp.memberId=:memberId
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND sp.productName=:productName
+	</#if>
+	ORDER BY createTime desc 
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT
+		sp.createTime, sp.signs, sp.certifNo, sp.updateTime, sp.status, sp.specialImg, sp.certifOrg, sp.stockCount,
+		sp.companyName, sp.optionUser, sp.units, sp.city, sp.productId,	sp.id, sp.updateUserId, sp.area, sp.address,
+		sp.productImg, sp.commitTime, sp.province, sp.account, sp.brand, sp.memberId, sp.productName, sp.createUserId,
+		sp.optionUser, DATE_FORMAT(sp.commitTime,'%Y-%m-%d-%T') as commitTimeString, sp.shopsName,m.mobile,
+		(SELECT t.area  FROM area t WHERE t.areaID = sp.area) as areaStr,
+		(SELECT t.area  FROM area t WHERE t.areaID = sp.city) as cityStr,
+		(SELECT t.area  FROM area t WHERE t.areaID = sp.province) as provinceStr,		
+		(case sp.status  WHEN '2' THEN 
+			(SELECT clog.reason FROM certif_log clog WHERE clog.optionId = sp.id AND clog.type= 6 AND clog.status = 2 ORDER BY clog.createTime DESC LIMIT 0,1) 
+		 ELSE '' END) as reason			
+	FROM certif_sp_product sp
+	LEFT JOIN member_baseinfo m on sp.memberId = m.memberId
+	WHERE 1 = 1
+	<#if id?exists && id!="" >
+		AND sp.id=:id
+	</#if>
+	<#if signs?exists && signs!="" >
+		AND sp.signs=:signs
+	</#if>
+	<#if certifNo?exists && certifNo!="" >
+		AND sp.certifNo=:certifNo
+	</#if>
+	<#if certifStatus?exists && certifStatus!="" >
+		AND sp.status=:certifStatus
+	</#if>
+	<#if stateList?exists>
+			<#assign n = stateList?size />
+			<#if n gt 0>
+				and(
+				<#list stateList as state>
+					<#if state_index != n-1>
+							sp.status = '${state}' or
+						<#else>
+							sp.status = '${state}'
+					</#if>
+				</#list>
+				)
+			</#if>
+			<#if n == 0>
+				and 1 = 2
+			</#if>
+		</#if>	
+	<#if certifOrg?exists && certifOrg!="" >
+		AND sp.certifOrg=:certifOrg
+	</#if>
+	<#if stockCount?exists && stockCount!="" >
+		AND sp.stockCount=:stockCount
+	</#if>
+	<#if companyName?exists && companyName!="" >
+		AND sp.companyName=:companyName
+	</#if>
+	<#if optionUser?exists && optionUser!="" >
+		AND sp.optionUser=:optionUser
+	</#if>
+	<#if city?exists && city!="" >
+		AND sp.city=:city
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND sp.productId=:productId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND sp.updateUserId=:updateUserId
+	</#if>
+	<#if area?exists && area!="" >
+		AND sp.area=:area
+	</#if>
+	<#if address?exists && address!="" >
+		AND sp.address=:address
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(sp.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(sp.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if province?exists && province!="" >
+		AND sp.province=:province
+	</#if>
+	<#if account?exists && account!="" >
+		AND sp.account=:account
+	</#if>
+	<#if brand?exists && brand!="" >
+		AND sp.brand=:brand
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND sp.memberId=:memberId
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND sp.productName=:productName
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND m.mobile=:mobile
+	</#if>
+	<#if sortName?exists && sortName=="commitTime" && sortOrder=="d" >
+	      ORDER BY  sp.commitTime DESC
+	</#if>			
+	<#if sortName?exists && sortName=="commitTime" && sortOrder=="a" >
+	      ORDER BY  sp.commitTime ASC
+	</#if>	
+	<#if sortName?exists && sortName=="updateTime" && sortOrder=="d" >
+	      ORDER BY  sp.updateTime DESC
+	</#if>			
+	<#if sortName?exists && sortName=="updateTime" && sortOrder=="a" >
+	      ORDER BY  sp.updateTime ASC
+	</#if>	
+	<#if sortName?exists && sortName=="createTime" && sortOrder=="a" >
+	      ORDER BY createTime asc
+	</#if>		
+	<#if sortName?exists && sortName=="createTime" && sortOrder=="d" >
+	      ORDER BY createTime desc
+	</#if>	 
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT
+		count(1) as count
+	FROM certif_sp_product sp
+	LEFT JOIN member_baseinfo m on sp.memberId = m.memberId
+	WHERE
+		1 = 1
+	<#if id?exists && id!="" >
+		AND sp.id=:id
+	</#if>		
+	<#if signs?exists && signs!="" >
+		AND sp.signs=:signs
+	</#if>
+	<#if certifNo?exists && certifNo!="" >
+		AND sp.certifNo=:certifNo
+	</#if>
+	<#if certifStatus?exists && certifStatus!="" >
+		AND sp.status=:certifStatus
+	</#if>
+	<#if stateList?exists>
+			<#assign n = stateList?size />
+			<#if n gt 0>
+				and(
+				<#list stateList as state>
+					<#if state_index != n-1>
+							sp.status = '${state}' or
+						<#else>
+							sp.status = '${state}'
+					</#if>
+				</#list>
+				)
+			</#if>
+			<#if n == 0>
+				and 1 = 2
+			</#if>
+		</#if>		
+	<#if certifOrg?exists && certifOrg!="" >
+		AND sp.certifOrg=:certifOrg
+	</#if>
+	<#if stockCount?exists && stockCount!="" >
+		AND sp.stockCount=:stockCount
+	</#if>
+	<#if companyName?exists && companyName!="" >
+		AND sp.companyName=:companyName
+	</#if>
+	<#if optionUser?exists && optionUser!="" >
+		AND sp.optionUser=:optionUser
+	</#if>
+	<#if city?exists && city!="" >
+		AND sp.city=:city
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND sp.productId=:productId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND sp.updateUserId=:updateUserId
+	</#if>
+	<#if area?exists && area!="" >
+		AND sp.area=:area
+	</#if>
+	<#if address?exists && address!="" >
+		AND sp.address=:address
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(sp.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(sp.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if province?exists && province!="" >
+		AND sp.province=:province
+	</#if>
+	<#if account?exists && account!="" >
+		AND sp.account=:account
+	</#if>
+	<#if brand?exists && brand!="" >
+		AND sp.brand=:brand
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND sp.memberId=:memberId
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND sp.productName=:productName
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND m.mobile=:mobile
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM certif_sp_product WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

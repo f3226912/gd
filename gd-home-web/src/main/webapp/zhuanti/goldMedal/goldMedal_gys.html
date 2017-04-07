@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>金牌供应商</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta name="format-detection" content="telephone=no">
+	<meta http-equiv="x-rim-auto-match" content="none">
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<style>
+
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+		input,button,select,textarea{outline:none}
+		img{vertical-align:top;border:none;}
+		textarea{overflow: auto;vertical-align: top;resize:none;}
+		button,input,select,textarea {font-size:100%;}
+		h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+		table {border-collapse:collapse;border-spacing:0}
+		em,i,b{ font-style:normal; font-weight:normal;}
+		body {
+			overflow-x:hidden;
+			font: normal 100% "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;  /*为了让电脑上和手机一样字体效果。手机是没有"Microsoft YaHei",'Helvetica Neue'*/
+			/***min-width: 300px;设置最小宽HTCG7***/
+			-webkit-text-size-adjust:none;/**避免重力感应时文字随分辨率增大而增大**/ 
+			/** display:-webkit-box;/**流布局**/
+			color:#404040;
+			background: #f7f7f7;
+
+		}
+		article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}
+		ul, li, ol, dl, dd, dt{list-style:none;list-style-position:outside;}
+		img	{ border:none;max-width: 100%;height: auto;}
+		a{color:#565656;}
+		a:link, a:hover{text-decoration:none;}
+		a:link *, a:hover *{text-decoration:none;}
+		@-ms-viewport {width: device-width;}
+		.clear{clear:both}
+		.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+		.clearfix{zoom:1}
+
+		html
+		{
+		    font-family: sans-serif;
+		    -webkit-text-size-adjust: 100%;
+		}
+		@media screen and (min-width:1200px){html{font-size: 125%;/*10 ÷ 16 × 100% × 2 = 62.5%  pc chrom最小字体12px所以为了调试方便，rem定为20px*/}}
+		@media screen and (min-width: 980px) and (max-width: 1199px) {html{font-size: 125%;}}
+		@media screen and (min-width: 768px) and (max-width: 979px) {html{font-size: 100%;}}
+		@media screen and (max-width: 767px){html{font-size: 75%;}}
+		@media screen and (max-width: 480px) {html{font-size: 62.5%;}}
+		.main-wrap{ background: #f7f7f7; width:100%;}
+		.goldMedal{ width: 100%; background: #f7f7f7; padding-bottom: 5rem; }
+		.goldMedal img{ height: auto; display:block; float: left; width: 100%;}
+		.goldMedal_bx{ background: #fff; float: left; margin-top:0.55rem; padding-bottom: 2.5rem;}
+		.goldMedal_1 ,.goldMedal_2 ,.goldMedal_3{ width:100%; float: left; padding-top: 1rem;}
+		.goldMedal_1 img{}
+		.gd_rt{margin-top:3rem; width: 18.3rem; float:right; display: block;}
+		.gd_rt span{ display: inline-block; margin-bottom: .5rem;}
+		.gm_case{ width: 100%; float: left; position: relative; padding-bottom: 5rem;}
+		.gm_Box{ width: 100%; position: relative; padding-bottom: 2rem; background: #f7f7f7;}
+		.gm_Box:before{ 
+			content: "";  
+		    width: 1px; 
+		    height: 100%;
+		    background: #ee4d4d;
+		    left: 20%;
+            top: 0;
+            position: absolute;
+           }
+		.gm_lt{ 
+			display: inline-block; 
+			width: 4.75rem; 
+			text-align: center; 
+			font-size: .8rem; 
+			color: #fff; 
+			height: 1rem; 
+			line-height: 1rem; 
+			border-radius: .5rem; 
+			background: #ff6b64; 
+			float: left;
+			position: relative;
+			top:.36rem;
+			left: 1rem;
+		}
+		 .gm_rt{ padding-left: 2.5rem; 
+		 	font-size: 1.2rem; 
+		 	position: relative; 
+		 	padding-left: 26%;
+		 	padding-right: .5rem;
+		 } 
+		 .gm_ic{ background: #ff6b64; width: .75rem; height: .75rem; border-radius: 50%; display: inline-block; position: absolute; left:19%; top:.5rem;}
+		 .goldMedal_bt{ 
+		 	position: fixed;
+		 	bottom: 0;
+		 	height: 5rem; 
+		 	color: #fff;
+		 	line-height: 5rem; 
+		 	width: 100%; 
+		 	text-align: center;
+		 	background-color: rgba(51, 51, 51, .8);
+		 }
+		 .scrollTop{ position: fixed; bottom: 8rem; right: 1rem; display: none;}
+		 .weChat-tips{background:  url(gm_gys/down-pic.png) no-repeat;width: 17.4em; height: 9.15em;-webkit-background-size:  17.4em 9.15em;background-size: 17.4em 9.15em;vertical-align: middle;position: fixed;top:0;right: 25px; display: none;}
+	</style>
+</head>
+
+<body>	
+   <div class="main-wrap">
+   	    <div class="goldMedal">
+   	    	<img src="gm_gys/gold_medal_02.png">
+   	    	<a href="tel:4007-600-800"><img src="gm_gys/gold_medal1_02.png"></a>
+   	    	<div class="goldMedal_bx">
+   	    		 <img src="gm_gys/tit_02.jpg">
+   	    		 <div class="goldMedal_1">
+   	    		    <img src="gm_gys/ct_1_03.jpg" style="float:left; width:8.3rem; height:9.9rem; margin:2rem 0 0 3rem;">
+   	    		    <span class="gd_rt">
+   	    		    	<span style="color:#ff6b64; font-size:1.4rem;">担心好货没好价？</span><br/>
+   	    		    	<span style="font-size:1.1rem;">为您量身匹配精准买家</span><br/>
+                        <span style="font-size:1.1rem;">全国一级农批大市场商户资源</span><br/>
+                        <span style="font-size:1.1rem;">精准农批商、采购商信息随时看</span>
+   	    		    </span>
+   	    		  </div>
+   	    		 <div class="goldMedal_2">
+   	    		    <img src="gm_gys/ct_2_03.jpg" style="float:left; width:8.35rem; height:10rem; margin:2rem 0 0 3rem;">
+   	    		    <span class="gd_rt">
+   	    		    	<span style="color:#ff6b64; font-size:1.4rem;">还怕有货没人知？</span><br/>
+   	    		    	<span style="font-size:1.1rem;">每天向上千个采购商精准推荐</span><br/>
+                        <span style="font-size:1.1rem;">独享货源信息推送前排位置</span><br/>
+                        <span style="font-size:1.1rem;">让更多批发商看到您的产品</span>
+   	    		    </span>
+   	    		  </div>
+   	    		 <div class="goldMedal_3">
+   	    		    <img src="gm_gys/ct_3_03.jpg" style="float:left; width:9.4rem; height:9.8rem; margin:2rem 0 0 2.8rem;">
+   	    		    <span class="gd_rt">
+   	    		    	<span style="color:#ff6b64; font-size:1.4rem;">难把现货变成钱？</span><br/>
+   	    		    	<span style="font-size:1.1rem;">收钱您来，卖货是我们的事</span><br/>
+                        <span style="font-size:1.1rem; display:inline-block; color:#fff; padding:0 .5rem; border-radius:.1rem; background:linear-gradient(to bottom, #f7c310 0%,#ffd852 100%);">线下农批市场专属驻场人员撮合</span><br/>
+                        <span style="font-size:1.1rem;">不用亲临现场，在家就能轻松卖货</span>
+   	    		    </span>
+   	    		 </div>
+   	    	</div>
+   	    	<img src="gm_gys/gold_medal5_05.jpg" style="margin-top:0.55rem;">
+   	    	<img src="gm_gys/gold_medal6_06.jpg">
+   	    	<img src="gm_gys/gold_medal7_06.jpg" style="margin-top:0.55rem;">
+   	    	<img src="gm_gys/gold_medal8_05.jpg">
+   	    	<img src="gm_gys/gold_medal9_05.jpg" style="margin-top:0.55rem;">
+   	    	<div class="gm_case">
+   	    		<div class="gm_Box">
+   	    		  <span class="gm_lt">2016年8月</span>
+   	    		  <p class="gm_rt">
+   	    		    <i class="gm_ic"></i>
+   	    		    2016年8月强势入驻谷登电商平台，并成为平台首位金牌供应商
+   	    		  </p>
+   	    		</div>
+   	    		<div class="gm_Box">
+   	    		  <span class="gm_lt">2016年10月</span>
+   	    		  <p class="gm_rt">
+   	    		    <i class="gm_ic"></i>
+   	    		    同年10月，经由其专属驻场撮合员牵线，与谷登农批采购商达成销售协议
+   	    		  </p>
+   	    		</div>
+   	    		<div class="gm_Box">
+   	    		  <span class="gm_lt">1000万+</span>
+   	    		  <p class="gm_rt">
+   	    		    <i class="gm_ic"></i>
+   	    		    吉县苹果通过平台获得数千万元的交易额
+   	    		  </p>
+   	    		</div>
+   	    	</div>
+   	    </div>
+   	    <div class="goldMedal_bt">
+   	    	<img src="gm_gys/dw-icon.png" style="width:2.4rem; height:2.4rem; float:left; margin-left:10%; margin-top:1.5rem;">
+   	    	<a href="###" class="down-btn down-btn-android" target="_blank" style="color:#fff; font-size:1.4rem;">下载供应商  马上拥有特权  >></a>
+   	    	<img class="close_g" src="gm_gys/close2.png" style="width:1.4rem; height:1.4rem; padding-left: 4rem; float:right; margin-right:5%; margin-top:2rem;">
+   	    </div>
+   	    <div class="scrollTop">
+   	      <img src="gm_gys/scrollTop.png" style=" width:5.2rem; height:5.2rem;">
+   	    </div>
+   	    <p class="weChat-tips" id="weChat-tips"></p>
+   </div>
+
+<script src="../../v1.0/js/jquery-1.8.3.min.js"></script>
+<script>
+	$(function() {
+		$(document).scroll(function(){
+			if($(window).scrollTop()>=$(document).height()-$(window).height()){
+				$('.scrollTop').show();
+				$('#weChat-tips').hide();
+			}else{
+                $('.scrollTop').hide();
+			}  
+		});
+		$('.close_g').on('click',function() {
+			$('.goldMedal_bt').hide();
+		});
+		$('.scrollTop').on('click',function() {
+		   var speed=200;//滑动的速度
+           $('body').animate({ scrollTop: 0 }, speed);
+           return false;
+		})
+	})
+
+    // 获取终端的相关信息通用方法
+    var Terminal = {
+        // 辨别移动终端类型
+        platform : function(){
+            var u = window.navigator.userAgent.toLowerCase(), app = navigator.appVersion;
+            return {
+            	//Windows
+            	isWin: (navigator.platform == "Win32") || (navigator.platform == "Windows"),
+            	//MAC
+            	isMac: (navigator.platform == "Mac68K") || (navigator.platform == "MacPPC") || (navigator.platform == "Macintosh") || (navigator.platform == "MacIntel"),
+                // android终端或者uc浏览器
+                android: (u.indexOf('android') > -1 || u.indexOf('linux') > -1) && u.indexOf('micromessenger')<0,
+                // 是否为iPhone或者QQHD浏览器
+                iPhone: u.indexOf('iphone') > -1 ,
+                // 是否iPad
+                iPad: u.indexOf('ipad') > -1,
+				// 是否是通过微信的扫一扫打开的
+//                    weChat: u.indexOf('MicroMessenger') > 0
+				weChat: (function (){
+				    //var ua = window.navigator.userAgent.toLowerCase();
+				    if(u.indexOf('micromessenger')>-1){
+				        return true;
+				    }else{
+				        return false;
+				    }
+				})()
+            };
+        }(),
+        // 辨别移动终端的语言：zh-cn、en-us、ko-kr、ja-jp...
+        language : (navigator.browserLanguage || navigator.language).toLowerCase()
+    };
+    
+    if(Terminal.platform.weChat){
+    	//alert(1);        	
+    	/* if(Terminal.platform.iPhone || Terminal.platform.iPad){
+    		$(".down-btn-android").attr("href","https://itunes.apple.com/us/app/nong-shang-you/id1057048929");
+    		//location.href = "https://itunes.apple.com/us/app/nong-shang-you/id1057048929";//微信不支持跳转；
+    		//$(".down-btn-android").trigger('click');
+    		window.open('https://itunes.apple.com/us/app/nong-shang-you/id1057048929' );
+    	}else if(Terminal.platform.android){ */
+    		$(".down-btn").each(function(){
+        		var self = $(this);
+        		self.attr("href","javascript:;")
+        		self.click(function(){
+        			$('body').scrollTop(0)
+        			$('#weChat-tips').show();
+        		});
+        	});
+    	/* } */
+		//document.getElementById('weChat-tips').style.display="block";
+		//alert("微信不支持下载哦，请选择右上角，在浏览器中打开！");
+    }else{
+    	//alert(2);
+    	(function(){
+            var searchStr = window.location.search.substr(1),
+                arr = searchStr.split("&"),
+                regObj = {};
+            for(var i = 0 ;i<arr.length;i++){
+                regObj[arr[i].split("=")[0]] = arr[i].split("=")[1]
+            }            
+            $.ajax({
+         		url: "/promotion/addPromotionStatistics",
+         		type: "post",
+         		data: {sourceId:regObj.sourceId?regObj.sourceId:0,type:regObj.type?regObj.type:2},
+         		success: function(data){
+         			//console.log(data);
+         		}
+         	});
+        })();
+    	/* $(".down-btn-ios").attr("href","https://itunes.apple.com/us/app/nong-shang-you/id1057048929"); */
+    	if(Terminal.platform.iPhone || Terminal.platform.iPad || Terminal.platform.isMac){
+    		$(".down-btn-android").attr("href","https://itunes.apple.com/us/app/nong-shang-you-gong-ying-shang/id1096622005?mt=8");
+    		location.href = "https://itunes.apple.com/us/app/nong-shang-you-gong-ying-shang/id1096622005?mt=8";
+    	}else if(Terminal.platform.android || Terminal.platform.isWin){
+    		$(".down-btn-android").attr("href","http://www.gdeng.cn/cdgys/cdgys.apk");
+    		//location.href = "http://www.gdeng.cn/nsy/nsy_v1.0.apk";
+    	}
+    }
+</script>
+</body>
+</html>

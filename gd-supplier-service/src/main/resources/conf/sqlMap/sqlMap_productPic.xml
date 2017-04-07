@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="productPic">
+
+	<!-- 根据产品ID查询图片记录 -->
+	<sql id="getPictureByProductId">
+	<![CDATA[
+		SELECT 
+			id, t.productId, pictureType,urlOrg, url650, url650, url400, url170,
+			url120, url60, t.name as productname
+		FROM 
+			product_baseinfo t , product_picture pic
+		WHERE 
+			t.productId = pic.productId	
+			and pic.productId =:productId
+	]]>
+	</sql>
+	
+		<!-- 根据产品ID列表查询图片记录 -->
+	<sql id="getPictureListByProductId">
+	<![CDATA[
+		SELECT 
+			id, pic.productId, pictureType, urlOrg, url650, url650, url400,
+			url170,	url120, url60
+		FROM 
+			product_picture pic
+		WHERE 
+			EXISTS(SELECT p.productId  from product_baseinfo p where p.productId = pic.productId and p.productType = '1')
+		<#if productIdList?exists>
+			<#assign n = productIdList?size />
+			<#if n gt 0>
+				and(
+				<#list productIdList as product>
+					<#if product_index != n-1>
+							pic.productId = '${product}' or
+						<#else>
+							pic.productId = '${product}'  
+					</#if>
+				</#list>
+				) 
+			</#if>
+			<#if n == 0>
+				and 1 = 2
+			</#if>
+		</#if>
+		<#if !productIdList?exists>
+			and 1 = 2
+		</#if>
+	]]>
+	</sql>
+	<!-- 根据产品ID、图片类型 查询图片记录 -->
+	<sql id="getPicture">
+	<![CDATA[
+		SELECT 
+			id, t.productId, pictureType,urlOrg, url650, url650, url400, url170,
+			url120, url60, t.name as productname
+		FROM 
+			product_baseinfo t , product_picture pic
+		WHERE 
+			t.productId = pic.productId	
+			and pic.productId =:productId
+			and pic.pictureType = :pictureType
+	]]>
+	</sql>
+	
+	<!-- 新增图片信息 -->
+	<sql id="persistProductPic">
+	<![CDATA[
+		insert into product_picture (
+		    productId, pictureType, urlOrg, url650,  url400, url170,
+			url120, url60,createUserId, createTime, updateUserId, updateTime
+	    ) 
+		values 
+		(
+		    :productId, :pictureType, :urlOrg, :url650, :url400, :url170,
+			:url120, :url60, :createUserId, now(), :updateUserId, :updateTime
+		)
+	]]>
+	</sql>
+
+	<!-- 更新产品图片 -->
+	<sql id="updateProductPic">
+	<![CDATA[
+		update product_picture
+		set 
+			<#if urlOrg?exists && urlOrg!="" >
+			      urlOrg = :urlOrg,
+			</#if>
+			<#if url650?exists && url650!="" >
+			      url650 = :url650,
+			</#if>
+			<#if url400?exists && url400!="" >
+			      url400 = :url400,
+			</#if>
+			<#if url170?exists && url170!="" >
+			      url170 = :url170,
+			</#if>
+			<#if url120?exists && url120!="" >
+			      url120 = :url120,
+			</#if>
+			<#if url60?exists && url60!="" >
+			      url60 = :url60,
+			</#if>
+			 updateUserId = :updateUserId,
+			 updateTime=SYSDATE()
+		where 
+			productId = :productId	
+			and pictureType = :pictureType
+	]]>
+	</sql>
+	<!-- 删除图片 -->
+	<sql id="deletePicByProductId">
+	<![CDATA[
+		DELETE FROM 
+			product_picture 
+		where 
+			productId = :productId
+	]]>
+	</sql>
+	<!-- 删除图片 -->
+	<sql id="deletePicByProductIdAndType">
+	<![CDATA[
+		DELETE FROM 
+			product_picture 
+		where 
+			pictureType = :pictureType
+			and productId = :productId
+	]]>
+	</sql>
+	<!-- 根据产品ID查询多角度图片记录 -->
+	<sql id="getPictureByProdIdAndType">
+	<![CDATA[
+		SELECT 
+			id, t.productId, pictureType,urlOrg, url650, url650, url400, url170,
+			url120, url60, t.name as productname
+		FROM 
+			product_baseinfo t , product_picture pic
+		WHERE 
+			t.productId = pic.productId	
+			and pic.productId =:productId
+			and pic.pictureType =:pictureType
+	]]>
+	</sql>
+</sqlMap>

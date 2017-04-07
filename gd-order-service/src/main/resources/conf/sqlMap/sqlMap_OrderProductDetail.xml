@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderProductDetail">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			order_product_detail 
+		WHERE 
+			preSalProductDetailId=:preSalProductDetailId
+	]]>
+	</sql>
+	
+	<sql id="updateDTO">
+	<![CDATA[
+	    UPDATE 
+	    	order_product_detail t 
+	    SET 
+			 t.updateTime=SYSDATE()
+			 <#if hasDelivered?exists && hasDelivered!="" >
+			      ,t.hasDelivered = :hasDelivered 
+			 </#if>
+	    WHERE 
+	    	<#if preSalProductDetailId?exists && preSalProductDetailId!="" >
+	    		t.preSalProductDetailId=:preSalProductDetailId
+	    	</#if>
+	    	<#if memberAddressId?exists && memberAddressId!="" >
+	    		t.orderNo in (SELECT dd.orderNo FROM product_delivery_detail dd WHERE dd.memberAddressId = :memberAddressId AND dd.type = 1)
+	    	</#if>
+	    	
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			order_product_detail t 
+		WHERE 1=1 
+			<#if preSalProductDetailId?exists && preSalProductDetailId!="" >
+			      AND t.preSalProductDetailId = :preSalProductDetailId 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+			<#if productName?exists && productName!="" >
+			      AND t.productName like "%":productName"%" 
+			</#if>
+			<#if purQuantity?exists && purQuantity!="" >
+			      AND t.purQuantity = :purQuantity 
+			</#if>
+			<#if price?exists && price!="" >
+			      AND t.price = :price 
+			</#if>
+			<#if tradingPrice?exists && tradingPrice!="" >
+			      AND t.tradingPrice = :tradingPrice 
+			</#if>
+			<#if ruleId?exists && ruleId!="" >
+			      AND t.ruleId = :ruleId 
+			</#if>
+			<#if subRule?exists && subRule!="" >
+			      AND t.subRule = :subRule 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if needToPayAmount?exists && needToPayAmount!="" >
+			      AND t.needToPayAmount = :needToPayAmount 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.preSalProductDetailId,t.orderNo,t.productId,t.productName,t.purQuantity,t.unit,
+			t.price,t.tradingPrice,t.ruleId,t.subRule,t.subAmount,t.sellSubAmount,t.suppSubAmount,t.needToPayAmount,
+			t.createTime,t.createUserId,t.updateTime,t.updateUserId 
+		FROM 
+			order_product_detail t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.preSalProductDetailId,t.orderNo,t.productId,t.productName,t.purQuantity,t.unit,
+			c.codeValue AS unitName, t.price,t.tradingPrice,t.ruleId,t.subRule,t.subAmount,t.sellSubAmount,t.suppSubAmount,t.needToPayAmount,
+			t.createTime,t.createUserId,t.updateTime,t.updateUserId 
+		FROM 
+			order_product_detail t 
+		LEFT JOIN system_code c ON t.unit = c.codeKey AND c.type = 'ProductUnit' 
+		WHERE 1=1 
+			<#if preSalProductDetailId?exists && preSalProductDetailId!="" >
+			      AND t.preSalProductDetailId = :preSalProductDetailId 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+			<#if productName?exists && productName!="" >
+			      AND t.productName like "%":productName"%" 
+			</#if>
+			<#if purQuantity?exists && purQuantity!="" >
+			      AND t.purQuantity = :purQuantity 
+			</#if>
+			<#if price?exists && price!="" >
+			      AND t.price = :price 
+			</#if>
+			<#if tradingPrice?exists && tradingPrice!="" >
+			      AND t.tradingPrice = :tradingPrice 
+			</#if>
+			<#if ruleId?exists && ruleId!="" >
+			      AND t.ruleId = :ruleId 
+			</#if>
+			<#if subRule?exists && subRule!="" >
+			      AND t.subRule = :subRule 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if needToPayAmount?exists && needToPayAmount!="" >
+			      AND t.needToPayAmount = :needToPayAmount 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+		ORDER BY 
+			t.createTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.preSalProductDetailId,t.orderNo,t.productId,t.productName,t.purQuantity,t.unit,
+			c.codeValue AS unitName, t.price,t.tradingPrice,t.ruleId,t.subRule,t.subAmount,t.sellSubAmount,t.suppSubAmount,t.needToPayAmount,
+			t.createTime,t.createUserId,t.updateTime,t.updateUserId 
+		FROM 
+			order_product_detail t 
+		LEFT JOIN system_code c ON t.unit = c.codeKey AND c.type = 'ProductUnit' 
+		WHERE 1=1
+			<#if preSalProductDetailId?exists && preSalProductDetailId!="" >
+			      AND t.preSalProductDetailId = :preSalProductDetailId 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+			<#if productName?exists && productName!="" >
+			      AND t.productName like "%":productName"%" 
+			</#if>
+			<#if purQuantity?exists && purQuantity!="" >
+			      AND t.purQuantity = :purQuantity 
+			</#if>
+			<#if price?exists && price!="" >
+			      AND t.price = :price 
+			</#if>
+			<#if tradingPrice?exists && tradingPrice!="" >
+			      AND t.tradingPrice = :tradingPrice 
+			</#if>
+			<#if ruleId?exists && ruleId!="" >
+			      AND t.ruleId = :ruleId 
+			</#if>
+			<#if subRule?exists && subRule!="" >
+			      AND t.subRule = :subRule 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if needToPayAmount?exists && needToPayAmount!="" >
+			      AND t.needToPayAmount = :needToPayAmount 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+		ORDER BY 
+			t.createTime desc 
+	]]>
+	</sql>
+	
+	<sql id="batchInsertEntity">
+	<![CDATA[
+      insert into order_product_detail (
+		    orderNo, productId, productName, purQuantity, price, tradingPrice, ruleId,
+		    unit, subRule, subAmount, needToPayAmount, createUserId, createTime,price1,
+		    purQuantity1,subTotal1,price2,subTotal,remark
+	    ) 
+		values 
+		(
+		    :orderNo, :productId, :productName, :purQuantity, :price, :tradingPrice, :ruleId,
+		    :unit, :subRule, :subAmount, :needToPayAmount, :createUserId, SYSDATE(),:price1,
+		    :purQuantity1,:subTotal1,:price2,:subTotal,:remark
+		)
+	]]>
+	</sql>
+	
+	<sql id="getListByOrderNo">
+	<![CDATA[
+		SELECT 
+			t.preSalProductDetailId,
+			t.orderNo,
+			t.productId,
+			t.productName, 
+			p.cateName,
+			t.purQuantity,
+			t.purQuantity1,
+			t.unit, 
+			c.codeValue AS unitName,
+			t.subTotal,
+			t.subTotal1,
+			t.price,
+			t.price1,
+			t.price2,
+			t.tradingPrice,
+			t.ruleId,
+			t.subType,
+			t.subUnit,
+			t.subRule,
+			t.subTipInfo,
+			t.sellRuleId, 
+			t.sellSubType,
+			t.sellSubUnit,
+			t.sellSubRule,
+			t.sellSubTipInfo,
+			t.subAmount,
+			t.sellSubAmount,
+			t.suppSubAmount,
+			t.needToPayAmount, 
+			t.createTime,
+			t.createUserId,
+			t.updateTime,
+			t.updateUserId,
+			<#if activityType==null || activityType=="" || activityType=="1"> 
+			b.url170 AS imageUrl, 
+			</#if>
+			t.hasDelivered,
+			bb.shopsName,
+      		mpc.cateName	AS shopMainCateName,
+			opc.cateName	AS shopOtherCateName
+		FROM 
+			order_product_detail t
+		LEFT JOIN product_baseinfo pb ON t.productId = pb.productId 
+		LEFT JOIN business_baseinfo bb on pb.businessId = bb.businessId
+		LEFT JOIN product_category p ON p.categoryId = pb.cateId
+		LEFT JOIN re_business_category m_rbc ON bb.businessId = m_rbc.businessId and m_rbc.businessType='0'
+		LEFT JOIN re_business_category o_rbc ON bb.businessId = o_rbc.businessId and o_rbc.businessType='1'
+		LEFT JOIN product_category mpc ON m_rbc.categoryId = mpc.categoryId
+		LEFT JOIN product_category opc ON o_rbc.categoryId = opc.categoryId
+		<#if activityType==null || activityType=="" || activityType=="1">
+			LEFT JOIN product_picture b ON t.productId = b.productId AND b.pictureType = 4
+		</#if>
+		LEFT JOIN system_code c ON t.unit = c.codeKey AND c.type = 'ProductUnit'
+		WHERE  
+			t.orderNo = :orderNo
+			<#if activityType==null || activityType=="" || activityType=="1">
+				GROUP BY b.productId
+			</#if>
+		ORDER BY t.productId ASC
+	]]>
+	</sql>
+	
+	<sql id="getListByOrderNoList">
+	<![CDATA[
+		SELECT 
+			t.preSalProductDetailId, t.orderNo, t.productId, t.productName,pc.cateName, t.purQuantity,t.unit, c.codeValue AS unitName, 
+			t.price, t.tradingPrice, t.ruleId, t.subRule, t.subAmount,t.sellSubAmount,t.suppSubAmount, t.needToPayAmount,
+			b.url170 AS imageUrl, t.hasDelivered, pt.actPrice
+		FROM 
+			order_product_detail t
+			LEFT JOIN gd_promotion.prom_order_prod_prominfo pt 
+				ON t.orderNo = pt.orderNo AND t.productId = pt.productId 
+			LEFT JOIN product_picture b 
+				ON t.productId = b.productId AND b.pictureType = 4
+			LEFT JOIN system_code c 
+				ON t.unit = c.codeKey AND c.type = 'ProductUnit'
+			LEFT JOIN product_baseinfo pb
+    			ON t.productId = pb.productId
+  			LEFT JOIN product_category pc
+    			ON pc.categoryId = pb.cateId
+		WHERE 1=1
+		<#if orderNoList?exists>
+			<#assign n = orderNoList?size />
+			<#if n gt 0>
+				AND (
+				<#list orderNoList as orderNo>
+					<#if orderNo_index != n-1>
+							t.orderNo = '${orderNo}' OR
+						<#else>
+							t.orderNo = '${orderNo}'  
+					</#if>
+				</#list>
+				) 
+			</#if>
+		</#if>
+		GROUP BY t.orderNo, b.productId
+		ORDER BY t.productId ASC
+	]]>
+	</sql>
+	
+	<sql id="batchUpdate">
+	<![CDATA[
+		UPDATE 
+	    	order_product_detail
+	    SET 
+			 updateTime=SYSDATE()
+			 <#if ruleId?exists && ruleId!="" >
+			      ,ruleId = :ruleId 
+			 </#if>
+			 <#if subType?exists && subType!="" >
+			      ,subType = :subType 
+			 </#if>
+			 <#if subUnit?exists && subUnit!="" >
+			      ,subUnit = :subUnit 
+			 </#if>
+			 <#if subRule?exists && subRule!="" >
+			      ,subRule = :subRule 
+			 </#if>
+			 <#if subTipInfo?exists && subTipInfo!="" >
+			      ,subTipInfo = :subTipInfo 
+			 </#if>
+			 <#if sellRuleId?exists && sellRuleId!="" >
+			      ,sellRuleId = :sellRuleId 
+			 </#if>
+			 <#if sellSubType?exists && sellSubType!="" >
+			      ,sellSubType = :sellSubType 
+			 </#if>
+			 <#if sellSubUnit?exists && sellSubUnit!="" >
+			      ,sellSubUnit = :sellSubUnit 
+			 </#if>
+			 <#if sellSubRule?exists && sellSubRule!="" >
+			      ,sellSubRule = :sellSubRule 
+			 </#if>
+			 <#if sellSubTipInfo?exists && sellSubTipInfo!="" >
+			      ,sellSubTipInfo = :sellSubTipInfo 
+			 </#if>
+			 <#if subAmount?exists && subAmount!="" >
+			      ,subAmount = :subAmount 
+			 </#if>
+			 <#if sellSubAmount?exists && sellSubAmount!="" >
+			      ,sellSubAmount = :sellSubAmount 
+			 </#if>
+			 <#if suppSubAmount?exists && suppSubAmount!="" >
+			      ,suppSubAmount = :suppSubAmount 
+			 </#if>
+			 <#if needToPayAmount?exists && needToPayAmount!="" >
+			      ,needToPayAmount = :needToPayAmount 
+			 </#if>
+			 <#if updateUserId?exists && updateUserId!="" >
+			      ,updateUserId = :updateUserId 
+			 </#if>
+			 <#if hasDelivered?exists && hasDelivered!="" >
+			      ,hasDelivered = :hasDelivered 
+			 </#if>
+	    WHERE 
+	    	preSalProductDetailId=:preSalProductDetailId
+	]]>
+	</sql>
+	
+	<sql id="searchByProductName">
+	<![CDATA[
+		SELECT 
+			t.preSalProductDetailId, t.orderNo, t.productId, t.productName, t.purQuantity,t.unit,  
+			t.price, t.tradingPrice,t.needToPayAmount, t.hasDelivered
+		FROM 
+			order_product_detail t 
+		LEFT JOIN order_baseinfo ob ON t.orderNo = ob.orderNo
+		WHERE 1=1
+		AND t.productName = :searchStr
+		<#if businessId?exists && businessId != "" >
+			AND ob.businessId = :businessId
+		</#if>
+		<#if memberId?exists && memberId!="">
+			AND ob.memberId = :memberId 
+		</#if>
+		 <#if orderStatus?exists && orderStatus != "0" >
+		      AND ob.orderStatus = :orderStatus 
+		 </#if>
+		 <#if searchUserType = "1">
+		 	AND ob.orderType = 1
+		 </#if>
+		 <#if searchUserType = "2">
+		 	AND ob.orderType = 2
+		 </#if>
+		GROUP BY t.orderNo, t.productId
+	]]>
+	</sql>
+	
+		<sql id="getFirstProductByOrderNo">
+	<![CDATA[
+		SELECT 
+			t.preSalProductDetailId,t.orderNo,t.productId,t.productName,t.purQuantity,t.unit, 
+			t.price,t.tradingPrice,t.ruleId,t.subType,t.subUnit,t.subRule,
+			t.subTipInfo,t.sellRuleId, t.sellSubType,t.sellSubUnit,t.sellSubRule,t.sellSubTipInfo,
+			t.subAmount,t.sellSubAmount,t.suppSubAmount,t.needToPayAmount, t.createTime,t.createUserId,
+			t.updateTime,t.updateUserId,t.hasDelivered
+		FROM 
+			order_product_detail t
+		
+		WHERE  
+			t.orderNo = :orderNo 
+		limit 0,1
+	]]>
+	</sql>
+</sqlMap>

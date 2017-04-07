@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta name="format-detection" content="telephone=no">
+		<meta http-equiv="x-rim-auto-match" content="none">
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<meta http-equiv="pragma" content="no-cache"> 
+		<meta http-equiv="cache-control" content="no-cache"> 
+		<meta http-equiv="expires" content="0">
+		<title>车主 APP下载</title>
+		<link rel="stylesheet" type="text/css" href="../css/nst/global.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/nst/style.css"/>
+	</head>
+	<body>
+		<div class="markAll" id="markAll" style="display: none;">
+			<div class="mark"></div>
+		</div>
+		<p class="weChat-tips" id="weChat-tips" style="display: none;"></p>
+		<div class="wrap">
+			<div class="top">如您在下载使用中发现APP与您身份不相符或其他疑问，请拨打<span>4007-600-800</span>客服电话处理。</div>
+			<img class="headerFont" src="../images/nst/header.png"/>
+			<img class="carLogo" src="../images/nst/carLogo.png"/>
+			<img class="clickLoad" src="../images/nst/clickLoad.png"/>
+			<img class="bg" src="../images/nst/bgBottom.png"/>
+		</div>
+		<script src="../js/nst/global.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var isWeiXin=isWeiXin();
+			var bottom=document.getElementsByClassName("clickLoad")[0];
+			bottom.onclick=function(){
+				if(isWeiXin){
+					document.getElementById("weChat-tips").style.display="block";
+					document.getElementById("markAll").style.display="block";
+				}else{
+					if (browser.versions.ios || browser.versions.iPhone || browser.versions.iPad) {
+						window.location="https://itunes.apple.com/cn/app/id1150222707";
+						}
+						else if (browser.versions.android) {
+						window.location="http://www.gdeng.cn/nst/nst_driver.apk";
+						}
+				}
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdGdGiftteamEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_gd_giftteam(
+	updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+	name,giftstoreId,remarks,updateUser
+	) VALUES (
+	:updateUserName,:marketId,:id,SYSDATE(),:createUserName,:createUser,SYSDATE(),
+	:name,:giftstoreId,:remarks,:updateUser
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_gd_giftteam SET 
+	<#if updateUserName?exists && updateUserName!="" >
+		updateUserName=:updateUserName,
+	</#if>	
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if createUserName?exists && createUserName!="" >
+		createUserName=:createUserName,
+	</#if>	
+	<#if createUser?exists && createUser!="" >
+		createUser=:createUser,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>
+	<#if name?exists && name!="" >
+		name=:name,
+	</#if>	
+	<#if giftstoreId?exists && giftstoreId!="" >
+		giftstoreId=:giftstoreId,
+	</#if>	
+	<#if remarks?exists && remarks!="" >
+		remarks=:remarks,
+	</#if>	
+	<#if updateUser?exists && updateUser!="" >
+		updateUser=:updateUser,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+	name,giftstoreId,remarks,updateUser
+	FROM grd_gd_giftteam WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+	name,giftstoreId,remarks,updateUser
+	FROM grd_gd_giftteam WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name=:name
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND giftstoreId=:giftstoreId
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	updateUserName,
+	marketId,
+	id,
+	createTime,
+	createUserName,
+	createUser,
+	updateTime,
+	name,giftstoreId,remarks,updateUser,
+	(select marketName from gudeng.market where  id=marketId) marketName,
+	(select name from grd_gd_giftstore where id=giftstoreId ) giftStoreName
+	FROM grd_gd_giftteam WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND giftstoreId=:giftstoreId
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	ORDER BY createTime Desc
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_gd_giftteam WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND giftstoreId=:giftstoreId
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	<#if giftstoreIds?exists>
+		<#assign n = giftstoreIds?size />
+		<#if n gt 0>
+			AND (
+			<#list giftstoreIds as singleId>
+			<#if singleId_index != n-1>
+				giftstoreId =${singleId}  OR
+			<#else>
+				giftstoreId =${singleId}
+			</#if>
+			</#list>
+			)
+		</#if>
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_gd_giftteam WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

@@ -1,0 +1,177 @@
+/** css reset s **/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+input,button,select,textarea{outline:none}
+ol,ul,li{list-style:none}
+img{vertical-align:top;border:none;}
+textarea{overflow: auto;vertical-align: top;resize:none;}
+body{width:auto;height:auto;_height:100%;min-height:100%;}
+body,input,textarea{font-family: Microsoft Yahei, Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
+button,input,select,textarea {font-size:100%;}
+h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+table {border-collapse:collapse;border-spacing:0}
+em,i,b{ font-style:normal; font-weight:normal;}
+a{text-decoration:none;cursor:pointer;text-decoration: none;}
+a:focus{outline:0;}
+input,button,select,textarea{ outline:none; border:none 0; background:none;}
+input{-webkit-appearance: none;}
+body{font-size: 62.5%;}
+/** css reset e **/
+
+/*common*/
+.mui-pull{color: #ccc;}
+
+/*market list html s*/
+.market-wrap{text-align: center;background: #eeeeee;}
+.market-wrap .head{background: #fff;}
+.market-wrap .head .head-pic{width: 100%;}
+.market-wrap .head .head-title{color: #06386b;font-size: .32rem;height: 1rem;line-height: 1rem;
+	font-weight: bold;background: #fff;}
+.market-wrap .market-list .market-item{padding: .36rem .2rem .2rem .2rem;background: #fff;margin-bottom: .1rem;}
+.market-wrap .market-list .banner{width: 100%;height: 3.09rem;border-radius: 5px;background: no-repeat center center;
+	background-size: cover;box-shadow: 0 3px 4px #d2d2d2;-webkit-box-shadow: 0 3px 4px #d2d2d2;
+	padding: 0 .1rem;position: relative;}
+.market-wrap .market-list .banner-info-list{position: absolute;bottom: .15rem;}
+.market-wrap .market-list .banner-info-list .banner-info-item{width: 1.32rem;padding: .14rem 0 .1rem 0;
+	background: rgba(0,0,0,.6);display: inline-block;float: left;}
+.market-wrap .market-list .banner-info-list .banner-info-item:not(:last-child){margin-right: .5rem;}
+.market-wrap .market-list .banner-info-list .banner-info-item .total{color: #fff;font-size: .28rem;}
+.market-wrap .market-list .banner-info-list .banner-info-item .name{color: #ccc;font-size: .2rem;}
+.market-wrap .market-list .content{text-align: left;position: relative;font-size: .24rem;}
+.market-wrap .market-list .content .title{font-size: .32rem;color: #3bb650;font-weight: 500;line-height: .74rem;}
+.market-wrap .market-list .content .title:before{content: "";width: .1rem;height: .28rem;background: #3bb650;
+	display: inline-block;margin-right: .2rem;}
+.market-wrap .market-list .content .location{color: #999999;}
+.market-wrap .market-list .content .location img{width: .18rem;height: .24rem;vertical-align: middle;
+	margin-right: .08rem;}
+.market-wrap .market-list .content .info{color: #666666;margin-top: .2rem;font-size: .24rem;}
+.market-wrap .market-list .content .info .info-t{position: absolute;}
+.market-wrap .market-list .content .info .info-c{display: inline-block;margin-left: 1.2rem;}
+
+.top-btn{position: absolute;bottom: .8rem;right: .4rem;width: 1.16rem;z-index: 99;display: none;}
+/*market list html e*/
+
+/*  goldSever.html ��ʽ start */
+
+.head-top {
+	height: 60px;
+	background-color: #3bb650;
+}
+
+.main-cont {
+	position: relative
+}
+
+.cont-text {
+	position:absolute;
+	height: 74px;
+	padding: 28px 5px 0;
+    box-sizing: border-box;
+    bottom: 8px;
+    width: 100%;
+    left: 0;
+}
+.header-banner{
+	position: relative;
+}
+
+.text-icon {
+	position: absolute;
+	width: 66.66%;
+	height: 100%;	
+	background: url(../images/icon-img.png) left center no-repeat;
+	background-size: 90% auto;
+	top: -2px;
+	left: 10px;
+}
+.cont-text-small{
+	position: relative;
+	font-size: 1.2rem;
+	 color: #fff;
+	 background-color: #000;
+	 padding: 2px 6px 4px 20%;
+	 opacity:.3;
+	 height: 44px;
+    overflow: hidden;
+    box-sizing: border-box;   
+}
+.text-list{
+	line-height: 20px;
+	position: relative;
+}
+.text-list li{
+	height: 40px;
+}
+.cont-foot{ background-image: url(../images/cont-foot.png);background-repeat: no-repeat; background-size: 100%; height: 135px; padding-top: 36px; box-sizing: border-box;}
+.foot-btn{
+	background: url(../images/cont-foot-btn.png) center no-repeat;
+	width: 66.66%;
+	height: 60px;
+	position: absolute;
+    left: 50%;
+    margin-left: -33.33%;
+    bottom: 3.2rem;
+	color: #cb8a02;
+	font-size: 16px;
+	text-align: center;
+	background-size: 100% auto;
+	padding-top: 30px;
+	box-sizing: border-box;
+}
+.go-top{
+	width: 51px;
+	height: 51px;
+	background-color: #fff;
+	position: fixed;
+	right: 20px;
+	bottom: 100px;
+	border-radius: 51px;
+	display: none;
+}
+.go-top:after, .go-top i:before,.go-top i:after{
+	content: '';
+	position: absolute;
+	background-color: #f6cb49;
+	top: 10px;
+	left: 11px;
+	width: 28px;
+	height: 2px;
+}
+.go-top i{
+	position: absolute;
+	width: 2px;
+	height: 24px;
+	background-color: #f6cb49;
+	top: 18px;
+	left: 24px;
+}
+.go-top i:before{
+	width: 12px;
+	top: 2px;
+    left: -9px;
+	transform:rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+}
+.go-top i:after{
+	width: 12px;
+	transform:rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	top: 2px;
+    left: -1px;
+}
+@media screen and (max-width: 370px) {
+	.cont-text-small{
+		height: 52px;
+	}
+	.text-list{
+		line-height: 16px;
+	}
+	.text-list li{
+		height: 48px;
+	}
+	.cont-text{
+		height: 76px;
+	}
+}
+/*  goldSever.html ��ʽ end */

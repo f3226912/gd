@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PreSale">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			pre_sale 
+		WHERE 
+			id=:id
+	]]>
+	</sql>
+	
+	<sql id="updateDTO">
+	<![CDATA[
+	    UPDATE 
+	    	pre_sale t 
+	    SET 
+			t.orderStatus=:orderStatus 
+	    WHERE 
+	    	t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="updateStatusByOrderNo">
+	<![CDATA[
+	    UPDATE 
+	    	pre_sale t 
+	    SET 
+			t.orderStatus=:orderStatus 
+	    WHERE 
+	    	t.orderNo= :orderNo LIMIT 1
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			pre_sale t 
+		WHERE 1=1 
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType like "%":orderType"%" 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" >
+			      AND t.orderStatus = :orderStatus 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if QRCode?exists && QRCode!="" >
+			      AND t.QRCode = :QRCode 
+			</#if>
+			<#if QRCodeImgUrl?exists && QRCodeImgUrl!="" >
+			      AND t.QRCodeImgUrl = :QRCodeImgUrl 
+			</#if> 
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.id,t.orderNo,t.orderSource,t.channel,t.orderType,t.sumAmount,t.deductibleAmount, t.subAmount,
+			t.amountPayable,t.orderStatus,t.memberId,t.orderTime,t.shopsName,t.businessId,t.marketId,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,t.QRCode,t.QRCodeImgUrl 
+		FROM 
+			pre_sale t
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getByOrderNo">
+	<![CDATA[
+		SELECT 
+			t.id,t.orderNo,t.orderSource,t.channel,t.orderType,t.sumAmount,t.deductibleAmount, t.subAmount,
+			t.amountPayable,t.orderStatus,t.memberId,t.orderTime,t.shopsName,t.businessId,t.marketId,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,t.QRCode,t.QRCodeImgUrl 
+		FROM 
+			pre_sale t 
+		WHERE 1 = 1
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if qcCode?exists && qcCode!="" >
+			      AND t.QRCode = :qcCode 
+			</#if>
+		LIMIT 1
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.id,t.orderNo,t.orderSource,t.channel,t.orderType,t.sumAmount,t.deductibleAmount, t.subAmount,
+			t.amountPayable,t.orderStatus,t.memberId,t.orderTime,t.shopsName,t.businessId,t.marketId,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,t.QRCode,t.QRCodeImgUrl 
+		FROM 
+			pre_sale t 
+		WHERE 1=1 
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType like "%":orderType"%" 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" >
+			      AND t.orderStatus = :orderStatus 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if QRCode?exists && QRCode!="" >
+			      AND t.QRCode = :QRCode 
+			</#if>
+			<#if QRCodeImgUrl?exists && QRCodeImgUrl!="" >
+			      AND t.QRCodeImgUrl = :QRCodeImgUrl 
+			</#if> 
+		ORDER BY 
+			t.updateTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.id,t.orderNo,t.orderSource,t.channel,t.orderType,t.sumAmount,t.deductibleAmount, t.subAmount,
+			t.amountPayable,t.orderStatus,t.memberId,t.orderTime,t.shopsName,t.businessId,t.marketId,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,t.QRCode,t.QRCodeImgUrl 
+		FROM 
+			pre_sale t 
+		WHERE 1=1 
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType like "%":orderType"%" 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" >
+			      AND t.orderStatus = :orderStatus 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if QRCode?exists && QRCode!="" >
+			      AND t.QRCode = :QRCode 
+			</#if>
+			<#if QRCodeImgUrl?exists && QRCodeImgUrl!="" >
+			      AND t.QRCodeImgUrl = :QRCodeImgUrl 
+			</#if> 
+		ORDER BY 
+			t.updateTime desc  
+	]]>
+	</sql>
+	
+	
+	<sql id="getOverPreSale">
+	<![CDATA[
+		SELECT
+			id
+		FROM
+			pre_sale ps
+		WHERE
+			orderStatus = 1
+		AND orderNo NOT IN (
+				SELECT
+					orderNo
+				FROM
+					order_baseinfo
+			)
+		AND createTime < :afterSubTime
+	]]>
+	</sql>
+	
+</sqlMap>

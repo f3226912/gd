@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReMemberMarket">
+ 
+	<!-- 全查找 -->
+	<sql id="getAll">
+	<![CDATA[
+		SELECT 
+			memberId,marketId
+		FROM 
+			re_member_market  t 
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	 
+	<!-- 全查找 -->
+	<sql id="getBySearch">
+	<![CDATA[
+		SELECT 
+			memberId,marketId
+		FROM 
+			re_member_market  t 
+		WHERE  1=1 
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId= :memberId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId= :marketId
+			</#if>
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<!-- 全查找 -->
+	<sql id="getByDTO">
+	<![CDATA[
+		SELECT 
+			t.memberId, t.marketId, m.marketName
+		FROM 
+			re_member_market t, market m
+		WHERE  t.marketId = m.id
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId= :memberId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId= :marketId
+			</#if>
+	]]>
+	</sql>
+	 
+	<!-- 统计总共记录数  -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			re_member_market  t 
+		WHERE  1=1 
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId= :memberId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId= :marketId
+			</#if>
+	]]>
+	</sql>
+	
+	<!-- 增加记录，注意date类型的，使用  _string 字段的值，代替date类型的值  -->
+	<sql id="addReMemberMarket">
+	<![CDATA[
+	    INSERT INTO  
+	    	re_member_market
+	    	(
+			memberId,marketId
+			)
+	    VALUES
+	    	(
+			:memberId,:marketId
+			)
+	]]>
+	</sql>
+	
+	<!-- 根据 memberId，marketId 删除记录 -->
+	<sql id="deleteReMemberMarket">
+	<![CDATA[
+	DELETE FROM 
+		re_member_market
+    WHERE 
+    	memberId=:memberId 
+    	<#if marketId?exists && marketId!="" >
+		      AND t.marketId= :marketId
+		</#if>
+	]]>
+	</sql>
+	
+	
+	<!-- 暂时只做新增和删除，不做更新 -->
+	<sql id="updateMemberBaseinfo">
+	<![CDATA[
+	    
+	]]>
+	</sql>
+	
+</sqlMap>

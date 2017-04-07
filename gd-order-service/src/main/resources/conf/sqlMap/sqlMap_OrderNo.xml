@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderNo">
+	<sql id="getOrderNo">
+	  SELECT nextval(:orderNo);
+	</sql>
+	
+</sqlMap>

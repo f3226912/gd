@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>${maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- spring上下文 -->
+	<bean class="com.gudeng.commerce.gd.order.util.SpringContextUtil" />
+	
+	<bean id="baseDao" class="com.gudeng.commerce.gd.order.dao.impl.BaseDaoImpl" />
+	<bean id="orderCacheBo" class="com.gudeng.commerce.gd.order.bo.OrderCacheBo"/>
+	
+	<bean id="demoService" class="com.gudeng.commerce.gd.order.service.impl.DemoServiceImpl"/>
+	
+	<bean id="orderBaseinfoService" class="com.gudeng.commerce.gd.order.service.impl.OrderBaseinfoServiceImpl"/>
+	<bean id="orderProductDetailService" class="com.gudeng.commerce.gd.order.service.impl.OrderProductDetailServiceImpl"/>
+	<bean id="paySerialnumberService" class="com.gudeng.commerce.gd.order.service.impl.PaySerialnumberServiceImpl"/>
+	<bean id="preSaleDetailService" class="com.gudeng.commerce.gd.order.service.impl.PreSaleDetailServiceImpl"/>
+	<bean id="preSaleService" class="com.gudeng.commerce.gd.order.service.impl.PreSaleServiceImpl"/>
+	<bean id="subLimitRuleService" class="com.gudeng.commerce.gd.order.service.impl.SubLimitRuleServiceImpl"/>
+	
+	<!-- 补贴 -->
+	<bean id="subAuditService" class="com.gudeng.commerce.gd.order.service.impl.SubAuditServiceImpl" />
+	
+	<!-- 审核日志 -->
+	<bean id="auditLogService" class="com.gudeng.commerce.gd.order.service.impl.AuditLogServiceImpl" />
+	
+	<!-- 补贴规则 -->
+	<bean id="subPayRuleService" class="com.gudeng.commerce.gd.order.service.impl.SubPayRuleServiceImpl"></bean>
+	<!-- 补贴辅助类 -->
+	<bean id="subHelpService" class="com.gudeng.commerce.gd.order.service.impl.SubHelpServiceImpl"></bean>
+	
+	<!-- 出场 -->
+	<bean id="orderOutmarketinfoService" class="com.gudeng.commerce.gd.order.service.impl.OrderOutmarketinfoServiceImpl" />
+	
+	<!-- 过磅 -->
+	<bean id="weighCarService" class="com.gudeng.commerce.gd.order.service.impl.WeighCarServiceImpl" />
+	
+	<!-- 提现信息查询服务 -->
+	<bean id="cashRequestService" class="com.gudeng.commerce.gd.order.service.impl.CashRequestServiceImpl"></bean>
+	
+	<!-- 过磅 -->
+	<bean id="carWeighProService" class="com.gudeng.commerce.gd.order.service.impl.CarWeighProServiceImpl" />
+	
+	<!-- 门岗车辆 -->
+	<bean id="carBaseinfoService" class="com.gudeng.commerce.gd.order.service.impl.CarBaseinfoServiceImpl"></bean>
+	<bean id="reCarMemberService" class="com.gudeng.commerce.gd.order.service.impl.ReCarMemberServiceImpl"></bean>
+
+	<!-- 货主出场销售商品 -->
+	<bean id="salToshopsDetailService" class="com.gudeng.commerce.gd.order.service.impl.SalToshopsDetailServiceImpl"></bean>
+	
+	<!-- 任务服务 -->
+	<bean id="taskService" class="com.gudeng.commerce.gd.order.service.impl.TaskServiceImpl"></bean>
+	
+	<!-- 计算订单补贴策略类 -->
+	<bean id="orderSubAmtInvoker" class="com.gudeng.commerce.gd.order.business.sub.amount.OrderSubAmtInvoker">
+		<property name="subRuleStrategyMap">
+			<map>
+				<entry key="1" value-ref="payAmtPercentSubRuleStrategy" />
+				<entry key="2" value-ref="goodsSubRuleStrategy" />
+				<entry key="3" value-ref="weightRangeSubRuleStrategy" />
+				<entry key="4" value-ref="payAmtRangeSubRuleStrategy" />
+				<entry key="5" value-ref="gateSentryLookSubRuleStrategy" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="orderSubLimitRuleInvoker" class="com.gudeng.commerce.gd.order.business.sub.rule.OrderSubLimitRuleInvoker"></bean>
+	
+	<bean id="subCheckRuleHelp" class="com.gudeng.commerce.gd.order.business.sub.rule.SubCheckRuleHelp"></bean>
+	
+	<!-- 订单补贴服务 -->
+	<bean id="orderSubService" class="com.gudeng.commerce.gd.order.service.impl.OrderSubServiceImpl"></bean>
+	
+	<!-- 成交金额比例补贴算法 -->
+	<bean id="payAmtPercentSubRuleStrategy" class="com.gudeng.commerce.gd.order.business.sub.amount.PayAmtPercentSubRuleStrategyImpl"></bean>
+	
+	<!-- 商品补贴算法 -->
+	<bean id="goodsSubRuleStrategy" class="com.gudeng.commerce.gd.order.business.sub.amount.GoodsSubRuleStrategyImpl"></bean>
+	
+	<!-- 采购重量区间补贴算法 -->
+	<bean id="weightRangeSubRuleStrategy" class="com.gudeng.commerce.gd.order.business.sub.amount.WeightRangeSubRuleStrategyImpl"></bean>
+	
+	<!-- 采购金额区间补贴算法 -->
+	<bean id="payAmtRangeSubRuleStrategy" class="com.gudeng.commerce.gd.order.business.sub.amount.PayAmtRangeSubRuleStrategyImpl"></bean>
+	
+	<!-- 门岗目测审查补贴算法 -->
+	<bean id="gateSentryLookSubRuleStrategy" class="com.gudeng.commerce.gd.order.business.sub.amount.GateSentryLookSubRuleStrategyImpl"></bean>
+ 	
+ 	<!-- 订单维度检查链 -->
+ 	<!-- 用户间交易频率限制检查链 -->
+	<bean id="orderCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.TwoUtimesLimitCheckRuleImpl">
+		<property name="checkRule" ref="vehLimitCheckRule" />
+	</bean>
+ 	
+	<!-- 车辆限制检查链 -->
+	<bean id="vehLimitCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.VehLimitCheckRuleImpl">
+		<property name="checkRule" ref="tamountLimitCheckRule" />
+	</bean>
+	
+	<!-- 补贴额度限制检查链 -->
+	<bean id="tamountLimitCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.TamountLimitCheckRuleImpl"></bean>
+	
+	<!-- 补贴总额限制检查链 -->
+	<bean id="subTotalAmountCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.SubTotalAmountCheckRuleImpl"></bean>
+	
+	<!-- 用户维度检查链 -->
+	<!-- 白名单检查链 -->
+	<bean id="userCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.WhiteListCheckRuleImpl">
+		<property name="checkRule" ref="uamountLimitCheckRule" />
+	</bean>
+	
+	<!-- 补贴用户额度限制检查链 -->
+	<bean id="uamountLimitCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.UamountLimitCheckRuleImpl">
+		<property name="checkRule" ref="utimesLimitCheckRule" />
+	</bean>
+	
+	<!-- 补贴用户次数限制检查链 -->
+	<bean id="utimesLimitCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.UtimesLimitCheckRuleImpl"></bean>
+
+	<!-- 银行支付交易检查链 -->
+	<bean id="bankPayTransCheckRule" class="com.gudeng.commerce.gd.order.business.sub.rule.BankPayTransCheckRuleImpl"></bean>
+	
+	<!-- 入库  -->
+	<bean id="inStoreDetailService" class="com.gudeng.commerce.gd.order.service.impl.InStoreDetailServiceImpl"></bean>
+
+	<bean id="shipperService" class="com.gudeng.commerce.gd.order.service.impl.ShipperServiceImpl"></bean>
+
+	<!-- 货主入场商品 -->
+	<bean id="preWeighCarDetailService" class="com.gudeng.commerce.gd.order.service.impl.PreWeighCarDetailServiceImpl"></bean>
+	<!-- 统计信息，会员补贴信息 -->
+	<bean id="memberSubsidyService" class="com.gudeng.commerce.gd.order.service.impl.MemberSubsidyServiceImpl"></bean>
+	<!-- 交易账单服务 -->
+	<bean id="orderBillService" class="com.gudeng.commerce.gd.order.service.impl.OrderBillServiceImpl"></bean>
+	<!-- 交易账单导入文件日志记录服务 -->
+	<bean id="orderBillImportLogService" class="com.gudeng.commerce.gd.order.service.impl.OrderBillImportLogServiceImpl"></bean>
+
+	<!-- 账户信息 -->
+	<bean id="accInfoService" class="com.gudeng.commerce.gd.order.service.impl.AccInfoServiceImpl"></bean>
+
+
+	<!-- 交易流水服务 -->
+	<bean id="accTransInfoService" class="com.gudeng.commerce.gd.order.service.impl.AccTransInfoServiceImpl"></bean>
+			   
+
+	<!-- 订单号生成服务 -->
+	<bean id="orderNoService" class="com.gudeng.commerce.gd.order.service.impl.OrderNoServiceImpl"></bean>
+			   
+
+	<!-- 补贴总金额服务 -->
+	<bean id="subAmountService" class="com.gudeng.commerce.gd.order.service.impl.SubAmountServiceImpl"></bean>
+	
+	<!-- 产品出货信息服务 -->
+	<bean id="productDeliveryDetailService" class="com.gudeng.commerce.gd.order.service.impl.ProductDeliveryDetailServiceImpl"></bean>
+	
+	<!-- 产品出货信息服务 -->
+	<bean id="enPostLogService" class="com.gudeng.commerce.gd.order.service.impl.EnPostLogServiceImpl"></bean>
+
+	<!-- 订单客户货信息服务 -->
+	<bean id="reOrderCustomerService" class="com.gudeng.commerce.gd.order.service.impl.ReOrderCustomerServiceImpl"></bean>
+	
+	<!-- 促销信息服务 -->
+	<bean id="promotionInfoService" class="com.gudeng.commerce.gd.order.service.impl.PromotionInfoServiceImpl"></bean>
+	
+	<!-- 订单收货信息服务 -->
+	<bean id="orderDeliveryAddressService" class="com.gudeng.commerce.gd.order.service.impl.OrderDeliveryAddressServiceImpl"></bean>
+
+	<!-- 订单支付结果任务 -->
+	<bean id="payResultService" class="com.gudeng.commerce.gd.order.service.impl.PayResultServiceImpl"></bean>
+	
+	<!-- 订单发票 -->
+	<bean id="invoiceInfoService" class="com.gudeng.commerce.gd.order.service.impl.InvoiceInfoServiceImpl"></bean>
+	<!-- 订单活动信息服务 -->
+	<bean id="orderActRelationService" class="com.gudeng.commerce.gd.order.service.impl.OrderActRelationServiceImpl"></bean>
+	
+	<bean id="cartInfoService" class="com.gudeng.commerce.gd.order.service.impl.CartInfoServiceImpl"></bean>
+	<!-- 订单费用项明细服务 -->
+	<bean id="orderFeeItemDetailService" class="com.gudeng.commerce.gd.order.service.impl.OrderFeeItemDetailServiceImpl"></bean>
+	<!-- 银行卡信息管理 -->
+	<bean id="bankInformationService" class="com.gudeng.commerce.gd.order.service.impl.BankInformationServiceImpl"></bean>
+	<!-- 退款服务 -->
+	<bean id="orderRefundRecordService" class="com.gudeng.commerce.gd.order.service.impl.OrderRefundRecordServiceImpl"></bean>
+</beans>

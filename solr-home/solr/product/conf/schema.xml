@@ -1,0 +1,123 @@
+<?xml version="1.0" ?>
+<schema name="mytest" version="1.1">
+  <types>  
+        <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>  
+		 
+		<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
+		
+		<fieldtype name="binary" class="solr.BinaryField"/>
+		
+		<fieldType name="sint" class="solr.TrieIntField" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+		<fieldType name="float" class="solr.TrieFloatField" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+		<fieldType name="double" class="solr.TrieDoubleField" sortMissingLast="true" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+        <fieldType name="text" class="solr.TextField" >
+		  <!-- 配置中文分词器 -->
+		   <analyzer class="org.wltea.analyzer.lucene.IKAnalyzer"/> 
+		</fieldType>
+		<fieldType name="date" class="solr.TrieDateField" sortMissingLast="true" omitNorms="true"/>
+     </types>  
+      
+	  <!-- 
+		   <field column="ID" name="id"/>  
+            <field column="cateId" name="cateId"/>  
+            <field column="businessId" name="businessId"/>  
+            <field column="name" name="name"/>  
+            <field column="price" name="price"/>  
+            <field column="priceType" name="priceType"/>  
+            <field column="unit" name="unit"/> 
+
+            <field column="roleType" name="roleType"/>  
+            <field column="mobile" name="mobile"/>  
+			
+			<field column="cateName" name="cateName"/>  
+            <field column="shopsName" name="shopsName"/>  
+            <field column="createTime" name="createTime"/>  
+			<field column="urlOrg" name="urlOrg"/>  
+			
+            <field column="businessModel" name="businessModel"/>  
+            <field column="marketId" name="marketId"/>  
+            <field column="marketName" name="marketName"/>  
+			
+			<field column="unitName" name="unitName"/> 
+            <field column="addCount" name="addCount"/> 
+            <field column="addPicUrl" name="addPicUrl"/> 
+            <field column="url170" name="url170"/> 
+			
+			 <entity name="product_price" query="select buyCountStart,buyCountEnd,price rangePrice from product_price  where productId='${product_baseinfo.productId}'">
+                <field name="buyCountStart" column="p_countStart" />
+                <field name="buyCountEnd" column="p_countEnd" />
+                <field name="rangePrice" column="p_rangePrice" />
+            </entity>
+	  -->
+	  
+     <fields>  
+	 	<field name="_version_" type="long" indexed="true" stored="true"/>
+        <field name="id" type="sint" indexed="true" stored="true" required="true" />  
+        <field name="cateId" type="sint" indexed="true" stored="true"  multiValued="true" />  
+        <field name="cateId0" type="sint" indexed="true" stored="true" />  
+        <field name="cateId1" type="sint" indexed="true" stored="true" />  
+        <field name="cateId2" type="sint" indexed="true" stored="true"  />  
+        <field name="businessId" type="sint" indexed="true" stored="true"  />  
+        <field name="price" type="double" indexed="true" stored="true"  />  
+        <field name="pricesOrder" type="double" indexed="true" stored="true"  />  
+		<field name="priceType" type="sint" indexed="false" stored="true" /> 
+		
+		<field name="unit" type="sint" indexed="false" stored="true" /> 
+		
+		<field name="roleType" type="text" indexed="true" stored="true" /> 
+		<field name="mobile" type="text" indexed="false" stored="true" /> 
+		<field name="memberGrade" type="sint" indexed="true" stored="true" /> 
+		<field name="name" type="text" indexed="true" stored="true" /> 
+		<field name="cateName" type="text" indexed="false" stored="true" /> 
+		<field name="shopsName" type="text" indexed="false" stored="true" /> 
+		<field name="createTime" type="date"   indexed="true" stored="true" /> 
+		<field name="updatePriceTime" type="date"   indexed="true" stored="true" /> 
+		<field name="updateTime" type="date"   indexed="true" stored="true" /> 
+		<field name="businessModel" type="sint"   indexed="true" stored="true" /> 
+		<field name="marketId" type="sint"   indexed="true" stored="true" /> 
+		<field name="marketName" type="text"   indexed="false" stored="true" /> 
+		<field name="urlOrg" type="text"   indexed="false" stored="true" /> 
+		
+		
+		<field name="url170" type="text"   indexed="false" stored="true" /> 
+		
+		<field name="unitName" type="text" indexed="false" stored="true" /> 
+		
+		<field name="managementType" type="sint"   indexed="true" stored="true" /> 
+		<field name="provinceId" type="sint"   indexed="true" stored="true" /> 
+		<field name="cityId" type="sint"   indexed="true" stored="true" /> 
+		<field name="areaId" type="sint"   indexed="true" stored="true" /> 
+
+	   <field name="productSign" type="string"  multiValued="true" indexed="true" stored="true"   />
+	   
+	   <field name="buyCountStart" type="double"  multiValued="true" indexed="true" stored="true"   />
+	   <field name="buyCountEnd" type="double" multiValued="true" indexed="true" stored="true"   />
+       <field name="rangePrice" type="double" multiValued="true" indexed="true" stored="true"   />
+       <field name="sales" type="double" indexed="true" stored="true"  />  
+		
+	   <field name="certifstatus" type="sint"   indexed="false" stored="true" /> 
+	   <field name="comstatus" type="sint"   indexed="false" stored="true" /> 
+	   <field name="ccstatus" type="sint"   indexed="false" stored="true" /> 
+	   <field name="cbstatus" type="sint"   indexed="false" stored="true" /> 
+
+
+     </fields>  
+
+  <uniqueKey>id</uniqueKey>
+
+ 
+ 
+ <defaultSearchField>name</defaultSearchField>  
+      
+      <solrQueryParser defaultOperator="AND"/>  
+	  
+	  <copyField source="cateId0" dest="cateId"/>  
+	  <copyField source="cateId1" dest="cateId"/>  
+	  <copyField source="cateId2" dest="cateId"/>  
+
+</schema>

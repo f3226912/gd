@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>	
+	<title>【登农批网线上交易】_即将强势登场！</title>
+	<meta name="keywords" content="谷登农批网,谷登电商,农产品交易,谷登"/>
+	<meta name="description" content="谷登农批网线上交易系统强势来袭，农产品交易买卖，一网打尽。谷登农批网提供最全农产品及商户信息，及时发布批发市场最新农产品价格和供需资讯。"/>
+	<meta name="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit">
+	<!--#include virtual="pub/head.inc"-->
+	<link rel="stylesheet" href="../v1.0/css/act/cat.css">
+</head>
+<body style="background:#3f4da4;">
+	<!--head star-->
+	<!--#include virtual="pub/head.html"-->
+	<!--head end-->
+	<!-- 主体 -->
+	<div class="main clearfix main-tl-100">
+		<div class="img01-100"></div>
+		<div class="img02-100">
+			<p class="img02-cnt">谷登农批线上交易系统是针对农批市场交易<span style="color:#fff600;">最便捷、专业、标准</span>的交易系统。</p>
+		</div>
+		<div class="img03-100">
+			<p class="content-cts">交易只需要通过安装<span style="color:#fff600;">APP移动端</span>即可交易。<br/>
+买家只需要安装买家版，简单注册即可开始交易。<br/>
+卖家只需要安装卖家版，注册认证后，发布相关产品即可以开始交易。</p>
+		</div>
+		
+	</div>
+	<!--#include virtual="pub/foot.html"-->
+	
+</body>
+</html>

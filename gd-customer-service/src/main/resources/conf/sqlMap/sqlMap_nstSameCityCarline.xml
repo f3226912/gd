@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NstSameCityCarline">
+    <!-- 根据线路ID获取线路详情  -->
+	<sql id="getSameCityCarLine">                 
+ 	<![CDATA[
+ 		SELECT                             
+ 	          t.id,t.carId,t.memberId,t.s_provinceId,t.s_cityId,t.s_areaId,t.s_detail,t.s_lng,t.s_lat,
+ 	          t.e_provinceId,t.e_cityId,t.e_areaId,t.e_detail,t.e_lng,t.e_lat,t.sendGoodsType,t.price,
+ 	          t.remark,t.createUserId,t.createTime,t.updateUserId,t.updateTime,c.transportCarType as transportCarTypeId,
+			(CASE WHEN c.transportCarType=0 THEN '小型面包'
+			     WHEN c.transportCarType=1 THEN '金杯'
+			     WHEN c.transportCarType=2 THEN '小型平板'
+			     WHEN c.transportCarType=3 THEN '中型平板'
+			     WHEN c.transportCarType=4 THEN '小型厢货'
+			     WHEN c.transportCarType=5 THEN '大型厢货' ELSE '不限' END)transportCarType,
+		   (CASE WHEN t.sendGoodsType = 0 THEN '零担'
+                 WHEN t.sendGoodsType = 1 THEN '整车'
+                 ELSE '不限' END)sendGoodsTypeString,
+            c.maxLoad,c.carLength,
+          (CASE WHEN b.userType=1 THEN b.realName ELSE
+                (SELECT mc.linkMan FROM member_certifi mc WHERE mc.memberId=t.memberId)
+          END)realName,
+	      <#if s_lat?exists && s_lat!="" && s_lng?exists && s_lng!="">
+				 ROUND(6378.138*2*ASIN(SQRT(POW(SIN(
+				 (:s_lat*PI()/180-t.s_lat*PI()/180)/2),2)+COS(:s_lat*PI()/180)*COS(t.s_lat*PI()/180)*
+ 				 POW(SIN( (:s_lng*PI()/180-t.s_lng*PI()/180)/2),2))),2) AS distance,
+		 </#if>
+		 (SELECT  IFNULL(n.nstStatus,0) FROM member_certifi n WHERE n.memberId=c.userId LIMIT 1)  isCertify,
+		 b.mobile,b.andupurl
+ 		FROM                               
+ 			nst_same_city_carline t   LEFT JOIN cars c ON t.carId=c.id
+ 			LEFT JOIN member_baseinfo b ON b.memberId=t.memberId                   
+ 		WHERE (t.isDeleted=0 or t.isDeleted is null)  AND t.id=:id                    
+ 	]]>                                  
+ 	</sql>         
+ 	
+ <!-- 根据当前APP用户查询车牌号-->
+ <sql id="getCarNumbers">   
+   <![CDATA[ 
+       SELECT t.carNumber,t.id AS carId
+       FROM cars t 
+	   WHERE t.userId=:userId
+	   AND IFNULL(t.isDeleted,0) =0
+	   AND t.transportType =1
+	   GROUP BY t.carNumber
+   ]]>  
+ </sql>
+ 
+ <sql id="addNstSameCityCarLineDTO">
+	<![CDATA[
+	    INSERT INTO  nst_same_city_carline
+	        (
+	          carId,memberId,s_provinceId,s_cityId,s_areaId,s_detail,s_lng,s_lat,
+	          e_provinceId,e_cityId,e_areaId,e_detail,e_lng,e_lat,sendGoodsType,
+	          price,remark,createUserId,createTime,updateUserId,updateTime,isDeleted     
+              )
+	        values
+	        (
+              :carId,:memberId,:s_provinceId,:s_cityId,:s_areaId,:s_detail,:s_lng,:s_lat,
+              :e_provinceId,:e_cityId,:e_areaId,:e_detail,:e_lng,:e_lat,:sendGoodsType,
+              :price,:remark,:createUserId,NOW(),:updateUserId,NOW(),0                 
+                         
+              )
+	        
+	]]>
+	</sql>
+	
+	<sql id="queryLastNstSameCityCarLineDTO">  
+	 	<![CDATA[
+	 	    SELECT t.id
+			FROM nst_same_city_carline t 
+			WHERE t.memberId=:memberId
+			AND IFNULL(t.isDeleted,0)=0
+			ORDER BY t.createTime DESC
+			LIMIT 1
+	   ]]>
+	</sql>
+	 	
+	
+	<sql id="updateNstSameCityCarLineDTO">  
+	 	<![CDATA[
+	 	UPDATE nst_same_city_carline
+			SET carId =:carId,
+			 s_provinceId =:s_provinceId,
+			 s_cityId =:s_cityId,
+			 s_areaId =:s_areaId,
+			 s_detail =:s_detail,
+			 s_lng =:s_lng,
+			 s_lat =:s_lat,
+			 e_provinceId =:e_provinceId,
+			 e_cityId =:e_cityId,
+			 e_areaId =:e_areaId,
+			 e_detail =:e_detail,
+			 e_lng =:e_lng,
+			 e_lat =:e_lat,
+			 sendGoodsType =:sendGoodsType,
+			 price =:price,
+			 remark =:remark,
+			 updateUserId =:updateUserId,
+			 updateTime = NOW()
+		WHERE
+			 id = :id
+	 	]]>
+ 	</sql>
+	
+	<!-- 删除线路-->
+	<sql id="deleteNstSameCityCarLineDTO">
+	   <![CDATA[
+	      UPDATE nst_same_city_carline SET isDeleted='1' WHERE id=:id
+	   ]]>
+	</sql>
+	
+	
+	<!-- 同城找车查询 同城线路搜索 记录数-->
+	<sql id="queryNstSameCityCarLineCount">
+	  <![CDATA[
+	        SELECT count(p.id)
+			FROM(
+			SELECT t.id,b.realName,b.mobile,t.s_detail,t.e_detail, c.transportCarType as transportCarTypeId,
+			(CASE WHEN c.transportCarType=0 THEN '小型面包'
+			     WHEN c.transportCarType=1 THEN '金杯'
+			     WHEN c.transportCarType=2 THEN '小型平板'
+			     WHEN c.transportCarType=3 THEN '中型平板'
+			     WHEN c.transportCarType=4 THEN '小型厢货'
+			     WHEN c.transportCarType=5 THEN '大型厢货' ELSE '不限' END)transportCarType,
+			     t.updateTime,t.price,c.carLength,t.carId,
+			     (CASE WHEN t.sendGoodsType=0 THEN '零担'
+			          WHEN t.sendGoodsType=1 THEN '整车' ELSE '不限' END)sendGoodsType,
+			     t.remark,c.maxLoad,
+			    a.area AS cityName,
+			    t.e_provinceId,t.e_cityId,t.e_areaId,t.s_provinceId,t.s_cityId,t.s_areaId 
+			FROM 
+			  nst_same_city_carline t LEFT JOIN AREA a ON t.s_cityId=a.areaID
+			  LEFT JOIN member_baseinfo b ON t.memberId=b.memberId 
+			  LEFT JOIN cars c ON t.carId=c.id
+			  WHERE IFNULL(t.isDeleted,0) =0
+			   AND  c.transportType =1
+			   AND IFNULL(c.isDeleted,0)=0)p
+			 WHERE 1=1 
+			 <#if s_provinceId?exists && s_provinceId!="">
+			   AND p.s_provinceId =:s_provinceId
+			 </#if>
+			 <#if s_cityId?exists && s_cityId!="" && s_cityId!="0">
+			   AND p.s_cityId =:s_cityId
+			 </#if>
+			 <#if s_areaId?exists && s_areaId!="" && s_areaId!="0">
+			      AND p.s_areaId =:s_areaId
+			   </#if>
+			 <#if e_provinceId?exists && e_provinceId!="">
+			   AND p.e_provinceId =:e_provinceId
+			 </#if>
+			 <#if e_cityId?exists && e_cityId!="" && e_cityId!="0">
+			   AND p.e_cityId =:e_cityId
+			 </#if>
+			 
+			 <#if e_areaId?exists && e_areaId!="" && e_areaId!="0">
+			    AND p.e_areaId =:e_areaId
+			 </#if>
+			 
+			  <#if transportCarTypeId?exists && transportCarTypeId!="" >
+			   AND p.transportCarTypeId =:transportCarTypeId
+			 </#if>
+			 <#if minLoad?exists && minLoad!="" >
+			   AND p.maxLoad >=:minLoad
+			 </#if>
+			 <#if maxLoad?exists && maxLoad!="" >
+			   AND p.maxLoad <=:maxLoad
+			 </#if>
+	  ]]>
+	</sql>
+	
+	<!-- 同城找车查询 同城线路搜索 列表-->
+	<sql id="queryNstSameCityCarLineList">
+	   <![CDATA[
+	        SELECT p.*
+			FROM(
+			SELECT t.id,
+			(CASE WHEN b.userType=1 THEN b.realName ELSE
+                (SELECT mc.linkMan FROM member_certifi mc WHERE mc.memberId=t.memberId)
+             END)realName,
+			b.mobile,t.s_detail,t.e_detail, c.transportCarType as transportCarTypeId,
+			(CASE WHEN c.transportCarType=0 THEN '小型面包'
+			     WHEN c.transportCarType=1 THEN '金杯'
+			     WHEN c.transportCarType=2 THEN '小型平板'
+			     WHEN c.transportCarType=3 THEN '中型平板'
+			     WHEN c.transportCarType=4 THEN '小型厢货'
+			     WHEN c.transportCarType=5 THEN '大型厢货' ELSE '不限' END)transportCarType,
+			   <#if s_lat?exists && s_lat!="" && s_lng?exists && s_lng!="">
+				 ROUND(6378.138*2*ASIN(SQRT(POW(SIN(
+				 (:s_lat*PI()/180-t.s_lat*PI()/180)/2),2)+COS(:s_lat*PI()/180)*COS(t.s_lat*PI()/180)*
+ 				 POW(SIN( (:s_lng*PI()/180-t.s_lng*PI()/180)/2),2))),2) AS distance,
+		       </#if>
+			     t.updateTime,t.price,c.carLength,t.carId,
+			     (CASE WHEN t.sendGoodsType=0 THEN '零担'
+			          WHEN t.sendGoodsType=1 THEN '整车' ELSE '不限' END)sendGoodsType,
+			     t.remark,c.maxLoad,
+			     a.area AS cityName,
+			     t.e_provinceId,t.e_cityId,t.e_areaId,t.s_provinceId,t.s_cityId,t.s_areaId,
+			     (SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t.s_areaId)s_city_area,
+            (SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t.e_areaId)e_city_area,
+            (SELECT  IFNULL(n.nstStatus,0) FROM member_certifi n WHERE n.memberId=c.userId LIMIT 1)  isCertify, 
+            b.andupurl,t.memberId,t.createUserId
+			FROM 
+			  nst_same_city_carline t LEFT JOIN AREA a ON t.s_cityId=a.areaID
+			  LEFT JOIN member_baseinfo b ON t.memberId=b.memberId 
+			  LEFT JOIN cars c ON t.carId=c.id
+			  WHERE IFNULL(t.isDeleted,0) =0
+			   AND  c.transportType =1
+			   AND IFNULL(c.isDeleted,0)=0)p
+			 WHERE 1=1
+			 <#if s_provinceId?exists && s_provinceId!="">
+			   AND p.s_provinceId =:s_provinceId
+			 </#if>
+			 <#if s_cityId?exists && s_cityId!="" && s_cityId !="0">
+			   AND p.s_cityId =:s_cityId
+			 </#if>
+			 <#if s_areaId?exists && s_areaId!="" && s_areaId !="0">
+			      AND p.s_areaId =:s_areaId
+			   </#if>
+			 <#if e_provinceId?exists && e_provinceId!="">
+			   AND p.e_provinceId =:e_provinceId
+			 </#if>
+			 <#if e_cityId?exists && e_cityId!="" && e_cityId !="0">
+			   AND p.e_cityId =:e_cityId
+			 </#if>
+			 
+			 <#if e_areaId?exists && e_areaId!="" && e_areaId !="0">
+			    AND p.e_areaId =:e_areaId
+			 </#if>
+			    
+			  <#if transportCarTypeId?exists && transportCarTypeId!="" >
+			   AND p.transportCarTypeId =:transportCarTypeId
+			 </#if>
+			 <#if minLoad?exists && minLoad!="" >
+			   AND p.maxLoad >=:minLoad
+			 </#if>
+			 <#if maxLoad?exists && maxLoad!="" >
+			   AND p.maxLoad <=:maxLoad
+			 </#if>
+			 ORDER BY 
+			 <#if queryFlag ='range'>
+			    p.distance ASC
+			 </#if>
+			 <#if queryFlag ='time'>
+			    p.updateTime desc
+			 </#if>
+            <#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+
+	        
+	   ]]>
+	</sql>
+	
+	<!-- 根据中文城市查询 -->
+	<sql id="getCityId">
+	    <![CDATA[
+	        SELECT t.areaID as sCityId,t.lng as sLng,t.lat as sLat FROM AREA t WHERE t.area=:cityName
+	    ]]>
+	</sql>
+	
+	
+	<!-- 根据城市id查询 -->
+	<sql id="getCityName">
+	    <![CDATA[
+	        SELECT t.areaID as sCityId,t.lng as sLng,t.lat as sLat,t.area as cityName FROM AREA t WHERE t.areaID=:cityId
+	    ]]>
+	</sql>
+	
+	
+	<!-- 线路管理 我发的车  记录数 -->
+	<sql id="queryMyCitylineCount">
+	
+	   <![CDATA[
+	      
+	      SELECT count(t.id)
+			FROM nst_same_city_carline t LEFT JOIN cars c ON t.carId=c.id
+			WHERE IFNULL(t.isDeleted,0) =0
+			AND IFNULL(c.isDeleted,0)=0
+			AND c.transportType='1'
+			AND t.memberId=:memberId
+	   ]]>
+	   
+	</sql>
+	
+	<!-- 线路管理 我发的车 -->
+	<sql id="queryMyCitylineList">
+	
+	   <![CDATA[
+	      
+	      SELECT t.id,t.carId,t.s_detail,t.e_detail,
+			c.transportCarType AS transportCarTypeId,
+			(CASE WHEN c.transportCarType=0 THEN '小型面包'
+			WHEN c.transportCarType=1 THEN '金杯'
+			WHEN c.transportCarType=2 THEN '小型平板'
+			WHEN c.transportCarType=3 THEN '中型平板'
+			WHEN c.transportCarType=4 THEN '小型厢货'
+			WHEN c.transportCarType=5 THEN '大型厢货' ELSE '不限' END)transportCarType,
+			c.carLength,
+			(SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t.s_areaId)s_city_area,
+            (SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t.e_areaId)e_city_area,
+            t.s_provinceId,t.s_cityId,t.s_areaId,t.s_lng,t.s_lat,
+            t.e_provinceId,t.e_cityId,t.e_areaId,t.e_lng,t.e_lat,t.sendGoodsType,
+            t.price,t.remark,c.carNumber
+			FROM nst_same_city_carline t LEFT JOIN cars c ON t.carId=c.id
+			WHERE IFNULL(t.isDeleted,0)=0
+			AND IFNULL(c.isDeleted,0)=0
+			AND c.transportType='1'
+			AND t.memberId=:memberId
+			ORDER BY t.updateTime DESC
+			LIMIT :startRow,:endRow
+	   ]]>
+	   
+	</sql>
+	
+	
+	<!-- 同城发布线路 匹配货源 查询货物列表 -->
+	<sql id="queryCityCarGoodslineList">
+	   
+	   <![CDATA[
+	       SELECT p.*
+			FROM(SELECT m.id,
+		 <#if s_lat?exists && s_lat!="" && s_lng?exists && s_lng!="">
+			 ROUND(6378.138*2*ASIN(SQRT(POW(SIN(
+			 (:s_lat*PI()/180-m.s_lat*PI()/180)/2),2)+COS(:s_lat*PI()/180)*COS(m.s_lat*PI()/180)*
+				 POW(SIN( (:s_lng*PI()/180-m.s_lng*PI()/180)/2),2))),2) AS distance,
+	     </#if>
+			m.s_provinceId,m.s_cityId,m.s_areaId,m.needCarType,m.createTime,m.f_provinceId,m.f_cityId,m.f_areaId
+			FROM  nst_same_city_address m
+			WHERE  IFNULL(m.isDeleted,'0')='0')p
+			WHERE p.createTime >= DATE_SUB(CURRENT_DATE(),INTERVAL 2 DAY)
+			AND p.s_provinceId=:s_provinceId
+			AND p.s_cityId=:s_cityId
+			AND p.s_areaId=:s_areaId
+			AND p.f_provinceId=:f_provinceId
+			AND p.f_cityId=:f_cityId
+			AND p.f_areaId=:f_areaId
+			<#if s_lat?exists && s_lat!="" && s_lng?exists && s_lng!="">
+			  AND p.distance<=5
+			</#if>
+			<#if needCarType?exists && needCarType!="" && needCarType!="6">
+			  AND p.needCarType=:needCarType
+			</#if>
+			
+			<#if carLineIds?exists && carLineIds?size gt 0 >
+			      AND p.id NOT IN
+		  			<#assign n = carLineIds?size />
+					<#if n gt 0>
+							(
+						<#list carLineIds as carLineId>
+							<#if carLineId_index != n-1>
+									${carLineId} ,
+								<#else>
+									${carLineId}
+							</#if>
+						</#list>
+							) 
+					</#if>
+			</#if>
+			
+			order by p.createTime desc
+			limit 0,5
+
+	   ]]>
+	   
+	</sql>
+	
+	
+	<!-- 同城发布货源 匹配线路 查询线路列表 -->
+	<sql id="queryCityCarGoodsMatchList">
+	   
+	   <![CDATA[
+	     
+	      SELECT p.*
+			FROM(SELECT m.id,
+		 <#if s_lat?exists && s_lat!="" && s_lng?exists && s_lng!="">
+			 ROUND(6378.138*2*ASIN(SQRT(POW(SIN(
+			 (:s_lat*PI()/180-m.s_lat*PI()/180)/2),2)+COS(:s_lat*PI()/180)*COS(m.s_lat*PI()/180)*
+				 POW(SIN( (:s_lng*PI()/180-m.s_lng*PI()/180)/2),2))),2) AS distance,
+	     </#if>
+			m.s_provinceId,m.s_cityId,m.s_areaId,c.transportCarType,m.createTime,
+			(SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=m.s_areaId)s_city_area,
+            (SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=m.e_areaId)e_city_area,
+            c.carLength,m.e_provinceId,m.e_cityId,m.e_areaId
+			FROM  nst_same_city_carline m,cars c
+			WHERE  m.carId=c.id AND IFNULL(m.isDeleted,'0')='0'
+			AND c.transportType='1' AND IFNULL(c.isDeleted,'0') ='0')p
+			WHERE p.createTime >= DATE_SUB(CURRENT_DATE(),INTERVAL 2 DAY)
+			AND p.s_provinceId=:s_provinceId
+			AND p.s_cityId=:s_cityId
+			AND p.s_areaId=:s_areaId
+			AND p.e_provinceId=:e_provinceId
+			AND p.e_cityId=:e_cityId
+			AND p.e_areaId=:e_areaId
+			<#if s_lat?exists && s_lat!="" && s_lng?exists && s_lng!="">
+			  AND p.distance<=5
+			</#if>
+			<#if transportCarType?exists && transportCarType!="" && transportCarType!="6">
+			  AND p.transportCarType=:transportCarType
+			</#if>
+			
+			<#if carLineIds?exists && carLineIds?size gt 0 >
+			      AND p.id NOT IN
+		  			<#assign n = carLineIds?size />
+					<#if n gt 0>
+							(
+						<#list carLineIds as carLineId>
+							<#if carLineId_index != n-1>
+									${carLineId} ,
+								<#else>
+									${carLineId}
+							</#if>
+						</#list>
+							) 
+					</#if>
+			</#if>
+			
+			ORDER BY p.createTime DESC
+			LIMIT 0,5
+			
+	   ]]>
+	   
+	</sql>
+	   
+	<!-- 发布货源 匹配线路后 推送消息 查看推送线路记录 -->
+	<sql id="queryCityLineListDetail">
+	   <![CDATA[
+	       
+	       SELECT t2.*,
+			c.transportCarType AS transportCarTypeId,
+			(CASE WHEN c.transportCarType=0 THEN '小型面包'
+			WHEN c.transportCarType=1 THEN '金杯'
+			WHEN c.transportCarType=2 THEN '小型平板'
+			WHEN c.transportCarType=3 THEN '中型平板'
+			WHEN c.transportCarType=4 THEN '小型厢货'
+			WHEN c.transportCarType=5 THEN '大型厢货' ELSE '不限' END)transportCarType,
+			c.carLength,t2.updateTime,
+			(SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t2.s_areaId)s_city_area,
+            (SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t2.e_areaId)e_city_area,
+            (SELECT  IFNULL(n.nstStatus,0) FROM member_certifi n WHERE n.memberId=c.userId LIMIT 1)  isCertify,
+             (CASE WHEN b.userType=1 THEN b.realName ELSE
+                (SELECT mc.linkMan FROM member_certifi mc WHERE mc.memberId=t2.memberId)
+             END)realName,t2.isDeleted,t1.distance,c.maxLoad
+			FROM nstpush_message t,nstpush_message_info t1,
+			nst_same_city_carline t2,cars c,member_baseinfo b
+			WHERE t.id=t1.messageId
+			AND t1.cl_Id=t2.id
+			AND t2.carId=c.id
+			AND t2.memberId=b.memberId
+			AND IFNULL(t.source_type,'1')='1'
+			AND IFNULL(t2.isDeleted,'0')='0'
+			AND IFNULL(c.transportType,'0')='1'
+			AND IFNULL(c.isDeleted,'0')='0'
+			AND t.id=:id
+		<#if mCity?exists && mCity!="" && mCity !=null>
+			AND t1.mCity=:mCity
+	    </#if>
+	    
+	   ]]>
+	</sql>
+	
+	
+	<!-- 发布线路 匹配货源后 推送消息 查看推送货源记录 -->
+	<sql id="queryCityGoodsListDetail">
+	   <![CDATA[
+	     
+	     SELECT t2.id,t2.memberId,
+			(CASE WHEN t2.needCarType=0 THEN '小型面包'
+			WHEN t2.needCarType=1 THEN '金杯'
+			WHEN t2.needCarType=2 THEN '小型平板'
+			WHEN t2.needCarType=3 THEN '中型平板'
+			WHEN t2.needCarType=4 THEN '小型厢货'
+			WHEN t2.needCarType=5 THEN '大型厢货' ELSE '不限' END)needCarTypeString,
+			t2.s_provinceId,t2.s_cityId,t2.s_areaId,t2.s_detail,t2.s_detailed_address,
+			t2.s_lng,t2.s_lat,t2.f_provinceId,t2.f_cityId,t2.f_areaId,t2.f_detail,
+			t2.f_detailed_address,t2.f_lat,t2.f_lng,t2.useCarTime,t2.price,t2.goodsType,
+			t2.totalWeight,t2.hundredweight,t2.totalSize,t2.mileage,t2.clients,
+			t2.nstRule,t2.assignMemberId,t2.remark,t2.releaseTime,t2.createUserId,
+			t2.createTime,t2.updateUserId,t2.updateTime,
+			(SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t2.s_areaId)s_city_area,
+            (SELECT CONCAT(a.area,b.area)
+            FROM AREA a LEFT JOIN AREA b ON a.areaID = b.father WHERE b.areaID=t2.f_areaId)e_city_area,
+            (SELECT  IFNULL(n.nstStatus,0) FROM member_certifi n WHERE n.memberId=t2.memberId LIMIT 1)  isCertify,
+             (CASE WHEN b.userType=1 THEN b.realName ELSE
+                (SELECT mc.linkMan FROM member_certifi mc WHERE mc.memberId=t2.memberId)
+             END)realName,t2.isDeleted,t1.distance
+			FROM nstpush_message t,nstpush_message_info t1,
+			nst_same_city_address t2,member_baseinfo b
+			WHERE t.id=t1.messageId
+			AND t1.mb_Id=t2.id
+			AND t2.memberId=b.memberId
+			AND IFNULL(t.source_type,'1')='1'
+			AND IFNULL(t2.isDeleted,'0')='0'
+			AND t.id=:id
+	    <#if mCity?exists && mCity!="" && mCity !=null>
+			AND t1.mCity=:mCity
+	    </#if>
+	    
+	   ]]>
+	</sql>
+	
+	<!-- 管理后台列表查询 -->
+	 <sql id="queryListForConsole">
+	<![CDATA[
+				SELECT  
+                       a.id,a.carId,a.memberId,a.s_provinceId,a.s_cityId,a.s_areaId,a.s_detail,a.s_lng,a.s_lat,
+ 	                   a.e_provinceId,a.e_cityId,a.e_areaId,a.e_detail,a.e_lng,a.e_lat,a.price,
+ 	                   a.remark,a.createUserId,a.createTime,a.updateUserId,a.updateTime,
+ 	                   (CASE WHEN a.sendGoodsType = 0 THEN '零担'
+                             WHEN a.sendGoodsType = 1 THEN '整车'
+                             ELSE '不限' END)sendGoodsTypeString,
+                       b.carLength ,b.maxLoad, b.phone, b.transportCarType AS  transportCarTypeId  , b.carNumber, 
+                       m.userType AS userType,
+                       IF (
+					m.userType = 2,
+					mc.linkMan,
+					m.realName
+				   ) AS realName,
+				   IF(
+					m.userType=2,
+					mc.mobile,
+					m.mobile
+				  ) AS mobile,
+                       e.areaName,  a.isDeleted ,
+                      (SELECT  c.companyName FROM member_certifi c WHERE c.memberId=b.userId LIMIT 1)  AS  companyName                       
+                   FROM   nst_same_city_carline a 
+                 INNER JOIN cars b on   a.carId =b.id 
+                 LEFT JOIN member_baseinfo m  on  b.userId=m.memberId
+                 LEFT JOIN member_certifi mc ON a.memberId = mc.memberId
+                 LEFT JOIN integral i   on  b.userId= i.memberId_ed
+                 LEFT JOIN area_setting e on   e.memberId  = i.memberId  
+                  
+                         WHERE 1=1
+                          <#if isDel?exists && isDel!="" >
+			      			AND a.isDeleted=1
+			     			<#else>
+			      			AND (a.isDeleted=0 or a.isDeleted is null)
+			             </#if> 
+			            <#if carType?exists && carType!="" >
+			              AND b.transportCarType =:carType
+			            </#if>
+			            <#if mobile?exists && mobile!="" >
+			              AND b.phone =:mobile
+			           </#if>
+			            <#if startDate?exists && startDate!="" >
+			              AND a.createTime >=:startDate
+			           </#if>
+			            <#if endDate?exists && endDate!="" >
+			              AND DATE_FORMAT(a.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			           </#if>
+			           	<#if userType?exists && userType!="" >
+			               AND m.userType =:userType
+			            </#if>
+			            <#if areaName?exists && areaName!="" >
+		                  and  e.areaName =:areaName 
+	                    </#if>
+	              GROUP BY  a.id  
+	              ORDER BY a.createTime DESC 
+		         LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<!--管理后台总数查询  -->
+<sql id="getTotalForConsole">
+	<![CDATA[
+		SELECT 
+		count(1)  FROM (
+		SELECT  
+	    	a.id , b.transportCarType , b.phone, a.createTime, m.userType ,e.areaName , a.isDeleted
+		 FROM    nst_same_city_carline a 
+                 INNER JOIN cars b on   a.carId =b.id 
+                 LEFT JOIN member_baseinfo m  on  b.userId=m.memberId
+                 LEFT JOIN integral i   on  b.userId= i.memberId_ed
+                 LEFT JOIN area_setting e on   e.memberId  = i.memberId
+        
+         WHERE 1=1
+                   <#if isDel?exists && isDel!="" >
+			      			AND a.isDeleted=1
+			     			<#else>
+			      			AND (a.isDeleted=0 or a.isDeleted is null)
+			             </#if> 
+			            <#if carType?exists && carType!="" >
+			              AND b.transportCarType =:carType
+			            </#if>
+			            <#if mobile?exists && mobile!="" >
+			              AND b.phone =:mobile
+			           </#if>
+			            <#if startDate?exists && startDate!="" >
+			              AND a.createTime >=:startDate
+			           </#if>
+			            <#if endDate?exists && endDate!="" >
+			              AND DATE_FORMAT(a.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			           </#if>
+			           	<#if userType?exists && userType!="" >
+			               AND m.userType =:userType
+			            </#if>
+			            <#if areaName?exists && areaName!="" >
+		                  and  e.areaName =:areaName 
+	                    </#if>
+	                     GROUP BY  a.id ) z
+	]]>
+	</sql>
+	
+	
+</sqlMap>

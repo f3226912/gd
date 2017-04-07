@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ActWechatShare">
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			openid,
+			unionid,
+			shareType,
+			createTime,
+			updateTime,
+			userid,
+			ghid,
+			activityId
+		FROM
+			act_wechat_share t
+		WHERE
+			1= 1
+		<#if openid?exists && openid!="">
+			AND openid =:openid
+		</#if>
+		<#if unionid?exists && unionid!="">
+			AND unionid = :unionid
+		</#if>
+		<#if shareType?exists && shareType!="">
+			AND shareType = :shareType
+		</#if>
+		<#if userid?exists && userid!="">
+			AND userid= :userid
+		</#if>
+		<#if ghid?exists && ghid!="">
+			AND ghid= :ghid
+		</#if>
+		<#if activityId?exists && activityId!="">
+			AND activityId= :activityId
+		</#if>
+	]]>
+	</sql>
+</sqlMap>

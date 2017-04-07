@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="WeighLog">
+	<sql id="saveWeightLog">
+	<![CDATA[
+	insert into weigh_car 
+	(memberId,carId,type,createUserId,createTime,totalWeight,status,tapWeight,totalMemberId,totalCreateTime,place,quality,allWeigh,others,carNumberImage,marketId,totalUnit) 
+	values 
+	(:memberId,:carId,:type,:createUserId,sysdate(),:totalWeight,:status,:tapWeight,:totalMemberId,:totalCreateTime,:place,:quality,:allWeigh,:others,:carNumberImage,:marketId,:totalUnit)
+	]]>
+	</sql>
+	<sql id="addProduct">
+	<![CDATA[
+	insert into pre_weighcar_detail 
+	(weighCarId,memberId,cateId,productName,unit,type,weigh,marginWeigh)
+	values
+	(:weighCarId,:memberId,:cateId,:productName,:unit,:type,:weigh,:marginWeigh)
+	]]>
+	</sql>
+	<sql id="updateProduct">
+	<![CDATA[
+	update pre_weighcar_detail set productName=:productName,weigh=:weigh,marginWeigh=:marginWeigh
+	where  pwdId=:pwdId
+	]]>
+	</sql>
+	<sql id="delProduct">
+	<![CDATA[
+	delete from pre_weighcar_detail where pwdId=:pwdId
+	]]>
+	</sql>
+	<sql id="getProductlist">
+	<![CDATA[
+	select pwdId,weighCarId,memberId,cateId,productName,purQuantity,price,unit,weigh,tradingPrice,needToPayAmount,type,createTime,createUserId,updateTime,updateUserId from pre_weighcar_detail
+	where weighCarId=:weighCarId
+	]]>
+	</sql>
+
+	<sql id="submitWeightLog">
+	<![CDATA[
+	insert into re_weighcar_business 
+	(weighCarId,businessId,createTime,createUserId)
+	VALUES 
+        <#assign n = lists?size />
+       <#list lists as list> 
+	       <#if list_index != n-1>
+							  (${list.weighCarId},${list.businessId},sysdate(),'${list.createUserId}'),
+				<#else>
+						  (${list.weighCarId},${list.businessId},sysdate(),'${list.createUserId}')
+			</#if>
+          
+       </#list>
+        ]]>
+	</sql>
+	<sql id="submitWeightLogClass">
+	<![CDATA[
+	insert into re_weighcar_business 
+	(weighCarId,categoryId,createTime,createUserId)
+	VALUES 
+	  (:weighCarId,:categoryId,sysdate(),:createUserId)
+	  ]]>
+	</sql>
+	<sql id="updateWeightCarStatus">
+	<![CDATA[
+	update weigh_car set isFinish='1' where weighCarId=:weighCarId
+	  ]]>
+	</sql>
+</sqlMap>

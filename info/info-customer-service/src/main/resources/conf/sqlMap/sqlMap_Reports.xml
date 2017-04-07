@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Reports">
+	<sql id="getPageByCondition">
+	<![CDATA[
+		SELECT
+			r.ID as id,
+			r.name,
+			r.dataSourceID as dataSourceId,
+			d.name as dataSourceName,
+			r.menuID as menuId,
+			s.menuName,
+			r.type,
+			r.state
+		FROM
+			reports r
+		LEFT JOIN
+			datasource d ON r.datasourceID = d.ID
+		LEFT JOIN
+			sysmenu s ON s.menuID = r.menuID
+		WHERE
+			1 = 1
+		<#if name?exists && name!="">
+			AND r.name like "%":name"%"
+		</#if>
+		<#if type?exists && type!="">
+			AND r.type = :type
+		</#if>
+		<#if menuId?exists && menuId!="">
+			AND r.menuID = :menuId
+		</#if>
+		<#if state?exists && state!="">
+			AND r.state = :state
+		</#if>
+		LIMIT
+			:startRow, :endRow	
+	]]>
+	</sql>
+	
+	<sql id="getTotalByCondition">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			reports r
+		WHERE
+			1 = 1
+		<#if name?exists && name!="">
+			AND r.name like "%":name"%"
+		</#if>
+		<#if type?exists && type!="">
+			AND r.type = :type
+		</#if>
+		<#if menuId?exists && menuId!="">
+			AND r.menuID = :menuId
+		</#if>
+		<#if state?exists && state!="">
+			AND r.state = :state
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="update">
+	<![CDATA[
+		UPDATE
+			reports
+		SET
+		<#if name?exists && name!="">
+			name = :name,
+		</#if>
+		<#if type?exists && type!="">
+			type = :type,
+		</#if>
+		<#if state?exists && state!="">
+			state = :state,
+		</#if>
+		<#if updateUserId?exists && updateUserId!="">
+			updateUserID = :updateUserId,
+		</#if>
+			updateTime = SYSDATE()
+		WHERE
+			ID = :id
+	]]>
+	</sql>
+	
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			r.id,
+			r.name,
+			r.dataSourceID as dataSourceId,
+			d.name as dataSourceName,
+			r.menuID as menuId,
+			s.menuName,
+			r.type,
+			r.state,
+			r.show,
+			r.parameter1,
+			r.parameter2,
+			r.parameter3,
+			r.parameter4,
+			r.parameter5,
+			r.parameter6,
+			r.parameter7,
+			r.parameter8,
+			r.parameter9,
+			r.parameter10
+		FROM
+			reports r
+		LEFT JOIN
+			datasource d ON r.datasourceID = d.ID
+		LEFT JOIN
+			sysmenu s ON s.menuID = r.menuID
+		WHERE
+			r.id = :id
+	]]>
+	</sql>
+	
+	<!-- 报表详情 -->
+	<sql id="getReportsList">
+	<![CDATA[
+				SELECT ID,NAME,menuID,TYPE,reports1.show,parameter1,parameter2,parameter3,parameter4,parameter5,parameter6,parameter7,parameter8,parameter9,parameter10,createTime FROM (SELECT  * FROM reports WHERE  menuID=:menuID AND state=1)reports1 
+		WHERE  1=1 
+			<#if reportsId?exists && reportsId!="">
+		and reports1.ID =:reportsId
+		</#if>
+		and reports1.ID 
+		IN 
+		(
+		SELECT  reportsID FROM sysrolereports 
+		WHERE  roleid IN
+		(SELECT roleId FROM  sysuserrole WHERE sysuserrole.userID IN (SELECT userID FROM sysregisteruser WHERE userCode=:userCode)) 
+		) 
+		order by reports1.createTime desc
+	]]>
+	</sql>
+		<sql id="getListByUserId">
+	<![CDATA[
+	SELECT 
+	  t.`ID`,
+	  t.`dataSourceID`,
+	  t.`name`,
+	  t.`menuID`,
+	  t.`type`,
+	  t.`state`,
+	  t.`parameter1`,
+	  t.`parameter2`,
+	  t.`parameter3`,
+	  t.`parameter4`,
+	  t.`parameter5`,
+	  t.`parameter6`,
+	  t.`parameter7`,
+	  t.`parameter8`,
+	  t.`parameter9`,
+	  t.`parameter10`,
+	  t.`createUserID`,
+	  t.`createTime`,
+	  t.`updateUserID`,
+	  t.`updateTime`,
+	  t.`show` 
+	FROM
+	  `reports` t 
+	WHERE t.`state` = 1 
+	  AND t.id IN 
+	  (SELECT 
+	    t.`reportsID` 
+	  FROM
+	    `sysrolereports` t 
+  	WHERE t.roleid IN 
+    (SELECT 
+      t.roleid 
+    FROM
+      `sysuserrole` t 
+    WHERE t.userid = :userId))
+	]]>
+	</sql>
+	
+	<!-- 交易流水图表详细内容 -->
+	<sql id="getProBszbankList">
+	<![CDATA[
+		<#if isMonth?exists && isMonth=="1">
+		 SELECT pb.ID,pb.reportsID,pb.frequency,pb.datatimes,
+		      SUM(transactionAmount) AS transactionAmount,
+			  SUM(orderNumbers) AS orderNumbers,
+			  SUM(orderAmount) AS orderAmount,
+			  SUM(transactionUsers) AS transactionUsers,
+			  SUM(newUsers) AS newUsers,
+			  SUM(oldUsers) AS oldUsers,
+			  SUM(newUserAmount) AS newUserAmount,
+			  SUM(oldUserAmount) AS oldUserAmount,
+			  SUM(newUserAvgUnitPrice) AS newUserAvgUnitPrice,
+			  SUM(oldUserAvgUnitPrice) AS oldUserAvgUnitPrice,
+			  SUM(userTradeAvg) AS userTradeAvg,
+			  SUM(usersAmount) AS usersAmount
+		 FROM pro_bszbank AS pb 
+		GROUP BY DATE_FORMAT(pb.datatimes, '%Y-%m'),pb.reportsID
+		HAVING  DATE_FORMAT(datatimes,'%Y-%m') BETWEEN :parm1 AND :parm2
+		AND pb.reportsID 
+		IN 
+		(
+		SELECT  reportsID FROM sysrolereports 
+		WHERE  roleid IN
+		(SELECT roleId FROM  sysuserrole WHERE sysuserrole.userID IN (SELECT userID FROM sysregisteruser WHERE userCode=:userCode))
+		) 
+		ORDER BY pb.datatimes ASC
+		<#else> 
+		SELECT * FROM pro_bszbank WHERE pro_bszbank.status=1 
+		AND DATE_FORMAT(pro_bszbank.datatimes, '%Y-%m-%d')>=DATE_FORMAT(:parm1, '%Y-%m-%d') AND DATE_FORMAT(pro_bszbank.datatimes, '%Y-%m-%d')<=DATE_FORMAT(:parm2, '%Y-%m-%d')
+		<#if reportsId?exists && reportsId!="">
+		and pro_bszbank.reportsID =:reportsId
+		</#if>
+		AND pro_bszbank.reportsID 
+		IN 
+		(
+		SELECT  reportsID FROM sysrolereports 
+		WHERE  roleid IN
+		(SELECT roleId FROM  sysuserrole WHERE sysuserrole.userID IN (SELECT userID FROM sysregisteruser WHERE userCode=:userCode))
+		) 
+		ORDER BY pro_bszbank.datatimes ASC
+		</#if>
+	]]>
+	</sql>
+	
+	<!-- 百度统计图表详细内容 -->
+	<sql id="getbaiduList">
+	<![CDATA[
+		<#if isMonth?exists && isMonth=="1">
+		SELECT 
+		  pb.ID,
+		  pb.reportsID,
+		  pb.frequency,
+		  pb.datatimes,
+		  SUM(UVcount) AS UVcount,
+		  SUM(PVcount) AS PVcount,
+		  SUM(IPcount) AS IPcount,
+		  SUM(PVcount)/SUM(UVcount) AS avvisit,
+		  SUM(newuser)
+		FROM
+		  pro_baidu AS pb 
+		GROUP BY DATE_FORMAT(pb.datatimes, '%Y-%m'),pb.reportsID
+		HAVING  DATE_FORMAT(datatimes,'%Y-%m') BETWEEN :parm1 AND :parm2
+		AND pb.reportsID 
+		IN 
+		(
+		SELECT  reportsID FROM sysrolereports 
+		WHERE  roleid IN
+		(SELECT roleId FROM  sysuserrole WHERE sysuserrole.userID IN (SELECT userID FROM sysregisteruser WHERE userCode=:userCode))
+		) 
+		ORDER BY pb.datatimes ASC
+		<#else> 
+		SELECT * FROM pro_baidu WHERE pro_baidu.state=1 
+		AND DATE_FORMAT(pro_baidu.datatimes, '%Y-%m-%d')>=DATE_FORMAT(:parm1, '%Y-%m-%d') AND DATE_FORMAT(pro_baidu.datatimes, '%Y-%m-%d')<=DATE_FORMAT(:parm2, '%Y-%m-%d')
+		<#if reportsId?exists && reportsId!="">
+		and pro_baidu.reportsID =:reportsId
+		</#if>
+		AND pro_baidu.reportsID 
+		IN 
+		(
+		SELECT  reportsID FROM sysrolereports 
+		WHERE  roleid IN
+		(SELECT roleId FROM  sysuserrole WHERE sysuserrole.userID IN (SELECT userID FROM sysregisteruser WHERE userCode=:userCode))
+		) 
+		ORDER BY pro_baidu.datatimes ASC
+		</#if>
+	]]>
+	</sql>
+		<!-- 运营图表详细内容 -->
+	<sql id="getOperateList">
+	<![CDATA[
+	<#if isMonth?exists && isMonth=="1">
+		SELECT 
+		 po.ID,
+		  po.reportsID,
+		  po.frequency,
+		  po.datatimes,
+		  SUM(beforecomRegCount) AS beforecomRegCount,
+		  SUM(comRegCount) AS comRegCount,
+		  (SUM(comRegCount)-SUM(beforecomRegCount))/SUM(beforecomRegCount) AS regGrowthRate,
+		  SUM(beforeNsyRegCount) AS beforeNsyRegCount,
+		  SUM(nsyRegCount) AS shopRegCount,
+		  (SUM(nsyRegCount)-SUM(beforeNsyRegCount))/SUM(beforeNsyRegCount) AS growNsyRegCount
+		  
+		FROM
+		  pro_operate AS po 
+		GROUP BY DATE_FORMAT(po.datatimes, '%Y-%m'),po.reportsID
+		HAVING  DATE_FORMAT(datatimes,'%Y-%m') BETWEEN :parm1 AND :parm2
+		AND po.reportsID 
+		IN 
+		(
+		SELECT  reportsID FROM sysrolereports 
+		WHERE  roleid IN
+		(SELECT roleId FROM  sysuserrole WHERE sysuserrole.userID IN (SELECT userID FROM sysregisteruser WHERE userCode=:userCode))
+		) 
+		ORDER BY po.datatimes ASC
+		<#else> 
+		SELECT * FROM pro_operate WHERE pro_operate.state=1 
+		AND DATE_FORMAT(pro_operate.datatimes, '%Y-%m-%d')>=DATE_FORMAT(:parm1, '%Y-%m-%d') AND DATE_FORMAT(pro_operate.datatimes, '%Y-%m-%d')<=DATE_FORMAT(:parm2, '%Y-%m-%d')
+		<#if reportsId?exists && reportsId!="">
+		AND pro_operate.reportsID =:reportsId
+		</#if>
+		<#if markId?exists && markId!="">
+		AND pro_operate.markId =:markId
+		<#else> 
+		AND pro_operate.markId is null
+		</#if>
+		AND pro_operate.reportsID 
+		IN 
+		(
+		SELECT  reportsID FROM sysrolereports 
+		WHERE  roleid IN
+		(SELECT roleId FROM  sysuserrole WHERE sysuserrole.userID IN (SELECT userID FROM sysregisteruser WHERE userCode=:userCode))
+		) 
+		ORDER BY pro_operate.datatimes ASC
+			</#if>
+	]]>
+	</sql>
+	
+</sqlMap>

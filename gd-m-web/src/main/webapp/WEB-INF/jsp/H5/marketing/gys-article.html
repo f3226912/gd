@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>供应商活动详情</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+	<meta http-equiv="x-rim-auto-match" content="none">
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<script type="text/javascript" src="../../../../v1.0/js/jquery-1.8.3.min.js"></script>
+	<link rel="stylesheet" href="../../../../v1.0/css/data/base.cy.min.css">
+	<link rel="stylesheet" href="../../../../v1.0/css/marketing/gys-article.css">
+
+</head>
+<body>	
+	<div class="art-wrap" data-id='4116,30890,1,61116'>
+		<div class="area-1">
+			<img src="../../../../v1.0/images/marketing/commodity.png" width="100%">
+			<div class="info-price ui-box">
+				<span class="price ui-box ui-f1 ui-hc">活动价：<em>1000</em><i>元/吨</i></span>
+				<span id='timing' class="timing ui-box ui-hc ui-vc" data-start='2016-07-12 06:00:00' data-end='2016-07-13 22:00:00'>距结束时间<br/><i>00:00:00</i></span>
+			</div>
+		</div>
+<!-- 		<div id="text01" style="padding:1rem;width: 100%;">
+		
+		</div> -->
+		<div class="area-2">
+			<div class="ui-box ui-ver info-para">
+				<div class="ui-box para-tit">
+					<div class="ui-box ui-f1 commodity-tit ui-over-elli2">五得利玉面娃面粉-取之于民用之于民做良心商家（25kg袋装）</div>
+					<div class="ui-box commodity-ico"><span>合作社</span></div>
+				</div>
+				<div class="ui-box para-place">
+					<div class="ui-f1">库存：50吨</div>
+					<div class="ui-f1 place">广东深圳</div>
+				</div>
+			</div>
+			<div class="commodity-desc">
+				<span>商品介绍：</span>
+				<p>  包菜又名卷心菜、洋白菜、疙瘩白、包菜、圆白菜、包心菜、莲花白等。二年生草本，被粉霜。矮且粗壮一年生茎肉质，不分枝，绿色或灰绿色。基生叶多数，质厚，层层包裹成球状体，扁球形，直径10-30厘米或更大，乳白色或淡绿色；起源于地中海沿岸，</p>
+			</div>
+
+		</div>
+
+	</div>
+	<div class="go-purshase">
+		我要采购
+	</div>
+	<div class="to-order-wrap">
+		<div class="to-order ui-box ui-ver ui-hc ui-vc">
+			<div class="ui-box ui-ver order-box">
+				<div class="tit">采购量</div>
+				<div class="ui-box mid-digit ui-hc ui-vc">
+					<div class="ui-box">
+						<span class="minus">-</span>
+						<input type="tel" value="1" id="order-num">
+						<span class="plus">+</span>
+					</div>
+				</div>
+				<div class="order-btn ui-box">
+					<span class="ui-box ui-f1 ui-vc cancel">取消</span>
+					<span class="ui-box ui-f1 ui-vc comfirm">下单</span>
+				</div>
+			</div>
+			<div class="tips_pay">
+				<div class="ui-box ui-ver">
+					<div class="text ui-box ui-hc">
+						请使用农商友智能POS机支付预付款：<em>988.00元</em>
+					</div>
+					<div class="close">
+						确定
+					</div>
+				</div>
+			</div>
+			<div class="bg-gray"></div>
+		</div>
+		
+	</div>
+	
+	<script>
+		(function(){
+			var now = new Date().getTime();
+			var end = new Date($('.timing').data('end')).getTime();
+			var isNum = /^[0-9]+.?[0-9]*$/;
+			if(end-now>0){
+				$('.go-purshase').addClass('valid');
+			}
+
+			//下单show
+			$('.go-purshase').click(function(){
+				if(!$(this).hasClass('valid')){
+					return;
+				}
+				$('.to-order-wrap').show();
+			});
+			//下单hide
+			$('.bg-gray').click(function(event){
+				$('.to-order-wrap').hide();
+			});
+			$('.cancel').click(function(){
+				$('.to-order-wrap').hide();
+			});
+
+
+			//下单数量 +-
+			function orderM(){
+				var $orderNumInput = $('#order-num'),
+					$minus = $('.minus'),
+					$plus = $('.plus')
+					
+				var commodityNum = 0;
+				//减
+				$minus.on('touchstart',function(){
+					if(!checkInput()||commodityNum==0){
+						return;
+					}
+					commodityNum--;
+					$orderNumInput.val(commodityNum);
+				});
+				//加
+				$plus.on('touchstart',function(){
+					console.log(commodityNum)
+					if(!checkInput()){ //单独 ==0 通过
+						return;
+					}
+					commodityNum++;
+					$orderNumInput.val(commodityNum);
+				});
+
+				function checkInput(){
+					commodityNum = $orderNumInput.val();
+					if(!isNum.test(commodityNum)){
+						alert('输入有误');
+						return false;
+					}
+					if(commodityNum<0){
+						return false;
+					}
+					return true;
+				}
+
+			};
+			orderM();
+
+			/*
+			 * 倒计时 陈翊
+			 * 需 引入JQ
+			 * 参数说明：startDate 活动开始时间，endDate 活动结束后时间，ele 倒计时元素 ,
+			 * 			 callback 结束后运行, nostartHtml 未开始HTML, startHtml 已开始HTML,
+			 * 			 endHtml 结束开始HTML
+			 */
+			
+			var countDown =  function(opts){
+				var defaultOption = {
+					ele:'timing',
+					nostartHtml:'活动未开始',
+					startHtml:'活动正在进行',
+					endHtml:'活动已结束'
+				}
+
+				this.opts = $.extend(true, defaultOption,opts);
+				//毫秒
+				this.opts.nowDate = new Date().getTime();
+				this.opts.startDate = new Date(this.opts.startDate).getTime();
+				this.opts.endDate = new Date(this.opts.endDate).getTime();
+
+				//JQ 元素
+				this.$ele = $('#'+this.opts.ele);
+			};
+
+			countDown.prototype = {
+				init:function(){
+					//活动未开始
+					if(this.opts.nowDate-this.opts.startDate<0){
+						this.insertHtml(this.opts.nostartHtml);
+					}
+					//活动正在进行
+					if(this.opts.nowDate-this.opts.startDate>0 && this.opts.nowDate-this.opts.endDate<0){
+						this.moveTime();
+					}
+					//活动已结束
+					if(this.opts.nowDate-this.opts.endDate>0){
+						this.insertHtml(this.opts.endHtml);
+					}
+				},
+				//插入HTML
+				insertHtml:function(html){
+					this.$ele.html(html);
+				},
+				//倒计时
+			 	moveTime:function(){
+
+			 		var _self = this;
+					var timer = setInterval(function(){
+						var totalSecond = _self.opts.endDate - (new Date().getTime());
+						var html = _self.getTime(totalSecond);
+
+						_self.insertHtml(html);
+						//活动结束
+						if(totalSecond<=0){
+							clearInterval(timer);
+							_self.insertHtml(_self.opts.endHtml);
+							//执行回调函数
+							
+							if(_self.opts.callback){
+							   _self.opts.callback();
+							}
+						};
+					},1000);
+
+			 	},
+			 	getTime:function(second){
+			 		var hh = parseInt(second / 1000 / 60 / 60 % 24, 10);//计算剩余的小时数  
+	                var mm = parseInt(second / 1000 / 60 % 60, 10);//计算剩余的分钟数  
+	                var ss = parseInt(second / 1000 % 60, 10);//计算剩余的秒数  
+	                if(hh<10){ hh = "0" + hh };
+	                if(mm<10){ mm = "0" + mm };
+	                if(ss<10){ ss = "0" + ss };
+
+	                return '距结束时间<br/><i>'+hh+":"+mm+":"+ss+"</i>";
+			 	}
+			}
+
+			var ObjCountDown = new countDown({
+				ele:'timing',
+				startDate:$('.timing').data('start'),
+				endDate:$('.timing').data('end'),
+				callback:function(){
+					console.log(22)
+					$('.go-purshase').removeClass('valid');
+				}
+			})
+			ObjCountDown.init();
+
+			// var sss = window.JsBridge.encode("0");
+			// alert("encode="+sss+",decode="+window.JsBridge.decode(sss));
+			// alert(window.JsBridge.encode("111")) //下单
+			$('.order-btn .comfirm').click(function(){
+				//输入是否正确
+				var commodNum = $('#order-num').val();
+				if(!isNum.test(commodNum)){
+					alert('输入有误');
+					return false;
+				}
+				var totalPrice = commodNum*$('.price em').text();
+				var channel = null;
+				//渠道 1android 2ios
+				var u = navigator.userAgent;
+				var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+				var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+				if(isAndroid){
+					alert(11)
+					channel = 1;
+				};
+				if(isiOS){
+					alert(22)
+					channel = 2;
+				};
+				//获取ID
+				var arrId = $('.art-wrap').data('id').split(',');
+
+				var arrString = '[{"price": 100,"productId": '+arrId[3]+',"purQuantity": 8,"actType" :'+channel+'}]';
+
+				arrString = JSON.stringify(arrString);
+				var jsonA = '{'
+					+'"memberId":'+arrId[0]+','
+					+'"businessId":'+arrId[1]+','
+					+'"marketId":'+arrId[2]+','
+					+'"orderAmount":'+totalPrice+','
+					+'"payAmount":'+totalPrice+','
+					+'"channel":'+channel+','
+					+'"jProductDetails":'+arrString+'}'
+
+				// console.log(JSON.stringify(arrString))
+				// console.log()
+				var stringJs= jsonA;
+
+				alert(stringJs);
+				var strlll = window.JsBridge.encode(stringJs);
+				// $('#text01').html(strlll);
+				strlll = strlll.replace(/\+/g, "%2B");
+
+				var postData = "param=" + strlll;
+				
+				$.ajax({
+					type: 'POST',
+					url:'http://10.17.3.56:8086/gd-api/purchOrder/add',
+					data:postData,
+					success:function(data){
+						var JsonData = window.JsBridge.decode(data);
+						JsonData = JSON.parse(JsonData);
+						if(JsonData.statusCode != 0){
+							alert(JsonData.msg)
+						}else if(JsonData.statusCode == 0){
+							$('.tips_pay .text em').html(commodNum*unitPrice+"元");
+							$('.tips_pay').show();
+						}
+					},
+					error:function(){
+						alert('服务器异常');
+						$('.to-order-wrap').hide();
+					}
+				})
+
+			});
+		})()
+	</script>
+</body>
+</html>

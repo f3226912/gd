@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdGdGiftstoreEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_gd_giftstore(
+	updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+	name,remarks,updateUser,type
+	) VALUES (
+	:updateUserName,:marketId,:id,SYSDATE(),:createUserName,:createUser,SYSDATE(),
+	:name,:remarks,:updateUser,:type
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_gd_giftstore SET 
+	<#if updateUserName?exists && updateUserName!="" >
+		updateUserName=:updateUserName,
+	</#if>	
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if createUserName?exists && createUserName!="" >
+		createUserName=:createUserName,
+	</#if>	
+	<#if createUser?exists && createUser!="" >
+		createUser=:createUser,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if name?exists && name!="" >
+		name=:name,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>		
+	<#if remarks?exists && remarks!="" >
+		remarks=:remarks,
+	</#if>	
+	<#if updateUser?exists && updateUser!="" >
+		updateUser=:updateUser,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+	name,remarks,updateUser,type
+	FROM grd_gd_giftstore WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+	name,remarks,updateUser, type
+	FROM grd_gd_giftstore WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>	
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name=:name
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+	name,remarks,updateUser,type,
+	(select marketName from gudeng.market where  id=marketId) marketName
+	FROM grd_gd_giftstore WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>		
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	ORDER BY createTime Desc
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_gd_giftstore WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>		
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_gd_giftstore WHERE id=:id
+	]]>
+</sql>
+
+
+<sql id="getStoreByUserAndType">
+	<![CDATA[
+		SELECT 
+			updateUserName,marketId,id,createTime,createUserName,createUser,updateTime,
+			name,remarks,updateUser
+		from 
+			grd_gd_giftstore s 
+		where 
+			s.id in(
+					SELECT giftstoreId  from grd_gd_giftteam where id in (
+						SELECT teamId from grd_user_team where grdUserId=:grdUserId
+					)) 
+		<#if sourceType?exists && sourceType!="" >
+			AND type=:sourceType
+		</#if>
+	]]>
+</sql>
+<sql id="getGiftInStorageData">
+	<![CDATA[
+	SELECT ggl.purchaseNO,ggl.inStorageId,ggl.createTime,gg.`giftstoreId`,ggg.marketName AS marketName,ggg.name AS giftstoreName,gg.giftNo,gg.name AS giftname,gg.unit,ggl.balance AS inCount FROM `grd_gift_log` AS ggl 
+LEFT JOIN grd_gift AS gg ON  gg.`id`=ggl.`giftId`
+LEFT JOIN `grd_gd_giftstore` AS ggg ON ggg.`id`=gg.`giftstoreId`
+WHERE ggl.type=1
+<#if marketId?exists && marketId!="" >
+		AND gg.marketId=:marketId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND gg.giftstoreId=:giftstoreId
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND gg.giftNo like "%":giftNo"%"
+	</#if>
+	<#if giftName?exists && giftName!="" >
+		AND gg.name like "%":giftName"%"
+	</#if>
+	<#if inStorageStartDate?exists && inStorageStartDate!="" >
+		AND  DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') >= DATE_FORMAT(:inStorageStartDate,'%Y-%m-%d')	
+	</#if>
+    <#if inStorageEndDate?exists && inStorageEndDate!="" >
+	     AND DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') <= DATE_FORMAT(:inStorageEndDate,'%Y-%m-%d')
+	</#if>
+ORDER BY ggl.`createTime` DESC
+
+<#if startRow?exists && startRow!="" &&  endRow?exists && endRow!="">
+    LIMIT :startRow, :endRow
+    </#if>
+	]]>
+</sql>
+<sql id="getGiftInStorageDataCount">
+	<![CDATA[
+	SELECT count(1) FROM `grd_gift_log` AS ggl 
+	LEFT JOIN 
+		grd_gift AS gg 
+	ON  
+		gg.`id`=ggl.`giftId`
+	WHERE ggl.type=1
+	<#if marketId?exists && marketId!="" >
+		AND gg.marketId=:marketId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND gg.giftstoreId=:giftstoreId
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND gg.giftNo like "%":giftNo"%"
+	</#if>
+	<#if giftName?exists && giftName!="" >
+		AND gg.name like "%":giftName"%"
+	</#if>
+	<#if inStorageStartDate?exists && inStorageStartDate!="" >
+		AND  DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') >= DATE_FORMAT(:inStorageStartDate,'%Y-%m-%d')	
+	</#if>
+    <#if inStorageEndDate?exists && inStorageEndDate!="" >
+	     AND DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') <= DATE_FORMAT(:inStorageEndDate,'%Y-%m-%d')
+	</#if>		
+	]]>
+</sql>
+
+<sql id="getGiftOutStorageData">
+	<![CDATA[
+	SELECT ggg.marketName,ggg.name AS giftstoreName,ggl.`createTime`,gg.giftNo,gg.name AS giftname,gg.unit,ggl.balance AS outCount FROM `grd_gift_log` AS ggl 
+LEFT JOIN grd_gift AS gg ON  gg.`id`=ggl.`giftId`
+LEFT JOIN `grd_gd_giftstore` AS ggg ON ggg.`id`=gg.`giftstoreId`
+WHERE ggl.type=2
+ <#if marketId?exists && marketId!="" >
+		AND gg.marketId=:marketId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND gg.giftstoreId=:giftstoreId
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND gg.giftNo like "%":giftNo"%"
+	</#if>
+	<#if giftName?exists && giftName!="" >
+		AND gg.name like "%":giftName"%"
+	</#if>
+	<#if outStorageStartDate?exists && outStorageStartDate!="" >
+		AND  DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') >= DATE_FORMAT(:outStorageStartDate,'%Y-%m-%d')	
+	</#if>
+    <#if outStorageEndDate?exists && outStorageEndDate!="" >
+	     AND DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') <= DATE_FORMAT(:outStorageEndDate,'%Y-%m-%d')
+	</#if>	
+	
+ORDER BY ggl.`createTime` DESC
+	<#if startRow?exists && startRow!="" &&  endRow?exists && endRow!="">
+    LIMIT :startRow, :endRow
+    </#if>
+	]]>
+</sql>
+<sql id="getGiftOutStorageDataCount">
+	<![CDATA[
+	SELECT count(1)  FROM `grd_gift_log` AS ggl 
+	LEFT JOIN grd_gift AS gg ON  gg.`id`=ggl.`giftId`
+WHERE ggl.type=2
+<#if marketId?exists && marketId!="" >
+		AND gg.marketId=:marketId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND gg.giftstoreId=:giftstoreId
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND gg.giftNo like "%":giftNo"%"
+	</#if>
+	<#if giftName?exists && giftName!="" >
+		AND gg.name like "%":giftName"%"
+	</#if>
+	<#if outStorageStartDate?exists && outStorageStartDate!="" >
+		AND  DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') >= DATE_FORMAT(:outStorageStartDate,'%Y-%m-%d')	
+	</#if>
+    <#if outStorageEndDate?exists && outStorageEndDate!="" >
+	     AND DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') <= DATE_FORMAT(:outStorageEndDate,'%Y-%m-%d')
+	</#if>	
+	]]>
+</sql>
+
+<sql id="getGrdGdGiftData">
+	<![CDATA[
+SELECT 
+store.name AS giftstoreName,
+store.marketName AS marketName,
+   ggg.`giftNo` AS giftNO,
+   gg.`name` AS giftname,
+  ggg.unit AS unit,
+  gg.stock_total AS inCount,
+  IFNULL(ggg.newPrice,0) AS newPriceStr,
+  TRUNCATE(IFNULL(gg.`stock_total`*ggg.newPrice,0),2) AS priceStr
+  
+FROM
+  grd_gift gg 
+  LEFT JOIN grd_gd_gift ggg 
+    ON ggg.`giftNo` = gg.`giftNo` 
+  LEFT JOIN `grd_gd_giftstore` AS store 
+    ON store.`id` = gg.`giftstoreId` 
+     WHERE  1=1 and gg.`giftNo` is not null 
+    <#if marketId?exists && marketId!="" >
+		AND gg.marketId=:marketId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND gg.giftstoreId=:giftstoreId
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND gg.giftNo LIKE "%":giftNo"%"
+	</#if>
+	<#if giftName?exists && giftName!="" >
+		AND gg.name like "%":giftName"%"
+	</#if>
+	order by store.name,ggg.giftNo desc
+	<#if startRow?exists && startRow!="" &&  endRow?exists && endRow!="">
+    LIMIT :startRow, :endRow
+    </#if>
+	]]>
+</sql>
+
+<sql id="getGrdGdGiftDataCount">
+	<![CDATA[
+	SELECT 
+count(1)
+  
+FROM
+  grd_gift gg 
+     WHERE  1=1 and gg.`giftNo` is not null 
+   <#if marketId?exists && marketId!="" >
+		AND gg.marketId=:marketId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND gg.giftstoreId=:giftstoreId
+	</#if>
+		<#if giftNo?exists && giftNo!="" >
+		AND gg.giftNo LIKE "%":giftNo"%"
+	</#if>
+	<#if giftName?exists && giftName!="" >
+		AND gg.name like "%":giftName"%"
+	</#if>
+	]]>
+</sql>
+
+
+
+<sql id="getGrdGdGiftDataSum">
+	<![CDATA[
+SELECT IFNULL(SUM(ggl.balance),0) FROM grd_gift_log ggl 
+LEFT JOIN grd_gift AS gg ON  gg.`id`=ggl.`giftId`
+     WHERE  1=1
+      <#if type?exists && type!="" >
+		AND ggl.type=:type
+	</#if>
+   <#if marketId?exists && marketId!="" >
+		AND gg.marketId=:marketId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND gg.giftstoreId=:giftstoreId
+	</#if>
+	<#if giftNO?exists && giftNO!="" >
+		AND gg.giftNo like "%":giftNo"%"
+	</#if>
+	<#if giftName?exists && giftName!="" >
+		AND gg.name like "%":giftName"%"
+	</#if>
+	<#if inStorageStartDate?exists && inStorageStartDate!="" >
+		AND  DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') >= DATE_FORMAT(:inStorageStartDate,'%Y-%m-%d')	
+	</#if>
+    <#if inStorageEndDate?exists && inStorageEndDate!="" >
+	     AND DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') <= DATE_FORMAT(:inStorageEndDate,'%Y-%m-%d')
+	</#if>
+	
+	<#if outStorageStartDate?exists && outStorageStartDate!="" >
+		AND  DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') >= DATE_FORMAT(:outStorageStartDate,'%Y-%m-%d')	
+	</#if>
+    <#if outStorageEndDate?exists && outStorageEndDate!="" >
+	     AND DATE_FORMAT(ggl.`createTime`,'%Y-%m-%d') <= DATE_FORMAT(:outStorageEndDate,'%Y-%m-%d')
+	</#if>	
+	]]>
+</sql>
+
+
+
+</sqlMap>

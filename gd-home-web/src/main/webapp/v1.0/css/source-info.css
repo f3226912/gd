@@ -1,0 +1,26 @@
+@charset "utf-8";
+/*农速通货源信息*/
+*{margin:0; padding:0;}
+.clear{ clear: both;}
+.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+.clearfix{zoom:1}
+.source-info{ width: 98%; margin: 1%;}
+.cource-info-i{ margin:0; float: left; width: 100%; }
+.cource-info-box{ width: 100%; background: #118a3b; float: left; height: 38px; line-height: 38px;}
+.cource-info-l ,.cource-info-r{ padding-left:20px; float: left; font-size: 20px; color: #fff; font-family: "Microsoft Yahei";} 
+.cou-info-i{ width: 20px; height: 24px; margin-top: 8px; margin-right: 10px;}
+.cou-info-i img{ position: relative; top: 3px;}
+.cource-info-r{ padding-right:34px; float: right; text-shadow:1px 1px 3px #333; color: #fff000;}
+
+.cource-tab-100{ width: 100%;text-align: center; float: left; font-size: 12px; float: left; line-height: 28px;}
+.tab-tr-10{background: #e3e3e3; height: 36px; line-height: 36px;}
+.tab-tr-10 li{ float: left; list-style: none; width: 5.2%; white-space: nowrap; font-size: 12px; text-align: center; font-weight: bold;}
+.i-scroll-tp li{ width: 4.77%; white-space: nowrap;}
+.box-scroll-ul{ height: 280px; overflow: hidden; width: 99.88%; border: solid 1px #acd598; border-top:none;}
+.i-scroll-tr ul{float: left; width: 100%;}
+.i-scroll-tr ul li{float: left; list-style: none; width:5.2%; font-size: 12px; text-align: center; line-height: 28px;}
+.i-scroll-l ul li{ width: 4.77%; white-space: nowrap;}
+.cou-info-b{width: 26px; height: 19px; margin-right: 10px}
+.cou-info-b img{ position: relative; top: 3px;}
+.i-scroll-tr .i-scroll-wth ,.tab-tr-10 .i-scroll-wth{width:16%;white-space: nowrap; overflow:hidden; }
+

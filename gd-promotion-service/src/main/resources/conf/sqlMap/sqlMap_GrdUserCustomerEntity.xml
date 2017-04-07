@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdUserCustomerEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_user_customer(
+	grdUserId,memberId
+	) VALUES (
+	:grdUserId,:memberId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_user_customer SET 
+	grdUserId=:grdUserId
+	WHERE memberId=:memberId
+	]]>
+</sql>
+
+<sql id="insertUserCustomerLog">
+	<![CDATA[
+	INSERT INTO grd_user_customer_log(grdOldUserId,grdNewUserId,
+	memberId,createTime,createUserId,createUserName,createUserCode) 
+	VALUES (:grdOldUserId,:grdUserId,:memberId,SYSDATE(),:createUserId,:createUserName,:createUserCode)
+	]]>
+</sql>
+<sql id="getById">
+	<![CDATA[
+	SELECT mb.`mobile` AS memberMobile,
+		   mb.`realName` AS memberName,
+		   mb.`memberId` AS memberId
+		FROM gudeng.member_baseinfo mb
+		WHERE mb.`level`=2 AND mb.`status`=1
+		AND mb.`memberId`=:memberId
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT mb.`mobile` AS memberMobile,
+			   mb.`realName` AS memberName,
+			   guc.`grdUserId` AS grdUserId,
+		       mb.`memberId` AS memberId,
+			   gm.`name` AS grdUserName,
+			   gm.`mobile` AS grdMobile,
+			   gm.`marketId` AS marketId,
+			   gm.`market` AS marketName,
+			   gm.context AS remarks
+		FROM gudeng.member_baseinfo mb
+		LEFT JOIN gd_promotion.`grd_user_customer` guc ON guc.`memberId`=mb.`memberId`
+		LEFT JOIN gd_promotion.`grd_member` gm ON gm.`id`=guc.`grdUserId`
+		WHERE mb.`level`=2 AND mb.`status`=1
+		<#if marketId?exists && marketId!="" >
+			AND gm.marketId=:marketId
+		</#if>
+		<#if memberName?exists && memberName!="" >
+			AND  mb.`realName` LIKE "%":memberName"%"
+		</#if>
+		<#if memberMobile?exists && memberMobile!="" >
+			AND mb.`mobile` LIKE "%":memberMobile"%"
+		</#if>
+		<#if grdUserName?exists && grdUserName!="" >
+			AND  gm.`name` LIKE "%":grdUserName"%"
+		</#if>
+		<#if grdMobile?exists && grdMobile!="" >
+			AND gm.`mobile` LIKE "%":grdMobile"%"
+		</#if>
+		<#if memberIds?exists>
+		<#assign n = memberIds?size />
+		<#if n gt 0>
+			AND (
+			<#list memberIds as singleId>
+			<#if singleId_index != n-1>
+				mb.`memberId` =${singleId}  OR
+			<#else>
+				mb.`memberId` =${singleId}
+			</#if>
+			</#list>
+			)
+		</#if>
+	</#if>
+		ORDER BY mb.`createTime` DESC
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+		SELECT mb.`mobile` AS memberMobile,
+			   mb.`realName` AS memberName,
+			   guc.`grdUserId` AS grdUserId,
+		       mb.`memberId` AS memberId,
+			   gm.`name` AS grdUserName,
+			   gm.`mobile` AS grdMobile,
+			   gm.`marketId` AS marketId,
+			   gm.`market` AS marketName,
+			   gm.context AS remarks
+		FROM gudeng.member_baseinfo mb
+		LEFT JOIN gd_promotion.`grd_user_customer` guc ON guc.`memberId`=mb.`memberId`
+		LEFT JOIN gd_promotion.`grd_member` gm ON gm.`id`=guc.`grdUserId`
+		WHERE mb.`level`=2 AND mb.`status`=1
+		<#if marketId?exists && marketId!="" >
+			AND gm.marketId=:marketId
+		</#if>
+		<#if memberName?exists && memberName!="" >
+			AND  mb.`realName` LIKE "%":memberName"%"
+		</#if>
+		<#if memberMobile?exists && memberMobile!="" >
+			AND mb.`mobile` LIKE "%":memberMobile"%"
+		</#if>
+		<#if grdUserName?exists && grdUserName!="" >
+			AND  gm.`name` LIKE "%":grdUserName"%"
+		</#if>
+		<#if grdMobile?exists && grdMobile!="" >
+			AND gm.`mobile` LIKE "%":grdMobile"%"
+		</#if>
+		ORDER BY mb.`createTime` DESC
+		LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(1)
+		FROM gudeng.member_baseinfo mb
+		LEFT JOIN gd_promotion.`grd_user_customer` guc ON guc.`memberId`=mb.`memberId`
+		LEFT JOIN gd_promotion.`grd_member` gm ON gm.`id`=guc.`grdUserId`
+		WHERE mb.`level`=2 AND mb.`status`=1
+		<#if marketId?exists && marketId!="" >
+			AND gm.marketId=:marketId
+		</#if>
+		<#if memberName?exists && memberName!="" >
+			AND  mb.`realName` LIKE "%":memberName"%"
+		</#if>
+		<#if memberMobile?exists && memberMobile!="" >
+			AND mb.`mobile` LIKE "%":memberMobile"%"
+		</#if>
+		<#if grdUserName?exists && grdUserName!="" >
+			AND  gm.`name` LIKE "%":grdUserName"%"
+		</#if>
+		<#if grdMobile?exists && grdMobile!="" >
+			AND gm.`mobile` LIKE "%":grdMobile"%"
+		</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_user_customer WHERE grdUserId=:grdUserId
+	]]>
+</sql>
+
+
+<sql id="getGrdMemberListPage">
+	<![CDATA[
+		SELECT 
+		gm.id,gm.name,gm.mobile,gm.marketId,gm.market,gm.loginStatus,gm.createTime,gm.updateTime,
+		gm.createUserId,gm.updateUserId,gm.password,gm.status,gm.context,
+		(SELECT GROUP_CONCAT(ggg.`name`)FROM  grd_user_team gut LEFT JOIN
+			grd_gd_giftteam ggg ON ggg.`id`=gut.`teamId` WHERE gut.`grdUserId`=gm.`id`)AS giftteamName
+		FROM 
+		grd_member gm WHERE 1=1
+		AND gm.`status`='1'
+		<#if marketId?exists && marketId!="" >
+			AND gm.marketId=:marketId
+		</#if>
+		<#if grdUserName?exists && grdUserName!="" >
+			AND gm.`name` LIKE "%":grdUserName"%"
+		</#if>
+		<#if grdMobile?exists && grdMobile!="" >
+			AND gm.`mobile` LIKE "%":grdMobile"%"
+		</#if>
+		
+		ORDER BY gm.`createTime` DESC
+		LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getGrdMemberTotal">
+	<![CDATA[
+	SELECT  count(1) FROM  grd_member gm WHERE 1=1
+		AND gm.`status`='1'
+		<#if marketId?exists && marketId!="" >
+			AND gm.marketId=:marketId
+		</#if>
+		<#if grdUserName?exists && grdUserName!="" >
+			AND gm.`name` LIKE "%":grdUserName"%"
+		</#if>
+		<#if grdMobile?exists && grdMobile!="" >
+			AND gm.`mobile` LIKE "%":grdMobile"%"
+		</#if>
+		
+	]]>
+</sql>
+
+
+<sql id="getUserCustomerCount">
+	<![CDATA[
+	SELECT guc.grdUserId AS grdOldUserId FROM  grd_user_customer guc WHERE 1=1
+	AND guc.memberId = :memberId	
+	]]>
+</sql>
+
+<sql id="getUserCustomerLogList">
+<![CDATA[
+	 SELECT t.`grdOldUserId` AS grdOldUserId,
+	 		gm.`name` AS grdOldUserName,
+	 		gm.`mobile` AS grdOldUserMobile,
+			t.`grdNewUserId` AS grdNewUserId,
+			gm1.`name` AS grdNewUserName,
+	 		gm1.`mobile` AS grdNewUserMobile,
+			t.`memberId` AS memberId,
+			t.`createTime` AS createTime,
+			t.createUserId AS createUserId,
+			t.createUserName AS createUserName,
+			t.createUserCode AS createUserCode
+	FROM grd_user_customer_log t
+	LEFT JOIN grd_member gm ON gm.`id`=t.`grdOldUserId`
+	LEFT JOIN grd_member gm1 ON gm1.`id`=t.`grdNewUserId`
+	WHERE 1=1
+	AND t.`memberId`=:memberId
+	ORDER BY t.`createTime` DESC
+	]]>
+	
+	</sql>
+
+
+</sqlMap>

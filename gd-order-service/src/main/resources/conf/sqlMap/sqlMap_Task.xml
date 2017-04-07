@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Task">
+	
+	<sql id="save">
+		<![CDATA[
+		  	INSERT INTO TASK_POOL
+			  (taskType,
+				taskSubType,
+				taskStatus,
+				taskPriority,
+				orderNumber,
+				smsContent,
+				recvNum,
+				payTime,
+				extend1,
+				receiveUsers,
+				subject,
+				sendContent,
+				createTime,
+				updateTime)
+			VALUES
+			  (:taskType,
+				:taskSubType,
+				:taskStatus,
+				:taskPriority,
+				:orderNumber,
+				:smsContent,
+				:recvNum,
+				:payTimeStr,
+				:extend1,
+				:receiveUsers,
+				:subject,
+				:sendContent,
+				SYSDATE(),
+				SYSDATE())
+		]]>
+	</sql>
+	
+	<sql id="update">
+		<![CDATA[
+			UPDATE TASK_POOL t
+			SET 
+			<#if taskType?exists && taskType != "">
+			      taskType = :taskType,
+			</#if>
+			<#if taskSubType?exists && taskSubType != "">
+			      taskSubType = :taskSubType,
+			</#if>
+			<#if taskStatus?exists && taskStatus != "">
+			      taskStatus = :taskStatus,
+			</#if>
+			<#if taskPriority?exists && taskPriority != "">
+			      taskPriority = :taskPriority,
+			</#if>
+			<#if orderNumber?exists && orderNumber != "">
+			      orderNumber = :orderNumber,
+			</#if>
+			<#if errInfo?exists && errInfo != "">
+			      errInfo = :errInfo,
+			</#if>
+			<#if count?exists && count != "">
+			      count = :count,
+			</#if>
+			<#if extend1?exists && extend1 != "">
+			      extend1 = :extend1,
+			</#if>
+			runTime = SYSDATE(),
+			updateTime = SYSDATE()
+			where 1 = 1
+			<#if taskId?exists && taskId != "">
+			      and taskId = :taskId
+			</#if>
+			<#if qryTaskType?exists && qryTaskType != "">
+			      and taskType = :qryTaskType
+			</#if>
+			<#if qryTaskStatus?exists && qryTaskStatus != "">
+			      and taskStatus = :qryTaskStatus
+			</#if>
+			<#if qryMaxFailCount?exists && qryMaxFailCount != "">
+			      and (t.COUNT is null or t.COUNT < :qryMaxFailCount)
+			</#if>
+			<#if qryTaskStatusIn?exists>
+				<#assign n = qryTaskStatusIn?size />
+				<#if n gt 0>
+					and t.taskStatus in (
+					<#list qryTaskStatusIn as taskStatus>
+						<#if taskStatus_index != n-1>
+							${taskStatus} ,
+						<#else>
+							${taskStatus}
+						</#if>
+					</#list>
+					)
+				</#if>
+			</#if>
+			<#if subLimitRuleFlag?exists && subLimitRuleFlag == "1">
+			      AND (
+				    DATE_FORMAT(NOW(), '%H%i') < '0930' 
+				    AND t.`payTime` < DATE_SUB(CURDATE(), INTERVAL 1 DAY) 
+				    OR DATE_FORMAT(NOW(), '%H%i') >= '0930' 
+				    AND t.`payTime` < CURDATE()
+				  )
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="queryTaskList">
+		<![CDATA[
+		select t.*
+		  from TASK_POOL t
+		 where 1 = 1
+			<#if taskId?exists && taskId != "">
+			      and taskId = :taskId
+			</#if>
+			<#if qryTaskStatus?exists && qryTaskStatus != "">
+			      and taskStatus = :qryTaskStatus
+			</#if>
+			<#if qryTaskStatusIn?exists>
+				<#assign n = qryTaskStatusIn?size />
+				<#if n gt 0>
+					and t.taskStatus in (
+					<#list qryTaskStatusIn as taskStatus>
+						<#if taskStatus_index != n-1>
+							${taskStatus} ,
+						<#else>
+							${taskStatus}
+						</#if>
+					</#list>
+					)
+				</#if>
+			</#if>
+		order by t.taskPriority, t.createTime, t.taskId
+		]]>
+	</sql>
+	
+</sqlMap>

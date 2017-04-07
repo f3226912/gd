@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+	<title>提交订单</title>
+	<link href="lib/css/mui.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="css/submitOrder.css" />
+</head>
+<body>
+<header id="header" class="mui-bar mui-bar-nav">
+    <h1 class="mui-title">提交订单</h1>
+    <button id="return" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left"><span class="mui-icon mui-icon-left-nav"></span>返回</button>
+</header>
+<div class="order-wrap">
+	<div class="order-list-wrap">
+		<ul class="order-list OrderList">
+		</ul>
+		<div class="switch-btn open Switch" status="open">
+			共 <em id="productNum">0</em> 件商品   
+			<div class="switch-bar"><span>展开</span><div class="status-img"></div></div>
+		</div>
+	</div>
+	<div class="price-wrap">
+		<table class="price-list">
+			<tr>
+				<td>商品总价：</td>
+				<td><em class="InitPrice">0.00</em> 元</td>
+			</tr>
+			<tr class="edit-price">
+				<td>商品总价（改价）：</td>
+				<td><em class="InitPrice TotalPrice">0.00</em> 元</td>
+			</tr>
+		</table>
+	</div>
+	<p class="all-price">
+		实收款：<span class="price"><em class="InitPrice TotalPrice">0.00</em> 元</span>
+	</p>
+</div>
+<div class="footer-wrap">
+	<p class="price-bar">实收款：<em class="InitPrice TotalPrice">0.00</em>元</p>
+	<div class="tool-bar">
+		<div class="btn em GenQrcode">生成二维码</div>
+		<div id="editPrice" class="btn">改商品总价</div>
+		<a id="addPro" href="javascript:;" class="btn">添加商品</a>
+	</div>
+</div>
+<div class="mark-warp">
+	<div class="qrcode-box">
+		<div id="qrcode" class="qrcode-img" alt=""></div>
+		<p class="desc">请使用农商友扫描二维码</p>
+		<div class="tool-bar">
+			<div id="makeOrder" class="btn">继续制单</div>
+			<div id="toOrder" class="btn em">去查看订单</div>
+		</div>
+	</div>
+</div>
+
+<script id="temp" type="text/x-jquery-tmpl">
+{{each(i,d) data}}
+	<li class="list-item">
+		<a href="priceInput.html?edit=true&index=${i}">
+			<img src="images/sell/good.png" alt="" class="good-pic" />
+			<div class="good-info-wrap">
+				<p class="good-name">${d.productName}</p>
+				<p class="good-price">小计：${d.tradingPrice}元</p>
+				<div index="${i}" class="del-btn">删除</div>
+			</div>
+		</a>
+	</li>
+{{/each}}
+</script>
+	<script type="text/javascript" src="lib/jquery-2.1.4.min.js" ></script>
+	<script type="text/javascript" src="lib/jquery.tmpl.min.js" ></script>
+	<script type="text/javascript" src="lib/mui.min.js"></script>
+	<script type="text/javascript" src="lib/jquery.qrcode.min.js" ></script>
+	<script type="text/javascript" src="lib/baidu.statistics.min.js" ></script>
+	<script type="text/javascript" src="js/resize.js" ></script>
+    <script type="text/javascript" src="js/basic.js"></script>
+	<script type="text/javascript" src="js/submitOrder.js" ></script>
+</body>
+</html>

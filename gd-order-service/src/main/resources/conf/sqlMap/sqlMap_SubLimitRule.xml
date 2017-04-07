@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SubLimitRule">
+	
+	<sql id="getSubLimitRuleList">
+	<![CDATA[
+		SELECT
+			*
+		FROM 
+			sub_limit_rule t
+		WHERE
+			1 = 1
+			<#if timeRange?exists && timeRange != "">
+			      AND SYSDATE() >= t.`timeStart` 
+			      AND SYSDATE() <= t.`timeEnd` 
+			</#if>
+			<#if ruleId?exists && ruleId != "">
+			      and ruleId = :ruleId
+			</#if>
+			<#if marketId?exists && marketId != "">
+			      and marketId = :marketId
+			</#if>
+			<#if status?exists && status != "">
+			      and status = :status
+			</#if>
+			order by createTime desc
+			limit 1
+	]]>
+	</sql>
+	
+	<sql id="getSubRangeLimitRuleByRuleId">
+	<![CDATA[
+		SELECT
+			*
+		FROM 
+			sub_range_limit_rule t
+		WHERE
+			ruleId = :ruleId
+		ORDER BY limitType, timeRange 
+	]]>
+	</sql>
+	
+	<!-- 保存补贴限制规则 -->
+	<sql id="saveSubLimitRule">
+	<![CDATA[
+		insert into sub_limit_rule(
+			marketId,timeStart,timeEnd,subAmount,vehLimit,uamountLimit,utimesLimit,twoUtimesLimit,tamountLimit,createTime,createUserId,whiteLimit,status,contact			
+		) values(
+			:marketId,:timeStartStr,:timeEndStr,:subAmount,:vehLimit,:uamountLimit,:utimesLimit,:twoUtimesLimit,:tamountLimit,SYSDATE(),:createUserId,:whiteLimit,:status,:contact
+		)
+	]]>
+	</sql>
+	
+	<!-- 更新补贴限制规则 -->
+	<sql id="updateSubLimitRule">
+	<![CDATA[
+		update sub_limit_rule
+		set 
+			<#if marketId?exists && marketId != "">
+			      marketId = :marketId,
+			</#if>
+			<#if timeStartStr?exists && timeStartStr != "">
+			      timeStart = STR_TO_DATE(:timeStartStr,'%Y-%m-%d %H:%i'),
+			</#if>
+			<#if timeEndStr?exists && timeEndStr != "">
+			      timeEnd = STR_TO_DATE(:timeEndStr,'%Y-%m-%d %H:%i'),
+			</#if>
+			<#if subAmount?exists && subAmount != "">
+			      subAmount = :subAmount,
+			</#if>
+			<#if vehLimit?exists && vehLimit != "">
+			      vehLimit = :vehLimit,
+			</#if>
+			<#if uamountLimit?exists && uamountLimit != "">
+			      uamountLimit = :uamountLimit,
+			</#if>
+			<#if utimesLimit?exists && utimesLimit != "">
+			      utimesLimit = :utimesLimit,
+			</#if>
+			<#if twoUtimesLimit?exists && twoUtimesLimit != "">
+			      twoUtimesLimit = :twoUtimesLimit,
+			</#if>
+			<#if tamountLimit?exists && tamountLimit != "">
+			      tamountLimit = :tamountLimit,
+			</#if>
+			<#if whiteLimit?exists && whiteLimit != "">
+			      whiteLimit = :whiteLimit,
+			</#if>
+			<#if contact?exists && contact != "">
+			      contact = :contact,
+			</#if>
+			 updateUserId = :updateUserId,
+			 updateTime = SYSDATE()
+		where 
+			ruleId = :ruleId
+	]]>
+	</sql>
+	
+	<!-- 保存补贴发放规则 -->
+	<sql id="saveSubRangeLimitRule">
+	<![CDATA[
+		insert into sub_range_limit_rule(
+			ruleId,limitType,amount,count,timeRange
+		) values(
+			:ruleId,:limitType,:amount,:count,:timeRange
+		)
+	]]>
+	</sql>
+	
+	<!-- 删除补贴限制区间规则 -->
+	<sql id="delSubRangeLimitRule">
+	<![CDATA[
+		delete from sub_range_limit_rule where ruleId = :ruleId
+	]]>
+	</sql>
+	
+	<sql id="getSeq">
+		select @@IDENTITY
+	</sql>
+	
+	<!-- 添加白名单 -->
+	<sql id="saveWhiteList">
+	insert into sub_limit_rule_whitelist(limitruleId,memberId,account,createTime)values(:limitruleId,:memberId,:account,now())
+	</sql>
+	<!-- 查询白名单 -->
+	<sql id="queryWhiteInfo">
+		<![CDATA[
+	select * from sub_limit_rule_whitelist where 1=1 
+			<#if limitruleId?exists && limitruleId != "">
+			  and    limitruleId = :limitruleId
+			</#if>
+			<#if memberId?exists && memberId != "">
+			  and    memberId = :memberId
+			</#if>	
+	
+	]]>
+	</sql>
+	
+	<sql id="delWhiteList">
+	delete from sub_limit_rule_whitelist where limitruleId=:limitruleId and memberId=:memberId
+	</sql>
+
+	<!-- 更新补贴限制规则 -->
+	<sql id="updateSubLimitRuleStatus">
+	<![CDATA[
+		update sub_limit_rule
+		set status=0
+		where marketId = :marketId
+	]]>
+	</sql>	
+	
+	<sql id="getSubLimitRuleInfo">
+	<![CDATA[
+		SELECT
+			*
+		FROM 
+			sub_limit_rule 
+		WHERE ruleId = :ruleId
+
+	]]>
+	</sql>
+	
+	<sql id="getSubAmountTipConfList">
+	<![CDATA[
+		SELECT 
+		  t.*,
+		  m.`marketName` 
+		FROM
+		  sub_amount_tip_conf t 
+		  LEFT JOIN market m 
+		    ON t.`marketId` = m.`id` 
+		WHERE t.marketId = :marketId
+		<#if sendStatus?exists && sendStatus != "">
+		  AND t.sendStatus = :sendStatus
+		</#if>
+		order by tipVal
+
+	]]>
+	</sql>
+	
+	<sql id="updateSubAmountTipConf">
+	<![CDATA[
+		update sub_amount_tip_conf t set 
+		t.updateTime = SYSDATE()
+		<#if updateUserId?exists && updateUserId != "">
+		  ,updateUserId = :updateUserId
+		</#if>
+		<#if sendStatus?exists && sendStatus != "">
+		  ,sendStatus = :sendStatus
+		</#if>
+		WHERE t.id = :id
+	]]>
+	</sql>
+	
+	<!-- 查询出需要过期的规则 -->
+	<sql id="getExpireSubLimitRuleList">
+	<![CDATA[
+		SELECT
+			*
+		FROM 
+			sub_limit_rule t
+		WHERE
+			timeEnd=date_format(now(), '%Y-%m-%d 00:00:00') and status=1;
+	]]>
+	</sql>
+	
+		<!-- 过期补贴限制规则 -->
+	<sql id="updateSubLimitRuleStatusByRuleId">
+	<![CDATA[
+		update sub_limit_rule
+		set status=0
+		where ruleId = :ruleId
+	]]>
+	</sql>	
+	
+	<!-- 获取限制规则列表 -->
+	<sql id="searchLimitRuleList">
+	<![CDATA[
+		select * from(
+		select slr.ruleId, slr.marketId,slr.timeStart,slr.timeEnd,
+		slr.subAmount,slr.whiteLimit,slr.contact,slr.`status`,slr.createUserId,
+		(
+			SELECT marketName from market m where m.id = slr.marketId 
+		) AS marketStr,
+		(
+			SELECT userName from gudeng_auth.sysregisteruser gau where gau.userID = slr.createUserId 
+		) AS userName,
+		sa.subAmountBal from sub_limit_rule slr LEFT JOIN sub_amount sa on slr.ruleId=sa.subRuleId)
+		as tempt 
+		where 1=1
+		<#if market?exists && market != "">
+		  and marketStr = :market
+		</#if>
+		<#if subAmount?exists && subAmount != "">
+		  and subAmount = :subAmount
+		</#if>
+		<#if status?exists && status != "">
+		  and status = :status
+		</#if>	
+		<#if timeStart?exists && timeStart != "" && timeEnd?exists && timeEnd != "">
+		  and timeStart>=:timeStart and timeEnd<=:timeEnd
+		</#if>		
+		
+		]]>
+	</sql>
+	
+	<!-- 获取限制规则列表总数 -->
+	<sql id="searchLimitRuleListCount">
+	<![CDATA[
+		select count(0) from(
+		select slr.ruleId, slr.marketId,slr.timeStart,slr.timeEnd,
+		slr.subAmount,slr.whiteLimit,slr.contact,slr.`status`,slr.createUserId,
+		(
+			SELECT marketName from market m where m.id = slr.marketId 
+		) AS marketStr,
+		(
+			SELECT userName from gudeng_auth.sysregisteruser gau where gau.userID = slr.createUserId 
+		) AS userName,
+		sa.subAmountBal from sub_limit_rule slr LEFT JOIN sub_amount sa on slr.ruleId=sa.subRuleId)
+		as tempt 
+		where 1=1
+		<#if market?exists && market != "">
+		  and marketStr = :market
+		</#if>
+		<#if subAmount?exists && subAmount != "">
+		  and subAmount = :subAmount
+		</#if>
+		<#if status?exists && status != "">
+		  and status = :status
+		</#if>	
+		<#if timeStart?exists && timeStart != "" && timeEnd?exists && timeEnd != "">
+		  and timeStart>=:timeStart and timeEnd<=:timeEnd
+		</#if>		
+		
+		]]>
+	</sql>	
+	
+
+	
+</sqlMap>

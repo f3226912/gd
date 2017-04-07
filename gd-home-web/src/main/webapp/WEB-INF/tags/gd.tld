@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+        http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+	<!-- 数据字典标签库工具类 
+		lidong(dli@cnagri-products.com) 
+		2015年10月22日 下午6:04:37 
+		@Version V1.0  
+		@Copyright 谷登科技 2015-2015 
+	-->
+	<!-- web.xml配置 
+		<jsp-config> 
+			<taglib> 
+			<taglib-uri>http://www.gdeng.cn/gd</taglib-uri> 
+				<taglib-location>/WEB-INF/tags/tw.tld</taglib-location> 
+			</taglib> 
+		</jsp-config>
+	-->
+	<description>谷登自定义标签库</description>
+	<tlib-version>1.0</tlib-version>
+	<short-name>gd</short-name>
+	<uri>http://www.gdeng.cn/gd</uri>
+
+	<!-- 根据编码类型以及key值从数据字典中获取value值 -->
+	<function>
+		<name>showValueByCode</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String showValueByCode(java.lang.String,java.lang.String)</function-signature>
+	</function>
+	<!-- 根据原始图片地址以及需要的图片尺寸获取相应尺寸图片的存放地址，注：该地址不包含服务器IP等，数据形式表现如：2015/04/14/鸽子120_120.jpg，在页面显示需要加上图片服务器地址 -->
+	<function>
+		<name>showImgBySize</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String showImgBySize(java.lang.String,java.lang.Integer)</function-signature>
+	</function>
+	<!-- 根据行政区划代码获取行政区划名称 -->
+	<function>
+		<name>showDistrictNamebyCode</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String showDistrictNamebyCode(java.lang.String)</function-signature>
+	</function>
+	<!-- 数字格式化，将数值大于10000的值转化为以万为单位，保留两位小数，123456.56=12.34万 -->
+	<function>
+		<name>formatNumber</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String formatNumber(java.lang.Double)</function-signature>
+	</function>
+	<!-- 数字格式化，将小数末尾的0去掉，1234.450=1234.45，123.00=123 -->
+	<function>
+		<name>formatNumber2</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String formatNumber2(java.lang.Double)</function-signature>
+	</function>
+	<!-- formatMarket 根据marketId获取市场拼音名称，用于url转化 -->
+	<function>
+		<name>formatMarket</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String formatMarket(java.lang.String)</function-signature>
+	</function>
+	<!-- formatMarket 根据marketId获取市场中文名称 -->
+	<function>
+		<name>formatMarket2</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String formatMarket2(java.lang.String)</function-signature>
+	</function>
+	<!-- 对车辆类型进行格式化 -->
+	<function>
+		<name>formatCarType</name>
+		<function-class>com.gudeng.commerce.gd.home.util.DictDataUtil</function-class>
+		<function-signature>java.lang.String formatCarType(java.lang.String)</function-signature>
+	</function>
+</taglib>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReOrderCustomer">
+	<sql id="addEntity">
+	<![CDATA[
+		INSERT INTO re_order_customer
+			(
+				orderNo, memberId, orderBuyerId, mobile, realName, createTime, createUserId
+			)
+		VALUES
+			(
+				:orderNo, :memberId, :orderBuyerId, :mobile, :realName, NOW(), :createUserId
+			)
+	]]>
+	</sql>
+	
+	<sql id="getByOrderNo">
+	<![CDATA[
+		SELECT 
+			t.id, t.orderNo, t.memberId, t.orderBuyerId, t.mobile, t.realName, 
+			t.createTime, t.createUserId 
+		FROM 
+			re_order_customer t
+		WHERE 
+			t.orderNo = :orderNo
+		LIMIT 1
+	]]>
+	</sql>
+</sqlMap>

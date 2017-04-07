@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReBusinessCategory">
+ 
+	<!-- 全查找 -->
+	<sql id="getAll">
+	<![CDATA[
+		SELECT 
+			businessId,categoryId
+		FROM 
+			Re_Business_Category  t 
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	 
+	 	<!-- 全查找 -->
+	<sql id="getBySearch">
+	<![CDATA[
+		SELECT 
+			t.businessId, t.categoryId, p.cateName,t.businessType
+		FROM 
+			Re_Business_Category  t 
+		LEFT JOIN 
+			product_category p ON t.categoryId = p.categoryId
+		WHERE  1=1 
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId= :businessId
+			</#if>
+			<#if categoryId?exists && categoryId!="" >
+			      AND t.categoryId= :categoryId
+			</#if>
+			<#if businessType?exists && businessType!="" >
+			      AND t.businessType= :businessType
+			</#if>			
+			<#if sortName?exists && sortName=="businessType" && sortOrder=="d" >
+			      ORDER BY  t.businessType DESC
+			</#if>			
+			<#if sortName?exists && sortName=="businessType" && sortOrder=="a" >
+			      ORDER BY  t.businessType ASC
+			</#if>
+				
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	 
+	<!-- 统计总共记录数  -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			re_business_category  t 
+		WHERE  1=1 
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId= :businessId
+			</#if>
+			<#if categoryId?exists && categoryId!="" >
+			      AND t.categoryId= :categoryId
+			</#if>
+	]]>
+	</sql>
+	
+	<!-- 增加记录，注意date类型的，使用  _string 字段的值，代替date类型的值  -->
+	<sql id="addReBusinessCategory">
+	<![CDATA[
+	    INSERT INTO  
+	    	re_business_category
+	    	(
+			businessId,categoryId,businessType
+			)
+	    VALUES
+	    	(
+			:businessId,:categoryId,:businessType
+			)
+	]]>
+	</sql>
+	
+	<!-- 
+		1 根据 businessId，categoryId 删除记录 ,
+		2 当categoryId没有的时候，将此店铺关联的所有分类删除，即 根据 businessId  删除记录 ,
+	-->
+	<sql id="deleteReBusinessCategory">
+	<![CDATA[
+	DELETE FROM 
+		re_business_category
+    WHERE 
+    	businessId=:businessId 
+    	
+    <#if categoryId?exists && categoryId!="" >
+		AND categoryId=:categoryId
+	</#if>
+	]]>
+	</sql>
+	
+	
+	<!-- 暂时只做新增和删除，不做更新 -->
+	<sql id="updateMemberBaseinfo">
+	<![CDATA[
+	    
+	]]>
+	</sql>
+	<!-- 根据商铺ID获取主营分类ID -->
+	<sql id="getCateIdByBusId">
+		<![CDATA[
+			SELECT categoryId FROM re_business_category
+			WHERE businessId = :businessId AND businessType = 0
+		]]>
+	</sql>
+</sqlMap>

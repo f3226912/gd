@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NpsPurchase">
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT *
+		FROM 
+			nps_purchase t
+		WHERE t.memberId = :memberId
+		AND t.isDelete = 0
+		<#if goodsName?exists && goodsName!="" >
+		    AND  t.goodsName  = :goodsName
+		</#if> 
+		<#if status?exists && status!="" && status = 1>
+		    AND  t.status  in (1, 3)
+		    ORDER BY t.createTime DESC
+		</#if> 
+		<#if status?exists && status!="" && status = 2>
+		    AND  t.status  = 2
+		    ORDER BY t.releaseTime DESC	
+		</#if> 
+		<#if status?exists && status!="" && status = 5>
+		    AND  t.status in (4, 5, 6)
+		    ORDER BY t.realEndTime DESC	
+		</#if> 
+		LIMIT :startRow, :endRow
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM 
+			nps_purchase t
+		WHERE 1=1 AND t.isDelete = 0
+		<#if memberId?exists && memberId!="">
+			AND t.memberId = :memberId
+		</#if> 
+		<#if status?exists && status!="">
+		    AND  status  = :status
+		</#if> 
+	]]>
+	</sql>
+	
+	<sql id="getBackgroundTotal">
+	<![CDATA[
+		SELECT
+		    COUNT(0)
+		FROM
+		    nps_purchase n
+		LEFT JOIN member_baseinfo mb ON mb.`memberId`=n.`memberId`
+		LEFT JOIN business_baseinfo AS bb ON bb.userId=mb.memberId
+		LEFT JOIN re_business_market rbm ON rbm.businessId=bb.businessId
+		LEFT JOIN market mar ON rbm.marketId=mar.id
+		WHERE
+		    1 = 1
+		<#if createTimeStart?exists && createTimeStart!="" >
+			AND n.createTime>=:createTimeStart
+		</#if>
+		<#if createTimeEnd?exists && createTimeEnd!="" >
+			AND n.createTime<=:createTimeEnd
+		</#if>
+		<#if status?exists && status!="" >
+			AND n.status=:status
+		</#if>
+		<#if authTime?exists && authTime!="" >
+			AND n.authTime=:authTime
+		</#if>
+		<#if endTimeStart?exists && endTimeStart!="" >
+			AND n.endTime>=:endTimeStart
+		</#if>
+		<#if endTimeEnd?exists && endTimeEnd!="" >
+			AND n.endTime<=:endTimeEnd
+		</#if>
+		<#if id?exists && id!="" >
+			AND n.id=:id
+		</#if>
+		<#if mobilePhone?exists && mobilePhone!="" >
+			AND n.mobilePhone LIKE "%":mobilePhone"%"
+		</#if>
+		<#if visitCount?exists && visitCount!="" >
+			AND n.visitCount=:visitCount
+		</#if>
+		<#if releaseTimeStart?exists && releaseTimeStart!="" >
+			AND n.releaseTime>=:releaseTimeStart
+		</#if>
+		<#if releaseTimeEnd?exists && releaseTimeEnd!="" >
+			AND n.releaseTime<=:releaseTimeEnd
+		</#if>
+		<#if goodsName?exists && goodsName!="" >
+			AND n.goodsName LIKE "%":goodsName"%"
+		</#if>
+		<#if marketName?exists && marketName!="" >
+			AND mar.marketName LIKE "%":marketName"%"
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="getBackgroundListPage">
+	<![CDATA[
+		SELECT 
+			n.createTime,n.purchaseCount,n.status,n.endTime,n.authUserId,
+			n.id,n.priceCount,n.specRequire,n.areaName,n.mobilePhone,n.goodsImg,
+			n.visitCount,n.releaseTime,n.goodsName,
+			mb.`realName`,bb.`shopsName`,mar.`marketName`
+		FROM nps_purchase n
+		LEFT JOIN member_baseinfo mb ON mb.`memberId`=n.`memberId`
+		LEFT JOIN business_baseinfo AS bb ON bb.userId=mb.memberId
+		LEFT JOIN re_business_market rbm ON rbm.businessId=bb.businessId
+		LEFT JOIN market mar ON rbm.marketId=mar.id
+		WHERE 1=1
+
+		<#if createTimeStart?exists && createTimeStart!="" >
+			AND n.createTime>=:createTimeStart
+		</#if>
+		<#if createTimeEnd?exists && createTimeEnd!="" >
+			AND n.createTime<=:createTimeEnd
+		</#if>
+		<#if status?exists && status!="" >
+			AND n.status=:status
+		</#if>
+		<#if authTime?exists && authTime!="" >
+			AND n.authTime=:authTime
+		</#if>
+		<#if endTimeStart?exists && endTimeStart!="" >
+			AND n.endTime>=:endTimeStart
+		</#if>
+		<#if endTimeEnd?exists && endTimeEnd!="" >
+			AND n.endTime<=:endTimeEnd
+		</#if>
+		<#if id?exists && id!="" >
+			AND n.id=:id
+		</#if>
+		<#if mobilePhone?exists && mobilePhone!="" >
+			AND n.mobilePhone LIKE "%":mobilePhone"%"
+		</#if>
+		<#if visitCount?exists && visitCount!="" >
+			AND n.visitCount=:visitCount
+		</#if>
+		<#if releaseTimeStart?exists && releaseTimeStart!="" >
+			AND n.releaseTime>=:releaseTimeStart
+		</#if>
+		<#if releaseTimeEnd?exists && releaseTimeEnd!="" >
+			AND n.releaseTime<=:releaseTimeEnd
+		</#if>
+		<#if goodsName?exists && goodsName!="" >
+			AND n.goodsName LIKE "%":goodsName"%"
+		</#if>
+		<#if marketName?exists && marketName!="" >
+			AND mar.marketName LIKE "%":marketName"%"
+		</#if>
+		ORDER BY n.createTime DESC
+		LIMIT :startRow, :endRow
+		]]>
+	</sql>
+
+	<sql id="getById">
+		<![CDATA[
+		SELECT 
+		provinceId,authUserId,createTime,purchaseCount,rejectReason,remark,cityId,
+		status,purchaseUnit,authTime,maxPrice,endTime,areaId,
+		id,priceCount,specRequire,areaName,mobilePhone,goodsImg,
+		visitCount,releaseTime,goodsName,purchaseCycle,minPrice, memberId
+		FROM nps_purchase WHERE id=:id
+		]]>
+	</sql>
+	
+	<sql id="getNpsPurchaseById">
+	<![CDATA[
+		SELECT *
+		FROM 
+			nps_purchase t
+		WHERE t.id = :id
+	]]>
+	</sql>
+	
+	<sql id="getPriceById">
+	<![CDATA[
+		SELECT 
+			IF(MIN(offerPrice) IS NULL, 0, MIN(offerPrice)) lowPrice, 
+			IF((SELECT offerPrice FROM nps_offer_price where purchaseId = :purchaseId ORDER BY offerTime desc LIMIT 0,1) IS NULL, 0,
+			(SELECT offerPrice FROM nps_offer_price where purchaseId = :purchaseId ORDER BY offerTime desc LIMIT 0,1)) newPrice 
+		FROM nps_offer_price
+		where purchaseId = :purchaseId
+	]]>
+	
+	</sql>
+	
+	
+    <sql id="updateApp">
+	<![CDATA[
+		UPDATE nps_purchase
+		SET 
+		<#if goodsName?exists && goodsName!="">
+		 goodsName =:goodsName,
+		 </#if> 
+		 <#if status?exists && status!="">
+		 status=:status,
+		 		 </#if> 
+		 <#if purchaseCycle?exists && purchaseCycle!="">			 
+		 purchaseCycle =:purchaseCycle,
+		 		 </#if>
+		 <#if purchaseCount?exists && purchaseCount!="">			  
+		 purchaseCount =:purchaseCount,
+		 		 </#if>
+		 <#if purchaseUnit?exists && purchaseUnit!="">			  
+		 purchaseUnit =:purchaseUnit,
+		 		 </#if> 
+		 <#if specRequire?exists && specRequire!="">	
+		 specRequire =:specRequire,
+		 		 </#if> 
+		 <#if provinceId?exists && provinceId!="">	
+		 provinceId =:provinceId,
+		 		 </#if> 
+		 <#if cityId?exists && cityId!="">	
+		 cityId =:cityId,
+		 		 </#if> 
+		 <#if areaId?exists && areaId!="">	
+		 areaId =:areaId,
+		 		 </#if> 
+		 <#if areaName?exists && areaName!="">	
+		 areaName =:areaName,
+		 		 </#if> 
+		 <#if visitCount?exists && visitCount!="">	
+		 visitCount =:visitCount,
+		 		 </#if> 
+		 <#if priceCount?exists && priceCount!="">	
+		 priceCount =:priceCount,
+		 		 </#if> 
+		 <#if authUserId?exists && authUserId!="">	
+		 authUserId =:authUserId,
+		 		 </#if> 
+		 <#if status?exists && status == "2">	
+		 releaseTime = NOW(),
+		 		 </#if>  
+ 		 <#if endTimeStr?exists && endTimeStr!="">	
+ 			 endTime =:endTimeStr,
+ 		 </#if> 
+		 <#if rejectReason?exists && rejectReason!="">	
+		 rejectReason =:rejectReason,
+		 		 </#if> 
+		 minPrice =:minPrice,
+		 maxPrice =:maxPrice,
+		 goodsImg =:goodsImg,
+		 remark =:remark,
+		 createTime = NOW()
+		WHERE
+			id =:id
+	]]>
+	</sql>
+	
+	
+    <sql id="update">
+	<![CDATA[
+		UPDATE nps_purchase
+		SET 
+		<#if goodsName?exists && goodsName!="">
+		 goodsName =:goodsName,
+		 </#if> 
+		 <#if status?exists && status!="">
+		 status=:status,
+		 		 </#if> 
+		 <#if purchaseCycle?exists && purchaseCycle!="">			 
+		 purchaseCycle =:purchaseCycle,
+		 		 </#if>
+		 <#if purchaseCount?exists && purchaseCount!="">			  
+		 purchaseCount =:purchaseCount,
+		 		 </#if>
+		 <#if purchaseUnit?exists && purchaseUnit!="">			  
+		 purchaseUnit =:purchaseUnit,
+		 		 </#if> 
+		 <#if specRequire?exists && specRequire!="">	
+		 specRequire =:specRequire,
+		 		 </#if> 
+		 <#if provinceId?exists && provinceId!="">	
+		 provinceId =:provinceId,
+		 		 </#if> 
+		 <#if cityId?exists && cityId!="">	
+		 cityId =:cityId,
+		 		 </#if> 
+		 <#if areaId?exists && areaId!="">	
+		 areaId =:areaId,
+		 		 </#if> 
+		 <#if areaName?exists && areaName!="">	
+		 areaName =:areaName,
+		 		 </#if> 
+		 <#if minPrice?exists && minPrice!="">	
+		 minPrice =:minPrice,
+		 		 </#if> 
+		 <#if maxPrice?exists && maxPrice!="">	
+		 maxPrice =:maxPrice,
+		 		 </#if> 
+		 <#if goodsImg?exists && goodsImg!="">	
+		 goodsImg =:goodsImg,
+		 		 </#if> 
+		 <#if remark?exists && remark!="">	
+		 remark =:remark,
+		 		 </#if> 
+		 <#if visitCount?exists && visitCount!="">	
+		 visitCount =:visitCount,
+		 		 </#if> 
+		 <#if priceCount?exists && priceCount!="">	
+		 priceCount =:priceCount,
+		 		 </#if> 
+		 <#if authUserId?exists && authUserId!="">	
+		 authUserId =:authUserId,
+		 		 </#if> 
+		 <#if status?exists && status == "2">	
+		 releaseTime = NOW(),
+		 		 </#if>  
+ 		 <#if endTimeStr?exists && endTimeStr!="">	
+ 			 endTime =:endTimeStr,
+ 		 </#if> 
+		 <#if rejectReason?exists && rejectReason!="">	
+		 rejectReason =:rejectReason,
+		 		 </#if> 
+		 authTime = NOW()
+		WHERE
+			id =:id
+	]]>
+	</sql>
+	
+    <sql id="updateStatusApp">
+	<![CDATA[
+		UPDATE nps_purchase
+		SET 
+		 <#if userCancelTime?exists && userCancelTime!="">	
+ 			 userCancelTime =NOW(),
+ 		 </#if> 
+ 		  <#if userEndTime?exists && userEndTime!="">	
+ 			 userEndTime =NOW(),
+ 		 </#if> 
+ 		  realEndTime =NOW(),
+		 status=:status
+		WHERE
+			id =:id
+	]]>
+	</sql>
+	
+    <sql id="updatePriceCount">
+	<![CDATA[
+		UPDATE nps_purchase
+		SET 
+		 priceCount=priceCount+1
+		WHERE
+			id =:id
+	]]>
+	</sql>
+	<sql id="updateBackGroundPriceCount">
+	<![CDATA[
+		UPDATE nps_purchase
+		SET 
+		<#if status?exists && status=="3">	
+		 	priceCount=priceCount-1
+		 </#if>
+		 <#if status?exists && status=="1">
+		 	priceCount=priceCount+1
+		 </#if>
+		WHERE
+			id =:purchaseId
+	]]>
+	</sql>
+	<sql id="updateVisitCount">
+	<![CDATA[
+		UPDATE nps_purchase
+		SET 
+		 visitCount=visitCount+1
+		WHERE
+			id =:id
+	]]>
+	</sql>
+	
+	<sql id="delete">
+	<![CDATA[
+		UPDATE nps_purchase
+		SET 
+		 isDelete=1
+		WHERE
+			id =:id
+	]]>
+	</sql>
+	
+	
+	<sql id="getNoPurchaseListTotal">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM nps_purchase t1
+		WHERE NOT EXISTS(
+			SELECT 1 
+			FROM nps_offer_price t2 
+			WHERE t1.id= t2.purchaseId AND t2.userAcc = :userAcc
+		)
+		AND t1.endTime >= DATE_FORMAT(SYSDATE(),'%y%m%d') AND status = 2
+		AND t1.isDelete = 0
+		<#if goodsName?exists && goodsName!="">	
+			AND t1.goodsName LIKE '%${goodsName}%' 
+		</#if> 
+	]]>
+	</sql>
+	
+	<sql id="getNoPurchaseList">
+	<![CDATA[
+		SELECT *
+		FROM nps_purchase t1
+		WHERE NOT EXISTS(
+			SELECT 1 
+			FROM nps_offer_price t2 
+			WHERE t1.id= t2.purchaseId AND t2.userAcc = :userAcc
+		)
+		AND t1.endTime >= DATE_FORMAT(SYSDATE(),'%y%m%d') AND t1.status = 2
+		AND t1.isDelete = 0
+		<#if goodsName?exists && goodsName!="">	
+			AND t1.goodsName LIKE '%${goodsName}%' 
+		</#if> 
+		ORDER BY t1.releaseTime DESC
+		LIMIT :startRow, :endRow
+	]]>
+	</sql>
+	
+	
+	<sql id="getPurchaseListTotal">
+	<![CDATA[
+		SELECT COUNT(1) 
+		FROM nps_purchase t1
+		LEFT JOIN nps_offer_price t2 ON t1.id=t2.purchaseId
+		WHERE t2.userAcc = :userAcc AND t1.isDelete = 0
+		<#if goodsName?exists && goodsName!="">	
+			AND t1.goodsName LIKE '%${goodsName}%' 
+		</#if> 
+	]]>
+	</sql>
+	
+	<sql id="getPurchaseList">
+	<![CDATA[
+		SELECT t1.*, t2.offerPrice
+		FROM nps_purchase t1
+		LEFT JOIN nps_offer_price t2 ON t1.id=t2.purchaseId
+		WHERE t2.userAcc = :userAcc AND t1.isDelete = 0
+		<#if goodsName?exists && goodsName!="">	
+			AND t1.goodsName LIKE '%${goodsName}%' 
+		</#if> 
+		ORDER BY offerTime DESC
+		LIMIT :startRow, :endRow
+	]]>
+	</sql>
+	
+	<sql id="getEndPurchaseList">
+	<![CDATA[
+		SELECT *
+		FROM nps_purchase 
+		WHERE `status` = 6 AND isDelete = 0
+		<#if goodsName?exists && goodsName!="">	
+			AND goodsName LIKE '%${goodsName}%' 
+		</#if> 
+		ORDER BY realEndTime Desc
+		LIMIT :startRow, :endRow
+	]]>
+	</sql>
+	
+	<sql id="getEndPurchaseListTotal">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM nps_purchase 
+		WHERE `status` = 6 AND isDelete = 0
+		<#if goodsName?exists && goodsName!="">	
+			AND goodsName LIKE '%${goodsName}%' 
+		</#if> 
+	]]>
+	</sql>
+</sqlMap>
+	
+	
+	
+	
+	

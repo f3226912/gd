@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlMap namespace="PushProductContent">
+	<sql id="findbyid">
+	select * from pushproductContent
+	</sql>
+
+	<!-- 删除当天的更新过的产品 -->
+	<sql id="deletePushProductContentByTime">
+		delete from pushproductcontent where 
+		date_format(
+			createtime,
+			'%Y-%m-%d'
+		) = 	date_format(
+			now(),
+			'%Y-%m-%d'
+		);
+	</sql>
+	
+	<!-- 更新当天有价格更新的产品 -->
+	<sql id="addPushProductContent">
+		INSERT INTO pushproductcontent (
+			cateId,
+			productId,
+			createTime
+		) SELECT
+			pb.cateId,
+			pb.productId,
+			now()
+		FROM
+			product_baseinfo pb
+		WHERE
+			date_format(
+				pb.updatePriceTime,
+				'%Y-%m-%d'
+			) = 	date_format(
+				now(),
+				'%Y-%m-%d'
+			) and pb.productType = '1';
+	</sql>
+	
+	<!-- 获取关注过产品或者类型的用户 -->
+	<sql id="getFollowUserList">
+		select pushu.*,member_baseinfo.device_tokens as deviceTokens from(
+		select userId,cateId,if(MAX(productId),MAX(productId),0) as productId from (
+		select * from (
+		select upc.userId,upc.productCategoryId as cateId,null as productId from  usercollect_product_category upc ,pushproductcontent p
+		where upc.productCategoryId = p.cateId and date_format(p.createTime,'%Y-%m-%d') =date_format(now(),'%Y-%m-%d')
+		) as upcp
+		union
+		(
+		select up.userId,p.cateId,up.productId from  usercollect_product up ,pushproductcontent p
+		where up.productId = p.productId and date_format(p.createTime,'%Y-%m-%d') =date_format(now(),'%Y-%m-%d') )
+		) as tp GROUP BY tp.userId
+		) as pushu
+		LEFT JOIN
+		member_baseinfo on pushu.userId = member_baseinfo.memberId;
+	</sql>
+	
+	<sql id="getOneProduct">
+		SELECT
+		*
+	FROM
+		pushproductcontent t
+	WHERE
+		t.cateId = :cateId
+	AND date_format(t.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+	LIMIT 1;
+	</sql>
+</sqlMap>

@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProOperate">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+pro_operate(
+
+id,state,webRegCount,sumWebRegCount,shopRegCount,sumShopRegCount,supplierRegCount,sumSupplierRegCount,
+supplierConShop,nsyRegCount,sumNsyRegCount,nsyConShop,nsyPhoneCount,nsyPhoneConUser,comRegCount,sumComRegCount,
+sumRealCount,productCount,shopAvProduct,sumProductCount,nstPeRegCount,sumNstPeRegCount,nstCpRegCount,sumNstCpRegCount,
+sumNstRegCount,nstPhoneConReg,supplyCount,sumSupplyCount,sumLineCount,supplyConLine,sumSupplyConLine,createUserID,
+createTime,updateUserID,updateTime,reportsID,frequency,datatimes,nstConCp,lineCount,growthRate
+) VALUES (
+
+:id,:state,:webRegCount,:sumWebRegCount,:shopRegCount,:sumShopRegCount,:supplierRegCount,:sumSupplierRegCount,
+:supplierConShop,:nsyRegCount,:sumNsyRegCount,:nsyConShop,:nsyPhoneCount,:nsyPhoneConUser,:comRegCount,:sumComRegCount,
+:sumRealCount,:productCount,:shopAvProduct,:sumProductCount,:nstPeRegCount,:sumNstPeRegCount,:nstCpRegCount,:sumNstCpRegCount,
+:sumNstRegCount,:nstPhoneConReg,:supplyCount,:sumSupplyCount,:sumLineCount,:supplyConLine,:sumSupplyConLine,:createUserID,
+:createTime,:updateUserID,:updateTime,:reportsID,:frequency,:datatimes,:nstConCp,:lineCount,:growthRate
+)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE pro_operate
+ SET 
+
+<#if id?exists && id!="" >
+id=:id,
+</#if>
+<#if state?exists && state!="" >
+state=:state,
+</#if>
+<#if webRegCount?exists && webRegCount!="" >
+webRegCount=:webRegCount,
+</#if>
+<#if sumWebRegCount?exists && sumWebRegCount!="" >
+sumWebRegCount=:sumWebRegCount,
+</#if>
+<#if shopRegCount?exists && shopRegCount!="" >
+shopRegCount=:shopRegCount,
+</#if>
+<#if sumShopRegCount?exists && sumShopRegCount!="" >
+sumShopRegCount=:sumShopRegCount,
+</#if>
+<#if supplierRegCount?exists && supplierRegCount!="" >
+supplierRegCount=:supplierRegCount,
+</#if>
+<#if sumSupplierRegCount?exists && sumSupplierRegCount!="" >
+sumSupplierRegCount=:sumSupplierRegCount,
+</#if>
+
+<#if supplierConShop?exists && supplierConShop!="" >
+supplierConShop=:supplierConShop,
+</#if>
+<#if nsyRegCount?exists && nsyRegCount!="" >
+nsyRegCount=:nsyRegCount,
+</#if>
+<#if sumNsyRegCount?exists && sumNsyRegCount!="" >
+sumNsyRegCount=:sumNsyRegCount,
+</#if>
+<#if nsyConShop?exists && nsyConShop!="" >
+nsyConShop=:nsyConShop,
+</#if>
+<#if nsyPhoneCount?exists && nsyPhoneCount!="" >
+nsyPhoneCount=:nsyPhoneCount,
+</#if>
+<#if nsyPhoneConUser?exists && nsyPhoneConUser!="" >
+nsyPhoneConUser=:nsyPhoneConUser,
+</#if>
+<#if comRegCount?exists && comRegCount!="" >
+comRegCount=:comRegCount,
+</#if>
+<#if sumComRegCount?exists && sumComRegCount!="" >
+sumComRegCount=:sumComRegCount,
+</#if>
+
+<#if sumRealCount?exists && sumRealCount!="" >
+sumRealCount=:sumRealCount,
+</#if>
+<#if productCount?exists && productCount!="" >
+productCount=:productCount,
+</#if>
+<#if shopAvProduct?exists && shopAvProduct!="" >
+shopAvProduct=:shopAvProduct,
+</#if>
+<#if sumProductCount?exists && sumProductCount!="" >
+sumProductCount=:sumProductCount,
+</#if>
+<#if nstPeRegCount?exists && nstPeRegCount!="" >
+nstPeRegCount=:nstPeRegCount,
+</#if>
+<#if sumNstPeRegCount?exists && sumNstPeRegCount!="" >
+sumNstPeRegCount=:sumNstPeRegCount,
+</#if>
+<#if nstCpRegCount?exists && nstCpRegCount!="" >
+nstCpRegCount=:nstCpRegCount,
+</#if>
+<#if sumNstCpRegCount?exists && sumNstCpRegCount!="" >
+sumNstCpRegCount=:sumNstCpRegCount,
+</#if>
+
+<#if sumNstRegCount?exists && sumNstRegCount!="" >
+sumNstRegCount=:sumNstRegCount,
+</#if>
+<#if nstPhoneConReg?exists && nstPhoneConReg!="" >
+nstPhoneConReg=:nstPhoneConReg,
+</#if>
+<#if supplyCount?exists && supplyCount!="" >
+supplyCount=:supplyCount,
+</#if>
+<#if sumSupplyCount?exists && sumSupplyCount!="" >
+sumSupplyCount=:sumSupplyCount,
+</#if>
+<#if sumLineCount?exists && sumLineCount!="" >
+sumLineCount=:sumLineCount,
+</#if>
+<#if supplyConLine?exists && supplyConLine!="" >
+supplyConLine=:supplyConLine,
+</#if>
+<#if sumSupplyConLine?exists && sumSupplyConLine!="" >
+sumSupplyConLine=:sumSupplyConLine,
+</#if>
+<#if createUserID?exists && createUserID!="" >
+createUserID=:createUserID,
+</#if>
+
+<#if createTime?exists && createTime!="" >
+createTime=:createTime,
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+updateUserID=:updateUserID,
+</#if>
+<#if updateTime?exists && updateTime!="" >
+updateTime=:updateTime,
+</#if>
+<#if reportsID?exists && reportsID!="" >
+reportsID=:reportsID,
+</#if>
+<#if frequency?exists && frequency!="" >
+frequency=:frequency,
+</#if>
+<#if datatimes?exists && datatimes!="" >
+datatimes=:datatimes,
+</#if>
+<#if nstConCp?exists && nstConCp!="" >
+nstConCp=:nstConCp,
+</#if>
+<#if lineCount?exists && lineCount!="" >
+lineCount=:lineCount,
+</#if>
+<#if growthRate?exists && growthRate!="" >
+growthRate=:growthRate
+</#if>
+ WHERE id=:id
+)
+]]>
+</sql>
+<sql id="getListByCondition">
+<![CDATA[
+	SELECT 
+
+id,state,webRegCount,sumWebRegCount,shopRegCount,sumShopRegCount,supplierRegCount,sumSupplierRegCount,
+supplierConShop,nsyRegCount,sumNsyRegCount,nsyConShop,nsyPhoneCount,nsyPhoneConUser,comRegCount,sumComRegCount,
+sumRealCount,productCount,shopAvProduct,sumProductCount,nstPeRegCount,sumNstPeRegCount,nstCpRegCount,sumNstCpRegCount,
+sumNstRegCount,nstPhoneConReg,supplyCount,sumSupplyCount,sumLineCount,supplyConLine,sumSupplyConLine,createUserID,
+createTime,updateUserID,updateTime,reportsID,frequency,datatimes,nstConCp,lineCount,growthRate
+	FROM 
+pro_operate WHERE 1=1
+
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if webRegCount?exists && webRegCount!="" >
+AND webRegCount=:webRegCount
+</#if>
+<#if sumWebRegCount?exists && sumWebRegCount!="" >
+AND sumWebRegCount=:sumWebRegCount
+</#if>
+<#if shopRegCount?exists && shopRegCount!="" >
+AND shopRegCount=:shopRegCount
+</#if>
+<#if sumShopRegCount?exists && sumShopRegCount!="" >
+AND sumShopRegCount=:sumShopRegCount
+</#if>
+<#if supplierRegCount?exists && supplierRegCount!="" >
+AND supplierRegCount=:supplierRegCount
+</#if>
+<#if sumSupplierRegCount?exists && sumSupplierRegCount!="" >
+AND sumSupplierRegCount=:sumSupplierRegCount
+</#if>
+
+<#if supplierConShop?exists && supplierConShop!="" >
+AND supplierConShop=:supplierConShop
+</#if>
+<#if nsyRegCount?exists && nsyRegCount!="" >
+AND nsyRegCount=:nsyRegCount
+</#if>
+<#if sumNsyRegCount?exists && sumNsyRegCount!="" >
+AND sumNsyRegCount=:sumNsyRegCount
+</#if>
+<#if nsyConShop?exists && nsyConShop!="" >
+AND nsyConShop=:nsyConShop
+</#if>
+<#if nsyPhoneCount?exists && nsyPhoneCount!="" >
+AND nsyPhoneCount=:nsyPhoneCount
+</#if>
+<#if nsyPhoneConUser?exists && nsyPhoneConUser!="" >
+AND nsyPhoneConUser=:nsyPhoneConUser
+</#if>
+<#if comRegCount?exists && comRegCount!="" >
+AND comRegCount=:comRegCount
+</#if>
+<#if sumComRegCount?exists && sumComRegCount!="" >
+AND sumComRegCount=:sumComRegCount
+</#if>
+
+<#if sumRealCount?exists && sumRealCount!="" >
+AND sumRealCount=:sumRealCount
+</#if>
+<#if productCount?exists && productCount!="" >
+AND productCount=:productCount
+</#if>
+<#if shopAvProduct?exists && shopAvProduct!="" >
+AND shopAvProduct=:shopAvProduct
+</#if>
+<#if sumProductCount?exists && sumProductCount!="" >
+AND sumProductCount=:sumProductCount
+</#if>
+<#if nstPeRegCount?exists && nstPeRegCount!="" >
+AND nstPeRegCount=:nstPeRegCount
+</#if>
+<#if sumNstPeRegCount?exists && sumNstPeRegCount!="" >
+AND sumNstPeRegCount=:sumNstPeRegCount
+</#if>
+<#if nstCpRegCount?exists && nstCpRegCount!="" >
+AND nstCpRegCount=:nstCpRegCount
+</#if>
+<#if sumNstCpRegCount?exists && sumNstCpRegCount!="" >
+AND sumNstCpRegCount=:sumNstCpRegCount
+</#if>
+
+<#if sumNstRegCount?exists && sumNstRegCount!="" >
+AND sumNstRegCount=:sumNstRegCount
+</#if>
+<#if nstPhoneConReg?exists && nstPhoneConReg!="" >
+AND nstPhoneConReg=:nstPhoneConReg
+</#if>
+<#if supplyCount?exists && supplyCount!="" >
+AND supplyCount=:supplyCount
+</#if>
+<#if sumSupplyCount?exists && sumSupplyCount!="" >
+AND sumSupplyCount=:sumSupplyCount
+</#if>
+<#if sumLineCount?exists && sumLineCount!="" >
+AND sumLineCount=:sumLineCount
+</#if>
+<#if supplyConLine?exists && supplyConLine!="" >
+AND supplyConLine=:supplyConLine
+</#if>
+<#if sumSupplyConLine?exists && sumSupplyConLine!="" >
+AND sumSupplyConLine=:sumSupplyConLine
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if reportsID?exists && reportsID!="" >
+AND reportsID=:reportsID
+</#if>
+<#if frequency?exists && frequency!="" >
+AND frequency=:frequency
+</#if>
+<#if datatimes?exists && datatimes!="" >
+AND datatimes=:datatimes
+</#if>
+<#if nstConCp?exists && nstConCp!="" >
+AND nstConCp=:nstConCp
+</#if>
+<#if lineCount?exists && lineCount!="" >
+AND lineCount=:lineCount
+</#if>
+<#if growthRate?exists && growthRate!="" >
+AND growthRate=:growthRate
+</#if>
+]]>
+</sql>
+<sql id="getListByConditionPage">
+<![CDATA[
+	SELECT 
+
+id,state,webRegCount,sumWebRegCount,shopRegCount,sumShopRegCount,supplierRegCount,sumSupplierRegCount,
+supplierConShop,nsyRegCount,sumNsyRegCount,nsyConShop,nsyPhoneCount,nsyPhoneConUser,comRegCount,sumComRegCount,
+sumRealCount,productCount,shopAvProduct,sumProductCount,nstPeRegCount,sumNstPeRegCount,nstCpRegCount,sumNstCpRegCount,
+sumNstRegCount,nstPhoneConReg,supplyCount,sumSupplyCount,sumLineCount,supplyConLine,sumSupplyConLine,createUserID,
+createTime,updateUserID,updateTime,reportsID,frequency,datatimes,nstConCp,lineCount,growthRate
+	FROM 
+pro_operate WHERE 1=1
+
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if webRegCount?exists && webRegCount!="" >
+AND webRegCount=:webRegCount
+</#if>
+<#if sumWebRegCount?exists && sumWebRegCount!="" >
+AND sumWebRegCount=:sumWebRegCount
+</#if>
+<#if shopRegCount?exists && shopRegCount!="" >
+AND shopRegCount=:shopRegCount
+</#if>
+<#if sumShopRegCount?exists && sumShopRegCount!="" >
+AND sumShopRegCount=:sumShopRegCount
+</#if>
+<#if supplierRegCount?exists && supplierRegCount!="" >
+AND supplierRegCount=:supplierRegCount
+</#if>
+<#if sumSupplierRegCount?exists && sumSupplierRegCount!="" >
+AND sumSupplierRegCount=:sumSupplierRegCount
+</#if>
+
+<#if supplierConShop?exists && supplierConShop!="" >
+AND supplierConShop=:supplierConShop
+</#if>
+<#if nsyRegCount?exists && nsyRegCount!="" >
+AND nsyRegCount=:nsyRegCount
+</#if>
+<#if sumNsyRegCount?exists && sumNsyRegCount!="" >
+AND sumNsyRegCount=:sumNsyRegCount
+</#if>
+<#if nsyConShop?exists && nsyConShop!="" >
+AND nsyConShop=:nsyConShop
+</#if>
+<#if nsyPhoneCount?exists && nsyPhoneCount!="" >
+AND nsyPhoneCount=:nsyPhoneCount
+</#if>
+<#if nsyPhoneConUser?exists && nsyPhoneConUser!="" >
+AND nsyPhoneConUser=:nsyPhoneConUser
+</#if>
+<#if comRegCount?exists && comRegCount!="" >
+AND comRegCount=:comRegCount
+</#if>
+<#if sumComRegCount?exists && sumComRegCount!="" >
+AND sumComRegCount=:sumComRegCount
+</#if>
+
+<#if sumRealCount?exists && sumRealCount!="" >
+AND sumRealCount=:sumRealCount
+</#if>
+<#if productCount?exists && productCount!="" >
+AND productCount=:productCount
+</#if>
+<#if shopAvProduct?exists && shopAvProduct!="" >
+AND shopAvProduct=:shopAvProduct
+</#if>
+<#if sumProductCount?exists && sumProductCount!="" >
+AND sumProductCount=:sumProductCount
+</#if>
+<#if nstPeRegCount?exists && nstPeRegCount!="" >
+AND nstPeRegCount=:nstPeRegCount
+</#if>
+<#if sumNstPeRegCount?exists && sumNstPeRegCount!="" >
+AND sumNstPeRegCount=:sumNstPeRegCount
+</#if>
+<#if nstCpRegCount?exists && nstCpRegCount!="" >
+AND nstCpRegCount=:nstCpRegCount
+</#if>
+<#if sumNstCpRegCount?exists && sumNstCpRegCount!="" >
+AND sumNstCpRegCount=:sumNstCpRegCount
+</#if>
+
+<#if sumNstRegCount?exists && sumNstRegCount!="" >
+AND sumNstRegCount=:sumNstRegCount
+</#if>
+<#if nstPhoneConReg?exists && nstPhoneConReg!="" >
+AND nstPhoneConReg=:nstPhoneConReg
+</#if>
+<#if supplyCount?exists && supplyCount!="" >
+AND supplyCount=:supplyCount
+</#if>
+<#if sumSupplyCount?exists && sumSupplyCount!="" >
+AND sumSupplyCount=:sumSupplyCount
+</#if>
+<#if sumLineCount?exists && sumLineCount!="" >
+AND sumLineCount=:sumLineCount
+</#if>
+<#if supplyConLine?exists && supplyConLine!="" >
+AND supplyConLine=:supplyConLine
+</#if>
+<#if sumSupplyConLine?exists && sumSupplyConLine!="" >
+AND sumSupplyConLine=:sumSupplyConLine
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if reportsID?exists && reportsID!="" >
+AND reportsID=:reportsID
+</#if>
+<#if frequency?exists && frequency!="" >
+AND frequency=:frequency
+</#if>
+<#if datatimes?exists && datatimes!="" >
+AND datatimes=:datatimes
+</#if>
+<#if nstConCp?exists && nstConCp!="" >
+AND nstConCp=:nstConCp
+</#if>
+<#if lineCount?exists && lineCount!="" >
+AND lineCount=:lineCount
+</#if>
+<#if growthRate?exists && growthRate!="" >
+AND growthRate=:growthRate
+</#if>
+LIMIT :startRow,:endRow
+]]>
+</sql>
+<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			pro_operate t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if webRegCount?exists && webRegCount!="" >
+AND webRegCount=:webRegCount
+</#if>
+<#if sumWebRegCount?exists && sumWebRegCount!="" >
+AND sumWebRegCount=:sumWebRegCount
+</#if>
+<#if shopRegCount?exists && shopRegCount!="" >
+AND shopRegCount=:shopRegCount
+</#if>
+<#if sumShopRegCount?exists && sumShopRegCount!="" >
+AND sumShopRegCount=:sumShopRegCount
+</#if>
+<#if supplierRegCount?exists && supplierRegCount!="" >
+AND supplierRegCount=:supplierRegCount
+</#if>
+<#if sumSupplierRegCount?exists && sumSupplierRegCount!="" >
+AND sumSupplierRegCount=:sumSupplierRegCount
+</#if>
+
+<#if supplierConShop?exists && supplierConShop!="" >
+AND supplierConShop=:supplierConShop
+</#if>
+<#if nsyRegCount?exists && nsyRegCount!="" >
+AND nsyRegCount=:nsyRegCount
+</#if>
+<#if sumNsyRegCount?exists && sumNsyRegCount!="" >
+AND sumNsyRegCount=:sumNsyRegCount
+</#if>
+<#if nsyConShop?exists && nsyConShop!="" >
+AND nsyConShop=:nsyConShop
+</#if>
+<#if nsyPhoneCount?exists && nsyPhoneCount!="" >
+AND nsyPhoneCount=:nsyPhoneCount
+</#if>
+<#if nsyPhoneConUser?exists && nsyPhoneConUser!="" >
+AND nsyPhoneConUser=:nsyPhoneConUser
+</#if>
+<#if comRegCount?exists && comRegCount!="" >
+AND comRegCount=:comRegCount
+</#if>
+<#if sumComRegCount?exists && sumComRegCount!="" >
+AND sumComRegCount=:sumComRegCount
+</#if>
+
+<#if sumRealCount?exists && sumRealCount!="" >
+AND sumRealCount=:sumRealCount
+</#if>
+<#if productCount?exists && productCount!="" >
+AND productCount=:productCount
+</#if>
+<#if shopAvProduct?exists && shopAvProduct!="" >
+AND shopAvProduct=:shopAvProduct
+</#if>
+<#if sumProductCount?exists && sumProductCount!="" >
+AND sumProductCount=:sumProductCount
+</#if>
+<#if nstPeRegCount?exists && nstPeRegCount!="" >
+AND nstPeRegCount=:nstPeRegCount
+</#if>
+<#if sumNstPeRegCount?exists && sumNstPeRegCount!="" >
+AND sumNstPeRegCount=:sumNstPeRegCount
+</#if>
+<#if nstCpRegCount?exists && nstCpRegCount!="" >
+AND nstCpRegCount=:nstCpRegCount
+</#if>
+<#if sumNstCpRegCount?exists && sumNstCpRegCount!="" >
+AND sumNstCpRegCount=:sumNstCpRegCount
+</#if>
+
+<#if sumNstRegCount?exists && sumNstRegCount!="" >
+AND sumNstRegCount=:sumNstRegCount
+</#if>
+<#if nstPhoneConReg?exists && nstPhoneConReg!="" >
+AND nstPhoneConReg=:nstPhoneConReg
+</#if>
+<#if supplyCount?exists && supplyCount!="" >
+AND supplyCount=:supplyCount
+</#if>
+<#if sumSupplyCount?exists && sumSupplyCount!="" >
+AND sumSupplyCount=:sumSupplyCount
+</#if>
+<#if sumLineCount?exists && sumLineCount!="" >
+AND sumLineCount=:sumLineCount
+</#if>
+<#if supplyConLine?exists && supplyConLine!="" >
+AND supplyConLine=:supplyConLine
+</#if>
+<#if sumSupplyConLine?exists && sumSupplyConLine!="" >
+AND sumSupplyConLine=:sumSupplyConLine
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if reportsID?exists && reportsID!="" >
+AND reportsID=:reportsID
+</#if>
+<#if frequency?exists && frequency!="" >
+AND frequency=:frequency
+</#if>
+<#if datatimes?exists && datatimes!="" >
+AND datatimes=:datatimes
+</#if>
+<#if nstConCp?exists && nstConCp!="" >
+AND nstConCp=:nstConCp
+</#if>
+<#if lineCount?exists && lineCount!="" >
+AND lineCount=:lineCount
+</#if>
+<#if growthRate?exists && growthRate!="" >
+AND growthRate=:growthRate
+</#if>
+	]]>
+	</sql>
+<sql id="deleteById">
+<![CDATA[
+	DELETE pro_operate
+ WHERE id=:id
+]]>
+</sql>
+
+	<sql id="sumReport">
+	<![CDATA[
+			SELECT
+			reportsID,
+			DATE_FORMAT(datatimes, '%Y-%m-%d') as datatimes,
+			IFNULL(webRegCount, 0) as webRegCount,
+			IFNULL(sumWebRegCount, 0) as sumWebRegCount,
+			IFNULL(growthRate, 0) as growthRate,
+			IFNULL(shopRegCount, 0) as shopRegCount,
+			IFNULL(sumShopRegCount, 0) as sumShopRegCount,
+			IFNULL(supplierRegCount, 0) as supplierRegCount,
+			IFNULL(sumSupplierRegCount, 0) as sumSupplierRegCount,
+			IFNULL(supplierConShop, 0) as supplierConShop,
+			IFNULL(nsyRegCount, 0) as nsyRegCount,
+			IFNULL(sumNsyRegCount, 0) as sumNsyRegCount,
+			IFNULL(nsyConShop, 0) as nsyConShop,
+			IFNULL(nsyPhoneCount, 0) as nsyPhoneCount,
+			IFNULL(nsyPhoneConUser, 0) as nsyPhoneConUser,
+			IFNULL(comRegCount, 0) as comRegCount,
+			IFNULL(sumComRegCount, 0) as sumComRegCount,
+			IFNULL(sumRealCount, 0) as sumRealCount,
+			IFNULL(productCount, 0) as productCount,
+			IFNULL(shopAvProduct, 0) as shopAvProduct,
+			IFNULL(nstPeRegCount, 0) as nstPeRegCount,
+			IFNULL(sumNstPeRegCount, 0) as sumNstPeRegCount,
+			IFNULL(nstCpRegCount, 0) as nstCpRegCount,
+			IFNULL(sumNstCpRegCount, 0) as sumNstCpRegCount,
+			IFNULL(nstConCp, 0) as nstConCp,
+			IFNULL(sumNstRegCount, 0) as sumNstRegCount,
+			IFNULL(nstPhoneConReg, 0) as nstPhoneConReg,
+			IFNULL(supplyCount, 0) as supplyCount,
+			IFNULL(sumSupplyCount, 0) as sumSupplyCount,
+			IFNULL(sumSupplyCount, 0) as sumSupplyCount,
+			IFNULL(sumLineCount, 0) as sumLineCount,
+			IFNULL(supplyConLine, 0) as supplyConLine,
+			IFNULL(sumSupplyConLine, 0) as sumSupplyConLine
+		FROM
+			pro_operate
+		WHERE
+			reportsID = :reportsId
+		<#if queryStartDate?exists && queryStartDate!="" && queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(datatimes, '%Y-%m-%d') >= DATE_FORMAT(:queryStartDate, '%Y-%m-%d')
+			AND DATE_FORMAT(datatimes, '%Y-%m-%d') <= DATE_FORMAT(:queryEndDate, '%Y-%m-%d')
+		</#if>
+		<#if marketId?exists && marketId!="">
+			AND markId = :marketId
+		<#else>
+			AND markId is null
+		</#if>
+		GROUP BY DATE_FORMAT(datatimes, '%Y-%m-%d')
+	]]>
+	</sql>
+</sqlMap>

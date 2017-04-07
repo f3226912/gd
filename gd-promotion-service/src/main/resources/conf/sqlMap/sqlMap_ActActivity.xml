@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ActActivity">
+    
+    <!--b对应的是用的点赞统计数据以及用户的邀请注册数统计：1、 从wechat_member表中随机取一条数据作为依据作为统计邀请注册数(因为一个谷登账号可能存在多个openid，而对应的邀请人的openid也有可能对应多个所以随机取一条作为依据)
+2、点赞数统计 一个用户对应多个openid，分别先group by openid 进行统计，然后openid 对应，然后在group by memberId 进行sum统计
+ -->
+    
+    <sql id="queryStatisticPage">
+	<![CDATA[
+		select a.account as userid,
+				a.activity_id as activityId,
+				a.mobile,
+				c.minTime,
+				ifnull(d.countShare,0) as countShare,
+				ifnull(b.countStars,0) as countStars,
+				ifnull(b.countRegister,0) as countRegister,
+				IFNULL(e.countJp,0) as countJp
+				from act_re_user_activity a
+				left JOIN (
+				select  
+				a.memberId,a.actId,
+				sum(case when b.countRegister is null then 0 else b.countRegister end )as countRegister ,
+				sum(case when c.ct is null then 0 else c.ct end ) as countStars
+				from wechat_member a 
+				left JOIN(select count(1) as countRegister,inviteId,actid from  (select * from wechat_member where type=1 group by memberId )a where inviteId  <>'' and  inviteId is not null  group by inviteId,actid 
+				) b on a.openid=b.inviteId and a.actid=b.actid
+				left join (select openId1,count(1) as ct,actId  from wechat_stars group by openId1,actId) c on a.openId=c.openId1 and a.actId=c.actId
+				group by a.memberId ,a.actId
+				) b on a.userid=b.memberId and a.activity_id=b.actId
+				left join (select userid,min(createTime)as minTime,activityId  from act_wechat_share where userid is not null group by userid,activityId) c on a.userid = c.userid and a.activity_id=c.activityId
+				left join (select userid,activityId,count(1) as countShare from act_wechat_share where activityId is not null  group by userid,activityId) d on a.userid=d.userid and a.activity_id=d.activityId
+				left join (select userid,activity_id as activityId,count(1) as countJp  from  act_activity_score_record  where type=6 group by userid,activity_id) e on a.userid=e.userid and  a.activity_id=e.activityId
+			where 1=1
+		<#if mobile?exists && mobile!="">
+		and a.mobile like "%":mobile"%"
+		</#if>
+		
+		<#if userid?exists && userid!="">
+		and  a.account like "%":userid"%"
+		</#if> 
+		<#if startDate?exists && startDate!="">
+		and c.minTime>=:startDate
+		</#if> 
+		<#if endDate?exists && endDate!="">
+		and c.minTime<=:endDate
+		</#if> 
+		ORDER BY c.minTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+        <sql id="getStatisticTotalCount">
+	<![CDATA[
+	select count(1) from (
+			select a.account as userid,
+			a.activity_id as activityId,
+			a.mobile,
+			c.minTime,
+			ifnull(d.countShare,0) as countShare,
+			b.countStars,
+			b.countRegister,
+			IFNULL(e.countJp,0) as countJp
+			from act_re_user_activity a
+			left JOIN (
+			select  
+			a.memberId,a.actId,
+			sum(case when b.countRegister is null then 0 else b.countRegister end )as countRegister ,
+			sum(case when c.ct is null then 0 else c.ct end ) as countStars
+			from wechat_member a 
+			left JOIN(select count(1) as countRegister,inviteId,actid from  (select * from wechat_member where type=1 group by memberId )a where inviteId  <>'' and  inviteId is not null  group by inviteId,actid 
+			) b on a.openid=b.inviteId and a.actid=b.actid
+			left join (select openId1,count(1) as ct,actId  from wechat_stars group by openId1,actId) c on a.openId=c.openId1 and a.actId=c.actId
+			group by a.memberId ,a.actId
+			) b on a.userid=b.memberId and a.activity_id=b.actId
+			left join (select userid,min(createTime)as minTime,activityId  from act_wechat_share where userid is not null group by userid,activityId) c on a.userid = c.userid and a.activity_id=c.activityId
+			left join (select userid,activityId,count(1) as countShare from act_wechat_share where activityId is not null  group by userid,activityId) d on a.userid=d.userid and a.activity_id=d.activityId
+			left join (select userid,activity_id as activityId,count(1) as countJp  from  act_activity_score_record  where type=6 group by userid,activity_id) e on a.userid=e.userid and  a.activity_id=e.activityId
+		where 1=1
+		<#if mobile?exists && mobile!="">
+		and a.mobile like "%":mobile"%"
+		</#if>
+		
+		<#if userid?exists && userid!="">
+		and  a.account like "%":userid"%"
+		</#if> 
+		<#if startDate?exists && startDate!="">
+		and c.minTime>=:startDate
+		</#if> 
+		<#if endDate?exists && endDate!="">
+		and c.minTime<=:endDate
+		</#if> 
+		ORDER BY c.minTime DESC
+		) a
+
+	]]>
+	</sql>
+	
+        	
+        <sql id="queryExportDate">
+	<![CDATA[
+
+		select a.account as userid,
+				a.activity_id as activityId,
+				a.mobile,
+				c.minTime,
+				ifnull(d.countShare,0) as countShare,
+				ifnull(b.countStars,0) as countStars,
+				ifnull(b.countRegister,0) as countRegister,
+				IFNULL(e.countJp,0) as countJp
+				from act_re_user_activity a
+				left JOIN (
+				select  
+				a.memberId,a.actId,
+				sum(case when b.countRegister is null then 0 else b.countRegister end )as countRegister ,
+				sum(case when c.ct is null then 0 else c.ct end ) as countStars
+				from wechat_member a 
+				left JOIN(select count(1) as countRegister,inviteId,actid from  (select * from wechat_member where type=1 group by memberId )a where inviteId  <>'' and  inviteId is not null  group by inviteId,actid 
+				) b on a.openid=b.inviteId and a.actid=b.actid
+				left join (select openId1,count(1) as ct,actId  from wechat_stars group by openId1,actId) c on a.openId=c.openId1 and a.actId=c.actId
+				group by a.memberId ,a.actId
+				) b on a.userid=b.memberId and a.activity_id=b.actId
+				left join (select userid,min(createTime)as minTime,activityId  from act_wechat_share where userid is not null group by userid,activityId) c on a.userid = c.userid and a.activity_id=c.activityId
+				left join (select userid,activityId,count(1) as countShare from act_wechat_share where activityId is not null  group by userid,activityId) d on a.userid=d.userid and a.activity_id=d.activityId
+				left join (select userid,activity_id as activityId,count(1) as countJp  from  act_activity_score_record  where type=6 group by userid,activity_id) e on a.userid=e.userid and  a.activity_id=e.activityId
+		where 1=1
+		<#if mobile?exists && mobile!="">
+		and a.mobile like "%":mobile"%"
+		</#if>
+		
+		<#if userid?exists && userid!="">
+		and  a.account like "%":userid"%"
+		</#if> 
+		<#if startDate?exists && startDate!="">
+		and c.minTime>=:startDate
+		</#if> 
+		<#if endDate?exists && endDate!="">
+		and c.minTime<=:endDate
+		</#if> 
+		ORDER BY c.minTime DESC
+		
+
+	]]>
+	</sql>
+    
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			type,
+			channel,
+			user_group as userGroup,
+			exchange_time as exchangeTime,
+			effective_start_time as effectiveStartTime,
+			effective_end_time as effectiveEndTime,
+			launch,
+			times,
+			createUserId,
+			createTime
+		FROM
+			act_activity_baseinfo
+		WHERE
+			isDeleted != 1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if channel?exists && channel!="">
+			AND channel = :channel
+		</#if>
+		<#if type?exists && type!="">
+			AND type = :type
+		</#if>
+		<#if userGroup?exists && userGroup!="">
+			AND user_group = :userGroup
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+		ORDER BY createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotalCountByCondition">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_activity_baseinfo
+		WHERE
+			isDeleted != 1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if channel?exists && channel!="">
+			AND channel = :channel
+		</#if>
+		<#if type?exists && type!="">
+			AND type = :type
+		</#if>
+		<#if userGroup?exists && userGroup!="">
+			AND user_group = :userGroup
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			type,
+			channel,
+			user_group as userGroup,
+			exchange_time as exchangeTime,
+			effective_start_time as effectiveStartTime,
+			effective_end_time as effectiveEndTime,
+			launch,
+			times,
+			createUserId,
+			createTime
+		FROM
+			act_activity_baseinfo
+		WHERE
+			id = :id
+	]]>
+	</sql>
+	
+	<sql id="updateIsDeleted">
+	<![CDATA[
+		UPDATE
+			act_activity_baseinfo
+		SET
+			isDeleted = 1,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+	
+	<sql id="update">
+	<![CDATA[
+		UPDATE
+			act_activity_baseinfo
+		SET
+			NAME = :name,
+			type = :type,
+			exchange_time = :exchangeTime,
+			effective_start_time = :effectiveStartTimeStr,
+			effective_end_time = :effectiveEndTimeStr,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+	
+	<sql id="updateLaunch">
+	<![CDATA[
+		UPDATE
+			act_activity_baseinfo
+		SET
+			launch = :launch,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+	
+	<sql id="queryListByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			type,
+			channel,
+			user_group as userGroup,
+			exchange_time as exchangeTime,
+			effective_start_time as effectiveStartTime,
+			effective_end_time as effectiveEndTime,
+			launch,
+			times,
+			createUserId,
+			createTime
+		FROM
+			act_activity_baseinfo
+		WHERE
+			isDeleted != 1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if channel?exists && channel!="">
+			AND channel = :channel
+		</#if>
+		<#if type?exists && type!="">
+			AND type = :type
+		</#if>
+		<#if userGroup?exists && userGroup!="">
+			AND user_group = :userGroup
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="queryActivityStatisticPage">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			pv,
+			launch,
+			(SELECT COUNT(*) FROM act_re_user_activity WHERE activity_id = t.id) as joinCount,
+			(SELECT COUNT(*) FROM act_wechat_share WHERE activityId = t.id) as shareCount,
+			effective_start_time as effectiveStartTime,
+			effective_end_time as effectiveEndTime
+		FROM
+			act_activity_baseinfo t
+		WHERE
+			isDeleted != 1
+		<#if launch?exists && launch!="">
+			AND launch <= :launch
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+		ORDER BY createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getActivityStatisticTotalCount">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_activity_baseinfo t
+		WHERE
+			isDeleted != 1
+		<#if launch?exists && launch!="">
+			AND launch <= :launch
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="queryActStatisticListByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			pv,
+			launch,
+			(SELECT COUNT(*) FROM act_re_user_activity WHERE activity_id = t.id) as joinCount,
+			(SELECT COUNT(*) FROM act_wechat_share WHERE activityId = t.id) as shareCount,
+			effective_start_time as effectiveStartTime,
+			effective_end_time as effectiveEndTime
+		FROM
+			act_activity_baseinfo t
+		WHERE
+			isDeleted != 1
+		<#if launch?exists && launch!="">
+			AND launch <= :launch
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="updatePV">
+	<![CDATA[
+		UPDATE
+			act_activity_baseinfo
+		SET
+			pv = pv+1,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+</sqlMap>

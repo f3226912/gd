@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="WechatLoginEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO wechat_login(
+	id,createTime,actId,unionId,memberId,openId
+	) VALUES (
+	:id,:createTime,:actId,:unionId,:memberId,:openId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE wechat_login SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if actId?exists && actId!="" >
+		actId=:actId,
+	</#if>	
+	<#if unionId?exists && unionId!="" >
+		unionId=:unionId,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if openId?exists && openId!="" >
+		openId=:openId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,createTime,actId,unionId,memberId,openId
+	FROM wechat_login WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,createTime,actId,unionId,memberId,openId
+	FROM wechat_login WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if unionId?exists && unionId!="" >
+		AND unionId=:unionId
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if openId?exists && openId!="" >
+		AND openId=:openId
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,createTime,actId,unionId,memberId,openId
+	FROM wechat_login WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if unionId?exists && unionId!="" >
+		AND unionId=:unionId
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if openId?exists && openId!="" >
+		AND openId=:openId
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM wechat_login WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if unionId?exists && unionId!="" >
+		AND unionId=:unionId
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if openId?exists && openId!="" >
+		AND openId=:openId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM wechat_login WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

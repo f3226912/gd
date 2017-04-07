@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cache-server name="redis-001">
+	<poolConfig>
+		<!--连接池的最大活动连接数，与wasServer的web container一致，推荐在 50－200 -->
+		<maxActive>50</maxActive>
+		<!-- 连接池的最大空闲连接数，默认值8，推荐maxActive的85%或与maxActive保持一致。 -->
+		<maxIdle>50</maxIdle>
+		<!-- 连接池的最小空闲连接数，默认0，推荐 5。 -->
+		<!--<minIdle>5</minIdle>-->
+		<!-- 从连接池获取连接的最大等待时间，默认-1L，即会一直等待，推荐 2000-5000ms。 -->
+		<maxWait>2000</maxWait>
+		<!-- 从连接池中拿到连接之前，进行验证，如果检验失败，销毁该连接，并从池中重新拿到一个新的可用连接，提高可用性。默认false，设置 为True。-->
+		<testOnBorrow>true</testOnBorrow>
+	</poolConfig>
+	<shardConfig>
+		<shard name="shard1">
+			<server>
+				<ip>${maven.redis.ip}</ip>
+				<port>6379</port>
+				<dbIndex>0</dbIndex>
+			</server>
+		</shard>
+	</shardConfig>
+</cache-server>

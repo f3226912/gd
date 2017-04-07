@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="paySerialnumber">
+	<sql id="selectCount">
+	<![CDATA[
+	    SELECT 
+	    	count(1)
+	    FROM 
+			pay_serialnumber
+	    WHERE 
+	    	orderNo=:orderNo
+	    	and payType=:payType
+	]]>
+	</sql>
+	
+	<sql id="insert">
+		<![CDATA[
+			INSERT INTO pay_serialnumber
+			(
+				orderNo,statementId,payTime,payType,payStatus,tradeAmount,remark,createUserId,createTime,
+				updateUserId,updateTime
+			)
+			VALUES 
+			(
+				:orderNo,:statementId,SYSDATE(),'2',:payStatus,:tradeAmount,:remark,:createUserId,SYSDATE(),
+				:createUserId,SYSDATE()
+			)
+		]]>
+	</sql>
+</sqlMap>

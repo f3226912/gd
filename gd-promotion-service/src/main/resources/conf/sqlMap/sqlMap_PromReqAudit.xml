@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromReqAudit">
+
+	<sql id="updateReqAuditStatus">
+	<![CDATA[
+	    UPDATE prom_req_audit
+		SET auditOpinion =:auditOpinion,
+		 auditStatus = :auditStatus
+		 updateTime = SYSDATE()
+		WHERE
+			auditId IN (
+				SELECT
+					auditId
+				FROM
+					prom_prod_info t1
+				WHERE
+					t1.actId = :actId
+				AND t1.supplierId = :supplierId)
+	]]>
+	</sql>
+
+</sqlMap>

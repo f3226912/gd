@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CertifShopEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO certif_shop(
+	marketId,createTime,updateTime,status,optionUser,id,updateUserId,
+	contractImg,operatorName,address,shopName,commitTime,realShopName,
+	account,posNo,memberId,businessId,macNo,cateId,
+	createUserId
+	) VALUES (
+	:marketId,:createTime,:updateTime,:status,:optionUser,:id,:updateUserId,
+	:contractImg,:operatorName,:address,:shopName,:commitTime,:realShopName,
+	:account,:posNo,:memberId,:businessId,:macNo,:cateId,
+	:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE certif_shop SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if optionUser?exists && optionUser!="" >
+		optionUser=:optionUser,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if contractImg?exists && contractImg!="" >
+		contractImg=:contractImg,
+	</#if>	
+	<#if operatorName?exists && operatorName!="" >
+		operatorName=:operatorName,
+	</#if>	
+	<#if address?exists && address!="" >
+		address=:address,
+	</#if>	
+	<#if shopName?exists && shopName!="" >
+		shopName=:shopName,
+	</#if>	
+	<#if commitTime?exists && commitTime!="" >
+		commitTime=:commitTime,
+	</#if>	
+	<#if realShopName?exists && realShopName!="" >
+		realShopName=:realShopName,
+	</#if>	
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>	
+	<#if posNo?exists && posNo!="" >
+		posNo=:posNo,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if businessId?exists && businessId!="" >
+		businessId=:businessId,
+	</#if>	
+	<#if macNo?exists && macNo!="" >
+		macNo=:macNo,
+	</#if>	
+	<#if cateId?exists && cateId!="" >
+		cateId=:cateId,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+		cs.marketId,cs.createTime,cs.updateTime,cs.status,cs.optionUser,cs.id,cs.updateUserId,
+		cs.contractImg,cs.operatorName,cs.address,cs.shopName,cs.commitTime,cs.realShopName,
+		cs.account,cs.posNo,cs.memberId,cs.businessId,cs.macNo,cs.cateId,
+		cs.createUserId,m.marketName,pc.cateName,mb.status as userStatus
+	FROM certif_shop cs 
+	LEFT JOIN 
+		member_baseinfo mb  
+	ON
+	cs.memberid=mb.memberid  
+	LEFT JOIN 
+  		market m 
+	on 
+		cs.marketId=m.id 
+	LEFT JOIN 
+ 		product_category pc 
+  	on 
+  		cs.cateId=pc.categoryId
+	WHERE  cs.id=:id
+	]]>
+</sql>
+
+<sql id="getByUserId">
+	<![CDATA[
+	SELECT 
+		cs.marketId,cs.createTime,cs.updateTime,cs.status,cs.optionUser,cs.id,cs.updateUserId,
+		cs.contractImg,cs.operatorName,cs.address,cs.shopName,cs.commitTime,cs.realShopName,
+		cs.account,cs.posNo,cs.memberId,cs.businessId,cs.macNo,cs.cateId,
+		cs.createUserId,m.marketName,pc.cateName,mb.status as userStatus,
+		(SELECT clog.reason FROM certif_log clog where clog.optionId = cs.id and clog.status = cs.status and clog.type = 3 ORDER BY createTime DESC limit 1) reason
+	FROM certif_shop cs 
+	LEFT JOIN 
+		member_baseinfo mb  
+	ON
+	cs.memberid=mb.memberid  
+	LEFT JOIN 
+  		market m 
+	on 
+		cs.marketId=m.id 
+	LEFT JOIN 
+ 		product_category pc 
+  	on 
+  		cs.cateId=pc.categoryId
+	WHERE  cs.memberId=:memberId
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+		cs.marketId,cs.createTime,cs.updateTime,cs.status,cs.optionUser,cs.id,cs.updateUserId,
+		cs.contractImg,cs.operatorName,cs.address,cs.shopName,cs.commitTime,cs.realShopName,
+		cs.account,cs.posNo,cs.memberId,cs.businessId,cs.macNo,cs.cateId,
+		cs.createUserId,m.marketName,pc.cateName
+	FROM certif_shop cs 
+	LEFT JOIN 
+  		market m 
+	on 
+		cs.marketId=m.id 
+	LEFT JOIN 
+ 		product_category pc 
+  	on 
+  		cs.cateId=pc.categoryId
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND cs.status=:status
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND cs.marketId=:marketId
+	</#if>
+	<#if account?exists && account!="" >
+		AND cs.account=:account
+	</#if>
+	<#if shopName?exists && shopName!="" >
+        AND cs.shopName like "%":shopName"%"
+	</#if>
+	<#if address?exists && address!="" >
+        AND cs.address like "%":address"%"
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(cs.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(cs.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	ORDER BY createTime desc 
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+		cs.marketId,cs.createTime,cs.updateTime,cs.status,cs.optionUser,cs.id,cs.updateUserId,
+		cs.contractImg,cs.operatorName,cs.address,cs.shopName,cs.commitTime,cs.realShopName,
+		cs.account,cs.posNo,cs.memberId,cs.businessId,cs.macNo,cs.cateId,
+		cs.createUserId,m.marketName,pc.cateName,mb.mobile
+	FROM certif_shop cs 
+	LEFT JOIN market m on cs.marketId=m.id 
+	LEFT JOIN product_category pc on cs.cateId=pc.categoryId
+	LEFT JOIN member_baseinfo mb on cs.memberId = mb.memberId
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND cs.status=:status
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND cs.marketId=:marketId
+	</#if>
+	<#if account?exists && account!="" >
+		AND cs.account=:account
+	</#if>
+	<#if shopName?exists && shopName!="" >
+        AND cs.shopName like "%":shopName"%"
+	</#if>
+	<#if address?exists && address!="" >
+        AND cs.address like "%":address"%"
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(cs.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(cs.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if mobile?exists && mobile!="" >
+        AND mb.mobile = :mobile
+	</#if>
+	ORDER BY createTime desc 
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(1) 
+	FROM certif_shop cs
+	LEFT JOIN member_baseinfo m on cs.memberId = m.memberId
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND cs.status=:status
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND cs.memberId=:memberId
+	</#if>
+	<#if account?exists && account!="" >
+		AND cs.account=:account
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND cs.marketId=:marketId
+	</#if>
+	<#if shopName?exists && shopName!="" >
+        AND cs.shopName like "%":shopName"%"
+	</#if>
+	<#if address?exists && address!="" >
+        AND cs.address like "%":address"%"
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(cs.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(cs.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if mobile?exists && mobile!="" >
+        AND m.mobile = :mobile
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM certif_shop WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

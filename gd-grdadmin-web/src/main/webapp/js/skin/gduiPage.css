@@ -1,0 +1,33 @@
+/*!
+ gduiPage默认样式
+*/
+
+.gduiPage_main{font-size:0; clear:both; color:#666;}
+.gduiPage_main *{display:inline-block; vertical-align: top; font-size:12px;}
+.gduiPage_main a{height:26px; line-height:26px; text-decoration:none; color:#666;}
+.gduiPage_main a, .gduiPage_main span{margin:0 3px 6px; padding:0 10px;}
+.gduiPage_main span{height:26px; line-height:26px;}
+.gduiPage_main input, .gduiPage_main button{ border:1px solid #ccc; background-color:#fff;}
+.gduiPage_main input{width:40px; height:26px; line-height:26px; margin:0 5px; padding:0 5px;}
+.gduiPage_main button{height:28px; line-height:28px; margin-left:5px; padding:0 10px; color:#666;}
+
+/* 默认皮肤 */
+.gduiPageskin_default a{border:1px solid #ccc; background-color:#fff;}
+.gduiPageskin_default span{height:28px; line-height:28px; color:#999; }
+.gduiPageskin_default .gduiPage_curr{font-weight:700; color:#666;}
+
+/* 墨绿 */
+.gduiPageskin_molv a, .gduiPageskin_molv span{padding:0 12px; border-radius:2px;}
+.gduiPageskin_molv a{ background-color:#f1eff0; }
+.gduiPageskin_molv .gduiPage_curr{background-color:#00AA91; color:#fff;}
+.gduiPageskin_molv input{height:24px; line-height:24px;}
+.gduiPageskin_molv button{height:26px; line-height:26px;}
+
+/* 雅黑 */
+.gduiPageskin_yahei{color:#333}
+.gduiPageskin_yahei a, .gduiPageskin_yahei span{padding:0 13px; border-radius:2px; color:#333}
+.gduiPageskin_yahei .gduiPage_curr{background-color:#333; color:#fff;}
+
+/* 一般用于信息流加载 */
+.gduiPageskin_flow{text-align:center;}
+.gduiPageskin_flow .page_nomore{color:#999}

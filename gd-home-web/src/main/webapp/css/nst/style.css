@@ -1,0 +1,45 @@
+html,body{height:100%;}
+.wrap{background-color:#eaf8f8;width:100%;height:100%;position:relative;}
+.wrap .top{background-color:#fffddf;font-size:1.5rem;padding:.5rem 1rem;color:#666666;line-height:2rem;}
+.wrap .top span{color:#ff6c00;}
+.wrap .headerFont{width:22rem;display:block;margin:2rem auto;}
+.wrap .carLogo{width:8rem;display:block;margin:4rem auto 0;}
+.wrap .carLogoB{width:10rem;display:block;margin:4rem auto 0;}
+.wrap .clickLoad{width:15rem;display: block;position: absolute;z-index:999;left:50%;margin-left:-7.5rem;top:38rem;}
+.wrap .bg{position: absolute;left: 0;bottom:0;width: 100%;z-index:1}
+
+.wrapAll{background-color:#eaf8f8;width:100%;height:100%;position:relative;overflow:hidden;}
+.wrapAll .headerFont{width:22rem;display:block;margin:4rem auto 0;}
+.wrapAll .bg{position: absolute;left: 0;bottom:0;width: 100%;}
+.wrapAll ul{width:27rem;position: absolute;left:50%;margin-left:-13.5rem;top:14rem;z-index:999;}
+.wrapAll ul li{margin-top:4rem;}
+.wrapAll .logo{width:10rem;}
+.wrapAll .logoB{width:12.7rem;z-index:999;}
+.wrapAll .buttom{width:11rem;float:right;}
+
+.weChat-tips {
+    background: url(../../images/nst/down-pic.png) no-repeat;
+    width: 17.4em;
+    height: 9.15em;
+    -webkit-background-size: 17.4em 9.15em;
+    background-size: 17.4em 9.15em;
+    vertical-align: middle;
+    position: absolute;
+    top: 0;
+    right: 25px;
+    z-index:999;
+    /*display: none;*/
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

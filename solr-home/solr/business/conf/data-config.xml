@@ -1,0 +1,128 @@
+<dataConfig>  
+  <dataSource type="JdbcDataSource" driver="com.mysql.jdbc.Driver"               
+         url="jdbc:mysql://gudeng3306.mysql.rds.aliyuncs.com:3306/gudeng?useUnicode=true&amp;characterEncoding=UTF-8" user="gd_gudeng" password="g05DuengW26" /> 
+
+   <document>  
+        <entity name="business" query="
+		SELECT
+			b.businessId,
+			b.createTime,
+			b.updateTime,
+			NAME,
+			mainProduct,
+			businessModel,
+			managementtype,
+			companyProfile,
+			shopsName,
+			shopsDesc,
+			shopsUrl,
+			mb.mobile,
+			IFNULL(mb.memberGrade,0) memberGrade,
+			b.provinceId,
+			b.cityId,
+			b.areaId,
+			mb.address,
+			mb. LEVEL,
+			CASE
+		WHEN mc. STATUS = '' THEN
+			0
+		WHEN mc. STATUS IS NULL THEN
+			0
+		ELSE
+			mc. STATUS
+		END STATUS,
+		 m.marketName,
+		 m.id marketId,
+		 result.count,
+		 cc.status ccstatus,
+		 cb.status cbstatus,
+		 com.status comstatus
+		FROM
+			business_baseinfo b
+		LEFT JOIN member_certifi mc ON mc.memberId = b.userId
+		LEFT JOIN re_business_market rbm ON b.businessId = rbm.businessId
+		LEFT JOIN market m ON rbm.marketId = m.id
+		LEFT JOIN member_baseinfo mb ON mb.memberId = b.userId
+		LEFT JOIN (
+			SELECT
+				count(p.productId) count,
+				p.businessId
+			FROM
+				product_baseinfo p
+			WHERE
+				p.state = '3' and p.productType = '1'
+			GROUP BY
+				p.businessId
+		) result ON result.businessId = b.businessId
+
+		LEFT JOIN certif_company com on com.memberId=b.userId 
+		LEFT JOIN certif_base cb on cb.businessId = b.businessId
+		LEFT JOIN certif_corp cc on cc.businessId=b.businessId
+
+		WHERE
+			mb. STATUS = 1 
+		ORDER BY
+			count DESC,
+			b.createTime DESC
+		"
+		
+			
+		deltaQuery="    select b.businessId  from business_baseinfo b  "   
+        deltaImportQuery=" select b.businessId  , name, mainProduct, businessModel,companyProfile ,shopsName,   shopsDesc ,shopsUrl,mb.provinceId,mb.cityId,mb.areaId,mb.address, mb.level, mc.status,m.marketName,m.id marketId from business_baseinfo b left join member_certifi mc on mc.memberId=b.userId LEFT JOIN re_business_market rbm on b.businessId=rbm.businessId LEFT JOIN market m on rbm.marketId=m.id left join member_baseinfo mb on mb.memberId=b.userId  "
+		
+			
+		>  
+            <field column="businessId" name="businessId"/>  
+            <field column="name" name="name"/>  
+            <field column="mainProduct" name="mainProduct"/>  
+            <field column="businessModel" name="businessModel"/>  
+            <field column="companyProfile" name="companyProfile"/>  
+            <field column="shopsName" name="shopsName"/>  
+            <field column="shopsDesc" name="shopDesc"/>  
+            <field column="shopsUrl" name="shopsUrl"/>  
+			
+            <field column="provinceId" name="provinceId"/>  
+            <field column="cityId" name="cityId"/>  
+            <field column="areaId" name="areaId"/>  
+            <field column="address" name="address"/>  
+            <field column="level" name="level"/>  
+            <field column="mobile" name="mobile"/>  
+			<field column="memberGrade" name="memberGrade"/>
+    
+			<!-- 1为已经认证，0未认证，2已驳回-->
+            <field column="status" name="status"/>  
+			
+			<!-- 店铺所属市场  -->
+			<field column="marketId" name="marketId"/>  
+            <field column="marketName" name="marketName"/>  
+			
+            <field column="managementType" name="managementType"/>  
+			
+			<!-- 联合查商铺的所有商品  -->
+			<entity name="categorys" query=" select pc.categoryId,pc.cateName from product_category pc LEFT JOIN re_business_category rbc on pc.categoryId=rbc.categoryId LEFT JOIN business_baseinfo bb on bb.businessId=rbc.businessId where bb.businessId= '${business.businessId}'	">
+				<field name="categoryId" column="categoryId" />
+				<field name="cateName" column="cateName" />
+            </entity>
+			
+			
+			
+			<!-- 联合查商铺的所有商品  -->
+			<entity name="products" query=" select pb.productId ,pb.price,pb.unit,pb.name productName,pp.urlOrg  from product_baseinfo pb  LEFT JOIN product_picture pp on pb.productId=pp.productId where pb.state=3 and pb.productType = '1' and pp.pictureType=1 and  businessId='${business.businessId}'	">
+				<field name="productId" column="productId" />
+				<field name="price" column="price" />
+				<field name="unit" column="unit" />
+				<field name="productName" column="productName" />
+				<field name="urlOrg" column="urlOrg" />
+            </entity>
+			
+			
+			<field column="comstatus" name="comstatus"/>   <!-- 企业认证 -->
+			<field column="ccstatus" name="ccstatus"/>  <!-- 合作社认证 -->
+			<field column="cbstatus" name="cbstatus"/>  <!-- 基地认证 -->
+			
+			
+			
+			
+        </entity>  
+    </document>  
+</dataConfig>  

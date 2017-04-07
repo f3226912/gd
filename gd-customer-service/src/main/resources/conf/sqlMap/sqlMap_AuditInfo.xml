@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AuditInfo">
+	<!-- 根据ID 精确查找 -->
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			    id,
+				mainId,
+				type,
+				status,
+				memberId,
+				memberName,
+				auditTime,
+				reason,
+				otherReason,
+				createUserId,
+				createTime,
+				updateUserId,
+				updateTime
+		FROM 
+			 audit_info c
+		WHERE  
+			c.id=:id
+	 
+	]]>
+	</sql>
+	 
+	
+	<!-- 全查找 -->
+	<sql id="getAll">
+	<![CDATA[
+		SELECT 
+			    id,
+				mainId,
+				type,
+				status,
+				memberId,
+				memberName,
+				auditTime,
+				reason,
+				otherReason,
+				createUserId,
+				createTime,
+				updateUserId,
+				updateTime
+		FROM 
+			 audit_info c
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	  
+	
+	<!-- 统计总共记录数  -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 audit_info c
+		WHERE   
+			1=1 
+			<#if mainId?exists && mainId!="" >
+				AND   mainId=:mainId
+			</#if>		
+			<#if type?exists && type!="" >
+				AND   type=:type
+			</#if>		
+			<#if status?exists && status!="" >
+				AND   status=:status 
+			</#if>		
+			<#if memberId?exists && memberId!="" >
+				AND   memberId=:memberId 
+			</#if>		
+			<#if endDate?exists && endDate!="" >
+				AND   auditTime < :endDate 
+			</#if>		
+			<#if startDate?exists && startDate!="" >
+				AND   auditTime > :startDate 
+			</#if>		
+			 
+	]]>
+	</sql>
+	
+	<!-- 增加记录，注意date类型的，使用  _string 字段的值，代替date类型的值  -->
+	<sql id="addAuditInfo">
+	<![CDATA[
+	    INSERT INTO  
+	    	audit_info
+	    	(
+	    	    id,
+				mainId,
+				type,
+				status,
+				memberId,
+				memberName,
+				auditTime,
+				reason,
+				otherReason,
+				createUserId,
+				createTime,
+				updateUserId,
+				updateTime
+			)
+	    VALUES
+	    	(
+				:id,
+				:mainId,
+				:type,
+				:status,
+				:memberId,
+				:memberName,
+				:auditTime_string,
+				:reason,
+				:otherReason,
+				:createUserId,
+				SYSDATE(),
+				:updateUserId,
+				SYSDATE()
+			)
+	]]>
+	</sql>
+	
+	<!-- 根据 memberId 删除记录 -->
+	<sql id="deleteAuditInfo">
+	<![CDATA[
+	DELETE FROM 
+		audit_info
+    WHERE 
+    	id=:id
+	]]>
+	</sql>
+	
+	
+	 
+    <sql id="getBySearch" >
+    	<![CDATA[
+	 	SELECT 
+			    id,
+				mainId,
+				type,
+				status,
+				memberId,
+				memberName,
+				auditTime,
+				reason,
+				otherReason,
+				createUserId,
+				createTime,
+				updateUserId,
+				updateTime
+		FROM 
+			 audit_info c
+		WHERE   
+			1=1 
+			<#if mainId?exists && mainId!="" >
+				AND   mainId=:mainId 
+			</#if>		
+			<#if type?exists && type!="" >
+				AND   type=:type 
+			</#if>		
+			<#if status?exists && status!="" >
+				AND   status=:status 
+			</#if>		
+			<#if memberId?exists && memberId!="" >
+				AND   memberId=:memberId 
+			</#if>		
+			<#if endDate?exists && endDate!="" >
+				AND   auditTime < :endDate 
+			</#if>		
+			<#if startDate?exists && startDate!="" >
+				AND   auditTime > :startDate 
+			</#if>		
+		 LIMIT :startRow,:endRow
+		]]>
+    </sql>
+	<!-- 获取指定条件的所有记录 -->
+	<sql id="getAllSpecifiedRecord" >
+    	<![CDATA[
+	 	SELECT 
+			    id,
+				mainId,
+				type,
+				status,
+				memberId,
+				memberName,
+				auditTime,
+				reason,
+				otherReason,
+				createUserId,
+				createTime,
+				updateUserId,
+				updateTime
+		FROM 
+			 audit_info c
+		WHERE   
+			1=1 
+			<#if mainId?exists && mainId!="" >
+				AND   mainId=:mainId 
+			</#if>		
+			<#if type?exists && type!="" >
+				AND   type=:type 
+			</#if>		
+			<#if status?exists && status!="" >
+				AND   status=:status 
+			</#if>		
+			<#if memberId?exists && memberId!="" >
+				AND   memberId=:memberId 
+			</#if>		
+			<#if endDate?exists && endDate!="" >
+				AND   auditTime < :endDate 
+			</#if>		
+			<#if startDate?exists && startDate!="" >
+				AND   auditTime > :startDate 
+			</#if>		
+		order by createTime desc, updateTime desc
+		]]>
+    </sql>
+    
+</sqlMap>

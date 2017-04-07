@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>@{maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="baseDao" class="com.gudeng.commerce.gd.promotion.dao.impl.BaseDaoImpl" />
+
+	<bean id="actGiftBaseinfoService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ActGiftBaseinfoServiceImpl"></bean>
+	<bean id="actActivityBaseinfoService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ActActivityBaseinfoServiceImpl"></bean>
+	<bean id="reActivityGiftService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ReActivityGiftServiceImpl"></bean>
+	<bean id="actActivityScoreRecordService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ActActivityScoreRecordServiceImpl"></bean>
+
+	<bean id="actActivityGiftExchangService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ActActivityGiftExchangServiceImpl"></bean>
+	<bean id="actReUserActivityService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ActReUserActivityServiceImpl"></bean>
+	<bean id="actWechatInviteService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ActWechatInviteServiceImpl"></bean>
+	<bean id="actWechatShareService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ActWechatShareServiceImpl"></bean>
+
+	<bean id="grdGiftDetailService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdGiftDetailServiceImpl"></bean>
+	<bean id="grdGiftLogService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdGiftLogServiceImpl"></bean>
+	<bean id="grdGiftRecordService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdGiftRecordServiceImpl"></bean>
+	<bean id="grdGiftService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdGiftServiceImpl"></bean>
+	<bean id="grdMemberService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdMemberServiceImpl"></bean>
+	<!-- 活动促销（新） -->
+	<bean id="promBaseinfoService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.PromBaseinfoServiceImpl"></bean>
+	<!--活动商品（新） -->
+	<bean id="promProdinfoService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.PromProdinfoServiceImpl"></bean>
+	<!-- 规则和手续费 -->
+	<bean id="promRuleFeeService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.PromRuleFeeServiceImpl"></bean>
+	<bean id="promActProdInfoService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.PromActProdInfoServiceImpl"></bean>
+	<bean id="promFeeByActService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.PromFeeByActServiceImpl"></bean>
+
+	<bean id="actPromChain"
+		class="com.gudeng.commerce.gd.promotion.service.prom.impl.ActPromChain"></bean>
+	<bean id="productBaseinfoService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.ProductBaseinfoServiceImpl"></bean>
+
+    <!-- 地推团队管理  2016/8/14-->
+	<bean id="GrdGdGiftteamService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdGdGiftteamServiceImpl"></bean>
+	<!-- 礼品仓库管理 -->
+	<bean id="GrdGdGiftstoreService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdGdGiftstoreServiceImpl"></bean>
+	<!-- 礼品库管理  -->
+	<bean id="GrdGdGiftService"
+		class="com.gudeng.commerce.gd.promotion.service.impl.GrdGdGiftServiceImpl"></bean>
+	
+	<bean id="promChainController"
+		class="com.gudeng.commerce.gd.promotion.service.prom.impl.PromChainController">
+		<property name="promServices">
+			<map>
+				<entry>
+					<key>
+						<value>actPromChain</value>
+					</key>
+					<ref bean="actPromChain" />
+				</entry>
+			</map>
+		</property>
+
+	</bean>
+	
+	<!-- 地推采购单服务 -->
+	<bean id="grdPurchaseService" class="com.gudeng.commerce.gd.promotion.service.impl.GrdPurchaseServiceImpl"></bean>
+    <bean id="grdPurchasegiftService" class="com.gudeng.commerce.gd.promotion.service.impl.GrdPurchasegiftServiceImpl"></bean>
+    <bean id="GrdInstorageService" class="com.gudeng.commerce.gd.promotion.service.impl.GrdInstorageServiceImpl"></bean>
+    <bean id="grdUserTeamService" class="com.gudeng.commerce.gd.promotion.service.impl.GrdUserTeamServiceImpl"></bean>
+    
+    <bean id="grdUserCustomerService" class="com.gudeng.commerce.gd.promotion.service.impl.GrdUserCustomerServiceImpl"></bean>
+	<bean id="wechatLoginService" class="com.gudeng.commerce.gd.promotion.service.impl.WechatLoginServiceImpl"></bean>
+	<bean id="wechatMemberService" class="com.gudeng.commerce.gd.promotion.service.impl.WechatMemberServiceImpl"></bean>
+	<bean id="wechatStarsService" class="com.gudeng.commerce.gd.promotion.service.impl.WechatStarsServiceImpl"></bean>
+	<bean id="wechatUserinfoService" class="com.gudeng.commerce.gd.promotion.service.impl.WechatUserinfoServiceImpl"></bean>
+	<!--活动参与配送规则  -->
+    <bean id="gdActActivityDistributionModeService" class="com.gudeng.commerce.gd.promotion.service.impl.GdActActivityDistributionModeServiceImpl"></bean>
+    
+    <bean id="gdActActivityService" class="com.gudeng.commerce.gd.promotion.service.impl.GdActActivityServiceImpl"></bean>
+    
+    <bean id="gdActActivityMarketService" class="com.gudeng.commerce.gd.promotion.service.impl.GdActActivityMarketServiceImpl"></bean>
+    <bean id="gdActActivityUserRuleService" class="com.gudeng.commerce.gd.promotion.service.impl.GdActActivityUserRuleServiceImpl"></bean>
+    <bean id="gdActActivityRulesService" class="com.gudeng.commerce.gd.promotion.service.impl.GdActActivityRulesServiceImpl"></bean>
+    <bean id="gdActActivityParticipationRuleService" class="com.gudeng.commerce.gd.promotion.service.impl.GdActActivityParticipationRuleServiceImpl"></bean>
+    <bean id="actActivityCommService" class="com.gudeng.commerce.gd.promotion.service.impl.ActActivityCommServiceImpl"></bean>
+    
+    <!--活动相关服务类  start -TerryZhang-->
+    <!--活动对象规则检查类  -->
+    <bean id="gdOrderActivityFeeProxyService" class="com.gudeng.commerce.gd.promotion.service.impl.GdOrderActivityFeeProxyServiceImpl">
+    	<property name="baseRuleHandler" ref="marketCommissionRuleHandler"/>
+    </bean>
+    <!--活动市场佣金计算类  -->
+    <bean id="marketCommissionRuleHandler" class="com.gudeng.commerce.gd.promotion.service.impl.MarketCommissionRuleHandler">
+    	<property name="nextHandler" ref="platFormCommissionRuleHandler"/>
+    </bean>
+    <!--活动平台佣金计算类  -->
+    <bean id="platFormCommissionRuleHandler" class="com.gudeng.commerce.gd.promotion.service.impl.PlatFormCommissionRuleHandler">
+    	<property name="nextHandler" ref="subsidyRuleHandler"/>
+    </bean>
+    <!--活动卖家补贴计算类  -->
+    <bean id="subsidyRuleHandler" class="com.gudeng.commerce.gd.promotion.service.impl.SubsidyRuleHandler">
+    	<property name="nextHandler" ref="prepayAndPenaltyRuleHandler"/>
+    </bean>
+    <!--活动预付款和违约金计算类  -->
+    <bean id="prepayAndPenaltyRuleHandler" class="com.gudeng.commerce.gd.promotion.service.impl.PrepayAndPenaltyRuleHandler">
+    	<property name="nextHandler" ref="deliveryRuleHandler"/>
+    </bean>
+    <!--活动物流规则计算类  -->
+    <bean id="deliveryRuleHandler" class="com.gudeng.commerce.gd.promotion.service.impl.DeliveryRuleHandler">
+    </bean>
+    <!--计算规则类  start -->
+    <!--按商品计算规则类  -->
+    <bean id="countByProductService" class="com.gudeng.commerce.gd.promotion.service.impl.CountByProductServiceImpl"></bean>
+    <!--按订单比例计算规则类  -->
+    <bean id="countByOrderPropService" class="com.gudeng.commerce.gd.promotion.service.impl.CountByOrderPropServiceImpl"></bean>
+    <!--按每笔订单计算规则类  -->
+    <bean id="countByOrderEachService" class="com.gudeng.commerce.gd.promotion.service.impl.CountByOrderEachServiceImpl"></bean>
+    <!--按订单金额区间计算规则类  -->
+    <bean id="countByOrderAmtService" class="com.gudeng.commerce.gd.promotion.service.impl.CountByOrderAmtServiceImpl"></bean>
+    <!--按刷卡手续费计算规则类  -->
+    <bean id="countByCardFeeService" class="com.gudeng.commerce.gd.promotion.service.impl.CountByCardFeeServiceImpl"></bean>
+    <!--计算规则代理类  -->
+    <bean id="countContextService" class="com.gudeng.commerce.gd.promotion.service.impl.CountContextServiceImpl">
+    	<property name="countServiceMap">
+	      <map>
+	        <entry key="0" value-ref="countByProductService" />
+	        <entry key="1" value-ref="countByOrderEachService" />
+	        <entry key="2" value-ref="countByOrderPropService" />
+	        <entry key="3" value-ref="countByOrderAmtService" />
+	        <entry key="4" value-ref="countByCardFeeService" />
+	      </map>
+	    </property>
+    </bean>
+    <!--计算规则类  end -->
+    
+    <!--订单活动服务类  -->
+    <bean id="gdOrderActivityBaseService" class="com.gudeng.commerce.gd.promotion.service.impl.GdOrderActivityBaseServiceImpl"></bean>
+    <!--活动相关服务类  end -TerryZhang--></beans>

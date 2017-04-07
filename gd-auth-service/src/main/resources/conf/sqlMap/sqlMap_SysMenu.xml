@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SysMenu">
+	<!-- 查询所有实体 -->
+	<select id="getAll">
+	 <![CDATA[  
+			SELECT h.menuID,h.menuCode,h.menuName,h.menuModuleID,
+			       (select GROUP_CONCAT(btnName) from sysmenubutton WHERE menuID=h.menuID) menuButtons,h.actionUrl,
+			       p.menuCode AS parentMenuCode,h.createUserID,h.createTime,h.iconCls,h.level
+			FROM SysMenu h
+			LEFT JOIN SysMenu p ON h.menuModuleID=p.menuID
+			WHERE 1=1 
+		 ]]>
+	    <where>
+	    	<if test="menuCode!=null">
+				and h.menuCode like "%":menuCode"%"
+			</if>
+			<if test="menuName!=null">
+				and h.menuName like "%":menuName"%"
+			</if>
+			<if test="menuID!=null">
+				and h.menuID=:menuID
+			</if>
+		</where>
+		ORDER BY h.menuCode,h.sort DESC
+	</select>
+	
+	<!-- 查询该实体是否分配按钮 -->
+	<select id="getAllMenuRole">
+	 <![CDATA[  
+			SELECT menuID,menuCode,menuName,menuModuleID,sort,createUserID,createTime,level FROM SysMenu 
+			where menuID in (select menuID from SysRoleMenu where roleID=:roleID)
+			ORDER BY sort DESC 
+		 ]]>
+	</select>
+	
+	<!-- 分页查询 -->	
+	<select id="getByCondition">
+		 <![CDATA[ 
+		 	SELECT * FROM 
+		 	( 
+			SELECT 	sm.menuID,sm.menuCode,sm.menuName,sm.menuModuleID,sm.actionUrl,sm.iconCls,sm.sort,sm.level,
+					sm.createUserID,sm.createTime,(SELECT psm.menuName FROM sysMenu psm WHERE psm.menuID= sm.menuModuleID) parentMenuName
+			FROM 	SysMenu sm
+			WHERE 1=1 
+			) t WHERE 1=1 
+			<#if menuCode?exists && menuCode!="" >
+			      and menuCode like "%":menuCode"%"
+			</#if>
+			<#if menuName?exists && menuName!="" >
+			      and menuName like "%":menuName"%"
+			</#if>
+			<#if menuID?exists && menuID!="" >
+			      and menuID like "%":menuID"%"
+			</#if>
+			<#if parentMenuName?exists && parentMenuName!="" >
+			      and parentMenuName like "%":parentMenuName"%"
+			</#if>
+			<#if level?exists && level!="" >
+			      and level =:level
+			</#if>
+			ORDER BY t.menuCode ASC,t.sort DESC
+			limit :startRow,:endRow
+		 ]]>
+	</select>
+	<!-- 记录总数 -->
+	<select id="getTotal">
+		 <![CDATA[  
+			SELECT count(*) as total FROM 
+			( 
+			SELECT 	sm.menuID,sm.menuCode,sm.menuName,sm.menuModuleID,sm.actionUrl,sm.iconCls,sm.sort,sm.level,
+					sm.createUserID,sm.createTime,(SELECT psm.menuName FROM sysMenu psm WHERE psm.menuID= sm.menuModuleID) parentMenuName
+			FROM 	SysMenu sm
+			WHERE 1=1 
+			)t WHERE 1=1 
+			<#if menuCode?exists && menuCode!="" >
+			      and menuCode like "%":menuCode"%"
+			</#if>
+			<#if menuName?exists && menuName!="" >
+			      and menuName like "%":menuName"%"
+			</#if>
+			<#if menuID?exists && menuID!="" >
+			      and menuID like "%":menuID"%"
+			</#if>
+			<#if parentMenuName?exists && parentMenuName!="" >
+			      and parentMenuName like "%":parentMenuName"%"
+			</#if>
+			<#if level?exists && level!="" >
+			      and level =:level
+			</#if>
+		 ]]>
+	</select>
+	
+	<!-- 检查用户编码是否存在 -->
+	<select id="checkMenuCode">
+	<![CDATA[  
+		select count(*) from SysMenu where menuCode=:menuCode and menuID<>:menuID
+	]]>
+	</select>
+	<!-- 检查菜单是否与角色相关联 -->
+	<select id="checkMenuIsApplyRole">
+	<![CDATA[
+		select count(*) from SysRoleMenu where menuID=:menuID
+	]]>
+	</select>
+	<!-- 检查菜单是否与按钮相关联 -->
+	<select id="checkMenuIsApplyButton">
+	<![CDATA[
+		select count(*) from SysMenuButton where menuID=:menuID
+	]]>
+	</select>
+	<!-- 检查菜单下是否有下级菜单 -->
+	<select id="checkMenuHasChildren">
+	<![CDATA[  
+		select count(*) from SysMenu where menuModuleID=:menuID
+	]]>
+	</select>
+	
+    <!-- 根据菜单CODE查询菜单菜单信息 -->
+	<select id="getSysMenu">
+	<![CDATA[  
+		 select menuID,menuCode,menuName,menuModuleID,createUserID,createTime,actionUrl,iconCls,sort,level
+		 	from SysMenu
+		 where menuCode=:menuCode
+	]]>
+	</select>
+    
+    <!-- 根据菜单ID查询菜单菜单信息 -->
+	<select id="getSysMenuByID">
+		 <![CDATA[  
+			SELECT menuID,menuCode,menuName,menuModuleID,createUserID,createTime,actionUrl,iconCls,sort,level
+				FROM SysMenu 
+			where menuID = :menuID
+		 ]]>
+	</select>
+    
+	<!-- 查询第一级菜单 -->
+	<select id="getFirstMenu">
+	 <![CDATA[  
+		SELECT menuID,menuID AS id,menuName,menuName AS text,menuModuleID,sort,level FROM SysMenu
+		WHERE menuModuleID IS NULL
+		ORDER BY sort DESC 
+		]]>
+	</select>
+	
+	<!-- 查询第二级及其它级的菜单 -->
+	<select id="getSecondMenu">
+	 <![CDATA[  
+		SELECT menuID,menuID AS id,menuCode,menuName,menuName AS text,menuModuleID,actionUrl,sort,level FROM SysMenu
+		WHERE menuModuleID=:menuModuleID
+		ORDER BY sort DESC 
+		]]>
+	</select>
+	<!-- 获取父级菜单 -->
+	<select id="getParentMenu">
+	 <![CDATA[  
+		SELECT menuID,menuCode,menuName,menuModuleID,actionUrl,sort,level FROM SysMenu
+		WHERE menuID=:menuModuleID
+		ORDER BY sort DESC 
+		]]>
+	</select>
+	
+	<insert id="insert">
+		insert into SysMenu
+		(menuID, menuCode, menuName,menuModuleID,actionUrl,iconCls,createUserID,createTime,sort,level) 
+		values 
+		(:menuID,:menuCode,:menuName,:menuModuleID,:actionUrl,:iconCls,:createUserID,SYSDATE(),:sort,:level)
+	</insert>
+	
+	<update id="update">
+		UPDATE SysMenu 
+		SET menuID=:menuID,menuCode=:menuCode,menuName = :menuName,menuModuleID = :menuModuleID,
+		    actionUrl = :actionUrl,iconCls=:iconCls,updateTime=SYSDATE(),updateUserID=:updateUserID,sort=:sort,level=:level
+		WHERE 
+			menuID=:menuID
+	</update>
+	
+	<delete id="delete">
+		delete from SysMenu where menuID=:menuID
+	</delete>
+</sqlMap>

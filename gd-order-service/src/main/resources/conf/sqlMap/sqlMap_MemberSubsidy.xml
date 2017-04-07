@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberSubsidy">
+	<sql id="queryTotal">
+	<![CDATA[
+	  	SELECT 
+		  COUNT(*)
+		FROM
+		member_orderamount_total m
+	  	WHERE 1 = 1
+	  	<#if account?exists && account!="" >
+			AND m.account =:account
+		</#if>
+		<#if mobile?exists && mobile!="" >
+			AND m.mobile = :mobile
+		</#if>
+		<#if level?exists && level!="" >
+			AND m.level = :level 
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		    AND m.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		    AND m.createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="queryList">
+	<![CDATA[
+		SELECT 
+		  m.`memberId`,
+		  m.`account`,
+		  m.`mobile`,
+		  m.`realName`,
+		  m.`createTime`,
+		  m.`level`,
+		  rejectCount,
+		  orderCount,
+		  productCount,
+		  orderAmount,
+		  subAmount,
+		  discountAmount,
+		  cashAmount,
+		  balAvailable 
+		FROM
+		  member_orderamount_total m 
+		  WHERE 1 = 1
+		<#if account?exists && account!="" >
+			AND m.account =:account
+		</#if>
+		<#if mobile?exists && mobile!="" >
+			AND m.mobile = :mobile
+		</#if>
+		<#if level?exists && level!="" >
+			AND m.level = :level 
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		    AND m.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		    AND m.createTime <= :endDate
+		</#if>
+		LIMIT :startRow,:endRow 
+	]]>
+	</sql>
+		
+	<sql id="queryStatistic">
+	<![CDATA[
+		SELECT
+		 '合计' account,
+		  SUM(rejectCount) rejectCount,
+		  SUM(orderCount) orderCount,
+		  SUM(productCount) productCount,
+		  SUM(orderAmount) orderAmount,
+		  SUM(subAmount) subAmount,
+		  SUM(discountAmount) discountAmount,
+		  SUM(cashAmount) cashAmount,
+		  SUM(balAvailable) balAvailable 
+		FROM
+		  member_orderamount_total m 
+		  WHERE 1 = 1
+		<#if account?exists && account!="" >
+			AND m.account =:account
+		</#if>
+		<#if mobile?exists && mobile!="" >
+			AND m.mobile = :mobile
+		</#if>
+		<#if level?exists && level!="" >
+			AND m.level = :level 
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		    AND m.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		    AND m.createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+
+</sqlMap>

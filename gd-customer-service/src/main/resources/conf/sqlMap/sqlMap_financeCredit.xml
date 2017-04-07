@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <sqlMap namespace="financeCredit"> 
+	
+ 	<sql id="save"> 
+ 	<![CDATA[ 
+  		  INSERT INTO  finance_credit 
+ 	          ( 
+ 			  	 memberId, 
+ 			  	 creditQuotaRange, 
+ 				 createTime, 
+ 				 createuserId, 
+ 				 updateTime, 
+ 				  updateuserId 
+               ) 
+ 	        values 
+ 	         ( 
+ 	       	 	  :memberId, 
+ 	       	 	  :creditQuotaRange, 
+ 				  SYSDATE() , 
+ 				  :createuserId, 
+ 				  SYSDATE() , 
+ 				  :updateuserId 
+               ) 
+	        
+ 		]]> 
+ 	</sql> 
+
+ 	 	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+				t.id,mt.marketName,t.memberId,t.memberAccount,t.marketId,t.orderAmount,t.userStar,t.creditQuotaRange,t.createTime,
+			t.createUserId,t.updateTime,t.updateUserId
+		FROM 
+			finance_credit t 
+			LEFT JOIN market mt 
+	        on mt.id=t.marketId
+			
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if memberAccount?exists && memberAccount!="" >
+			      AND t.memberAccount = :memberAccount 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if startOrderAmount?exists && startOrderAmount!="" >
+			      AND t.orderAmount >= :startOrderAmount 
+			</#if>
+			<#if endOrderAmount?exists && endOrderAmount!="" >
+			      AND t.orderAmount <= :endOrderAmount 
+			</#if>
+			<#if userStar?exists && userStar!="" >
+			      AND t.userStar = :userStar 
+			</#if>
+		    <#if creditQuotaRange?exists && creditQuotaRange!="" >
+			      AND t.creditQuotaRange = :creditQuotaRange 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+		ORDER BY 
+			t.createTime  desc
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+ 	 
+ 	 
+ 	<sql id="getById">
+	<![CDATA[
+	select 
+	f.id,
+	f.memberAccount,
+	mt.marketName,m.`status` ,
+	realName,
+	m.mobile,
+	b.shopsName shopName,
+	f.createTime, 
+	f.creditQuotaRange ,
+	f.userStar, 
+	b.address ,
+	pc.cateName
+	from finance_credit f
+	 LEFT JOIN member_baseinfo m 
+	on f.memberId= m.memberId 
+	LEFT JOIN market mt 
+	on mt.id=f.marketId
+	LEFT JOIN business_baseinfo  b 
+	on   f.memberId=b.userId   
+	LEFT JOIN re_business_category  bc
+	on b.businessId=bc.businessId
+	LEFT JOIN  product_category  pc
+	on    bc.categoryId=  pc.categoryId
+    where f.id=:id
+	]]>
+	</sql>
+ 	
+ 	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			finance_credit t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			
+			<#if memberAccount?exists && memberAccount!="" >
+			      AND t.memberAccount = :memberAccount 
+			</#if>
+			
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			
+			<#if userStar?exists && userStar!="" >
+			      AND t.userStar = :userStar 
+			</#if>
+			
+		    <#if creditQuotaRange?exists && creditQuotaRange!="" >
+			      AND t.creditQuotaRange = :userStar 
+			</#if>
+			
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			
+	]]>
+	</sql>
+	
+ </sqlMap> 

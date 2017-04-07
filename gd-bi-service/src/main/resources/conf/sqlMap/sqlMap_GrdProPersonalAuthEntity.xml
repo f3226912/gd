@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdProPersonalAuthEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_pro_personal_auth(
+	marketId,teamName,createTime,auditor,updateTime,status,grdMobile,
+	applyTime,regetypeName,grdUserName,teamId,grdId,id,
+	updateUserId,marketName,auditTime,memberMobile,account,memberId,
+	realName,regetype,createUserId
+	) VALUES (
+	:marketId,:teamName,:createTime,:auditor,:updateTime,:status,:grdMobile,
+	:applyTime,:regetypeName,:grdUserName,:teamId,:grdId,:id,
+	:updateUserId,:marketName,:auditTime,:memberMobile,:account,:memberId,
+	:realName,:regetype,:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_pro_personal_auth SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if teamName?exists && teamName!="" >
+		teamName=:teamName,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if auditor?exists && auditor!="" >
+		auditor=:auditor,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if grdMobile?exists && grdMobile!="" >
+		grdMobile=:grdMobile,
+	</#if>	
+	<#if applyTime?exists && applyTime!="" >
+		applyTime=:applyTime,
+	</#if>	
+	<#if regetypeName?exists && regetypeName!="" >
+		regetypeName=:regetypeName,
+	</#if>	
+	<#if grdUserName?exists && grdUserName!="" >
+		grdUserName=:grdUserName,
+	</#if>	
+	<#if teamId?exists && teamId!="" >
+		teamId=:teamId,
+	</#if>	
+	<#if grdId?exists && grdId!="" >
+		grdId=:grdId,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if auditTime?exists && auditTime!="" >
+		auditTime=:auditTime,
+	</#if>	
+	<#if memberMobile?exists && memberMobile!="" >
+		memberMobile=:memberMobile,
+	</#if>	
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if realName?exists && realName!="" >
+		realName=:realName,
+	</#if>	
+	<#if regetype?exists && regetype!="" >
+		regetype=:regetype,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,auditor,updateTime,status,grdMobile,
+	applyTime,regetypeName,grdUserName,teamId,grdId,id,
+	updateUserId,marketName,auditTime,memberMobile,account,memberId,
+	realName,regetype,createUserId
+	FROM grd_pro_personal_auth WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,auditor,updateTime,status,grdMobile,
+	applyTime,regetypeName,grdUserName,teamId,grdId,id,
+	updateUserId,marketName,auditTime,memberMobile,account,memberId,
+	realName,regetype,createUserId,
+	DATE_FORMAT(applyTime,'%Y-%m-%d %H:%i:%S') applyTimeString,
+	DATE_FORMAT(auditTime,'%Y-%m-%d %H:%i:%S') auditTimeString,
+	(CASE status WHEN '0' THEN '未认证' WHEN '1' THEN '认证中' WHEN '2' THEN '已认证' WHEN '3' THEN '已驳回' ELSE '' END ) statusString
+	FROM grd_pro_personal_auth WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if auditor?exists && auditor!="" >
+		AND auditor=:auditor
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if applyStartDate?exists && applyStartDate!="" >
+		AND date_format(applyTime, '%Y-%m-%d') >= date_format(:applyStartDate, '%Y-%m-%d')
+	</#if>
+	<#if applyEndDate?exists && applyEndDate!="" >
+		AND date_format(applyTime, '%Y-%m-%d')<= date_format(:applyEndDate, '%Y-%m-%d')
+	</#if>	
+	<#if regetypeName?exists && regetypeName!="" >
+		AND regetypeName=:regetypeName
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if auditStartDate?exists && auditStartDate!="" >
+		AND date_format(auditTime, '%Y-%m-%d') >= date_format(:auditStartDate, '%Y-%m-%d')
+	</#if>
+	<#if auditEndDate?exists && auditEndDate!="" >
+		AND date_format(auditTime, '%Y-%m-%d')<= date_format(:auditEndDate, '%Y-%m-%d')
+	</#if>		
+	<#if memberMobile?exists && memberMobile!="" >
+		AND memberMobile LIKE "%":memberMobile"%"
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	 ORDER BY applyTime DESC
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,auditor,updateTime,status,grdMobile,
+	applyTime,regetypeName,grdUserName,teamId,grdId,id,
+	updateUserId,marketName,auditTime,memberMobile,account,memberId,
+	realName,regetype,createUserId
+	FROM grd_pro_personal_auth WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if auditor?exists && auditor!="" >
+		AND auditor=:auditor
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if applyStartDate?exists && applyStartDate!="" >
+		AND date_format(applyTime, '%Y-%m-%d') >= date_format(:applyStartDate, '%Y-%m-%d')
+	</#if>
+	<#if applyEndDate?exists && applyEndDate!="" >
+		AND date_format(applyTime, '%Y-%m-%d')<= date_format(:applyEndDate, '%Y-%m-%d')
+	</#if>	
+	<#if regetypeName?exists && regetypeName!="" >
+		AND regetypeName=:regetypeName
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if auditStartDate?exists && auditStartDate!="" >
+		AND date_format(auditTime, '%Y-%m-%d') >= date_format(:auditStartDate, '%Y-%m-%d')
+	</#if>
+	<#if auditEndDate?exists && auditEndDate!="" >
+		AND date_format(auditTime, '%Y-%m-%d')<= date_format(:auditEndDate, '%Y-%m-%d')
+	</#if>	
+	<#if memberMobile?exists && memberMobile!="" >
+		AND memberMobile LIKE "%":memberMobile"%"
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+    ORDER BY applyTime DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_pro_personal_auth WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if auditor?exists && auditor!="" >
+		AND auditor=:auditor
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if applyStartDate?exists && applyStartDate!="" >
+		AND date_format(applyTime, '%Y-%m-%d') >= date_format(:applyStartDate, '%Y-%m-%d')
+	</#if>
+	<#if applyEndDate?exists && applyEndDate!="" >
+		AND date_format(applyTime, '%Y-%m-%d')<= date_format(:applyEndDate, '%Y-%m-%d')
+	</#if>	
+	<#if regetypeName?exists && regetypeName!="" >
+		AND regetypeName=:regetypeName
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if auditStartDate?exists && auditStartDate!="" >
+		AND date_format(auditTime, '%Y-%m-%d') >= date_format(:auditStartDate, '%Y-%m-%d')
+	</#if>
+	<#if auditEndDate?exists && auditEndDate!="" >
+		AND date_format(auditTime, '%Y-%m-%d')<= date_format(:auditEndDate, '%Y-%m-%d')
+	</#if>			
+	<#if memberMobile?exists && memberMobile!="" >
+		AND memberMobile LIKE "%":memberMobile"%"
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_pro_personal_auth WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

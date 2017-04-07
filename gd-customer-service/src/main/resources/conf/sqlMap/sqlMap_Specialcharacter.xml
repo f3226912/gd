@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Specialcharacter">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO specialcharacter(
+	characters
+	) VALUES (
+	:characters
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE specialcharacter SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if characters?exists && characters!="" >
+		characters=:characters
+	</#if>	
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,characters
+	FROM specialcharacter WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,characters
+	FROM specialcharacter WHERE 1=1 
+	<#if id?exists && id!="" >
+		AND id=:id,
+	</#if>
+	<#if characters?exists && characters!="" >
+		AND characters=:characters
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,characters
+	FROM specialcharacter WHERE 1=1 
+	<#if id?exists && id!="" >
+		AND id=:id,
+	</#if>
+	<#if characters?exists && characters!="" >
+		AND characters=:characters
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM specialcharacter WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id,
+	</#if>
+	<#if characters?exists && characters!="" >
+		AND characters=:characters
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM specialcharacter WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

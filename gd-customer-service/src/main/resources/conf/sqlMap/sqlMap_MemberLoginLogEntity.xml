@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberLoginLogEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO member_login_log(
+	id,createTime,description,account,realName,memberId,loginType,
+	ip,mobile
+	) VALUES (
+	:id,:createTime,:description,:account,:realName,:memberId,:loginType,
+	:ip,:mobile
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE member_login_log SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if description?exists && description!="" >
+		description=:description,
+	</#if>	
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>	
+	<#if realName?exists && realName!="" >
+		realName=:realName,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if loginType?exists && loginType!="" >
+		loginType=:loginType,
+	</#if>	
+	<#if ip?exists && ip!="" >
+		ip=:ip,
+	</#if>	
+	<#if mobile?exists && mobile!="" >
+		mobile=:mobile,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,createTime,description,account,realName,memberId,loginType,
+	ip,mobile
+	FROM member_login_log WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,createTime,description,account,realName,memberId,loginType,
+	ip,mobile
+	FROM member_login_log WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if loginType?exists && loginType!="" >
+		AND loginType=:loginType
+	</#if>
+	<#if ip?exists && ip!="" >
+		AND ip=:ip
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+		order by createTime desc 
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,createTime,description,account,realName,memberId,loginType,
+	ip,mobile
+	FROM member_login_log WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if loginType?exists && loginType!="" >
+		AND loginType=:loginType
+	</#if>
+	<#if ip?exists && ip!="" >
+		AND ip=:ip
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	order by createTime desc 
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM member_login_log WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if loginType?exists && loginType!="" >
+		AND loginType=:loginType
+	</#if>
+	<#if ip?exists && ip!="" >
+		AND ip=:ip
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM member_login_log WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

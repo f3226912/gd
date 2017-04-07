@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdProFreightOrderEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_pro_freight_order(
+	marketId,teamName,createTime,generateTime,updateTime,grdMobile,grdUserName,
+	orderStatus,teamId,grdId,publisher,id,updateUserId,
+	reciever,marketName,payStatus,freightOrderNo,createUserId
+	) VALUES (
+	:marketId,:teamName,:createTime,:generateTime,:updateTime,:grdMobile,:grdUserName,
+	:orderStatus,:teamId,:grdId,:publisher,:id,:updateUserId,
+	:reciever,:marketName,:payStatus,:freightOrderNo,:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_pro_freight_order SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if teamName?exists && teamName!="" >
+		teamName=:teamName,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if generateTime?exists && generateTime!="" >
+		generateTime=:generateTime,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if grdMobile?exists && grdMobile!="" >
+		grdMobile=:grdMobile,
+	</#if>	
+	<#if grdUserName?exists && grdUserName!="" >
+		grdUserName=:grdUserName,
+	</#if>	
+	<#if orderStatus?exists && orderStatus!="" >
+		orderStatus=:orderStatus,
+	</#if>	
+	<#if teamId?exists && teamId!="" >
+		teamId=:teamId,
+	</#if>	
+	<#if grdId?exists && grdId!="" >
+		grdId=:grdId,
+	</#if>	
+	<#if publisher?exists && publisher!="" >
+		publisher=:publisher,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if reciever?exists && reciever!="" >
+		reciever=:reciever,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if payStatus?exists && payStatus!="" >
+		payStatus=:payStatus,
+	</#if>	
+	<#if freightOrderNo?exists && freightOrderNo!="" >
+		freightOrderNo=:freightOrderNo,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,generateTime,updateTime,grdMobile,grdUserName,
+	orderStatus,teamId,grdId,publisher,id,updateUserId,
+	reciever,marketName,payStatus,freightOrderNo,createUserId
+	FROM grd_pro_freight_order WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,generateTime,updateTime,grdMobile,grdUserName,orderStatus,
+	(CASE orderStatus WHEN '1' THEN '待收货'
+					  WHEN '2' THEN '已完成'
+					  ELSE '未知'
+					  END) AS orderStatusStr,
+	teamId,grdId,publisher,id,updateUserId,
+	reciever,marketName,payStatus,
+	(CASE payStatus WHEN '1' THEN '待支付'
+					  WHEN '2' THEN '支付成功'
+					  WHEN '3' THEN '待支付'
+					  ELSE '未知'
+					  END) AS payStatusStr,
+	freightOrderNo,createUserId,
+	DATE_FORMAT(generateTime,'%Y-%m-%d %H:%i:%S') AS generateTimeString
+	FROM grd_pro_freight_order WHERE orderStatus !='3' AND payStatus !='4'
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	
+	<#if payStatus?exists && payStatus!="" >
+		<#if payStatus == "2">
+		AND payStatus=:payStatus
+		<#else>
+		AND payStatus IN ('1','3')
+		</#if>
+	</#if>
+	<#if orderStatus?exists && orderStatus!="" >
+		AND orderStatus=:orderStatus
+	</#if>
+	
+	<#if startGenerateTime?exists && startGenerateTime!="" >
+		AND  DATE_FORMAT(generateTime,'%Y-%c-%d') >= DATE_FORMAT(:startGenerateTime,'%Y-%c-%d')	
+	</#if>
+    <#if endGenerateTime?exists && endGenerateTime!="" >
+	     AND DATE_FORMAT(generateTime,'%Y-%c-%d') <= DATE_FORMAT(:endGenerateTime,'%Y-%c-%d')
+	</#if>
+	ORDER BY generateTime DESC
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,generateTime,updateTime,grdMobile,grdUserName,
+	orderStatus,teamId,grdId,publisher,id,updateUserId,
+	reciever,marketName,payStatus,freightOrderNo,createUserId
+	FROM grd_pro_freight_order WHERE orderStatus !='3' AND payStatus !='4'
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	
+	<#if payStatus?exists && payStatus!="" >
+		<#if payStatus == "2">
+		AND payStatus=:payStatus
+		<#else>
+		AND payStatus IN ('1','3')
+		</#if>
+	</#if>
+	<#if orderStatus?exists && orderStatus!="" >
+		AND orderStatus=:orderStatus
+	</#if>
+	
+	<#if startGenerateTime?exists && startGenerateTime!="" >
+		AND  DATE_FORMAT(generateTime,'%Y-%c-%d') >= DATE_FORMAT(:startGenerateTime,'%Y-%c-%d')	
+	</#if>
+    <#if endGenerateTime?exists && endGenerateTime!="" >
+	     AND DATE_FORMAT(generateTime,'%Y-%c-%d') <= DATE_FORMAT(:endGenerateTime,'%Y-%c-%d')
+	</#if>
+	ORDER BY generateTime DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_pro_freight_order WHERE orderStatus !='3' AND payStatus !='4'
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	
+	<#if payStatus?exists && payStatus!="" >
+		<#if payStatus == "2">
+		AND payStatus=:payStatus
+		<#else>
+		AND payStatus IN ('1','3')
+		</#if>
+	</#if>
+	<#if orderStatus?exists && orderStatus!="" >
+		AND orderStatus=:orderStatus
+	</#if>
+	
+	<#if startGenerateTime?exists && startGenerateTime!="" >
+		AND  DATE_FORMAT(generateTime,'%Y-%c-%d') >= DATE_FORMAT(:startGenerateTime,'%Y-%c-%d')	
+	</#if>
+    <#if endGenerateTime?exists && endGenerateTime!="" >
+	     AND DATE_FORMAT(generateTime,'%Y-%c-%d') <= DATE_FORMAT(:endGenerateTime,'%Y-%c-%d')
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_pro_freight_order WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

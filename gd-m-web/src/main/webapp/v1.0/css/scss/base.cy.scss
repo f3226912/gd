@@ -1,0 +1,49 @@
+/*
+ * 移动端开发工具
+ * 陈翊
+ * CSS
+ */
+body{font:normal 1.2rem "微软雅黑";}
+*{margin:0;padding:0;box-sizing: border-box;-webkit-box-sizing: border-box;}
+ul, li, ol, dl, dd, dt{list-style:none;list-style-position:outside;}
+table{border-collapse:collapse;}
+a{text-decoration: none;}
+a:link *, a:hover *{text-decoration:none;}
+em,i{font-style: normal;}
+.fl{float: left;}
+.fr{float: right;}
+.w-1{width: 1px;}
+.ui-w-100{width: 100%;}
+.ui-w-50per{width: 50%;}
+.ui-h-100{height: 100%;}
+.ui-h-50per{height: 50%;}
+.ui-fs-12{font-size: 1.2rem;}
+.ui-fs-14{font-size: 1.4rem;}
+.ui-fs-16{font-size: 1.6rem;}
+.ui-fs-20{font-size: 2rem;}
+
+
+.ui-bgs-100per{background-size: 80% auto !important;}
+.ui-over-elli{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.ui-over-elli2{display: -webkit-box;overflow: hidden;text-overflow: ellipsis;-webkit-line-clamp: 2;-webkit-box-orient: vertical;}
+.ui-box{display: -webkit-box; display: box;}
+.ui-f1{-webkit-box-flex:1;box-flex:1;}
+.ui-f2{-webkit-box-flex:2;box-flex:2;}
+.ui-hor{-webkit-box-orient:horizontal;box-orient:horizontal;}
+.ui-ver{-webkit-box-orient:vertical;box-orient:vertical;}
+.ui-ht{-webkit-box-align:start;box-align:start;}
+.ui-hc{-webkit-box-align:center;box-align:center;}
+.ui-he{-webkit-box-align:end;box-align:end;}
+.ui-hs{-webkit-box-align:stretch;box-align:stretch;}
+.ui-vt{-webkit-box-pack:start;box-pack:start;}
+.ui-vc{-webkit-box-pack:center;box-pack:center;}
+.ui-ve{-webkit-box-pack:end;box-pack:end;}
+.ui-vj{-webkit-box-pack:justify;box-pack:justify;}
+
+
+@media screen and (min-width:1200px){html{font-size: 125%;/*10 ÷ 16 × 100% × 2 = 62.5%  pc chrom最小字体12px所以为了调试方便，rem定为20px*/}}
+@media screen and (min-width: 980px) and (max-width: 1199px) {html{font-size: 125%;}}
+@media screen and (min-width: 768px) and (max-width: 979px) {html{font-size: 100%;}}
+@media screen and (max-width: 767px){html{font-size: 75%;}}
+@media screen and (max-width: 480px) {html{font-size: 62.5%;}}
+

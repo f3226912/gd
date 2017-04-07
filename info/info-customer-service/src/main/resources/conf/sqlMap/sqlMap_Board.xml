@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Board">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+board(
+
+state,name,ID,menuId,valueDate,valueTime,'values',createUserID,
+createTime,updateUserID,updateTime
+) VALUES (
+
+:state,:name,:id,:menuId,:valueDate,:valueTime,:values,:createUserID,
+:createTime,:updateUserID,:updateTime
+)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE board
+ SET 
+
+<#if state?exists && state!="" >
+state=:state,
+</#if>
+<#if name?exists && name!="" >
+name=:name,
+</#if>
+<#if menuId?exists && menuId!="" >
+menuID=:menuId,
+</#if>
+<#if valueDate?exists && valueDate!="" >
+valueDate=:valueDate,
+</#if>
+<#if valueTime?exists && valueTime!="" >
+valueTime=:valueTime,
+</#if>
+<#if values?exists && values!="" >
+'values'=:values,
+</#if>
+<#if createUserID?exists && createUserID!="" >
+createUserID=:createUserID,
+</#if>
+
+<#if createTime?exists && createTime!="" >
+createTime=:createTime,
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+updateUserID=:updateUserID,
+</#if>
+updateTime=SYSDATE()
+ WHERE ID=:id
+]]>
+</sql>
+<sql id="getListByCondition">
+<![CDATA[
+	SELECT 
+	state,t.name,id,menuId,valueDate,valueTime,t.values,createUserID,
+	createTime,updateUserID,updateTime
+	FROM 
+board t WHERE 1=1
+
+<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if name?exists && name!="" >
+AND name like "%":name"%"
+</#if>
+<#if id?exists && id!="" >
+AND ID=:id
+</#if>
+<#if menuId?exists && menuId!="" >
+AND menuID=:menuId
+</#if>
+<#if valueDate?exists && valueDate!="" >
+AND valueDate=:valueDate
+</#if>
+<#if valueTime?exists && valueTime!="" >
+AND valueTime=:valueTime
+</#if>
+<#if values?exists && values!="" >
+AND 'values'=:values
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+]]>
+</sql>
+<sql id="getListByConditionPage">
+<![CDATA[
+	SELECT 
+
+state,name,ID,menuId,valueDate,valueTime,'values',createUserID,
+createTime,updateUserID,updateTime
+	FROM 
+board WHERE 1=1 
+<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if id?exists && id!="" >
+AND ID=:id
+</#if>
+<#if menuId?exists && menuId!="" >
+AND menuID=:menuId
+</#if>
+<#if valueDate?exists && valueDate!="" >
+AND valueDate=:valueDate
+</#if>
+<#if valueTime?exists && valueTime!="" >
+AND valueTime=:valueTime
+</#if>
+<#if values?exists && values!="" >
+AND 'values'=:values
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if> 
+ORDER BY createTime desc 
+LIMIT :startRow,:endRow
+]]>
+</sql>
+<sql id="deleteById">
+<![CDATA[
+	DELETE board
+ WHERE ID=:id
+]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			board t 
+		WHERE 1=1 
+			<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if id?exists && id!="" >
+AND ID=:id
+</#if>
+<#if menuId?exists && menuId!="" >
+AND menuID=:menuId
+</#if>
+<#if valueDate?exists && valueDate!="" >
+AND valueDate=:valueDate
+</#if>
+<#if valueTime?exists && valueTime!="" >
+AND valueTime=:valueTime
+</#if>
+<#if values?exists && values!="" >
+AND 'values'=:values
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			state,name,id,menuId,valueDate,valueTime,t.values,createUserID,
+createTime,updateUserID,updateTime 
+		FROM 
+			board t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	<!-- 查找用户有效所有分类看板数据 -->
+	<sql id="getListByUserId">
+	<![CDATA[
+	SELECT 
+	  t.`ID`,t.`name`,t.`menuID`,t.`valueDate`,t.`values`,t.`state`,t.`createUserID`,t.`createTime`,t.`updateUserID`,t.`updateTime`,t.sort1,t.sort2
+	FROM
+	  `board` t 
+	WHERE t.`state`=1 AND t.id IN 
+	  (SELECT 
+	    t.`boardID` 
+	  FROM
+	    `sysroleboard` t 
+	  WHERE t.roleid IN 
+    (SELECT 
+      t.roleid 
+    FROM
+      `sysuserrole` t 
+    WHERE t.userid = :userId))
+    ORDER BY sort1 ASC
+	]]>
+	</sql>
+	<!-- 查找用户有效综合看板数据 -->
+	<sql id="getCommonListByUserId">
+	<![CDATA[
+	SELECT 
+	  t.`ID`,
+	  t.`name`,
+	  t.`menuID`,
+	  t.`valueDate`,
+	  t.`values`,
+	  t.`state`,
+	  t.`createUserID`,
+	  t.`createTime`,
+	  t.`updateUserID`,
+	  t.`updateTime` ,
+	  t.sort1,
+	  t.sort2
+	FROM
+	  `board` t 
+	WHERE t.`state` = 1 
+	  AND t.id IN 
+	  (SELECT 
+	    t.`boardID` 
+	  FROM
+	    `sysuserboard` t 
+	  WHERE t.`type` = 1 
+	    AND t.`userID` = :userId)
+	    ORDER BY sort2 ASC
+	]]>
+	</sql>
+</sqlMap>

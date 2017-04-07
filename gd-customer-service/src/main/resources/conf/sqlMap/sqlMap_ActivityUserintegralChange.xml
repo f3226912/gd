@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ActivityUserintegralChange">
+<sql id="insert">
+	<![CDATA[
+	 INSERT INTO activity_userintegralchange(memberId,mobile,activityId,integral,integralType,createTime,createUser)
+	 VALUES(:memberId,:mobile,:activityId,:integral,:integralType,：createTime,null)
+	]]>
+</sql>
+
+<sql id="getTotalIntegralByMemberId">
+	<![CDATA[
+	SELECT
+		SUM(auc.integral)
+	FROM
+		activity_userintegralchange auc
+	WHERE
+		(auc.createUser IS NULL OR LENGTH(trim(auc.createUser))<1)
+	AND auc.memberId=:memberId
+	AND str_to_date(auc.createTime, '%Y-%m-%d') = str_to_date(SYSDATE(), '%Y-%m-%d')
+	GROUP BY auc.memberId
+	]]>
+</sql>
+<sql id="update">
+	<![CDATA[
+		UPDATE activity_userIntegralChange
+	 	SET 
+			<#if id?exists && id!="" >
+			id=:id,
+			</#if>
+			<#if integral?exists && integral!="" >
+			integral=:integral,
+			</#if>
+			<#if mobile?exists && mobile!="" >
+			mobile=:mobile,
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			memberId=:memberId,
+			</#if>
+			<#if createUser?exists && createUser!="" >
+			createUser=:createUser,
+			</#if>
+			<#if activityId?exists && activityId!="" >
+			activityId=:activityId,
+			</#if>
+			<#if integralType?exists && integralType!="" >
+			integralType=:integralType,
+			</#if>
+			<#if createTime?exists && createTime!="" >
+			createTime=:createTime
+			</#if>
+	 	WHERE id=:id
+		]]>
+</sql>
+<sql id="queryByCondition">
+	<![CDATA[
+		SELECT 
+			t.id,
+			t.integral,
+			t.mobile,
+			t.memberId,
+			t.integralType,
+			case t.integralType when '1' then '增加积分' when '2' then '扣减积分' else '' end integralTypeName, 
+			t.createTime,
+			DATE_FORMAT(t.createTime,'%Y-%m-%d %T') as createTimeStr,
+			t.createUser,
+			t.activityId,
+			b.account memberAccount,
+			a.`code` activityCode,
+			a.`name` activityName,
+			u.totalintegral totalIntegral,
+			u.dointegral doIntegral
+		FROM gudeng.activity_userIntegralChange t
+		LEFT JOIN gudeng.member_baseinfo b on t.memberId = b.memberId
+		LEFT JOIN gd_promotion.gd_act_activity a on t.activityId = a.id
+		LEFT JOIN gudeng.activity_userintegral u on t.memberId = u.memberId
+		WHERE 1=1
+		<#if id?exists && id!="" >
+		AND t.id=:id
+		</#if>
+		<#if integral?exists && integral!="" >
+		AND t.integral=:integral
+		</#if>
+		<#if mobile?exists && mobile!="" >
+		AND t.mobile=:mobile
+		</#if>
+		<#if memberId?exists && memberId!="" >
+		AND t.memberId=:memberId
+		</#if>
+		<#if createUser?exists && createUser!="" >
+		AND t.createUser=:createUser
+		</#if>
+		<#if activityId?exists && activityId!="" >
+		AND t.activityId=:activityId
+		</#if>
+		<#if integralType?exists && integralType!="" >
+		AND t.integralType=:integralType
+		</#if>
+		<#if createTime?exists && createTime!="" >
+		AND t.createTime=:createTime
+		</#if>
+	]]>
+</sql>
+<sql id="queryByConditionPage">
+	<![CDATA[
+		SELECT
+			t.id,
+			t.integral,
+			t.mobile,
+			t.memberId,
+			t.integralType,
+			case t.integralType when '1' then '增加积分' when '2' then '扣减积分' else '' end integralTypeName, 
+			t.createTime,
+			DATE_FORMAT(t.createTime,'%Y-%m-%d %T') as createTimeStr,
+			t.createUser,
+			t.activityId,
+			b.account memberAccount,
+			a.`code` activityCode,
+			a.`name` activityName
+		FROM gudeng.activity_userIntegralChange t
+		LEFT JOIN gudeng.member_baseinfo b on t.memberId = b.memberId
+		LEFT JOIN gd_promotion.gd_act_activity a on t.activityId = a.id
+		WHERE 1=1
+		<#if id?exists && id!="" >
+		AND t.id=:id
+		</#if>
+		<#if integral?exists && integral!="" >
+		AND t.integral=:integral
+		</#if>
+		<#if mobile?exists && mobile!="" >
+		AND t.mobile=:mobile
+		</#if>
+		<#if memberAccount?exists && memberAccount!="" >
+		AND b.account=:memberAccount
+		</#if>
+		<#if memberId?exists && memberId!="" >
+		AND t.memberId=:memberId
+		</#if>
+		<#if createUser?exists && createUser!="" >
+		AND t.createUser=:createUser
+		</#if>
+		<#if activityId?exists && activityId!="" >
+		AND t.activityId=:activityId
+		</#if>
+		<#if integralType?exists && integralType!="" >
+		AND t.integralType=:integralType
+		</#if>
+		<#if startTime?exists && startTime!="" >
+			AND t.createTime >= :startTime
+		</#if>
+		<#if endTime?exists && endTime!="" >
+			AND t.createTime <= :endTime
+		</#if>
+		<#if createTime?exists && createTime!="" >
+		AND t.createTime=:createTime
+		</#if>
+		<#if activityCode?exists && activityCode!="" >
+		AND a.code=:activityCode
+		</#if>
+		<#if activityName?exists && activityName!="" >
+		AND a.name=:activityName
+		</#if>
+		ORDER BY t.createTime desc
+		LIMIT :startRow, :endRow
+	]]>
+</sql>
+<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)
+		FROM gudeng.activity_userIntegralChange t
+		LEFT JOIN gudeng.member_baseinfo b on t.memberId = b.memberId
+		LEFT JOIN gd_promotion.gd_act_activity a on t.activityId = a.id
+		WHERE 1=1
+		<#if id?exists && id!="" >
+		AND t.id=:id
+		</#if>
+		<#if integral?exists && integral!="" >
+		AND t.integral=:integral
+		</#if>
+		<#if mobile?exists && mobile!="" >
+		AND b.mobile=:mobile
+		</#if>
+		<#if memberAccount?exists && memberAccount!="" >
+		AND b.account=:memberAccount
+		</#if>
+		<#if memberId?exists && memberId!="" >
+		AND t.memberId=:memberId
+		</#if>
+		<#if createUser?exists && createUser!="" >
+		AND t.createUser=:createUser
+		</#if>
+		<#if activityId?exists && activityId!="" >
+		AND t.activityId=:activityId
+		</#if>
+		<#if integralType?exists && integralType!="" >
+		AND t.integralType=:integralType
+		</#if>
+		<#if startTime?exists && startTime!="" >
+			AND t.createTime >= :startTime
+		</#if>
+		<#if endTime?exists && endTime!="" >
+			AND t.createTime <= :endTime
+		</#if>
+		<#if activityCode?exists && activityCode!="" >
+		AND a.code=:activityCode
+		</#if>
+		<#if activityName?exists && activityName!="" >
+		AND a.name=:activityName
+		</#if>
+	]]>
+</sql>
+<sql id="deleteById">
+	<![CDATA[
+		DELETE activity_userIntegralChange
+	 WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

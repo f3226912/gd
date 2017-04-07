@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NstSameCityAddress">
+
+	<sql id="getAssaginCompanyList">                 
+	 	<![CDATA[
+	 	SELECT 
+	  		  ngar.memberId AS assignMemberId,
+	  		 <#--获取同城货源物流公司分配的最后一条货源的创建时间-->
+	  		 (
+	    		SELECT 
+	      			createTime 
+	   			FROM
+	      			nst_same_city_address nsca 
+	    		WHERE nsca.assignMemberId = ngar.memberId AND nsca.nstRule=1
+	    		ORDER BY createTime DESC  LIMIT 1
+	    	) AS createTime,
+	    	ngar.dayAssignMax,
+	    	ngar.monthAssignMax 
+	  	FROM
+	    	nst_good_assign_rule ngar 
+	  	WHERE ngar.isEffective = 0
+	  		AND ngar.assignStartTime<=DATE_FORMAT(SYSDATE(), '%Y-%m-%d') 
+			AND ngar.assignEndTime >=DATE_FORMAT(SYSDATE(), '%Y-%m-%d') 
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0 >
+				AND ngar.cityId =:s_cityId
+			</#if>	
+		ORDER BY createTime
+	 	]]>
+ 	</sql>
+ 	
+ 	<sql id="getNstSameCityAddressListByPage">                 
+	 	<![CDATA[
+	 		SELECT
+				 nsca.id,
+				 IF (mb.userType = 2,mc.linkMan,mb.realName) AS linkMan,
+				 IF(mb.userType=2,mc.mobile,mb.mobile) AS mobile,
+				 mc.nstStatus AS isCertify,
+				 CONCAT((SELECT area FROM area WHERE areaID=nsca.s_cityId),IFNULL((SELECT area FROM area WHERE areaID=nsca.s_areaId),'')) AS s_name,
+				 CONCAT((SELECT area FROM area WHERE areaID=nsca.f_cityId),IFNULL((SELECT area FROM area WHERE areaID=nsca.f_areaId),'')) AS f_name,
+				 nsca.s_detail,
+				 nsca.f_detail,
+				 nsca.s_detailed_address,
+				 nsca.f_detailed_address,
+				 nsca.goodsType,
+				 CONCAT(nsca.totalWeight, '吨') AS totalWeightString,
+				 nsca.needCarType,
+				 nsca.useCarTime,
+				 nsca.releaseTime,
+				 nsca.mileage,
+				 nsca.price,
+				 nsca.totalWeight,
+				 nsca.totalSize,
+				 <#if clat?exists && clat!="" && clng?exists && clng!="">
+					 ROUND(6378.138*2*ASIN(SQRT(POW(SIN(
+					 (:clat*PI()/180-nsca.s_lat*PI()/180)/2),2)+COS(:clat*PI()/180)*COS(nsca.s_lat*PI()/180)*
+	 				 POW(SIN( (:clng*PI()/180-nsca.s_lng*PI()/180)/2),2))),2) AS distance,
+				 </#if>
+				 nsca.remark,
+				 nsca.assignMemberId,
+				 nsca.memberId,
+				 nsca.nstRule,
+				 nsca.s_provinceId,
+				 mb.andupurl,
+				 <#--查询出货源在订单最新的状态-->
+				 nob.orderStatus,
+				 <#--排序使用-->
+				 IF (nob.orderStatus=1 OR nob.orderStatus=2 OR nob.orderStatus=3,1,0) AS status,
+				 nsca.s_lng,
+				 nsca.s_lat,
+				 nsca.s_cityId
+			FROM
+				nst_same_city_address nsca
+			INNER JOIN member_baseinfo mb ON nsca.memberId = mb.memberId
+			LEFT JOIN member_certifi mc ON nsca.memberId = mc.memberId
+			<#--货源关联最新的订单-->
+			LEFT JOIN (SELECT n2.same_memberAddressId,n2.orderStatus
+						FROM ( SELECT n.same_memberAddressId,n.orderStatus FROM nst_order_baseinfo n WHERE n.sourceType=1 ORDER BY n.id DESC) n2
+						GROUP BY n2.same_memberAddressId ) nob  ON nob.same_memberAddressId=nsca.id 
+			WHERE 1=1 AND (nsca.isDeleted IS NULL OR nsca.isDeleted=0) AND nsca.releaseTime >= date_sub(current_date(),interval 7 day)
+			<#--根据showAlready==Y判断 是否显示已接单的-->
+			<#if !showAlready?exists || showAlready=="" >
+				AND (nob.orderStatus NOT IN (1, 2, 3) OR nob.orderStatus IS NULL)
+			</#if>
+			<#if showAlready?exists && showAlready!="" && showAlready=="Y" >
+				AND (nob.orderStatus !=3 OR nob.orderStatus IS NULL)
+			</#if>	  
+			<#--一键分配过滤条件-->
+			<#if idList?exists>
+				AND nsca.id NOT IN
+				<#assign n = idList?size />
+					<#if n gt 0>
+					(
+						<#list idList as omId>
+							<#if omId_index != n-1>
+									${omId} ,
+								<#else>
+									${omId}
+							</#if>
+						</#list>
+					) 
+					</#if>
+		   	</#if>
+			<#if id?exists && id!="" >
+				AND nsca.id = :id
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" >
+				AND  nsca.s_provinceId=:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+				AND  nsca.s_cityId=:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+				AND  nsca.s_areaId=:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!="" >
+				AND  nsca.f_provinceId=:f_provinceId
+			</#if>
+			<#if f_cityId?exists && f_cityId!="" >
+				AND  nsca.f_cityId=:f_cityId
+			</#if>
+			<#if f_areaId?exists && f_areaId!="" >
+				AND  nsca.f_areaId=:f_areaId
+			</#if>
+			<#if useCarTime?exists && useCarTime!="" >
+				AND  nsca.useCarTime=:useCarTime
+			</#if>
+			<#--根据线路接单 选择货源匹配属于当前会员的货源信息-->
+			<#if memberId?exists && memberId!="" >
+				AND  ((nsca.memberId=:memberId AND (nsca.nstRule is NULL OR nsca.nstRule=0)) OR (nsca.assignMemberId=:memberId))
+			</#if>
+			<#if closest?exists && closest!="" && closest!=null && clat?exists && clat!="" && clng?exists && clng!="" >
+				ORDER BY status , distance
+			</#if>
+			<#if closest=="" && closest==null >
+				ORDER BY status, nsca.releaseTime DESC
+			</#if>
+			<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+	 	]]>
+ 	</sql>
+ 	
+ 	<sql id="getNstSameCityAddressListByPageCount">                 
+	 	<![CDATA[
+	 		SELECT
+				COUNT(nsca.id)
+			FROM
+				nst_same_city_address nsca
+			INNER JOIN member_baseinfo mb ON nsca.memberId = mb.memberId
+			LEFT JOIN member_certifi mc ON nsca.memberId = mc.memberId
+			LEFT JOIN (SELECT n2.same_memberAddressId,n2.orderStatus
+						FROM ( SELECT n.same_memberAddressId,n.orderStatus FROM nst_order_baseinfo n WHERE n.sourceType=1 ORDER BY n.id DESC) n2
+						GROUP BY n2.same_memberAddressId ) nob  ON nob.same_memberAddressId=nsca.id
+			WHERE 1=1 AND (nsca.isDeleted IS NULL OR nsca.isDeleted=0) AND nsca.releaseTime >= date_sub(current_date(),interval 7 day)
+			<#if !showAlready?exists || showAlready=="" >
+				AND (nob.orderStatus NOT IN (1, 2, 3) OR nob.orderStatus IS NULL)
+			</#if>
+			<#if showAlready?exists && showAlready!="" && showAlready=="Y" >
+				AND (nob.orderStatus !=3 OR nob.orderStatus IS NULL)
+			</#if>
+			<#if id?exists && id!="" >
+				AND nsca.id = :id
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" >
+				AND  nsca.s_provinceId=:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+				AND  nsca.s_cityId=:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+				AND  nsca.s_areaId=:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!="" >
+				AND  nsca.f_provinceId=:f_provinceId
+			</#if>
+			<#if f_cityId?exists && f_cityId!="" >
+				AND  nsca.f_cityId=:f_cityId
+			</#if>
+			<#if f_areaId?exists && f_areaId!="" >
+				AND  nsca.f_areaId=:f_areaId
+			</#if>
+			<#if useCarTime?exists && useCarTime!="" >
+				AND  nsca.useCarTime=:useCarTime
+			</#if>
+			<#--根据线路接单 选择货源匹配属于当前会员的货源信息-->
+			<#if memberId?exists && memberId!="" >
+				AND  ((nsca.memberId=:memberId AND (nsca.nstRule is NULL OR nsca.nstRule=0)) OR (nsca.assignMemberId=:memberId))
+			</#if>
+	 	]]>
+ 	</sql>
+ 	
+ 	
+ 	<sql id="getMemberNSCAList">  
+	 	<![CDATA[
+	 	<#--获取会员发的货列表(单个)-->  
+	 		SELECT
+				 nsca.id,
+				 nsca.memberId,
+				 CONCAT((SELECT area FROM area WHERE areaID=nsca.s_cityId),IFNULL((SELECT area FROM area WHERE areaID=nsca.s_areaId),'')) AS s_name,
+				 CONCAT((SELECT area FROM area WHERE areaID=nsca.f_cityId),IFNULL((SELECT area FROM area WHERE areaID=nsca.f_areaId),'')) AS f_name,
+				 nsca.s_detail,
+				 nsca.f_detail,
+				 nsca.s_detailed_address,
+				 nsca.f_detailed_address,
+				 nsca.goodsType,
+				  CONCAT(nsca.totalWeight, '吨') AS totalWeightString,
+				 nsca.needCarType,
+				 nsca.useCarTime,
+				 nsca.price,
+				 nsca.goodsType,
+				 nsca.totalWeight,
+				 nsca.totalSize,
+				 nsca.remark,
+				 nsca.assignMemberId,
+				 nsca.s_provinceId,
+				 nsca.nstRule,
+				 mc.companyName as companyName,
+		         mc.mobile as companyMobile,
+		         c.userType as userType,
+		         c.mobile as mobile
+			FROM
+				nst_same_city_address nsca
+				INNER JOIN member_baseinfo c ON nsca.memberId = c.memberId
+				LEFT JOIN member_certifi mc ON mc.memberId=c.memberId
+			WHERE 1=1 AND (nsca.isDeleted IS NULL OR nsca.isDeleted=0)
+			<#if id?exists && id!="" >
+				AND nsca.id = :id
+			</#if>
+			<#if memberId?exists && memberId!="" >
+				AND (nsca.memberId = :memberId OR nsca.assignMemberId= :memberId)
+			</#if>
+			<#if userType?exists && userType!="" && userType==2 >
+				AND nsca.createTime >= date_sub(current_date(),INTERVAL 3 DAY)
+			</#if>
+			ORDER BY nsca.releaseTime DESC
+			<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+	 	]]>
+ 	</sql>
+ 	
+ 	<sql id="getMemberNSCAListCount">  
+	 	<![CDATA[
+	 	<#--获取会员发的货列表总数-->  
+	 		SELECT
+				 count(nsca.id)
+			FROM
+				nst_same_city_address nsca
+			WHERE 1=1 AND (nsca.isDeleted IS NULL OR nsca.isDeleted=0)
+			<#if memberId?exists && memberId!="" >
+				AND (nsca.memberId = :memberId OR nsca.assignMemberId= :memberId)
+			</#if>
+	 	]]>
+ 	</sql>
+ 	
+ 	<sql id="updateMemberNSCA">  
+	 	<![CDATA[
+	 	UPDATE nst_same_city_address
+			SET needCarType =:needCarType,
+			 s_provinceId =:s_provinceId,
+			 s_cityId =:s_cityId,
+			 s_areaId =:s_areaId,
+			 s_detail =:s_detail,
+			 <#if s_detailed_address?exists && s_detailed_address!="" >
+				s_detailed_address =:s_detailed_address,
+			 </#if>
+			 s_lng =:s_lng,
+			 s_lat =:s_lat,
+			 f_provinceId =:f_provinceId,
+			 f_cityId =:f_cityId,
+			 f_areaId =:f_areaId,
+			 f_detail =:f_detail,
+			 <#if f_detailed_address?exists && f_detailed_address!="" >
+				f_detailed_address =:f_detailed_address,
+			 </#if>
+			 f_lng =:f_lng,
+			 f_lat =:f_lat,
+			 useCarTime =:useCarTimeString,
+			 <#if price?exists && price!="" >
+				 price =:price,
+			 </#if>
+			 goodsType =:goodsType,
+			 totalWeight =:totalWeight,
+			 <#if totalSize?exists && totalSize!="" >
+				  totalSize =:totalSize,
+			 </#if>
+			 mileage =:mileage,
+			  <#if remark?exists && remark!="" >
+				  remark =:remark,
+			 </#if>
+			 updateUserId =:updateUserId,
+			 updateTime = SYSDATE()
+		WHERE
+			 id = :id
+	 	]]>
+ 	</sql>
+ 	
+ 	<sql id="deleteMemberNSCA">  
+	 	<![CDATA[
+	 	UPDATE nst_same_city_address
+		SET	 isDeleted=1,
+			 updateUserId =:updateUserId,
+			 updateTime = SYSDATE()
+		WHERE
+			 id = :id
+	 	]]>
+ 	</sql>
+ 	
+ 	<sql id="getAssaginCount">                 
+	 	<![CDATA[
+	 		SELECT
+				assignMemberId,
+			(
+				SELECT
+					COUNT(assignMemberId)
+				FROM
+					nst_same_city_address nsca
+				WHERE
+					nsca.assignMemberId =:assignMemberId
+				AND DATE_FORMAT(nsca.createTime, '%Y-%m-%d') = DATE_FORMAT(SYSDATE(), '%Y-%m-%d')
+				AND nstRule = 1
+			) AS dayCount,
+			(
+				SELECT
+					COUNT(assignMemberId)
+				FROM
+					nst_same_city_address nsca
+				WHERE
+					nsca.assignMemberId =:assignMemberId
+					AND DATE_FORMAT(nsca.createTime, '%Y-%m') = DATE_FORMAT(SYSDATE(), '%Y-%m')
+					AND nstRule = 1
+			) AS monthCount
+			FROM
+			nst_same_city_address na
+		WHERE
+			na.assignMemberId =:assignMemberId
+			GROUP BY assignMemberId
+	 	]]>
+ 	</sql>
+ 	
+ 	 <sql id="assign">
+		<![CDATA[	  
+	    UPDATE nst_same_city_address 
+	    SET  
+               assignMemberId=:assignMemberId,
+    		   clients=:clients,
+    		   nstRule=1
+    	where id=:id
+	  	]]>
+	  </sql>
+	  
+	  <sql id="direct">
+		<![CDATA[	  
+	    UPDATE nst_same_city_address 
+	    SET  
+               nstRule=0
+    		   where id=:id
+	  	]]>
+	  </sql>
+	  
+	  <!-- 管理后台查询同城货源列表 -->
+	  <sql id="queryListForConsole">
+		<![CDATA[	  
+	    	SELECT
+				nsca.id,
+				IF (
+					mb.userType = 2,
+					mc.linkMan,
+					mb.realName
+				) AS linkMan,
+				IF(
+					mb.userType=2,
+					mc.mobile,
+					mb.mobile
+				) AS mobile,
+				 case
+				 when nsca.s_areaId is null then
+				 	(SELECT area FROM area WHERE areaID=nsca.s_cityId)
+				 when nsca.s_areaId is not null then
+					CONCAT((SELECT area FROM area WHERE areaID=nsca.s_cityId),(SELECT area FROM area WHERE areaID=nsca.s_areaId))
+				 end s_name,
+				 case 
+				 when nsca.f_areaId is null then
+				 	(SELECT area FROM area WHERE areaID=nsca.f_cityId)
+				 when nsca.f_areaId is not null then
+				 	CONCAT((SELECT area FROM area WHERE areaID=nsca.f_cityId),(SELECT area FROM area WHERE areaID=nsca.f_areaId))
+				 end f_name,
+				 nsca.s_detail,
+				 nsca.f_detail,
+				 nsca.s_detailed_address,
+				 nsca.f_detailed_address,
+				 nsca.goodsType,
+				 CONCAT(nsca.totalWeight, '吨') AS totalWeightString,
+				 nsca.needCarType,
+				 nsca.useCarTime,
+				 nsca.releaseTime,
+				 nsca.mileage,
+				 nsca.price,
+				 nsca.goodsType,
+				 nsca.totalWeight,
+				 nsca.totalSize,
+				 nsca.remark,
+				 nsca.createTime,
+				 nsca.createUserId,
+				 nsca.clients,
+         (SELECT area FROM area WHERE areaID=mb.cCityId LIMIT 1 ) AS mcity ,
+         IF(mb.userType=1,'个人','企业') AS userType,
+         lastOrder.isDeleted AS  isOrderDeleted ,
+				 lastOrder.orderStatus 
+			FROM
+				nst_same_city_address nsca
+			LEFT JOIN member_baseinfo mb ON nsca.memberId = mb.memberId
+			LEFT JOIN member_certifi mc ON nsca.memberId = mc.memberId
+			LEFT JOIN (
+					SELECT
+						n.orderStatus,
+						n.isDeleted,
+						n.same_memberAddressId
+					FROM
+						(
+							SELECT
+								nob.*
+							FROM
+								nst_order_baseinfo nob
+							ORDER BY
+								id DESC
+						) n
+					GROUP BY
+						n.same_memberAddressId
+				) lastOrder ON lastOrder.same_memberAddressId = nsca.id
+			WHERE 1=1 
+	             <#if isDel?exists && isDel!="" >
+			      AND nsca.isDeleted=1
+			      <#else>
+			      AND (nsca.isDeleted=0 or nsca.isDeleted is null)
+			    </#if> 
+		        <#if realName?exists && realName!="" >
+			      AND (mc.linkMan  like "%":realName"%"  OR  mb.realName  like "%":realName"%")
+			    </#if>
+			    <#if startDate?exists && startDate!="" >
+			        AND DATE_FORMAT(nsca.createTime,'%Y-%m-%d') >=DATE_FORMAT(:startDate, '%Y-%m-%d')
+			    </#if>
+			    <#if endDate?exists && endDate!="" >
+			        AND DATE_FORMAT(nsca.createTime,'%Y-%m-%d') <= DATE_FORMAT(:endDate, '%Y-%m-%d')
+			    </#if> 
+			     <#if userType?exists && userType!="" >
+			      AND mb.userType  =:userType
+			     </#if> 
+			     <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			     </#if> 
+			     <#if orderStatus?exists && orderStatus!="" >
+			      AND lastOrder.orderStatus  =:orderStatus
+			     </#if>
+			     <#if clients?exists && clients!="" >
+			      AND  nsca.clients  =:clients
+			     </#if>  
+			     <#if isOrderDeleted?exists && isOrderDeleted =="1" >
+			      AND  lastOrder.isDeleted  =:isOrderDeleted
+			     </#if>  
+			      <#if isOrderDeleted?exists && isOrderDeleted =="0" >
+			      AND  (lastOrder.isDeleted is null or lastOrder.isDeleted ='0' )
+			     </#if>
+			     GROUP BY  nsca.id
+			     ORDER BY nsca.releaseTime DESC
+			     <#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				  LIMIT :startRow,:endRow
+			     </#if>
+	  	]]>
+	  </sql>
+	  
+	   <!-- 管理后台查询同城货源记录总数 -->
+	   <sql id="getTotalForConsole">
+		<![CDATA[	  
+	    	SELECT
+				COUNT(1)
+				FROM (
+            SELECT nsca.id 
+			FROM nst_same_city_address nsca
+			LEFT JOIN member_baseinfo mb ON nsca.memberId = mb.memberId
+			LEFT JOIN member_certifi mc ON nsca.memberId = mc.memberId
+			LEFT JOIN (
+					SELECT
+						n.orderStatus,
+						n.isDeleted,
+						n.same_memberAddressId
+					FROM
+						(
+							SELECT
+								nob.*
+							FROM
+								nst_order_baseinfo nob
+							ORDER BY
+								id DESC
+						) n
+					GROUP BY
+						n.same_memberAddressId
+				) lastOrder ON lastOrder.same_memberAddressId = nsca.id
+			WHERE 1=1
+	             <#if isDel?exists && isDel!="" >
+			      AND nsca.isDeleted=1
+			      <#else>
+			      AND (nsca.isDeleted=0 or nsca.isDeleted is null)
+			    </#if> 
+		         <#if realName?exists && realName!="" >
+			      AND (mc.linkMan  like "%":realName"%"  OR  mb.realName  like "%":realName"%")
+			     </#if>
+			    <#if startDate?exists && startDate!="" >
+			        AND DATE_FORMAT(nsca.createTime,'%Y-%m-%d') >=DATE_FORMAT(:startDate, '%Y-%m-%d')
+			    </#if>
+			    <#if endDate?exists && endDate!="" >
+			        AND DATE_FORMAT(nsca.createTime,'%Y-%m-%d') <= DATE_FORMAT(:endDate, '%Y-%m-%d')
+			    </#if> 
+			     <#if userType?exists && userType!="" >
+			      AND mb.userType  =:userType
+			     </#if> 
+			     <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			     </#if> 
+			     <#if orderStatus?exists && orderStatus!="" >
+			      AND  lastOrder.orderStatus  =:orderStatus
+			     </#if> 
+			     <#if clients?exists && clients!="" >
+			      AND  nsca.clients  =:clients
+			     </#if> 
+			     <#if isOrderDeleted?exists && isOrderDeleted =="1" >
+			      AND  lastOrder.isDeleted  =:isOrderDeleted
+			     </#if>  
+			      <#if isOrderDeleted?exists && isOrderDeleted =="0" >
+			      AND  (lastOrder.isDeleted is null or lastOrder.isDeleted ='0' )
+			     </#if>
+	            GROUP BY  nsca.id) z
+	  	]]>
+	  </sql>
+	  
+	  <!--同城货源发布列表 ：发货信息记录 -->
+	    <sql id="getDistributeAddressList">
+	<![CDATA[
+         SELECT
+				 t.id,
+		         CASE
+		         WHEN t.s_areaId is NULL THEN
+    				(SELECT area FROM area WHERE areaID = t.s_cityId)   
+				 WHEN t.s_cityId is not NULL THEN
+				    CONCAT(
+				        (SELECT area FROM area WHERE areaID = t.s_cityId),
+				        (SELECT area FROM area WHERE areaID = t.s_areaId)
+				    )
+				 END startPlace,
+				 CASE 
+				 WHEN t.f_areaId is NULL THEN
+					(SELECT area FROM area WHERE areaID = t.f_cityId)
+				 WHEN t.f_areaId is NOT NULL THEN
+				     CONCAT(
+				        (SELECT area FROM area WHERE areaID = t.f_cityId),
+				        (SELECT area FROM area WHERE areaID = t.f_areaId)
+				     ) 
+			     END endPlace,
+				 t.s_detail,
+				 t.f_detail,
+				 t.s_detailed_address,
+				 t.f_detailed_address,
+				 t.goodsType,
+				 CONCAT(t.totalWeight, '吨') AS totalWeightString,
+				 t.needCarType,
+				 t.useCarTime,
+				 t.releaseTime,
+				 t.mileage,
+				 t.price,
+				 t.goodsType,
+				 t.totalWeight,
+				 t.totalSize,
+				 t.remark,
+				 t.createTime,
+				 t.createUserId,
+				t.nstRule  AS distributeType,
+				mb.cCityId ,
+                mb.account ,
+                CASE
+				WHEN mb.userType = '1' THEN mb.realName
+				WHEN mb.userType = '2' THEN c1.linkMan
+				END username,
+                emb.account AS publishAccount,
+                c.linkMan AS publishUserName,
+                c.companyName,
+		        nob.orderStatus,
+		        t.clients  
+			FROM
+				nst_same_city_address t
+			INNER JOIN member_baseinfo mb ON t.memberId = mb.memberId  AND (t.isDeleted = 0 OR t.isDeleted IS NULL)
+			LEFT JOIN member_certifi c1 ON mb.memberId = c1.memberId
+            LEFT JOIN  member_baseinfo emb ON t.assignMemberId = emb.memberId 
+			LEFT JOIN member_certifi c ON t.assignMemberId = c.memberId
+			LEFT JOIN (
+				SELECT
+					n.orderStatus,
+					n.isDeleted,
+					n.same_memberAddressId
+				FROM
+					(
+						SELECT
+							nob1.*
+						FROM
+							nst_order_baseinfo nob1
+						ORDER BY
+							id DESC
+					) n
+				GROUP BY
+					n.same_memberAddressId
+			)nob ON nob.same_memberAddressId = t.id
+			WHERE	1 = 1
+	<#if account?exists && account!="" >
+	  AND mb.account like "%":account"%"
+	</#if>
+	<#if publishAccount?exists && publishAccount!="" >
+	  AND emb.account like "%":publishAccount"%"
+	</#if>
+	<#if clients?exists && clients!="" >
+		 and  t.clients =:clients 
+	 </#if>
+	 <#if companyName?exists && companyName!="" >
+		 and  c.companyName =:companyName 
+	 </#if>
+	 <#if orderStatus?exists && orderStatus!="" && orderStatus!="0" >
+	   AND  nob.orderStatus =:orderStatus
+	 </#if>	
+	  <#if orderStatus?exists && orderStatus!="" && orderStatus =="0" >
+	   AND  nob.orderStatus  is null
+	 </#if>	
+	 <#if distributeType?exists && distributeType!="" >
+		 and  t.nstRule =:distributeType 
+	 </#if>
+      <#if addressStartDate?exists && addressStartDate!="" >
+	    AND t.createTime >= :addressStartDate
+	   </#if>
+	  <#if addressEndDate?exists && addressEndDate!="" >
+		   AND DATE_FORMAT(t.createTime,'%Y-%m-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%m-%d')
+	  </#if>
+	   <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			 <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			 </#if> 
+			
+  GROUP BY t.id
+  ORDER BY t.createTime DESC
+     limit :startRow,:endRow			
+	]]>
+	</sql>
+	
+	 <sql id="getDistributeAddressTotal">
+		<![CDATA[
+		SELECT COUNT(1) FROM (
+	    SELECT
+				t.id
+			FROM
+				nst_same_city_address t
+			INNER JOIN member_baseinfo mb ON t.memberId = mb.memberId  AND (t.isDeleted = 0 OR t.isDeleted IS NULL)
+            LEFT JOIN  member_baseinfo emb ON t.assignMemberId = emb.memberId 
+			LEFT JOIN member_certifi c ON t.assignMemberId = c.memberId
+			LEFT JOIN (
+				SELECT
+					n.orderStatus,
+					n.isDeleted,
+					n.same_memberAddressId
+				FROM
+					(
+						SELECT
+							nob1.*
+						FROM
+							nst_order_baseinfo nob1
+						ORDER BY
+							id DESC
+					) n
+				GROUP BY
+					n.same_memberAddressId
+			)nob ON nob.same_memberAddressId = t.id
+			WHERE	1 = 1
+    <#if account?exists && account!="" >
+	  AND mb.account like "%":account"%"
+	</#if>
+	<#if publishAccount?exists && publishAccount!="" >
+	  AND emb.account like "%":publishAccount"%"
+	</#if>
+	<#if clients?exists && clients!="" >
+		 and  t.clients =:clients 
+	 </#if>
+	 <#if companyName?exists && companyName!="" >
+		 and  c.companyName =:companyName 
+	 </#if>
+     <#if orderStatus?exists && orderStatus!="" && orderStatus!="0" >
+	   AND  nob.orderStatus =:orderStatus
+	 </#if>	
+	  <#if orderStatus?exists && orderStatus!="" && orderStatus =="0" >
+	   AND  nob.orderStatus  is null
+	 </#if>	
+	 <#if distributeType?exists && distributeType!="" >
+		 and  t.nstRule =:distributeType 
+	 </#if>
+      <#if addressStartDate?exists && addressStartDate!="" >
+	    AND t.createTime >= :addressStartDate
+	   </#if>
+	  <#if addressEndDate?exists && addressEndDate!="" >
+		   AND DATE_FORMAT(t.createTime,'%Y-%m-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%m-%d')
+	  </#if>
+	   <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			 <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			 </#if> 
+           GROUP BY t.id
+		   ) z 
+		]]>
+	  </sql>
+	  
+	  <sql id="getListByAddressSameCity">
+		<![CDATA[
+		SELECT
+			mb1.mobile AS mobile,
+			mb1.realname AS userName,
+			mb.mobile AS recommendedMobile,
+			mb.realname AS recommendedUserName,
+			mb.createtime AS createUserTime,
+			mc.companyName AS companyName,
+			mc.linkMan AS linkMan,
+			CASE
+			WHEN mb. LEVEL = '1' THEN
+				'谷登农批'
+			WHEN mb. LEVEL = '2' THEN
+				'农速通'
+			WHEN mb. LEVEL = '3' THEN
+				'农商友'
+			WHEN mb. LEVEL = '4' THEN
+				'产地供应商'
+			END levelType,
+			CASE
+			WHEN mb.usertype = '1' THEN
+				'个人'
+			WHEN mb.usertype = '2' THEN
+				'公司'
+			END userType,
+			mc.nstStatus,
+		 	e.areaName,
+			nsa.memberId,
+			nsa.isDeleted AS isAddressDeleted,
+			nsa.createTime AS createAddressTime,
+			nsa.s_provinceId,
+			nsa.s_cityId,
+			nsa.s_areaId,
+			nsa.f_provinceId,
+			nsa.f_cityId,
+			nsa.f_areaId,
+			i.memberId As isReferees
+		FROM
+			nst_same_city_address nsa
+		INNER JOIN member_baseinfo mb ON mb.memberId = nsa.memberId AND mb.userType IS NOT NULL
+		LEFT JOIN member_certifi mc ON mc.memberId = nsa.memberId
+		LEFT JOIN integral i ON i.memberId_ed = nsa.memberId AND i.type = 3 AND i.memberId <> i.memberid_ed
+		
+		LEFT JOIN member_baseinfo mb1 ON mb1.memberId = i.memberId AND mb1.userType IS NOT NULL
+		LEFT JOIN member_certifi mc1 ON mc1.memberId= i.memberId
+		LEFT JOIN area_setting e ON i.memberid = e.memberId
+		WHERE 1=1
+		<#if mobile?exists && mobile!="" >
+				 and  mb1.mobile =:mobile 
+			</#if>
+			<#if recommendedMobile?exists && recommendedMobile!="" >
+				 and  mb.mobile =:recommendedMobile 
+			</#if>
+			<#if areaName?exists && areaName!="" >
+				 and  e.areaName =:areaName 
+			</#if>
+			 <#if startDate?exists && startDate!="" >
+			       AND mb.createtime >= :startDate
+			 </#if>
+			  <#if endDate?exists && endDate!="" >
+				   AND DATE_FORMAT(mb.createtime,'%Y-%m-%d') <= DATE_FORMAT(:endDate, '%Y-%m-%d')
+			  </#if>
+			  
+		      <#if addressStartDate?exists && addressStartDate!="" >
+			       AND nsa.createTime >= :addressStartDate
+			  </#if>
+			  <#if addressEndDate?exists && addressEndDate!="" >
+				   AND DATE_FORMAT(nsa.createTime,'%Y-%m-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%m-%d')
+			  </#if>
+			  <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+				   AND ( nsa.s_provinceId =:s_provinceId or  nsa.s_provinceId=0)
+			  </#if>		
+			  <#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+				   AND (nsa.s_cityId =:s_cityId or nsa.s_cityId =0)
+			  </#if>		
+			  <#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (nsa.s_areaId =:s_areaId or nsa.s_areaId =0)
+			  </#if>
+			  <#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND nsa.f_provinceId =:f_provinceId
+			  </#if>		
+			  <#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND nsa.f_cityId =:f_cityId
+			  </#if>	
+			  <#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND nsa.f_areaId =:f_areaId
+			  </#if>
+			  <#if isReferees?exists && isReferees=="0">
+			      AND (i.memberId is null or i.memberId = '')
+			  </#if>
+			  <#if isReferees?exists && isReferees=="1">
+			      AND i.memberId is not null
+			  </#if>
+			group by nsa.id	
+			order by nsa.id DESC
+			LIMIT :startRow,:endRow	
+	  		]]>
+	  </sql>
+	  <sql id="getTotalByAddressSameCity">
+		<![CDATA[
+			SELECT
+				COUNT(*)
+			FROM(
+				SELECT
+					nsa.id
+				FROM
+				nst_same_city_address nsa
+				INNER JOIN member_baseinfo 	mb 	ON mb.memberId 		= nsa.memberId
+				LEFT JOIN integral i ON i.memberId_ed = nsa.memberId AND i.type = 3 AND i.memberId <> i.memberid_ed
+				LEFT JOIN member_baseinfo  mb1 ON i.memberId = mb1.memberId AND mb1.userType IS NOT NULL
+				LEFT JOIN area_setting e ON e.memberId = i.memberId
+				WHERE mb.userType IS NOT NULL 
+				<#if mobile?exists && mobile!="" >
+					 and  mb1.mobile =:mobile 
+				</#if>
+				<#if recommendedMobile?exists && recommendedMobile!="" >
+					 and  mb.mobile =:recommendedMobile 
+				</#if>
+				<#if areaName?exists && areaName!="" >
+					 and  e.areaName =:areaName 
+				</#if>
+				<#if startDate?exists && startDate!="" >
+				    AND mb.createtime >= :startDate
+				</#if>
+			  	<#if endDate?exists && endDate!="" >
+				   	AND DATE_FORMAT(mb.createtime,'%Y-%m-%d') <= DATE_FORMAT(:endDate, '%Y-%m-%d')
+			  	</#if>
+		      <#if addressStartDate?exists && addressStartDate!="" >
+			    AND nsa.createTime >= :addressStartDate
+			   </#if>
+			  <#if addressEndDate?exists && addressEndDate!="" >
+				   AND DATE_FORMAT(nsa.createTime,'%Y-%m-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%m-%d')
+			  </#if>
+		      <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+				      AND ( nsa.s_provinceId =:s_provinceId or  nsa.s_provinceId=0)
+			  </#if>		
+				<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+				      AND (nsa.s_cityId =:s_cityId or nsa.s_cityId =0)
+				</#if>		
+				<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+				      AND (nsa.s_areaId =:s_areaId or nsa.s_areaId =0)
+				</#if>
+				<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+				      AND nsa.f_provinceId =:f_provinceId
+				</#if>		
+				<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+				      AND nsa.f_cityId =:f_cityId
+				</#if>	
+				<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+				      AND nsa.f_areaId =:f_areaId
+				</#if>
+				<#if isReferees?exists && isReferees=="0">
+			          AND (i.memberId is null or i.memberId = '')
+			  	</#if>
+			  	<#if isReferees?exists && isReferees=="1">
+			      	  AND i.memberId is not null
+			  	</#if>
+				GROUP BY nsa.id
+				) t;
+		]]>
+	  </sql>
+
+</sqlMap>

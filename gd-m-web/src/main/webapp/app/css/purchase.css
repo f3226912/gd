@@ -1,0 +1,542 @@
+@charset "utf-8";
+*,
+::after,
+::before {
+    padding: 0;
+    margin: 0;
+    /*清除ios默认的点击时产生的高亮区块   rgba(0,0,0,0)*/
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+    /*定义盒子模型定义的宽度从边框计算*/
+    -webkit-box-sizing: border-box;
+}
+
+
+/*// 1. 为不继承的元素设定继承父级行高*/
+
+
+/*// 2. 为不继承的元素设定继承父级字体*/
+
+input,
+textarea,
+button {
+    line-height: inherit;
+    font-family: inherit;
+}
+
+
+/*清除浮动*/
+
+.clearfix::after,
+.clearfix::before {
+    clear: both;
+    content: '.';
+    height: 0;
+    line-height: 0;
+    visibility: hidden;
+    display: block;
+}
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+textarea,
+button {
+    font-size: inherit;
+}
+
+
+/*// 1. 重置斜体表现为正常文本*/
+
+em,
+i {
+    font-style: normal;
+}
+
+
+/*// 1. 清除单元格边距并让边框合并*/
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+    text-align: left;
+}
+
+
+/*// 1. 清除列表默认序号*/
+
+ul,
+ol,
+menu {
+    list-style: none;
+}
+
+
+/*// 1. 清除默认边框*/
+
+
+/*// 2. 清除img底部留白问题，并使得默认居中*/
+
+fieldset,
+img {
+    display: block;
+    border: 0;
+}
+
+
+/*// 1. 设置HTML5部分新增元素为块元素*/
+
+article,
+aside,
+figcaption,
+figure,
+footer,
+header,
+nav,
+section {
+    display: block;
+}
+
+
+/*// 1. 设置HTML5新增媒体元素与img, object保持一致*/
+
+audio,
+canvas,
+video {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+
+/*// 1. 设置文本域滚不可拖动改变垂直方向尺寸*/
+
+textarea {
+    resize: none;
+}
+
+
+/*// 1. 清除webkit下表单元素的outline*/
+
+input,
+textarea,
+button,
+select a {
+    outline: 0 none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 100%;
+    font-weight: normal
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+em,
+i,
+b {
+    font-style: normal;
+    font-weight: normal;
+}
+
+a:focus {
+    outline: 0;
+}
+
+
+/*// 1. 清除Firefox按钮内部边框和补白*/
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+}
+
+
+/*// 1. 清除文本线条装饰*/
+
+a {
+    text-decoration: none;
+    color: #666;
+}
+
+input,
+textarea {
+    border: 0;
+    outline: none;
+    resize: none;
+    /*清楚ios浏览器默认的样式*/
+    -webkit-appearance: none;
+}
+
+img {
+    vertical-align: middle;
+    /*清除3px的bug*/
+    border: 0;
+}
+
+
+/*// 1. 禁止长按链接与图片弹出菜单*/
+
+
+/*// issues: 在iOS8.1下此设置对a仍无效*/
+
+a,
+img {
+    -webkit-touch-callout: none;
+}
+
+
+/*常用元素設置為怪異模式盒模型*/
+
+div,
+header,
+footer,
+section,
+ul,
+li,
+dl,
+dt,
+dd {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+/* 单词换行 */
+
+* {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+
+/*全局字体设置*/
+
+.img-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
+.alignleft {
+    display: inline;
+    float: left;
+}
+
+.alignright {
+    display: inline;
+    float: right;
+}
+
+.aligncenter {
+    clear: both;
+    display: block;
+    margin: auto;
+}
+
+body,
+html {
+    font-family: Helvetica Neue, Helvetica, Arial, sans-serif， Microsoft Yahei, Tahoma;
+    -webkit-text-size-adjust: 100%;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    height: 100%;
+    max-width: 750px;
+    min-width: 320px;
+    margin: 0 auto;
+    /* 可以修改 */
+    font-size: .28rem;
+    background: #FFFFFF;
+    color: #666;
+}
+
+.mui-bar {
+    background-color: #3bb650!important;
+}
+
+.mui-title {
+    color: #ffffff!important;
+}
+
+.mui-bar .mui-btn-link {
+    color: #ffffff!important;
+}
+
+.mui-bar.ios {
+    padding-top: 20px;
+    height: 64px;
+}
+
+.close {
+    padding: 15px;
+    background: #ffeddd;
+    width: 100%;
+    /* border-bottom: 1px solid #ccc;  */
+    /*  margin-top: 2px; */
+    color: #3bb650;
+}
+
+.reminder {
+    height: .28rem;
+    line-height: .28rem;
+}
+
+.close_icon {
+    width: .28rem;
+    height: .28rem;
+}
+
+.close_icon img {
+    width: 100%;
+}
+
+.pleasechose {
+    background: #eeeeee;
+    padding-left: 15px;
+    height: .7rem;
+    line-height: .7rem;
+    color: #666;
+}
+
+
+
+.mui-row>[class*="mui-col-"] {
+    height: 100%;
+}
+
+.mui-col-xs-3,
+.mui-col-xs-9 {
+    height: 100%;
+}
+
+.mui-row .mui-col-xs-3,
+{
+    height: 100%;
+    background: #ffffff!important;
+}
+
+.mui-row .mui-col-xs-9 {
+    height: 100%;
+    background: #f7f7f7!important;
+}
+
+.mui-segmented-control .mui-control-item {
+    display: block;
+    height: 1rem;
+    line-height: 1rem;
+    width: 100%;
+    font-size: .3rem;
+}
+
+.mui-control-content {
+    height: 100%;
+}
+
+
+/*  #segmentedControlContents .con-content{
+               display: none;
+           }
+           #segmentedControlContents .con-content.selected {display: block;} */
+
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+    background-color: #fff;
+    color: #3bb650;
+    border-left: 5px solid #3bb650;
+}
+
+.mui-content {
+    background: #FFFFFF !important;
+    margin-bottom: 1.2rem;
+}
+
+.mui-content.ios {
+    padding-top: 64px;
+}
+
+#segmentedControlContents .goodslist .wrap {
+    height: 1.2rem;
+    width: 28%;
+    float: left;
+    margin-left: .25rem;
+    margin-top: .25rem;
+    /* display: table; */
+    position: relative;
+    background: #fff;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: 1px solid #fff;
+}
+
+#segmentedControlContents .goodslist .wrap .goodskist_item {
+    height: 100%;
+    text-align: center;
+    background: #fff;
+    font-size: .3rem;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: 1px solid #ccc;
+    line-height: 130%;
+    display: -webkit-box!important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+}
+
+
+/* #segmentedControlContents .goodslist .wrap .goodskist_item_pur{
+        height: 100%;
+    text-align: center;
+    background: #fff;
+    font-size: .3rem;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border: 1px solid #ccc;
+    line-height: 130%;
+    display: -webkit-box!important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+} */
+
+#segmentedControlContents .goodslist .wrap a {
+    display: block;
+    width: .4rem;
+    height: .4rem;
+    background: url('../images/close_icon.png') no-repeat center;
+    background-size: contain;
+    -webkit-background-size: contain;
+    position: absolute;
+    right: -0.2rem;
+    top: -0.2rem;
+}
+
+#segmentedControlContents .goodslist .goodskist_item.yellow {
+    background: #ff6c00;
+    color: #fff;
+    border: 1px solid #ff6c00!important;
+}
+
+#segmentedControlContents .goodslist .goodskist_item.endadd {
+    background: #ff6c00;
+    color: #fff;
+    border: 1px solid #ff6c00!important;
+}
+
+#segmentedControlContents .goodslist {
+    width: 100%;
+}
+
+.addgoods {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    height: 1.63rem;
+    width: 100%;
+}
+
+.addgoods div {
+    display: block;
+    height: 1.63rem;
+    width: 100%;
+}
+
+.addgoods div img {
+    width: 100%;
+    height: 100%;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    width: 100%;
+    background: #fff;
+    height: 1.2rem;
+}
+
+.edit-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    width: 100%;
+    background: #fff;
+    height: 1.2rem;
+}
+
+.edit-footer .con-wc {
+    display: block;
+    margin: .15rem .3rem .15rem .3rem;
+    border: 1px solid #ccc;
+    height: .9rem;
+    line-height: .9rem;
+    background: #ff6c00;
+    text-align: center;
+    color: #fff;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    font-size: .36rem;
+}
+
+.footer .con-wc {
+    display: block;
+    margin: .15rem .3rem .15rem .3rem;
+    border: 1px solid #ccc;
+    height: .9rem;
+    line-height: .9rem;
+    background: #ccc;
+    text-align: center;
+    color: #fff;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    font-size: .36rem;
+}
+
+.mui-popup-title {
+    display: none;
+}
+.mui-toast-container {
+    bottom: 10% !important;
+    text-align: center;
+    /*离布局底部的距离*/
+}
+.mui-toast-message {
+    background-color: #535353;
+    color: #fff;
+    width: auto;
+    display: inline-block;
+}

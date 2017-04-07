@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SensitiveWordEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO sensitive_word(
+	createTime,updateTime,name,description
+	) VALUES (
+	now(),now(),:name,:description
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE sensitive_word SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if name?exists && name!="" >
+		name=:name,
+	</#if>	
+	<#if description?exists && description!="" >
+		description=:description,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,createTime,updateTime,name,description
+	FROM sensitive_word WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,createTime,updateTime,name,description
+	FROM sensitive_word WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if description?exists && description!="" >
+		AND description like "%":description"%"
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,createTime,updateTime,name,description
+	FROM sensitive_word WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if description?exists && description!="" >
+		AND description like "%":description"%"
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM sensitive_word WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if description?exists && description!="" >
+		AND description like "%":description"%"
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM sensitive_word WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberIntegralConversion">
+	<sql id="getListByCondition">
+    	<![CDATA[
+    		SELECT t.memberId,
+    		t.account,
+			t.userType,
+			cer.companyName,
+			(
+			CASE t.userType
+			WHEN 1 THEN t.realName
+			WHEN 2 THEN cer.linkMan
+			ELSE '' END
+			) AS contacts,
+			IF(t.integral IS NULL,0,t.integral) AS integral FROM 
+    		member_baseinfo t 
+    		LEFT JOIN member_certifi cer ON t.memberId = cer.memberId 
+    		where t.memberId  IN (SELECT i.memberId FROM  integral i  WHERE i.type=5 )
+    		<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if account?exists && account!="" >
+			      AND t.account = :account
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType = :userType
+			</#if>
+			<#if integral?exists && integral!="" >
+			      AND t.integral= :integral
+			</#if>
+			LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	
+	<sql id="getTatal">
+    	<![CDATA[
+    		SELECT count(*) FROM 
+    		member_baseinfo t
+    		LEFT JOIN member_certifi cer ON t.memberId = cer.memberId 
+    		where 1=1
+    	   and	t.memberId  IN (SELECT i.memberId FROM  integral i  WHERE i.type=5 )
+    		<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if account?exists && account!="" >
+			      AND t.account = :account
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType = :userType
+			</#if>
+			<#if integral?exists && integral!="" >
+			      AND t.integral= :integral
+			</#if>
+		]]>
+	</sql>
+	
+	
+	<sql id="getListGiftByCondition">
+    	<![CDATA[
+    		SELECT t.id AS giftId,t.`name` AS giftName,t.integral AS giftIntegral,t.activityId FROM gift t
+    		where t.integral<=:integral and t.type=1
+			AND t.activityId =(
+				SELECT
+					t2.id
+				FROM
+					activity t2
+				WHERE
+					now() < t2.endTime
+				AND NOW() > t2.startTime
+				ORDER BY
+					t2.startTime DESC
+				LIMIT 1
+			)
+    		<#if giftName?exists && giftName!="" >
+			      AND t.`name` = :giftName
+			</#if>
+			order by t.integral
+			LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	<sql id="getGiftTatal">
+    	<![CDATA[
+    		SELECT count(1) FROM gift t 
+    		where t.integral<=:integral and t.type=1
+    		AND t.activityId =(
+							SELECT
+								t2.id
+							FROM
+								activity t2
+							WHERE
+								now() < t2.endTime
+							AND NOW() > t2.startTime
+							ORDER BY
+								t2.startTime DESC
+							LIMIT 1
+						)
+    		<#if giftName?exists && giftName!="" >
+			      AND t.`name` = :giftName
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="getByMobile">
+    	<![CDATA[
+    		SELECT t.memberId,t.account,t.mobile,t.nickName,t.integral FROM 
+    		member_baseinfo t where  t.mobile = :mobile
+		]]>
+	</sql>
+	
+	<sql id="getByAccount">
+    	<![CDATA[
+    		SELECT t.memberId,t.account,t.mobile,t.nickName,t.integral FROM 
+    		member_baseinfo t where  t.account = :account
+		]]>
+	</sql>
+	
+	<sql id="updateMemberIntegral">
+    	<![CDATA[
+    		update member_baseinfo SET integral=:subintegral WHERE memberId=:memberId;
+		]]>
+	</sql>
+	
+	<sql id="insertIntegral">
+		<!--插入type为2表示默认是积分兑换礼物  -->
+    	<![CDATA[
+    		INSERT integral 
+    		(type,activityId,memberId,integral,giftId,createUserId,createTime,description) 
+    		VALUES 
+    		(2,:activityId,:memberId,:giftIntegral,:giftId,:loginName,SYSDATE(),:description)
+		]]>
+	</sql>
+	
+</sqlMap>

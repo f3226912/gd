@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.gudeng.commerce.gd</groupId>
+		<artifactId>gd-admin-pom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../gd-admin-pom/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>gd-admin-service</artifactId>
+	<packaging>jar</packaging>
+	<version>${gd.admin.version}</version>
+	<name>gd-admin-service</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-admin-intf</artifactId>
+			<version>${gd.admin.version}</version>
+		</dependency>
+	</dependencies>
+</project>

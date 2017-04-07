@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="complaint">
+
+	<sql id="getCount">
+	<![CDATA[
+SELECT
+  count(1) as count
+FROM
+  complaint
+  LEFT JOIN member_baseinfo
+    ON complaint.member = member_baseinfo.account
+LEFT JOIN business_baseinfo ON business_baseinfo.userId=member_baseinfo.memberId
+LEFT JOIN re_business_market ON re_business_market.businessId=business_baseinfo.businessId
+LEFT JOIN market ON market.id=re_business_market.marketId
+where 1=1
+	<#if createTimeStart?exists && createTimeStart!="" >
+			      AND complaint.createTime >= :createTimeStart
+			</#if>
+			<#if createTimeEnd?exists && createTimeEnd!="" >
+			      AND complaint.createTime < :createTimeEnd
+			</#if>
+	<#if content?exists && content!="" >
+		and complaint.content like "%":content"%"
+	</#if>
+	<#if source?exists && source!="" >
+		and complaint.source = :source
+	</#if>
+	order by complaint.createTime desc
+	]]>
+	</sql>
+	<!-- 投诉建议列表  -->
+	<sql id="getComplaintList">
+	<![CDATA[
+SELECT
+  complaint.id,
+  content,
+  source,
+  member,
+  CASE
+    member_baseinfo.level
+    WHEN '1'
+    THEN '谷登农批'
+    WHEN '2'
+    THEN '农速通'
+    WHEN '3'
+    THEN '农商友'
+    WHEN '4'
+    THEN '产地供应商'
+    WHEN '5'
+    THEN '门岗'
+    ELSE '其他'
+  END LEVEL,
+  market.marketName,
+  member_baseinfo.mobile,
+  member_baseinfo.memberId,
+  complaint.createTime
+FROM
+  complaint
+  LEFT JOIN member_baseinfo
+    ON complaint.member = member_baseinfo.account
+LEFT JOIN business_baseinfo ON business_baseinfo.userId=member_baseinfo.memberId
+LEFT JOIN re_business_market ON re_business_market.businessId=business_baseinfo.businessId
+LEFT JOIN market ON market.id=re_business_market.marketId
+where 1=1
+	<#if createTimeStart?exists && createTimeStart!="" >
+			      AND complaint.createTime >= :createTimeStart
+			</#if>
+			<#if createTimeEnd?exists && createTimeEnd!="" >
+			      AND complaint.createTime < :createTimeEnd
+			</#if>
+	<#if content?exists && content!="" >
+		and complaint.content like "%":content"%"
+	</#if>
+	<#if source?exists && source!="" >
+		and complaint.source = :source
+	</#if>
+	order by complaint.createTime desc
+	<#if startRow?exists && startRow!="" >
+		LIMIT :startRow,:endRow
+	</#if>
+	]]>
+	</sql>
+
+	<!-- 通过id获取 -->
+	<sql id="getComplaint">
+	<![CDATA[
+		SELECT id,title,content,enclosure,member,contact,createTime,state,customer,replyTime,replyComtent,source FROM complaint WHERE id=:id
+	]]>
+	</sql>
+
+
+	<!-- replyComplaintSave -->
+	<sql id="replyComplaintSave">
+	<![CDATA[
+		UPDATE complaint SET state=1,customer=:customer,replyTime=SYSDATE(),replyComtent=:replyComtent WHERE id=:id
+	]]>
+	</sql>
+
+
+</sqlMap>

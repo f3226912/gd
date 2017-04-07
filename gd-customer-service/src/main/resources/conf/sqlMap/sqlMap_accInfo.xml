@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <sqlMap namespace="accInfo"> 
+ 	<sql id="getWalletIndexById"> 
+  		SELECT  
+ 			  accId, 
+ 		  	  memberId, 
+ 		  	  transPwd, 
+ 			  realName, 
+ 			  idCard, 
+ 			  balTotal, 
+ 			  balAvailable, 
+ 			  balblock, 
+ 			  subAmountStay, 
+ 			  subAmountPaid, 
+ 			  transPwdQue, 
+ 			  transPwdAnswer, 
+ 			   createTime, 
+ 			  createuserId, 
+ 			   updateTime, 
+ 			  updateuserId 
+ 		FROM  
+ 			 acc_info  
+ 		WHERE  
+ 		 	 memberId=:memberId 
+ 	</sql> 
+	
+	
+ 	<sql id="updateAccInfo"> 
+ 	<![CDATA[ 
+  		 UPDATE  
+ 	   		acc_info 
+ 	  	 SET 
+ 			<#if realName?exists && realName!="" > 
+ 					     realName=:realName, 
+ 			</#if>	 
+ 			<#if transPwd?exists && transPwd!="" > 
+ 					     transPwd=:transPwd, 
+ 			</#if>		 
+ 			<#if idCard?exists && idCard!="" > 
+ 					     idCard=:idCard, 
+ 			</#if>	 
+ 			<#if transPwdAnswer?exists && transPwdAnswer!="" > 
+ 					     transPwdAnswer=:transPwdAnswer, 
+ 			</#if>	 
+ 			 <#if balTotal?exists && balTotal!="" > 
+ 					     balTotal=:balTotal, 
+ 			</#if>	 
+ 			 <#if balAvailable?exists && balAvailable!="" > 
+ 					     balAvailable=:balAvailable, 
+ 			</#if>	 
+ 			 <#if balblock?exists && balblock!="" > 
+ 					     balblock=:balblock, 
+ 			</#if>	 
+ 			 <#if subAmountStay?exists && subAmountStay!="" > 
+ 					     subAmountStay=:subAmountStay, 
+ 			</#if>	 
+ 			 <#if subAmountPaid?exists && subAmountPaid!="" > 
+ 					     subAmountPaid=:subAmountPaid, 
+ 			</#if>	 
+ 			 <#if transPwdQue?exists && transPwdQue!="" > 
+ 					     transPwdQue=:transPwdQue, 
+ 			</#if>	 
+ 			 <#if transPwdAnswer?exists && transPwdAnswer!="" > 
+ 					     transPwdAnswer=:transPwdAnswer, 
+ 			</#if>	 
+ 			 <#if updateuserId?exists && updateuserId!="" > 
+ 					     updateuserId=:updateuserId, 
+ 			</#if>	 
+ 			 updateTime=SYSDATE()  
+ 		]]> 
+ 		WHERE  
+ 		 	 memberId=:memberId 
+ 	</sql> 
+	
+ 	<sql id="addAccInfo"> 
+ 	<![CDATA[ 
+  		  INSERT INTO  acc_info 
+ 	          ( 
+ 			  	 memberId, 
+ 			  	 accStatus, 
+ 			  	 transPwd, 
+ 				  realName, 
+ 				  idCard, 
+ 				  balTotal, 
+ 				  balAvailable, 
+ 				  balblock, 
+ 				  subAmountStay, 
+ 				  subAmountPaid, 
+ 				  transPwdQue, 
+ 				  transPwdAnswer, 
+ 				   createTime, 
+ 				  createuserId, 
+ 				   updateTime, 
+ 				  updateuserId 
+               ) 
+ 	        values 
+ 	         ( 
+ 	       	 	  :memberId, 
+ 	       	 	  :accStatus, 
+ 	       	 	  :transPwd, 
+ 				  :realName, 
+ 				  :idCard, 
+ 				  :balTotal, 
+ 				  :balAvailable, 
+ 				  :balblock, 
+ 				  :subAmountStay, 
+ 				  :subAmountPaid, 
+ 				  :transPwdQue, 
+ 				  :transPwdAnswer, 
+ 				  SYSDATE() , 
+ 				  :createuserId, 
+ 				  SYSDATE() , 
+ 				  :updateuserId 
+               ) 
+	        
+ 		]]> 
+ 	</sql> 
+	
+	
+ 		<sql id="validateTransPwd"> 
+ 		<![CDATA[ 
+ 	 		 SELECT transPwd  
+ 	 		 	FROM acc_info 
+ 			WHERE memberId=:memberId 
+ 		]]> 
+ 	</sql> 
+	
+	
+	
+	
+	
+	
+	
+	
+ </sqlMap> 

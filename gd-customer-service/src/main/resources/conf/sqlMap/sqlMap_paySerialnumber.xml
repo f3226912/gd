@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="paySerialnumber">
+	<sql id="getByMemberId">
+ 		SELECT 
+				payId  ,
+		     	orderNobig ,
+		      statementId,
+			  payTime,
+			  payType,
+			  payStatus,
+			  paymentAcc,
+			  recipientAcc,
+			  tradeAmount,
+			  remark,
+			  payImage,
+			  createTime,
+			  createUserId,
+			  updateTime,
+			  updateUserId 
+		FROM 
+			 pay_serialnumber 
+		WHERE 
+		 	 memberId=:memberId
+		ORDER BY createTime DESC
+		LIMIT 
+			:startRow,:endRow 
+	</sql>
+	
+	
+	<sql id="getByMemberIdAndDay">
+ 		SELECT 
+			  sId,
+			  accId,
+			  memberId ,
+			  orderNo,
+			  statementId,
+			  tradeType ,
+			  peType,
+			  tradeAmount,
+			  paymentAcc,
+			  recipientAcc,
+			   createTime,
+			  createUserId,
+			   updateTime,
+			  updateUserId
+		FROM 
+			 pay_serialnumber 
+		WHERE 
+		 	 memberId=:memberId
+		AND 
+			 DATE_FORMAT(createTime,'%Y-%c-%d')=:createTime
+	</sql>
+	
+	
+	
+	
+	<sql id="add">
+ 	<![CDATA[
+	    INSERT INTO  pay_serialnumber
+	          (
+			  	  sId,
+				  accId,
+				  memberId ,
+				  orderNo,
+				  statementId,
+				  tradeType ,
+				  peType,
+				  tradeAmount,
+				  paymentAcc,
+				  recipientAcc,
+				  createUserId,
+				  updateUserId
+              )
+	        values
+	         (
+	       		  :sId,
+				  :accId,
+				  :memberId ,
+				  :orderNo,
+				  :statementId,
+				  :tradeType ,
+				  :peType,
+				  :tradeAmount,
+				  :paymentAcc,
+				  :recipientAcc,
+				  :createUserId,
+				  :updateUserId
+              )
+	        
+		]]>
+	</sql>
+	
+	<sql id="getTotal">
+		<![CDATA[
+ 		SELECT 
+		 	count(*)
+		FROM 
+			 pay_serialnumber 
+		WHERE 
+		<#if memberId?exists && memberId!="" >
+			   memberId = :memberId 
+		</#if>	
+		]]>
+	</sql>
+</sqlMap>

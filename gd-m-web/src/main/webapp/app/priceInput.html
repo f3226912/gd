@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>单商品输入</title>
+    <link rel="stylesheet" href="css/basic.css" />
+    <link href="lib/css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/priceInput.css" />   
+    <script type="text/javascript" src="js/rem.js"></script>
+    <style>
+    	.mui-bar .mui-title{
+    		left: 64px;
+    		right: 64px;
+    	}
+    	.mui-popup-backdrop{
+    		top:64px;
+    	}
+    	/*.form-btn {
+			padding: 8px 15px;
+			position: fixed;
+		    width: 100%;
+		    bottom: 0;
+		    background: #fff;
+		}*/
+    	.mui-bar.ios {
+			padding-top: 20px;
+			height: 64px;
+		}
+		.mui-toast-message{
+			background-color: #535353;
+			color: #fff;
+		}
+    </style>
+</head>
+
+<body>
+    <header id="header" class="mui-bar mui-bar-nav">
+        <h1 class="mui-title"></h1>
+        <!-- <button class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left"><span class="mui-icon mui-icon-left-nav"></span>返回</button> -->
+        <button class=" mui-action-back mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left"><span class="mui-icon mui-icon-left-nav"></span>返回</button>
+    </header>
+    <!--  <header class="head-top">
+			<a class="backGo">返回</a>
+			<P class="nameTitle">大白菜</P>
+		</header>  -->
+    <div class="main-cont">
+        <section class="priceOne">
+            <p class="input-title">填写方式一</p>
+            <article class="form-cont">
+                <div class="form-list">
+                    <label class="form-label">单价：</label>
+                    <input placeholder="0.00" value="" type="number" id="priceInput" class="form-input formInput" pattern="d*" />
+                    <span class="form-text">元/公斤</span>
+                </div>
+                <div class="form-list">
+                    <label class="form-label">采购量：</label>
+                    <input placeholder="0.00" id="productNum" value="" type="number" class="form-input formInput" />
+                    <span class="form-text">公斤</span>
+                </div>
+                <div class="form-list">
+                    <label class="form-label">小计1：</label>
+                    <input id="totalPrice1" placeholder="0.00" step="0.01" type="number" class="form-input totalPrice" />
+                    <span class="form-text">元</span>
+                </div>
+            </article>
+        </section>
+        <section class="priceTwo">
+            <p class="input-title">填写方式二</p>
+            <article class="form-cont">
+                <div class="form-list">
+                    <label class="form-label">其他费用1:</label>
+                    <input class="form-input small-input" id="price1Input" placeholder="0.00" type="number" />
+                    <span class="form-text mr5">元/个 X</span>
+                    <input class="form-input small-input" id="productNum2" placeholder="0.00" type="number" />
+                    <span class="form-text">个</span>
+                </div>
+                <div class="form-list">
+                    <label class="form-label">小计2：</label>
+                    <span class="right-text"><em id="totalPrice2" class="totalPrice">0.00</em>元</span>
+                </div>
+            </article>
+        </section>
+        <section class="priceThree">
+            <p class="input-title">填写方式三</p>
+            <article class="form-cont">
+                <div class="form-list">
+                    <label class="form-label">其他费用2:</label>
+                    <div class="right-text">
+                        <div class="right-input">
+                            <input id="price2Input" type="number" class="form-input" placeholder="0.00" /><span class="form-text">元</span></div>
+                    </div>
+                </div>
+                <div class="form-list">
+                    <label class="form-label">小计3：</label>
+                    <div class="right-text"><em id="totalPrice3" class="totalPrice">0.00</em>元</div>
+                </div>
+            </article>
+        </section>
+        <section>
+            <p class="input-title tol-title"></p>
+            <div class="totle-list">
+                <label class="form-label red-text">合计：</label>
+                <div class="right-text"><em class="red-text allPrice">0.00</em>元</div>
+            </div>
+            <div class=" tectarea-cont">
+                <p class="form-label">备注（可选）：</p>
+                <textarea class="" maxlength="50" placeholder="最多可输入50个字"></textarea>
+                <!--<p class="form-label limitText">提示：还可以输入<i class="limitNum"></i>字</p>-->
+            </div>
+            <div class="totle-tips">* 合计=小计1+小计2+小计3</div>
+        </section>
+        <section class="form-btn">
+            <div class="btn" id="btn">确认</div>
+        </section>
+    </div>
+    <div class="tips">请输入正确的格式</div>
+	<!--<div class="result-main" style="display: none;">
+		<div class="filter"></div>
+		<div class="filter-cont">
+			<div class="close-filter"></div>
+			<div class="mui-popup-inner">
+				<div class="mui-popup-title">提示</div>
+				<div class="mui-popup-text"></div>
+			</div>
+			<a class="filter-btn">确定</a>
+		</div>
+	</div>-->
+    <script type="text/javascript" src="lib/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="lib/mui.min.js"></script>
+    <script type="text/javascript" src="js/basic.js"></script>
+    <script type="text/javascript" src="js/priceInput.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderDeliveryAddress">
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+		createTime,detail,status,updateTime,id,createUser,orderNo,
+		district1,district2,district3,gender,linkman,updateUser,
+		mobile,nstOrderNo,distributeMode,companyId,driverId,freight,arriveTime
+	FROM delivery_address WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if detail?exists && detail!="" >
+		AND detail=:detail
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+		AND orderNo=:orderNo
+	</#if>
+	<#if district1?exists && district1!="" >
+		AND district1=:district1
+	</#if>
+	<#if district2?exists && district2!="" >
+		AND district2=:district2
+	</#if>
+	<#if district3?exists && district3!="" >
+		AND district3=:district3
+	</#if>
+	<#if gender?exists && gender!="" >
+		AND gender=:gender
+	</#if>
+	<#if linkman?exists && linkman!="" >
+		AND linkman=:linkman
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	ORDER BY createTime DESC
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+		createTime,detail,status,updateTime,id,createUser,orderNo,
+		district1,district2,district3,gender,linkman,updateUser,
+		mobile,nstOrderNo,distributeMode,companyId,driverId,freight,arriveTime
+	FROM delivery_address WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if detail?exists && detail!="" >
+		AND detail=:detail
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+		AND orderNo=:orderNo
+	</#if>
+	<#if district1?exists && district1!="" >
+		AND district1=:district1
+	</#if>
+	<#if district2?exists && district2!="" >
+		AND district2=:district2
+	</#if>
+	<#if district3?exists && district3!="" >
+		AND district3=:district3
+	</#if>
+	<#if gender?exists && gender!="" >
+		AND gender=:gender
+	</#if>
+	<#if linkman?exists && linkman!="" >
+		AND linkman=:linkman
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM delivery_address WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if detail?exists && detail!="" >
+		AND detail=:detail
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+		AND orderNo=:orderNo
+	</#if>
+	<#if district1?exists && district1!="" >
+		AND district1=:district1
+	</#if>
+	<#if district2?exists && district2!="" >
+		AND district2=:district2
+	</#if>
+	<#if district3?exists && district3!="" >
+		AND district3=:district3
+	</#if>
+	<#if gender?exists && gender!="" >
+		AND gender=:gender
+	</#if>
+	<#if linkman?exists && linkman!="" >
+		AND linkman=:linkman
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	]]>
+</sql>
+
+<sql id="getByOrderNo">
+	<![CDATA[
+	SELECT 
+		createTime,detail,status,updateTime,id,createUser,orderNo,
+		district1,district2,district3,gender,linkman,updateUser,
+		mobile,nstOrderNo,distributeMode,companyId,driverId,freight,arriveTime
+	FROM 
+	   delivery_address
+    WHERE 1=1
+	  AND orderNo=:orderNo
+	]]>
+</sql>
+</sqlMap>

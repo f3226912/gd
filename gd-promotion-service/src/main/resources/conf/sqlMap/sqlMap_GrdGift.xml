@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdGift">
+
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+grd_gift(type,name,marketId,status,stock_Total ,stock_Available,createTime,
+updateTime,createUserId,updateUserId,unit
+) VALUES (:type,:name,:marketId,:status,:stockTotal,:stockAvailable,:createTime,
+:updateTime,:createUserId,:updateUserId,:unit
+)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE grd_gift
+ SET 
+
+<#if id?exists && id!="" >
+id=:id,
+</#if>
+<#if giftNo?exists && giftNo!="" >
+giftNo=:giftNo,
+</#if>
+<#if type?exists && type!="" >
+type=:type,
+</#if>
+<#if name?exists && name!="" >
+name=:name,
+</#if>
+<#if marketId?exists && marketId!="" >
+marketId=:marketId,
+</#if>
+<#if giftstoreId?exists && giftstoreId!="" >
+giftstoreId=:giftstoreId,
+</#if>
+<#if status?exists && status!="" >
+status=:status,
+</#if>
+<#if stockTotal?exists && stockTotal!="" >
+stock_Total=:stockTotal,
+</#if>
+<#if stockAvailable?exists && stockAvailable!="" >
+stock_Available=:stockAvailable,
+</#if>
+<#if createTime?exists && createTime!="" >
+createTime=:createTime,
+</#if>
+<#if createUserId?exists && createUserId!="" >
+createUserId=:createUserId,
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+updateUserId=:updateUserId,
+</#if>
+<#if remark?exists && remark!="" >
+remark=:remark ,
+</#if>
+<#if unit?exists && unit!="" >
+unit=:unit,
+</#if>
+updateTime=SYSDATE()
+WHERE id=:id
+
+]]>
+</sql>
+<sql id="getByCondition">
+<![CDATA[
+	SELECT 
+id,type,name,unit,marketId,status,stock_Total as stockTotal,stock_Available as stockAvailable,createTime,
+updateTime,createUserId,updateUserId,remark, IFNULL(DetailCount.noCount,0) noCount,giftstoreId,gg.giftNo AS giftNo,
+(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= gg.giftstoreId)AS giftstoreName
+	FROM 
+grd_gift gg
+LEFT JOIN 
+(SELECT sum(d.countNo) noCount,giftId from grd_gift_detail d where  d.type=1 and  EXISTS   (
+select 1 from grd_gift_record ggr where ggr.`STATUS`=0   and ggr.id=d.recordId
+) GROUP BY giftId
+)DetailCount  on DetailCount.giftid = id
+
+WHERE 1=1
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if giftNo?exists && giftNo!="" >
+AND giftNo=:giftNo
+</#if>
+<#if type?exists && type!="" >
+AND type=:type
+</#if>
+<#if name?exists && name!="" >
+AND name  =:name
+</#if>
+<#if marketId?exists && marketId!="" >
+AND marketId=:marketId
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if stockTotal?exists && stockTotal!="" >
+AND stock_total=:stockTotal
+</#if>
+<#if stockAvailable?exists && stockAvailable!="" >
+AND stock_available=:stockAvailable
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if giftstoreId?exists && giftstoreId!="" >
+AND giftstoreId=:giftstoreId
+</#if>
+ORDER BY id DESC
+]]>
+</sql>
+<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+
+id,type,unit,name,marketId,status,stock_Total as stockTotal,stock_Available as stockAvailable,createTime,
+updateTime,createUserId,updateUserId,remark, IFNULL(DetailCount.noCount,0) noCount,giftstoreId,gg.giftNo AS giftNo,
+(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= gg.giftstoreId)AS giftstoreName
+	FROM 
+grd_gift gg
+LEFT JOIN 
+(SELECT sum(d.countNo) noCount,giftId from grd_gift_detail d where  d.type=1 and  EXISTS   (
+select 1 from grd_gift_record ggr where ggr.`STATUS`=0   and ggr.id=d.recordId
+) GROUP BY giftId
+)DetailCount  on DetailCount.giftid = id
+
+WHERE 1=1
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if giftNo?exists && giftNo!="" >
+AND giftNo like "%":giftNo"%"
+</#if>
+<#if type?exists && type!="" >
+AND type=:type
+</#if>
+<#if name?exists && name!="" >
+AND name like "%":name"%"
+</#if>
+<#if marketId?exists && marketId!="" >
+AND marketId=:marketId
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if stockTotal?exists && stockTotal!="" >
+AND stock_total=:stockTotal
+</#if>
+<#if stockAvailable?exists && stockAvailable!="" >
+AND stock_available=:stockAvailable
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if giftstoreId?exists && giftstoreId!="" >
+AND giftstoreId=:giftstoreId
+</#if>
+ORDER BY id DESC
+LIMIT :startRow, :endRow
+]]>
+</sql>
+
+<sql id="getTotal">
+<![CDATA[
+	SELECT count(*) FROM  grd_gift WHERE 1=1
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if giftNo?exists && giftNo!="" >
+AND name like "%":giftNo"%"
+</#if>
+<#if type?exists && type!="" >
+AND type=:type
+</#if>
+<#if name?exists && name!="" >
+AND name like "%":name"%"
+</#if>
+<#if marketId?exists && marketId!="" >
+AND marketId=:marketId
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if stockTotal?exists && stockTotal!="" >
+AND stock_total=:stockTotal
+</#if>
+<#if stockAvailable?exists && stockAvailable!="" >
+AND stock_available=:stockAvailable
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if giftstoreId?exists && giftstoreId!="" >
+AND giftstoreId=:giftstoreId
+</#if>
+<#if giftstoreIds?exists>
+	<#assign n = giftstoreIds?size />
+	<#if n gt 0>
+		AND (
+		<#list giftstoreIds as singleId>
+		<#if singleId_index != n-1>
+			giftstoreId =${singleId}  OR
+		<#else>
+			giftstoreId =${singleId}
+		</#if>
+		</#list>
+		)
+	</#if>
+</#if>
+]]>
+</sql>
+
+<sql id="deleteById">
+<![CDATA[
+	DELETE grd_gift
+ WHERE id=:id
+]]>
+</sql>
+
+<!-- 获取当前市场下，所有的可用礼品，市场id不传，则显示全部 -->
+<sql id="getGiftListByMarketId">
+<![CDATA[
+	SELECT 
+		id,type,name,marketId,status,stock_Total,stock_Available,createTime,
+		updateTime,createUserId,updateUserId,remark,unit,giftNo 
+	FROM 
+		grd_gift 
+	WHERE 
+		1=1 and status='0' and stock_Total>0
+		<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId 
+		</#if>
+	LIMIT :startRow ,:endRow
+]]>
+</sql>
+
+<sql id="getGiftTotalByMarketId">
+<![CDATA[
+	SELECT 
+		count(1)
+	FROM 
+		grd_gift 
+	WHERE 
+		1=1 and status='0'
+		<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+		</#if>
+]]>
+</sql>
+
+<sql id="batchDelete">
+<![CDATA[
+UPDATE grd_gift SET status=1
+ WHERE id=:id
+]]>
+</sql>
+
+<!-- 获取待领取礼品的数量  -->
+<sql id="getNoCount">
+<![CDATA[
+	SELECT 
+		IFNULL(SUM(d.countNo),0)  noCount 
+	from 
+		grd_gift_detail d 
+	join 
+		grd_gift_record r 
+	on 
+		d.recordid =r.id  and r.status=0
+	where 
+		d.giftId=:giftId  and d.type=1 
+]]>
+</sql>
+
+
+<sql id="updateStock">
+<![CDATA[
+	UPDATE 
+		grd_gift
+ 	SET 
+		stock_Total=:stockTotal,
+		stock_Available=:stockTotal
+	 WHERE 
+	 	id=:id
+]]>
+</sql>
+
+
+<sql id="getGrdGiftRecordCount">
+<![CDATA[
+SELECT COUNT(1) FROM 
+	grd_gift_detail d 
+	LEFT JOIN grd_gift_record r 
+	ON d.recordid =r.id
+	WHERE 1=1
+	<#if giftId?exists && giftId!="" >
+		AND r.marketId=
+			(SELECT gg.marketId FROM grd_gift gg WHERE gg.id = :giftId)
+		AND r.giftstoreId=(SELECT gg.giftstoreId FROM grd_gift gg WHERE gg.id = :giftId)
+		AND d.giftId=:giftId
+	</#if>
+	  
+]]>
+</sql>
+
+<sql id="getTotal2">
+<![CDATA[
+	SELECT 
+		count(1)
+	FROM 
+		grd_gift gg
+	join 
+		grd_gd_giftstore gs
+	ON
+		gs.id =gg.giftstoreid  
+	LEFT JOIN 
+		(SELECT sum(d.countNo) noCount,giftId from grd_gift_detail d where  d.type=1 and  EXISTS   (
+			select 1 from grd_gift_record ggr where ggr.`STATUS`=0   and ggr.id=d.recordId
+			) GROUP BY giftId
+		) DetailCount 
+	on 
+		DetailCount.giftid = gg.id
+	WHERE 
+		1=1
+	and 
+		stock_Total > IFNULL(DetailCount.noCount, 0) 
+	<#if sourceType?exists && sourceType!="" >
+	and gs.type=:sourceType
+	</#if>
+	<#if id?exists && id!="" >
+	AND id=:id
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+	AND giftNo=:giftNo
+	</#if>
+	<#if type?exists && type!="" >
+	AND type=:type
+	</#if>
+	<#if name?exists && name!="" >
+	AND name like "%":name"%"
+	</#if>
+	<#if marketId?exists && marketId!="" >
+	AND marketId=:marketId
+	</#if>
+	<#if status?exists && status!="" >
+	AND status=:status
+	</#if>
+	<#if stockTotal?exists && stockTotal!="" >
+	AND stock_total=:stockTotal
+	</#if>
+	<#if stockAvailable?exists && stockAvailable!="" >
+	AND stock_available=:stockAvailable
+	</#if>
+	<#if createTime?exists && createTime!="" >
+	AND createTime=:createTime
+	</#if>
+	
+	<#if updateTime?exists && updateTime!="" >
+	AND updateTime=:updateTime
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+	AND createUserId=:createUserId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+	AND updateUserId=:updateUserId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+	AND giftstoreId=:giftstoreId
+	</#if>
+]]>
+</sql>
+
+<sql id="queryByConditionPage2">
+<![CDATA[
+	SELECT 
+		gg.id,gg.type,gg.unit,gg.name,gg.marketId,gg.status,stock_Total as stockTotal,stock_Available as stockAvailable,gg.createTime,
+		gg.updateTime,gg.createUserId,gg.updateUserId,gg.remark, IFNULL(DetailCount.noCount,0) noCount,gg.giftstoreId,gg.giftNo AS giftNo
+		,gs.name as giftstoreName
+	FROM 
+		grd_gift gg
+	join 
+		grd_gd_giftstore gs
+	ON
+		gs.id =gg.giftstoreid  
+	LEFT JOIN 
+		(SELECT sum(d.countNo) noCount,giftId from grd_gift_detail d where  d.type=1 and  EXISTS   (
+			select 1 from grd_gift_record ggr where ggr.`STATUS`=0   and ggr.id=d.recordId
+			) GROUP BY giftId
+		) DetailCount 
+	on 
+		DetailCount.giftid = gg.id
+	WHERE 
+		1=1
+	and 
+		stock_Total > IFNULL(DetailCount.noCount, 0) 
+	<#if sourceType?exists && sourceType!="" >
+	and gs.type=:sourceType
+	</#if>
+	<#if id?exists && id!="" >
+	AND id=:id
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+	AND giftNo=:giftNo
+	</#if>
+	<#if type?exists && type!="" >
+	AND type=:type
+	</#if>
+	<#if name?exists && name!="" >
+	AND name like "%":name"%"
+	</#if>
+	<#if marketId?exists && marketId!="" >
+	AND marketId=:marketId
+	</#if>
+	<#if status?exists && status!="" >
+	AND status=:status
+	</#if>
+	<#if stockTotal?exists && stockTotal!="" >
+	AND stock_total=:stockTotal
+	</#if>
+	<#if stockAvailable?exists && stockAvailable!="" >
+	AND stock_available=:stockAvailable
+	</#if>
+	<#if createTime?exists && createTime!="" >
+	AND createTime=:createTime
+	</#if>
+	
+	<#if updateTime?exists && updateTime!="" >
+	AND updateTime=:updateTime
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+	AND createUserId=:createUserId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+	AND updateUserId=:updateUserId
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+	AND giftstoreId=:giftstoreId
+	</#if>
+	ORDER BY id DESC
+	LIMIT :startRow ,:endRow
+
+]]>
+</sql>
+
+
+</sqlMap>

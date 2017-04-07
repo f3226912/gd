@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GdActActivityDistributionModeEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO gd_act_activity_distribution_mode(
+	id,activity_id,type
+	) VALUES (
+	:id,:activity_id,:type
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE gd_act_activity_distribution_mode SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if activity_id?exists && activity_id!="" >
+		activity_id=:activity_id,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,activity_id,type
+	FROM gd_act_activity_distribution_mode WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+		gm.id, gm.activity_id as activityId, gm.type
+	FROM 
+		gd_act_activity_distribution_mode gm
+	LEFT JOIN gd_act_activity gaa ON gaa.id = gm.activity_id
+	WHERE 
+		1=1
+	<#if id?exists && id != "" >
+		AND gm.id = :id
+	</#if>
+	<#if activityId?exists && activityId != "" >
+		AND gm.activity_id = :activityId
+	</#if>
+	<#if type?exists && type != "" >
+		AND gm.type = :type
+	</#if>
+	<#if actType?exists && actType != "" >
+		AND gaa.type = :actType
+	</#if>
+	]]>
+</sql>
+
+<sql id="getModeList">
+	<![CDATA[
+	SELECT 
+		id, activity_id as activityId, type as transportType
+	FROM 
+		gd_act_activity_distribution_mode 
+	WHERE 
+		1=1
+	<#if id?exists && id!="" >
+		AND id = :id
+	</#if>
+	<#if activityId?exists && activityId!="" >
+		AND activity_id = :activityId
+	</#if>
+	<#if transportType?exists && transportType!="" >
+		AND type = :transportType
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,activity_id,type
+	FROM gd_act_activity_distribution_mode WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM gd_act_activity_distribution_mode WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activity_id?exists && activity_id!="" >
+		AND activity_id=:activity_id
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM gd_act_activity_distribution_mode WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

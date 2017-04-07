@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReActivityGift">
+
+	<sql id="getActivityGiftList">
+	<![CDATA[
+		SELECT
+			t.id,t.activity_id, t.gift_id, t.exchange_score, t.cost,
+			(select name from act_gift_baseinfo where id = t.gift_id) as giftName
+		FROM
+			act_re_activitity_gift t
+		WHERE
+			1 = 1
+		<#if activityId?exists && activityId!="" >
+		    and t.activity_id = :activityId
+		</#if>
+		<#if giftId?exists && giftId!="" >
+		    and t.gift_id = :giftId
+		</#if>
+		<#if exchangeScore?exists && exchangeScore!="" >
+		    and t.exchange_score = :exchangeScore
+		</#if>
+		<#if cost?exists && cost!="" >
+		    and t.cost = :cost
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="sumActivityGiftCost">
+	<![CDATA[
+		SELECT
+			sum(cost)
+		FROM
+			act_re_activitity_gift
+		WHERE
+			gift_id = :giftId
+	]]>
+	</sql>
+
+	<sql id="update">
+	<![CDATA[
+		UPDATE
+			act_re_activitity_gift
+		SET
+			cost = :cost,
+			exchange_score = :exchangeScore
+		WHERE
+			id = :id
+	]]>
+	</sql>
+
+	<sql id="getCostById">
+	<![CDATA[
+		SELECT
+			cost
+		FROM
+			act_re_activitity_gift
+		WHERE
+			id = :id
+	]]>
+	</sql>
+
+	<sql id="updateActivityGift">
+	<![CDATA[
+	UPDATE
+		act_re_activitity_gift t
+	SET
+		t.cost = :amount
+	WHERE
+		t.activity_id = :activityId
+		and t.gift_id = :giftId
+	]]>
+	</sql>
+
+	<sql id="getActivityScoreRecordCount">
+	<![CDATA[
+		SELECT
+			COUNT(1) as count
+		FROM
+			act_activity_score_record t
+		WHERE
+			t.activity_id = :activityId
+	]]>
+	</sql>
+	
+	<sql id="queryActivityGiftPage">
+	<![CDATA[
+		SELECT
+			t.id,t.activity_id, t.gift_id, t.exchange_score, t.cost, t1.NAME as giftName
+		FROM
+			act_re_activitity_gift t
+		LEFT JOIN
+			act_gift_baseinfo t1 ON t1.id = t.gift_id
+		WHERE
+			t1.isDeleted != 1
+		<#if activityId?exists && activityId!="" >
+		    and t.activity_id = :activityId
+		</#if>	
+		<#if giftName?exists && giftName!="" >
+		    and t1.NAME = :giftName
+		</#if>
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getActivityGiftTotal">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_re_activitity_gift t
+		LEFT JOIN
+			act_gift_baseinfo t1 ON t1.id = t.gift_id
+		WHERE
+			t1.isDeleted != 1
+		<#if activityId?exists && activityId!="" >
+		    and t.activity_id = :activityId
+		</#if>	
+		<#if giftName?exists && giftName!="" >
+		    and t1.NAME = :giftName
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getActivityGift">
+	<![CDATA[
+		SELECT
+			t.id,t.activity_id, t.gift_id, t.exchange_score, t.cost
+		FROM
+			act_re_activitity_gift t
+		WHERE
+			t.activity_id = :activityId AND t.gift_id = :giftId
+	]]>
+	</sql>
+	
+	<sql id="getActivityUseGiftCount">
+	<![CDATA[
+	SELECT
+		count(*)
+	FROM
+		act_re_activitity_gift raf
+	LEFT JOIN
+		act_activity_baseinfo ab ON ab.id = raf.activity_id
+	WHERE
+		raf.gift_id = :giftId AND ab.effective_end_time > SYSDATE()
+	]]>
+	</sql>
+</sqlMap>

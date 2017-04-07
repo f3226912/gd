@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdGiftRecord">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+grd_gift_record(
+
+id,type,grantUserId,carPicture,createTime,updateTime,createUserId,updateUserId,
+giftId,mobile,realName,level,marketid,status,count,grantTime,carNo
+) VALUES (
+
+:id,:type,:grantUserId,:carPicture,:createTime,:updateTime,:createUserId,:updateUserId,
+:giftId,:mobile,:realName,:level,:marketid,:status,:count,:grantTime,:carNo
+)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE grd_gift_record
+ SET 
+
+<#if type?exists && type!="" >
+type=:type,
+</#if>
+<#if grantUserId?exists && grantUserId!="" >
+grantUserId=:grantUserId,
+</#if>
+<#if carPicture?exists && carPicture!="" >
+carPicture=:carPicture,
+</#if>
+<#if createTime?exists && createTime!="" >
+createTime=:createTime,
+</#if>
+<#if updateTime?exists && updateTime!="" >
+updateTime=:updateTime,
+</#if>
+<#if createUserId?exists && createUserId!="" >
+createUserId=:createUserId,
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+updateUserId=:updateUserId,
+</#if>
+
+<#if giftId?exists && giftId!="" >
+giftId=:giftId,
+</#if>
+<#if mobile?exists && mobile!="" >
+mobile=:mobile,
+</#if>
+<#if realName?exists && realName!="" >
+realName=:realName,
+</#if>
+<#if level?exists && level!="" >
+level=:level,
+</#if>
+<#if marketid?exists && marketid!="" >
+marketid=:marketid,
+</#if>
+<#if status?exists && status!="" >
+status=:status,
+</#if>
+<#if count?exists && count!="" >
+count=:count,
+</#if>
+<#if grantTime?exists && grantTime!="" >
+grantTime=:grantTime,
+</#if>
+<#if carNo?exists && carNo!="" >
+carNo=:carNo
+</#if>
+ WHERE id=:id
+
+]]>
+</sql>
+<sql id="getByCondition">
+<![CDATA[
+	SELECT 
+		id,type,grantUserId,carPicture,createTime,updateTime,createUserId,updateUserId,
+		giftId,mobile,realName,level,marketid,status,count,grantTime,carNo,giftstoreId,
+		(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= ggr.giftstoreId)AS giftstoreName
+	FROM 
+		grd_gift_record ggr
+	WHERE 
+		1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if grantUserId?exists && grantUserId!="" >
+		AND grantUserId=:grantUserId
+	</#if>
+	<#if carPicture?exists && carPicture!="" >
+		AND carPicture=:carPicture
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	
+	<#if giftId?exists && giftId!="" >
+		AND giftId=:giftId
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if level?exists && level!="" >
+		AND level=:level
+	</#if>
+	<#if marketid?exists && marketid!="" >
+		AND marketid=:marketid
+	</#if>
+	
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND giftstoreId = :giftstoreId
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if count?exists && count!="" >
+		AND count=:count
+	</#if>
+	<#if grantTime?exists && grantTime!="" >
+		AND grantTime=:grantTime
+	</#if>
+	<#if carNo?exists && carNo!="" >
+		AND carNo=:carNo
+	</#if>
+]]>
+</sql>
+<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+
+id,type,grantUserId,carPicture,createTime,updateTime,createUserId,updateUserId,`type`,
+(CASE `type` WHEN '1' THEN '农批' WHEN '2' THEN '农速通' ELSE '' END )typeName,
+giftId,mobile,realName,level,marketid,status,count,grantTime,carNo,ggr.giftstoreId,
+		(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= ggr.giftstoreId)AS giftstoreName
+	FROM 
+		grd_gift_record ggr
+WHERE 1=1
+
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if type?exists && type!="" >
+AND type=:type
+</#if>
+<#if grantUserId?exists && grantUserId!="" >
+AND grantUserId=:grantUserId
+</#if>
+<#if carPicture?exists && carPicture!="" >
+AND carPicture=:carPicture
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if date?exists && date!="" >
+AND date_format(grantTime, '%Y-%m')=:date
+</#if>
+<#if giftId?exists && giftId!="" >
+AND giftId=:giftId
+</#if>
+<#if mobile?exists && mobile!="" >
+AND mobile=:mobile
+</#if>
+<#if realName?exists && realName!="" >
+AND realName=:realName
+</#if>
+<#if level?exists && level!="" >
+AND level=:level
+</#if>
+<#if marketid?exists && marketid!="" >
+AND marketid=:marketid
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if count?exists && count!="" >
+AND count=:count
+</#if>
+<#if grantTime?exists && grantTime!="" >
+AND grantTime=:grantTime
+</#if>
+<#if carNo?exists && carNo!="" >
+AND carNo=:carNo
+</#if>
+<#if memberId?exists && memberId!="" >
+AND memberId=:memberId
+</#if>
+order by createTime desc
+LIMIT :startRow, :endRow
+
+]]>
+</sql>
+<sql id="getTotal">
+<![CDATA[
+	SELECT count(*)
+	FROM 
+grd_gift_record t WHERE 1=1
+
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if type?exists && type!="" >
+AND type=:type
+</#if>
+<#if grantUserId?exists && grantUserId!="" >
+AND grantUserId=:grantUserId
+</#if>
+<#if carPicture?exists && carPicture!="" >
+AND carPicture=:carPicture
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if giftId?exists && giftId!="" >
+AND giftId=:giftId
+</#if>
+<#if mobile?exists && mobile!="" >
+AND mobile=:mobile
+</#if>
+<#if realName?exists && realName!="" >
+AND realName=:realName
+</#if>
+<#if level?exists && level!="" >
+AND level=:level
+</#if>
+<#if marketid?exists && marketid!="" >
+AND marketid=:marketid
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if count?exists && count!="" >
+AND count=:count
+</#if>
+<#if grantTime?exists && grantTime!="" >
+AND grantTime=:grantTime
+</#if>
+<#if carNo?exists && carNo!="" >
+AND carNo=:carNo
+</#if>
+<#if giftstoreId?exists && giftstoreId!="" >
+AND t.giftstoreId=:giftstoreId
+</#if>
+<#if memberId?exists && memberId!="" >
+AND memberId=:memberId
+</#if>
+]]>
+</sql>
+<sql id="deleteById">
+<![CDATA[
+	DELETE grd_gift_record
+ WHERE id=:id
+]]>
+</sql>
+	
+	<!-- 根据查询条件 获取数据。 -->
+	<sql id="queryBySearch">
+		<![CDATA[
+			SELECT
+				gr.id,
+				gr.mobile,
+				gr.realName,
+				gr.level,
+				gr.createTime as giftBillDate,
+				gr.status,
+				gr.grantTime as giftIssusedDate,
+				gr.count as countNo,
+				gm.name as grantUser,
+				gm1.name as createUser,
+				gr.marketId,
+				gr.giftstoreId,
+				gr.`type`,
+                (CASE gr.`type` WHEN '1' THEN '农批' WHEN '2' THEN '农速通' ELSE '' END ) typeName,
+				(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= gr.giftstoreId)AS giftstoreName
+			FROM
+				grd_gift_record gr
+			LEFT JOIN grd_member gm ON gr.grantUserId = gm.id
+			LEFT JOIN grd_member gm1 ON gr.createUserId = gm1.id
+			
+			WHERE 1=1
+			
+			<#if mobile?exists && mobile!="" >
+				AND	gr.mobile LIKE "%":mobile"%"
+			</#if>
+			<#if status?exists && status!="" >
+				AND gr.STATUS=:status
+			</#if>
+			<#if userType?exists && userType!="" >
+				AND gr.level=:userType
+			</#if>
+			<#if recordId?exists && recordId!="" >
+				AND gr.id=:recordId
+			</#if>
+			<#if grantUser?exists && grantUser!="" >
+				AND gm.name LIKE "%":grantUser"%" 
+			</#if>
+			<#if createUser?exists && createUser!="" >
+				AND gm1.name LIKE "%":createUser"%" 
+			</#if>
+			<#if belongToMarket?exists && belongToMarket!="" >
+				AND gr.marketId = :belongToMarket
+			</#if>
+			<#if type?exists && type!="" >
+                AND gr.type=:type
+            </#if>
+			<#if giftstoreId?exists && giftstoreId!="" >
+				AND gr.giftstoreId = :giftstoreId
+			</#if>
+			
+			<#if startDateForGiftBill?exists && startDateForGiftBill!="" >
+				AND date_format(gr.createTime, '%Y-%m-%d') >= :startDateForGiftBill
+			</#if>
+			<#if endDateForGiftBill?exists && endDateForGiftBill!="" >
+				AND date_format(gr.createTime, '%Y-%m-%d') <= :endDateForGiftBill
+			</#if>
+			<#if startDateForGiftIssused?exists && startDateForGiftIssused!="" >
+				AND date_format(gr.grantTime, '%Y-%m-%d') >= :startDateForGiftIssused
+			</#if>
+			<#if endDateForGiftIssused?exists && endDateForGiftIssused!="" >
+				AND date_format(gr.grantTime, '%Y-%m-%d') <= :endDateForGiftIssused
+			</#if>
+			ORDER BY
+				gr.createTime desc
+			
+			<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+		]]>
+	</sql>
+	
+	
+	<!-- 根据查询条件统计 -->
+	<sql id="countBySearch">
+		<![CDATA[
+			SELECT
+				count(1)
+			FROM
+				grd_gift_record gr
+			LEFT JOIN grd_member gm ON gr.grantUserId = gm.id
+			LEFT JOIN grd_member gm1 ON gr.createUserId = gm1.id
+			
+			WHERE 1=1
+			
+			<#if mobile?exists && mobile!="" >
+				AND	gr.mobile LIKE "%":mobile"%"
+			</#if>
+			<#if status?exists && status!="" >
+				AND gr.STATUS=:status
+			</#if>
+			<#if userType?exists && userType!="" >
+				AND gr.level=:userType
+			</#if>
+			<#if startDateForGiftIssused?exists && startDateForGiftIssused!="" >
+				AND date_format(gr.grantTime, '%Y-%m-%d') >= :startDateForGiftIssused
+			</#if>
+			<#if endDateForGiftIssused?exists && endDateForGiftIssused!="" >
+				AND date_format(gr.grantTime, '%Y-%m-%d') <= :endDateForGiftIssused
+			</#if>
+			<#if recordId?exists && recordId!="" >
+				AND gr.id=:recordId
+			</#if>
+			<#if grantUser?exists && grantUser!="" >
+				AND gm.name LIKE "%":grantUser"%"
+			</#if>
+			<#if createUser?exists && createUser!="" >
+				AND gm1.name LIKE "%":createUser"%" 
+			</#if>
+			<#if belongToMarket?exists && belongToMarket!="" >
+				AND gr.marketId = :belongToMarket
+			</#if>
+			<#if type?exists && type!="" >
+                AND gr.type=:type
+            </#if>
+			<#if giftstoreId?exists && giftstoreId!="" >
+				AND gr.giftstoreId = :giftstoreId
+			</#if>
+			<#if startDateForGiftBill?exists && startDateForGiftBill!="" >
+				AND date_format(gr.createTime, '%Y-%m-%d') >= :startDateForGiftBill
+			</#if>
+			<#if endDateForGiftBill?exists && endDateForGiftBill!="" >
+				AND date_format(gr.createTime, '%Y-%m-%d') <= :endDateForGiftBill
+			</#if>
+		]]>
+	</sql>
+
+
+
+
+<sql id="getCountByMemberIdAndStatus">
+<![CDATA[
+	SELECT 
+		count(1)
+	FROM 
+		grd_gift_record r
+	WHERE 
+		1=1
+		AND memberId=:memberId
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if type?exists && type!="" >
+		AND r.type=:type
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND r.giftstoreId=:giftstoreId
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND r.marketId=:marketId
+	</#if>
+]]>
+</sql>
+
+<sql id="getRecordByMemberIdAndStatus">
+<![CDATA[
+	SELECT 
+		r.id,r.type,r.grantUserId,r.carPicture,r.createTime,r.updateTime,r.createUserId,r.updateUserId,
+		r.giftId,r.mobile,r.memberId,r.type,r.realName,r.level,r.marketid,r.status,r.count,r.grantTime,r.carNo,d1.orderPriceAmount,
+		m.mobile as createUserMobile,m.name as createUser ,r.giftstoreId,
+		(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= r.giftstoreId ) AS giftstoreName 
+	FROM 
+		grd_gift_record r
+	LEFT JOIN 
+   	 (select SUM(d.orderPrice) as orderPriceAmount,recordId from grd_gift_detail d where d.type=2 GROUP BY recordId ) d1 
+	ON 
+		r.id=d1.recordId
+	LEFT JOIN 
+		grd_member m
+	ON 
+		r.createUserId=m.id
+	WHERE 
+		1=1
+		AND r.memberId=:memberId
+	<#if status?exists && status!="" >
+		AND r.status=:status
+	</#if>
+	<#if type?exists && type!="" >
+		AND r.type=:type
+	</#if>
+	<#if giftstoreId?exists && giftstoreId!="" >
+		AND r.giftstoreId=:giftstoreId
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND r.marketId=:marketId
+	</#if>
+	LIMIT :startRow ,:endRow
+]]>
+</sql>
+
+<!-- 仅仅用于集中发放时，将status=0改为1 -->
+<sql id="centralized">
+<![CDATA[
+	UPDATE 
+		grd_gift_record
+	SET 
+	    status=1
+ 	WHERE 
+ 		id=:recordId and status=0
+
+]]>
+</sql>
+
+<sql id="updateGrantUser">
+<![CDATA[
+	UPDATE 
+		grd_gift_record
+	SET 
+		grantUserId=:grantUserId,grantTime=:grantTime
+	WHERE 
+	 	id=:id
+
+]]>
+</sql>
+
+	<!-- 根据礼品开单人或创建人统计 -->
+	<sql id="countByGrantOrCreateUserIds">
+		<![CDATA[
+			SELECT 
+				count(*)
+			FROM
+				grd_gift_record gr
+			WHERE
+				<#assign num = userIds?size />
+				gr.grantUserId IN (
+					<#list userIds as theUserId>
+						<#if theUserId_index != num-1>
+								${theUserId} ,
+							<#else>
+								${theUserId}
+						</#if>
+					</#list>
+				)
+			OR
+				gr.createUserId IN (
+					<#list userIds as theUserId>
+						<#if theUserId_index != num-1>
+								${theUserId} ,
+							<#else>
+								${theUserId}
+						</#if>
+					</#list>
+				)
+		]]>
+	</sql>
+	
+	<!-- 根据地推人员id统计邀请注册的用户-->
+	<sql id="countInviteRegUserInfoByUserId">
+		<![CDATA[
+		SELECT 
+			count(1) as count
+		FROM (
+				SELECT
+				 gr.id, gr.mobile, gr.realName,  gr.level, gr.createUserId, gr.createTime
+			FROM
+				grd_gift_record gr
+			INNER JOIN 
+				grd_gift_detail gd 
+			ON 
+				gd.recordid = gr.id
+			WHERE
+				 gd.type = :npRegType AND gd.createUserId = :userId
+				 <#if userStartDate?exists && userStartDate!="" >
+		         AND gd.orderTime >=:userStartDate
+	             </#if>
+	             <#if userEndDate?exists && userEndDate!="" >
+		         AND gd.orderTime <=:userEndDate	
+	             </#if>
+	          	 <#if userMobile?exists && userMobile!="" >
+		         AND gr.mobile LIKE "%":userMobile"%"
+	             </#if>
+	             
+			UNION
+
+				SELECT
+					gr.id, gr.mobile, gr.realName, gr.level, gr.createUserId, gr.createTime
+				FROM
+					grd_gift_record gr
+				INNER JOIN 
+					grd_gift_detail gd 
+				ON 
+					gd.recordid = gr.id
+				WHERE 
+					gd.type = :nstRegType  AND gd.createUserId = :userId 
+				 <#if userStartDate?exists && userStartDate!="" >
+		         AND gd.orderTime >=:userStartDate
+	             </#if>
+	             <#if userEndDate?exists && userEndDate!="" >
+		         AND gd.orderTime <=:userEndDate	
+	             </#if>
+	          	 <#if userMobile?exists && userMobile!="" >
+		         AND gr.mobile LIKE "%":userMobile"%"
+	             </#if>
+				) t
+	             
+			ORDER BY t.createTime DESC
+		]]>
+	</sql>
+	
+	<!-- 根据地推人员id分页查询邀请注册的用户信息 -->
+	<sql id="queryInviteRegUserInfoByUserId">
+		<![CDATA[
+			
+		SELECT 
+			t.id, t.mobile, t.realName, t.inviteUserRegDate, t.`level`, t.createUserId, IFNULL(t.orderPriceAmount,'0') orderPriceAmount, t.orderAmount, t.countNo
+		FROM (
+				SELECT
+				gd.orderTime as inviteUserRegDate, gr.id, gr.mobile, gr.realName,  gr.level, gr.createUserId, gr.createTime,
+				(
+					SELECT
+						sum(ingd.orderPrice)
+					FROM
+						grd_gift_record ingr 
+					INNER JOIN
+						grd_gift_detail ingd
+					ON 
+						ingd.recordid = ingr.id
+					WHERE
+						ingr.memberId = gr.memberId
+					AND 
+						ingd.type = '2'
+				) AS orderPriceAmount, 
+				(
+					SELECT
+						count(ingd.id)
+					FROM
+						grd_gift_record ingr 
+					INNER JOIN
+						grd_gift_detail ingd
+					ON 
+						ingd.recordid = ingr.id
+					WHERE
+						ingr.memberId = gr.memberId
+					AND 
+						ingd.type = '2'
+				) AS orderAmount, 
+				(
+					SELECT
+						sum(ingr.count)
+					FROM
+						grd_gift_record ingr
+					WHERE
+						ingr.memberId = gr.memberId
+					AND 
+						ingr.status = '1'
+				) AS countNo
+
+			FROM
+				grd_gift_record gr
+			INNER JOIN 
+				grd_gift_detail gd 
+			ON 
+				gd.recordid = gr.id
+			WHERE
+				 gd.type = :npRegType AND gd.createUserId = :userId
+				 
+				 <#if userStartDate?exists && userStartDate!="" >
+		         AND gd.orderTime >=:userStartDate
+	             </#if>
+	             <#if userEndDate?exists && userEndDate!="" >
+		         AND gd.orderTime <=:userEndDate	
+	             </#if>
+	          	 <#if userMobile?exists && userMobile!="" >
+		         AND gr.mobile LIKE "%":userMobile"%"
+	             </#if>
+	             
+			UNION
+
+			SELECT
+				gd.orderTime as inviteUserRegDate, gr.id, gr.mobile,	gr.realName, gr.level, gr.createUserId, gr.createTime, 
+				0 as orderPriceAmount, 0 as orderAmount, 
+				(
+					SELECT
+						sum(ingr.count)
+					FROM
+						grd_gift_record ingr
+					WHERE
+						ingr.memberId = gr.memberId
+					AND 
+						ingr.status = '1'
+				) AS countNo	
+
+				FROM
+					grd_gift_record gr
+				INNER JOIN 
+					grd_gift_detail gd 
+				ON 
+					gd.recordid = gr.id
+				WHERE 
+					gd.type = :nstRegType AND gd.createUserId = :userId
+					
+				 <#if userStartDate?exists && userStartDate!="" >
+		         AND gd.orderTime >=:userStartDate
+	             </#if>
+	             <#if userEndDate?exists && userEndDate!="" >
+		         AND gd.orderTime <=:userEndDate	
+	             </#if>
+	          	 <#if userMobile?exists && userMobile!="" >
+		         AND gr.mobile LIKE "%":userMobile"%"
+	             </#if>
+				) t
+	             
+			ORDER BY t.createTime DESC
+			LIMIT :startRow, :endRow
+		]]>
+	</sql>
+	
+	<sql id="countBySearchExport">
+		<![CDATA[
+			SELECT count(1)
+			from grd_gift_detail ggd 
+			LEFT JOIN grd_gift_record ggr on (ggd.recordId=ggr.id)
+			LEFT JOIN grd_member gm ON ggr.grantUserId = gm.id
+			LEFT JOIN grd_member gmr ON ggr.createUserId = gmr.id
+			where 1=1 
+			<#if mobile?exists && mobile!="" >
+				AND	ggr.mobile LIKE "%":mobile"%"
+			</#if>
+			<#if status?exists && status!="" >
+				AND ggr.STATUS=:status
+			</#if>
+			<#if recordId?exists && recordId!="" >
+				AND ggr.id=:recordId
+			</#if>
+			<#if type?exists && type!="" >
+				AND ggr.type=:type
+			</#if>
+			<#if userType?exists && userType!="" >
+				AND ggr.level=:userType
+			</#if>
+			<#if grantUser?exists && grantUser!="" >
+				AND gm.name LIKE "%":grantUser"%"
+			</#if>
+			<#if createUser?exists && createUser!="" >
+				AND gmr.name LIKE "%":createUser"%" 
+			</#if>
+			<#if startDateForGiftIssused?exists && startDateForGiftIssused!="" >
+				AND date_format(ggr.grantTime, '%Y-%m-%d') >= date_format(:startDateForGiftIssused, '%Y-%m-%d')
+			</#if>
+			<#if endDateForGiftIssused?exists && endDateForGiftIssused!="" >
+				AND date_format(ggr.grantTime, '%Y-%m-%d') <= date_format(:endDateForGiftIssused, '%Y-%m-%d')
+			</#if>
+			<#if belongToMarket?exists && belongToMarket!="" >
+				AND ggr.marketId = :belongToMarket
+			</#if>
+			
+			<#if giftstoreId?exists && giftstoreId!="" >
+				AND ggr.giftstoreId = :giftstoreId
+			</#if>
+			<#if startDateForGiftBill?exists && startDateForGiftBill!="" >
+				AND date_format(ggr.createTime, '%Y-%m-%d') >= date_format(:startDateForGiftBill, '%Y-%m-%d')
+			</#if>
+			<#if endDateForGiftBill?exists && endDateForGiftBill!="" >
+				AND date_format(ggr.createTime, '%Y-%m-%d') <= date_format(:endDateForGiftBill, '%Y-%m-%d')
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="queryBySearchGroup">
+		<![CDATA[
+			SELECT ggd.recordId, count(1)
+			from grd_gift_detail ggd 
+			LEFT JOIN grd_gift_record ggr on (ggd.recordId=ggr.id)
+			LEFT JOIN grd_member gm ON ggr.grantUserId = gm.id
+			LEFT JOIN grd_member gmr ON ggr.createUserId = gmr.id
+			where 1=1 
+			<#if mobile?exists && mobile!="" >
+				AND	ggr.mobile LIKE "%":mobile"%"
+			</#if>
+			<#if status?exists && status!="" >
+				AND ggr.STATUS=:status
+			</#if>
+			<#if type?exists && type!="" >
+				AND ggr.type=:type
+			</#if>
+			<#if recordId?exists && recordId!="" >
+				AND ggr.id=:recordId
+			</#if>
+			<#if grantUser?exists && grantUser!="" >
+				AND gm.name LIKE "%":grantUser"%"
+			</#if>
+			<#if recordId?exists && recordId!="" >
+				AND ggd.recordId = :recordId
+			</#if>
+			<#if startDateForGiftIssused?exists && startDateForGiftIssused!="" >
+				AND ggr.grantTime >= date_format(:startDateForGiftIssused, '%Y-%m-%d')
+			</#if>
+			<#if endDateForGiftIssused?exists && endDateForGiftIssused!="" >
+				AND date_format(ggr.grantTime, '%Y-%m-%d') <= date_format(:endDateForGiftIssused, '%Y-%m-%d')
+			</#if>
+			<#if belongToMarket?exists && belongToMarket!="" >
+				AND ggr.marketId = :belongToMarket
+			</#if>
+			<#if startDateForGiftBill?exists && startDateForGiftBill!="" >
+				AND date_format(ggr.createTime, '%Y-%m-%d') >= date_format(:startDateForGiftBill, '%Y-%m-%d')
+			</#if>
+			<#if endDateForGiftBill?exists && endDateForGiftBill!="" >
+				AND date_format(ggr.createTime, '%Y-%m-%d') <= date_format(:endDateForGiftBill, '%Y-%m-%d')
+			</#if>
+			GROUP BY ggd.recordId
+		]]>
+	</sql>
+	<sql id="queryBySearchExport">
+		<![CDATA[
+			SELECT ggd.recordId, gm.name grantName,ggd.type, ggr.grantTime, gmr.name createUserName ,ggd.orderNo,ggd.orderTime,ggd.buyerName realName,ggd.buyerMobile mobile,
+				ggr.carNo, ggd.shopsName,ggd.orderPrice,ggd.giftName,if(ggd.countNo is null,0, ggd.countNo) countNo,ggr.status,ggr.giftstoreId,
+				(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= ggr.giftstoreId)AS giftstoreName
+			from grd_gift_detail ggd 
+			LEFT JOIN grd_gift_record ggr on (ggd.recordId=ggr.id)
+			LEFT JOIN grd_member gm ON ggr.grantUserId = gm.id
+			LEFT JOIN grd_member gmr ON ggr.createUserId = gmr.id
+			where 1=1 
+			<#if mobile?exists && mobile!="" >
+				AND	ggr.mobile LIKE "%":mobile"%"
+			</#if>
+			<#if status?exists && status!="" >
+				AND ggr.STATUS=:status
+			</#if>
+			<#if recordId?exists && recordId!="" >
+				AND ggr.id=:recordId
+			</#if>
+			<#if type?exists && type!="" >
+				AND ggr.type=:type
+			</#if>
+			<#if userType?exists && userType!="" >
+				AND ggr.level=:userType
+			</#if>
+			<#if grantUser?exists && grantUser!="" >
+				AND gm.name LIKE "%":grantUser"%"
+			</#if>
+			<#if createUser?exists && createUser!="" >
+				AND gmr.name LIKE "%":createUser"%" 
+			</#if>
+			<#if recordId?exists && recordId!="" >
+				AND ggd.recordId = :recordId
+			</#if>
+			<#if startDateForGiftIssused?exists && startDateForGiftIssused!="" >
+				AND date_format(ggr.grantTime, '%Y-%m-%d') >= date_format(:startDateForGiftIssused, '%Y-%m-%d')
+			</#if>
+			<#if endDateForGiftIssused?exists && endDateForGiftIssused!="" >
+				AND date_format(ggr.grantTime, '%Y-%m-%d') <= date_format(:endDateForGiftIssused, '%Y-%m-%d')
+			</#if>
+			<#if belongToMarket?exists && belongToMarket!="" >
+				AND ggr.marketId = :belongToMarket
+			</#if>
+			
+			<#if giftstoreId?exists && giftstoreId!="" >
+				AND ggr.giftstoreId = :giftstoreId
+			</#if>
+			<#if startDateForGiftBill?exists && startDateForGiftBill!="" >
+				AND date_format(ggr.createTime, '%Y-%m-%d') >= date_format(:startDateForGiftBill, '%Y-%m-%d')
+			</#if>
+			<#if endDateForGiftBill?exists && endDateForGiftBill!="" >
+				AND date_format(ggr.createTime, '%Y-%m-%d') <= date_format(:endDateForGiftBill, '%Y-%m-%d')
+			</#if>
+			ORDER BY ggd.recordId
+		]]>
+	</sql>
+	<sql id="getChildStoreInfo">
+	<![CDATA[
+		SELECT id AS giftstoreId,
+			  `name` AS giftstoreName 
+		FROM grd_gd_giftstore t
+		WHERE t.`marketId`=:marketid
+		]]>
+	</sql>
+</sqlMap>

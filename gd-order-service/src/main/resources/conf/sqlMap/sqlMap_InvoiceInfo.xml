@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="InvoiceInfo">
+	<sql id="getBySearch">
+	<![CDATA[
+		SELECT 
+			t.id,t.orderNo,t.type,t.title,t.content,t.createUserId,t.createTime,t.updateUserId,t.updateTime 
+		FROM 
+			invoice_info t 
+		WHERE 1=1
+		<#if id?exists && id!="" >
+			AND t.id = :id
+		</#if>
+		<#if orderNo?exists && orderNo!="" >
+			AND t.orderNo = :orderNo
+		</#if>
+		<#if content?exists && content!="" >
+			AND t.content = :content
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="insert">
+	<![CDATA[
+	    INSERT INTO  invoice_info
+	          (
+			 	orderNo,
+			  	content,
+			    createTime,
+			    createUserId,
+			    updateTime,
+			    updateUserId
+              )
+	        values
+	         (
+	       		:orderNo,
+			 	:content,
+			    SYSDATE(),
+			    :createUserId,
+			   	SYSDATE(),
+			    :updateUserId
+              )
+	        
+		]]>
+	</sql>
+
+</sqlMap>

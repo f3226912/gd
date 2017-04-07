@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderBill">
+	<sql id="addDTO">
+ 	<![CDATA[
+	    INSERT INTO Order_Bill
+	    (businessNo, businessName ,tradeType,tradeDay,cardNo,
+	    clientNo,tradeMoney,sysRefeNo,fee,createUserId,createTime,marketId,cardType,payChannelCode)
+		VALUES
+	    (:businessNo,:businessName,:tradeType,:tradeDayStr,:cardNo,
+	    :clientNo,:tradeMoney,:sysRefeNo,:fee,:createUserId,SYSDATE(),:marketId,:cardType,:payChannelCode)
+	]]>
+	</sql>
+	
+	<sql id="getOrderBillBySysRefeNo">
+ 	<![CDATA[
+	    SELECT businessNo, businessName ,tradeType,tradeDay,cardNo,
+	    clientNo,tradeMoney,sysRefeNo,fee,createUserId,createTime,updateUserId,updateTime,cardType
+		FROM Order_Bill t WHERE t.sysRefeNo = :sysRefeNo
+	]]>
+	</sql>
+	
+	<sql id="getOrderBillByCondition">
+	<![CDATA[
+		SELECT t.businessNo, t.businessName ,t.tradeType,t.tradeDay,t.cardNo,
+	    t.clientNo,t.tradeMoney,t.sysRefeNo,t.fee,t.useStatus,t.createUserId,t.createTime,t.updateUserId,t.updateTime,t.cardType,
+	    t.marketId,m.marketName
+		FROM Order_Bill t,market m
+		WHERE 1 = 1 
+		AND t.marketId=m.id 
+		<#if marketId?exists && marketId!="" >
+			AND t.marketId =:marketId
+		</#if>
+		<#if businessNo?exists && businessNo!="" >
+			AND t.businessNo =:businessNo
+		</#if>
+		<#if clientNo?exists && clientNo!="" >
+			AND t.clientNo =:clientNo
+		</#if>
+		<#if businessName?exists && businessName!="" >
+			AND t.businessName = :businessName
+		</#if>
+		<#if sysRefeNo?exists && sysRefeNo!="" >
+			AND t.sysRefeNo = :sysRefeNo
+		</#if>
+		<#if billBeginTime?exists && billBeginTime!="" >
+			AND t.tradeDay >= :billBeginTime
+		</#if>
+		<#if billEndTime?exists && billEndTime!="" >
+			AND t.tradeDay <= :billEndTime
+		</#if>
+		<#if tradeMoney?exists && tradeMoney!="" >
+			AND t.tradeMoney = :tradeMoney
+		</#if>
+		<#if payChannelCode?exists && payChannelCode!="" >
+			AND t.payChannelCode = :payChannelCode
+		</#if>
+		order by t.tradeDay desc
+		<#if startRow?exists && startRow!="" && endRow?exists && endRow!="">
+			LIMIT :startRow,:endRow 
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getOrderBillTotal">
+	<![CDATA[
+		SELECT count(*)
+		FROM Order_Bill t
+		WHERE 1 = 1 
+		<#if marketId?exists && marketId!="" >
+			AND t.marketId =:marketId
+		</#if>
+		<#if businessNo?exists && businessNo!="" >
+			AND t.businessNo =:businessNo
+		</#if>
+		<#if clientNo?exists && clientNo!="" >
+			AND t.clientNo =:clientNo
+		</#if>
+		<#if businessName?exists && businessName!="" >
+			AND t.businessName = :businessName
+		</#if>
+		<#if sysRefeNo?exists && sysRefeNo!="" >
+			AND t.sysRefeNo = :sysRefeNo
+		</#if>
+		<#if billBeginTime?exists && billBeginTime!="" >
+			AND t.tradeDay >= :billBeginTime
+		</#if>
+		<#if billEndTime?exists && billEndTime!="" >
+			AND t.tradeDay <= :billEndTime
+		</#if>
+		<#if tradeMoney?exists && tradeMoney!="" >
+			AND t.tradeMoney = :tradeMoney
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getTradeMoneySum">
+	<![CDATA[
+		SELECT sum(tradeMoney)
+		FROM Order_Bill t
+		WHERE 1 = 1 
+		<#if marketId?exists && marketId!="" >
+			AND t.marketId =:marketId
+		</#if>
+		<#if businessNo?exists && businessNo!="" >
+			AND t.businessNo =:businessNo
+		</#if>
+		<#if clientNo?exists && clientNo!="" >
+			AND t.clientNo =:clientNo
+		</#if>
+		<#if businessName?exists && businessName!="" >
+			AND t.businessName = :businessName
+		</#if>
+		<#if sysRefeNo?exists && sysRefeNo!="" >
+			AND t.sysRefeNo = :sysRefeNo
+		</#if>
+		<#if billBeginTime?exists && billBeginTime!="" >
+			AND t.tradeDay >= :billBeginTime
+		</#if>
+		<#if billEndTime?exists && billEndTime!="" >
+			AND t.tradeDay <= :billEndTime
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="queryOrderBill">
+ 	<![CDATA[
+	    select id,businessNo, businessName ,tradeType,tradeDay , 
+	    cardNo,clientNo,tradeMoney,sysRefeNo,fee,useStatus,createUserId,createTime,updateUserId,updateTime,cardType
+	    from order_bill t where 1=1
+	    <#if useStatus?exists && useStatus != "">
+			AND t.useStatus = :useStatus
+		</#if>
+	    <#if sysRefeNo?exists && sysRefeNo != "">
+			AND t.sysRefeNo = :sysRefeNo
+		</#if>
+		<#if sysRefeNos?exists>
+			<#assign n = sysRefeNos?size />
+			<#if n gt 0>
+				AND t.sysRefeNo in (
+				<#list sysRefeNos as sysRefeNo>
+					<#if sysRefeNo_index != n-1>
+						${sysRefeNo} ,
+					<#else>
+						${sysRefeNo}
+					</#if>
+				</#list>
+				)
+			</#if>
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="updateOrderBill">
+	<![CDATA[
+	    update order_bill t set t.updateTime = SYSDATE()
+	    <#if updateUserId?exists && updateUserId != "">
+			,t.updateUserId = :updateUserId
+		</#if>
+     	<#if useStatus?exists && useStatus != "">
+			,t.useStatus = :useStatus
+		</#if>
+	    where 1=1
+	    <#if sysRefeNo?exists && sysRefeNo != "">
+			AND t.sysRefeNo = :sysRefeNo
+		</#if>
+	    <#if sysRefeNos?exists>
+			<#assign n = sysRefeNos?size />
+			<#if n gt 0>
+				AND t.sysRefeNo in (
+				<#list sysRefeNos as sysRefeNo>
+					<#if sysRefeNo_index != n-1>
+						${sysRefeNo} ,
+					<#else>
+						${sysRefeNo}
+					</#if>
+				</#list>
+				)
+			</#if>
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="queryPosCardPayRecordList">
+	<![CDATA[
+	    SELECT SQL_CALC_FOUND_ROWS 
+			tmp.sysRefeNo, tmp.clientNo, tmp.posNumber, tmp.memberid, tmp.cardNo, tmp.paymentAcc, 
+			tmp.tradeMoney, tmp.tradeAmount, tmp.orderNo, tmp.bankTradeTime, tmp.orderTradeTime, 
+			m.account, o.persaleId, o.shopName, rbp.posNumber AS shopPosNumber ,m.mobile buyerMobile
+		FROM
+		(
+		<#if type?exists && type !="4" >
+		SELECT 
+			a.sysRefeNo,
+			a.clientNo,
+			b.posNumber,
+			b.memberid,
+			a.cardNo,
+			b.paymentAcc,
+			a.tradeMoney,
+			b.tradeAmount,
+			b.orderNo,
+			a.createTime AS bankTradeTime,
+			b.createTime AS orderTradeTime
+		FROM
+			order_bill a
+		LEFT JOIN pay_serialnumber b ON b.statementId = a.sysRefeNo 
+			AND b.payType = 2 AND b.payStatus = 1
+		</#if>
+		<#if type?exists && type =="0" >
+		UNION
+		</#if>
+		<#if type?exists && (type =="0" || type =="4") >
+			SELECT
+				a.sysRefeNo,
+				a.clientNo,
+				b.posNumber,
+				b.memberid,
+				a.cardNo,
+				b.paymentAcc,
+				a.tradeMoney,
+				b.tradeAmount,
+				b.orderNo,
+				a.createTime AS bankTradeTime,
+				b.createTime AS orderTradeTime
+			FROM
+				order_bill a
+			RIGHT JOIN pay_serialnumber b ON b.statementId = a.sysRefeNo 
+			WHERE b.payType = 2 AND b.payStatus = 1 
+		</#if>
+		) tmp 
+		LEFT JOIN re_business_pos rbp ON rbp.posNumber = tmp.clientNo AND tmp.clientNo IS NOT NULL
+		LEFT JOIN order_baseinfo o ON o.orderNo = tmp.orderNo
+		LEFT JOIN member_baseinfo m ON tmp.memberid = o.memberId
+		WHERE 1 = 1
+		<#if type?exists && type =="1" >
+			AND tmp.OrderNo IS NOT NULL
+		</#if>
+		<#if mobile?exists && mobile !="" >
+			AND m.mobile=:mobile
+		</#if>
+		<#if type?exists && type =="2" >
+			AND tmp.OrderNo IS NULL AND rbp.posNumber IS NOT NULL
+		</#if>
+		<#if type?exists && type =="3" >
+			AND tmp.OrderNo IS NULL AND rbp.posNumber IS NULL 
+		</#if>
+		<#if type?exists && type =="4" >
+			AND tmp.OrderNo IS NOT NULL AND tmp.sysRefeNo IS NULL 
+		</#if>
+		<#if OrderNo?exists && OrderNo!="" >
+			AND tmp.OrderNo = :OrderNo
+		</#if>
+		<#if clientNo?exists && clientNo!="" >
+			AND tmp.clientNo = :clientNo
+		</#if>
+		<#if sysRefeNo?exists && sysRefeNo!="" >
+			AND tmp.sysRefeNo = :sysRefeNo
+		</#if>
+		<#if shopName?exists && shopName!="" >
+			AND o.shopName = :shopName
+		</#if>
+		<#if billBeginTime?exists && billBeginTime!="" >
+			AND tmp.bankTradeTime >= :billBeginTime
+		</#if>
+		<#if billEndTime?exists && billEndTime!="" >
+			AND tmp.bankTradeTime <= :billEndTime
+		</#if>
+		<#if tradeMoney?exists && tradeMoney!="" >
+			AND tmp.tradeMoney = :tradeMoney
+		</#if>
+		<#if type?exists && type !="0" && type !="4">
+			GROUP BY tmp.sysRefeNo
+		</#if>
+		ORDER BY tmp.bankTradeTime DESC, tmp.orderTradeTime DESC
+		<#if startRow?exists && startRow!="" && endRow?exists && endRow!="">
+			LIMIT :startRow,:endRow 
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="queryPosCardPayRecordTotal">
+	<![CDATA[
+		SELECT FOUND_ROWS()
+	]]>
+	</sql>
+	<sql id="queryExceptionBill">
+ 	<![CDATA[
+		SELECT distinct epl.machinenum,epl.merchantnum,epl.transype,epl.orderno,epl.orderfee,
+		epl.ratefee,epl.payfee,epl.paycardno,epl.transdate,epl.transtime,epl.transseqno
+		FROM Order_Bill ob JOIN re_business_pos rbp 
+			ON rbp.posNumber = ob.clientNo
+		JOIN (select * from en_post_log where state = 1) epl
+			ON ob.sysRefeNo = epl.transseqno
+		LEFT join pay_serialnumber ps
+			ON ob.sysRefeNo = ps.statementId
+		WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(ob.createTime)
+			AND ob.createTime < DATE_SUB(SYSDATE(), INTERVAL 2 HOUR)
+			AND ps.statementId is null
+	]]>
+	</sql>
+</sqlMap>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SysResGroup">
+	<sql id="pageWhere">
+		<where>
+			<if test="resGroupID != null">
+				AND sr.resGroupID=:resGroupID
+			</if>
+			<if test="resGroupName != null">
+				AND sr.resGroupName LIKE "%":resGroupName"%"
+			</if>
+			<if test="remark != null">
+				AND sr.remark LIKE "%":remark"%"  
+			</if>
+		</where>
+	</sql>
+	
+	
+	<!-- 查询所有实体 -->
+	<select id="getAll">
+       	SELECT  sr.resGroupID,sr.resGroupName,sr.remark FROM SysResGroup sr
+      	<include refid="pageWhere"/>
+    </select>
+    
+	<!-- 分页查询 -->	
+	<select id="getByCondition">
+		SELECT sr.resGroupID,sr.resGroupName,sr.remark FROM SysResGroup sr 
+		 <include refid="pageWhere"/>
+		 limit :startRow,:endRow
+	</select>
+	
+	<!-- 记录总数 -->
+	<select id="getTotal">
+		SELECT COUNT(*) AS total FROM SysResGroup sr
+		 <include refid="pageWhere"/>
+	</select>
+	
+    <!-- 查询一个实体 -->
+    <select id="get">
+        SELECT  sr.resGroupID,sr.resGroupName,sr.remark
+		FROM SysResGroup sr
+	  	WHERE sr.resGroupID=:resGroupID
+    </select>
+   
+   <!-- 新增资源组 -->
+    <insert id="insert">
+		INSERT INTO SysResGroup
+		(
+		   resGroupID,resGroupName, remark,createUserID, createTime
+		)
+		VALUES (
+		   :resGroupID,:resGroupName, :remark, :createUserID, SYSDATE()
+		)
+	</insert>
+	
+	<!-- 修改资源组 -->
+	<update id="update">
+		UPDATE SysResGroup
+		SET
+		   	resGroupID=:resGroupID,resGroupName=:resGroupName,remark=:remark, updateUserID=:updateUserID,  updateTime=SYSDATE()
+		WHERE 
+			resGroupID=:resGroupID
+	</update>
+	
+	<!-- 删除资源组 -->
+	<delete id="delete">
+		DELETE FROM SysResGroup WHERE resGroupID=:resGroupID
+	</delete>
+	
+	<!-- 验证资源组是否被用户关联 ，是就不能删除-->
+	<select id="checkGroupRelated">
+		SELECT count(*) FROM sysUserres WHERE resGroupID=:resGroupID
+	</select>
+	
+	<!-- 新增 时 ，验证组名是否存在 -->
+	<select id="checkGroupName">
+		SELECT COUNT(*) FROM SysResGroup WHERE resGroupName=:resGroupName	
+	</select>
+	<!--修改时 ，验证id和组名是否存在 -->
+	<select id="checkGroupIDAndName">
+		select COUNT(*) FROM SysResGroup WHERE 	resGroupID!=:resGroupID
+		AND resGroupName=:resGroupName	
+	</select>
+</sqlMap>
+

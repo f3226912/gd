@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context  
+	http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="payResultListener" class="com.gudeng.commerce.gd.notify.pay.PayResultListener"></bean>
+	<bean id="nsyPayResultListener" class="com.gudeng.commerce.gd.notify.pay.NsyPayResultListerner"></bean>
+	<bean id="nsyPayCreateOrderListerner" class="com.gudeng.commerce.gd.notify.pay.NsyPayCreateOrderListerner"></bean>
+	<!-- 农商友支付预付款 -->
+	<bean id="nsyPrePayResultListener" class="com.gudeng.commerce.gd.notify.pay.NsyPrePayResultListerner"></bean>
+	
+	
+	<!--Listener配置 -->
+	<bean id="consumer" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
+		init-method="start" destroy-method="shutdown">
+		<property name="properties"> <!--消费者配置信息 -->
+			<props>
+				<prop key="ConsumerId">${gd.MQ.pay.ConsumerID}</prop> <!--请替换XXX -->
+				<prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+				<prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+				<!--将消费者线程数固定为50个. <prop key="ConsumeThreadNums">50</prop> -->
+			</props>
+		</property>
+		<property name="subscriptionTable">
+			<map>
+				<entry value-ref="payResultListener">
+					<key>
+						<bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+							<property name="topic" value="${gd.MQ.pay.Topic}" />
+							<property name="expression" value="*" />
+						</bean>
+					</key>
+				</entry>
+				<!--更多的订阅添加entry节点即可 -->
+			</map>
+		</property>
+	</bean>
+	
+	<!--Listener配置 -->
+	<bean id="consumer2" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
+		init-method="start" destroy-method="shutdown">
+		<property name="properties"> <!--消费者配置信息 -->
+			<props>
+				<prop key="ConsumerId">${gd.MQ.nsy.pay.ConsumerID}</prop> <!--请替换XXX -->
+				<prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+				<prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+				<!--将消费者线程数固定为50个. <prop key="ConsumeThreadNums">50</prop> -->
+			</props>
+		</property>
+		<property name="subscriptionTable">
+			<map>
+				<entry value-ref="nsyPayResultListener">
+					<key>
+						<bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+							<property name="topic" value="${gd.MQ.nsy.pay.Topic}" />
+							<property name="expression" value="*" />
+						</bean>
+					</key>
+				</entry>
+				
+			</map>
+		</property>
+	</bean>
+	
+	<!--Listener配置 -->
+	<bean id="consumer3" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
+		init-method="start" destroy-method="shutdown">
+		<property name="properties"> <!--消费者配置信息 -->
+			<props>
+				<prop key="ConsumerId">${gd.MQ.pay.nsy.create.ConsumerID}</prop> <!--请替换XXX -->
+				<prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+				<prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+				<!--将消费者线程数固定为50个. <prop key="ConsumeThreadNums">50</prop> -->
+			</props>
+		</property>
+		<property name="subscriptionTable">
+			<map>
+				<entry value-ref="nsyPayCreateOrderListerner">
+					<key>
+						<bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+							<property name="topic" value="${gd.MQ.pay.nsy.create.Topic}" />
+							<property name="expression" value="*" />
+						</bean>
+					</key>
+				</entry>
+				
+			</map>
+		</property>
+	</bean>
+	
+	<!--Listener配置 -->
+	<bean id="consumer4" class="com.aliyun.openservices.ons.api.bean.ConsumerBean"
+		init-method="start" destroy-method="shutdown">
+		<property name="properties"> <!--消费者配置信息 -->
+			<props>
+				<prop key="ConsumerId">${gd.MQ.nsy.prePay.ConsumerID}</prop> <!--请替换XXX -->
+				<prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+				<prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+				<!--将消费者线程数固定为50个. <prop key="ConsumeThreadNums">50</prop> -->
+			</props>
+		</property>
+		<property name="subscriptionTable">
+			<map>
+				<entry value-ref="nsyPrePayResultListener">
+					<key>
+						<bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+							<property name="topic" value="${gd.MQ.nsy.prePay.Topic}" />
+							<property name="expression" value="*" />
+						</bean>
+					</key>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+</beans>

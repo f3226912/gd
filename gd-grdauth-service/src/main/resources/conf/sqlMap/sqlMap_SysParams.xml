@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SysParams">
+     <!-- 系统参数设置模块—分页查询 -->
+     <select id="getByCondition">
+          SELECT sysParamsID,paramsName,paramsValue,remark
+          FROM   sysparams
+          limit  :startRow,:endRow
+     </select>
+     
+     <!-- 分页查询 参数总数-->
+     <select id="getTotal">
+          SELECT count(sysParamsID)
+          FROM   sysparams
+     </select>
+     
+     <!-- 根据ID查询参数对象 -->
+     <select id="get">
+          SELECT sysParamsID,paramsName,paramsValue,remark
+          FROM   sysparams
+          WHERE  sysParamsID=:sysParamsID
+     </select>
+     
+     <!-- 修改系统参数 -->
+     <update id="update">
+          UPDATE sysparams SET paramsValue=:paramsValue, remark=:remark
+          WHERE  sysParamsID=:sysParamsID
+     </update>
+</sqlMap>

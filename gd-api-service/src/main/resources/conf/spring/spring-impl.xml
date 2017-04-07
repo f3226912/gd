@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>${maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="demoService" class="com.gudeng.commerce.gd.api.service.impl.DemoServiceImpl"></bean>
+	<!-- 产品分类 -->
+	<bean id="proCategoryService"
+		class="com.gudeng.commerce.gd.api.service.impl.ProCategoryServiceImpl"></bean>
+
+	<!-- 会员基本信息 -->
+	<bean id="memberToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.MemberToolServiceImple"></bean>
+	<!-- 推送广告轮播 -->
+	<bean id="pushAdInfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.PushAdInfoToolServiceImpl"></bean>
+	<!-- 省市区基本信息 -->
+	<bean id="areaToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.AreaToolServiceImpl"></bean>
+	<!-- 市场信息 -->
+	<bean id="marketToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.MarketToolServiceImpl"></bean>
+	<!-- 货源管理 -->
+	<bean id="memberAddressApiService"
+		class="com.gudeng.commerce.gd.api.service.impl.MemberAddressApiServiceImpl"></bean>
+	<bean id="npsPurchaseToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.NpsPurchaseToolServiceImpl"></bean>
+		
+	<bean id="NpsOfferPriceToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.NpsOfferPriceToolServiceImpl"></bean>
+	<bean id="memberBaseinfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.MemberBaseinfoToolServiceImpl"></bean>
+	<!-- systemCode -->
+	<bean id="systemCodeToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.SystemCodeToolServiceImpl"></bean>
+
+	<!-- 文件上传 -->
+	<!-- <bean id="fileUploadToolService" class="com.gudeng.commerce.gd.api.service.impl.FileUploadToolServiceImpl"></bean> -->
+
+	<!-- 用户添加关注类别 -->
+	<bean id="usercollectProductCategoryToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.UsercollectProductCategoryToolServiceImpl"></bean>
+	<!-- 个人中心 车辆管理 -->
+	<bean id="carManagerApiService"
+		class="com.gudeng.commerce.gd.api.service.impl.CarManagerApiServiceImpl"></bean>
+
+	<!-- 用户添加关注类别 -->
+	<bean id="usercollectProductService"
+		class="com.gudeng.commerce.gd.api.service.impl.UsercollectProductServiceImpl"></bean>
+	<!--产品管理 -->
+	<bean id="productToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.ProductToolServiceImpl"></bean>
+	<!--产品管理-v3-供应商 -->
+	<bean id="oriPlaceVenProdService"
+		class="com.gudeng.commerce.gd.api.service.impl.cdgys.OriPlaceVenProdServiceImpl"></bean>
+	<!--农批商管理 -->
+	<bean id="businessBaseinfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.BusinessBaseinfoToolServiceImpl"></bean>
+
+
+	<bean id="userCollectShopToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.UserCollectShopToolServiceImpl"></bean>
+
+	<!-- 车辆线路管理 -->
+	<bean id="carLineApiService"
+		class="com.gudeng.commerce.gd.api.service.impl.CarLineApiServiceImpl"></bean>
+
+	<!-- 电话拨打记录 -->
+	<bean id="callstatiSticsToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.CallstatiSticsToolServiceImpl"></bean>
+
+	<bean id="memberCertifiApiService"
+		class="com.gudeng.commerce.gd.api.service.impl.MemberCertifiApiServiceImpl"></bean>
+	<!-- 积分流水记录 -->
+	<bean id="integralToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.IntegralToolServiceImpl"></bean>
+
+	<bean id="orderSubToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.OrderSubToolServiceImpl"></bean>
+
+	<!-- 买家订单管理 -->
+	<bean id="orderToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.OrderToolServiceImpl"></bean>
+	<!-- 买家订单管理2 -->
+	<bean id="orderTool2Service"
+		class="com.gudeng.commerce.gd.api.service.impl.pos.OrderTool2ServiceImpl"></bean>
+	<!-- 订单通用管理3 -->
+	<bean id="orderTool3Service"
+		class="com.gudeng.commerce.gd.api.service.impl.order.OrderTool3ServiceImpl"></bean>
+	<!-- 订单佣金补贴管理 -->
+	<bean id="orderFeeItemDetailToolService" 
+		class ="com.gudeng.commerce.gd.api.service.impl.order.OrderFeeItemDetailToolServiceImpl"/>
+	<!-- 订单活动管理 -->
+	<bean id="orderActivityToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.order.OrderActivityToolServiceImpl"></bean>
+	<!-- 卖家订单管理 -->
+	<bean id="preSaleToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.PreSaleToolServiceImpl"></bean>
+	<!-- POS订单管理 -->
+	<bean id="posOrderToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.pos.PosOrderToolServiceImpl"></bean>
+	<!-- 商铺终端号管理管理 -->
+	<bean id="reBusinessPosToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.engj.ReBusinessPosToolServiceImpl"></bean>
+	<!-- pos刷卡银行卡管理 -->
+	<bean id="posBankCardToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.engj.PosBankCardToolServiceImpl"></bean>
+	<!-- 上传图片 -->
+	<bean id="fileUploadService"
+		class="com.gudeng.commerce.gd.api.service.impl.FileUploadToolServiceImpl"></bean>
+	<!-- 用户账户服务 -->
+	<bean id="walletToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.WalletToolServiceImpl"></bean>
+
+
+	<!-- 用户账户服务 -->
+	<bean id="accBankCardInfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.AccBankCardInfoToolServiceImpl"></bean>
+
+
+	<!-- 用户账户服务 -->
+	<bean id="cashRequestToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.CashRequestToolServiceImpl"></bean>
+
+	<!-- 交易记录服务 -->
+	<bean id="accTransInfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.AccTransInfoToolServiceImpl"></bean>
+
+
+	<!-- 交易记录服务 -->
+	<bean id="paySerialnumberToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.PaySerialnumberToolServiceImpl"></bean>
+
+	<!-- 订单商品详情服务 -->
+	<bean id="orderoutmarketinfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.OrderoutmarketinfoToolServiceImpl"></bean>
+
+	<!-- 车型默认载重管理 -->
+	<bean id="carWeighProToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.CarWeighProToolServiceImpl"></bean>
+
+	<!-- 门岗车辆管理 -->
+	<bean id="carBaseinfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.CarBaseinfoToolServiceImpl"></bean>
+	<bean id="reCarMemberToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.ReCarMemberToolServiceImpl"></bean>
+
+	<bean id="weighCarToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.WeighCarToolServiceImpl"></bean>
+
+	<!-- 货主入场商品管理 -->
+	<bean id="preWeighCarDetailToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.PreWeighCarDetailToolServiceImpl"></bean>
+
+	<bean id="inStoreDetailToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.InStoreDetailToolServiceImpl"></bean>
+
+	<bean id="shipperToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.ShipperToolServiceImpl"></bean>
+
+	<bean id="taskToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.TaskToolServiceImpl"></bean>
+
+	<bean id="reBusinessMarketToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.ReBusinessMarketToolServiceImpl"></bean>
+
+	<bean id="orderNoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.OrderNoToolServiceImpl"></bean>
+
+	<bean id="redisUtil" class="com.gudeng.commerce.gd.api.redis.RedisService"></bean>
+	<bean id="loginService"
+		class="com.gudeng.commerce.gd.api.service.impl.LoginServiceImpl"></bean>
+	<bean id="verifyCodeServiceImpl"
+		class="com.gudeng.commerce.gd.api.service.impl.VerifyCodeServiceImpl"></bean>
+
+	<bean id="walletToolServiceV3"
+		class="com.gudeng.commerce.gd.api.service.impl.V3.WalletToolServiceImpl_V3"></bean>
+    
+   	<bean id="pushNstMessageApiService"
+		class="com.gudeng.commerce.gd.api.service.impl.PushNstMessageApiServiceImpl"></bean>
+
+	<!-- 投诉建议服务 -->
+	<bean id="complaintToolService" class ="com.gudeng.commerce.gd.api.service.impl.ComplaintToolServiceImpl"/>
+
+	<bean id="nstOrderBaseinfoToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.NstOrderBaseinfoToolServiceimpl"></bean>
+
+	<bean id="nstOrderCommentToolService" class="com.gudeng.commerce.gd.api.service.impl.NstOrderCommentToolServiceImpl"></bean>
+	
+	<bean id="nstOrderComplaintToolService" class="com.gudeng.commerce.gd.api.service.impl.NstOrderComplaintToolServiceImpl"></bean>
+
+	<bean id="nstOrderNoService" class="com.gudeng.commerce.gd.api.service.impl.NstOrderNoToolServiceImpl"></bean>
+	
+	<!-- 客户信息 -->
+	<bean id="reMemForCustToolService" class="com.gudeng.commerce.gd.api.service.impl.ReMemForCustToolServiceImpl"/>
+
+	<bean id="memberInfoToolService" class="com.gudeng.commerce.gd.api.service.impl.sinxin.MemberInfoToolServiceImpl"/>
+	
+	<bean id="orderInfoToolService" class="com.gudeng.commerce.gd.api.service.impl.sinxin.OrderInfoToolServiceImpl"/>
+	
+	<bean id="productInfoToolService" class="com.gudeng.commerce.gd.api.service.impl.sinxin.ProductInfoToolServiceImpl"/>
+	<bean id="pushNoticeToolService" class="com.gudeng.commerce.gd.api.service.impl.PushNoticeToolServiceImpl"/>
+	<bean id="nstSameCityAddressToolService" class="com.gudeng.commerce.gd.api.service.impl.NstSameCityAddressToolServiceImpl"></bean>
+    <!-- 农速通同城 找车-->
+    <bean id="nstSameCityCarlineApiService" class="com.gudeng.commerce.gd.api.service.impl.NstSameCityCarlineApiServiceImpl"/>
+
+<!-- 产品出货信息服务 -->
+	<bean id="productDeliveryDetailToolService" class="com.gudeng.commerce.gd.api.service.impl.v160512.ProductDeliveryDetailToolServiceImpl"/>
+	
+	<!-- 订单客户信息服务 -->
+	<bean id="reOrderCustomerToolService" class="com.gudeng.commerce.gd.api.service.impl.v160630.ReOrderCustomerToolServiceImpl"/>
+	
+	<!-- 商品搜索相关服务 -->
+	<bean id="searchProductToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.search.SearchProductToolServiceImpl"></bean>
+		
+ 	<!-- App版本 -->
+ 	<bean id="appStatisticsService" class ="com.gudeng.commerce.gd.api.service.impl.AppStatisticsServiceImpl"/>		
+	<!-- e农日志 -->
+	<bean id="enPostLogToolService"
+		class="com.gudeng.commerce.gd.api.service.impl.engj.EnPostLogToolServiceImpl"></bean>
+	<!-- 地推会员 -->
+ 	<bean id="grdMemberToolService" class ="com.gudeng.commerce.gd.api.service.impl.ditui.GrdMemberToolServiceImpl"/>
+ 	<bean id="grdGiftDetailToolService" class ="com.gudeng.commerce.gd.api.service.impl.ditui.GrdGiftDetailToolServiceImpl"/>
+ 	<bean id="grdGiftLogToolService" class ="com.gudeng.commerce.gd.api.service.impl.ditui.GrdGiftLogToolServiceImpl"/>
+ 	<bean id="grdBaseToolService" class ="com.gudeng.commerce.gd.api.service.impl.ditui.GrdBaseToolServiceImpl"/>
+ 	<bean id="grdGiftRecordToolService" class ="com.gudeng.commerce.gd.api.service.impl.ditui.GrdGiftRecordToolServiceImpl"/>
+ 	<bean id="grdGiftToolService" class ="com.gudeng.commerce.gd.api.service.impl.ditui.GrdGiftToolServiceImpl"/>
+ 	
+ 	<bean id="adToolService" class ="com.gudeng.commerce.gd.api.service.impl.AdToolServiceImpl"/> 	
+ 	 
+ 	<bean id="dataToolService" class ="com.gudeng.commerce.gd.api.service.impl.DataToolServiceImpl"/>			
+ 	 		
+	<bean id="trunkAddressToolService" class ="com.gudeng.commerce.gd.api.service.nst.impl.TrunkAddressToolServiceImpl"/>
+	
+	<bean id="nstApiCommonService" class ="com.gudeng.commerce.gd.api.service.nst.impl.NstApiCommonServiceImpl"/>
+	<bean id="payCenterApiCommonService" class ="com.gudeng.commerce.gd.api.service.impl.order.PayCenterApiCommonServiceImpl"/>
+	
+	<!--促销订单服务类 -->
+	<bean id="purchaseOrderToolService" class="com.gudeng.commerce.gd.api.service.impl.v160721.PurchaseOrderToolServiceImpl"></bean>
+	<!--促销信息服务类 -->
+	<bean id="promInfoToolService" class="com.gudeng.commerce.gd.api.service.impl.v160721.PromInfoToolServiceImpl"></bean>
+	<bean id="promChainToolService" class ="com.gudeng.commerce.gd.api.service.impl.PromChainToolServiceImpl"></bean>
+	
+	<!-- 系统日志 -->
+	<bean id="systemLogToolService" class="com.gudeng.commerce.gd.api.service.impl.SystemLogToolServiceImpl"/>
+	<!-- 商铺日志 -->
+    <bean id="businessBaseinfoAopUtil" class ="com.gudeng.commerce.gd.api.util.systemlog.BusinessBaseinfoAopUtil"/>
+	<!-- 特殊字符过滤 -->	
+	<bean id="specialcharacterToolService" class ="com.gudeng.commerce.gd.api.service.impl.SpecialcharacterToolServiceImpl"/>
+
+	<bean id="memberLoginLogToolService" class ="com.gudeng.commerce.gd.api.service.impl.MemberLoginLogToolServiceImpl"/>
+	<bean id="sensitiveLogToolService" class ="com.gudeng.commerce.gd.api.service.impl.SensitiveLogToolServiceImpl"/>
+	
+	<bean id="pvStatisticBusinessToolService" class ="com.gudeng.commerce.gd.api.service.impl.PvStatisticBusinessToolServiceImpl"/>
+	
+	<bean id="memberPageStatisticToolService" class ="com.gudeng.commerce.gd.api.service.impl.MemberPageStatisticToolServiceImpl"/>
+
+	<bean id="appshareToolService" class ="com.gudeng.commerce.gd.api.service.impl.appshare.AppshareToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.MyAddressToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.DeliveryAddressToolServiceImpl"/>
+	<bean id="grdProPertenToolService" class ="com.gudeng.commerce.gd.api.service.impl.ditui.GrdProPertenToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.v160929.ReBusinessCategoryToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.v160929.CertifSpProductToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.v160929.CertifBaseToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.v160929.CertifCorpToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.v160929.CertifCompanyToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.v160929.CertifShopToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.GrdProMemberInvitedRegisterToolServiceImpl"/>
+	
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.AppactivitystatToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.ProductCategoryToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.ProductBaseinfoToolServiceImpl"/>
+	<bean class="com.gudeng.commerce.gd.api.service.impl.steelyard.ReBusinessSteelyardToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.api.service.impl.order.CartInfoToolServiceImpl"/>
+	<bean id="gdOrderActivityBaseToolService" class ="com.gudeng.commerce.gd.api.service.impl.GdOrderActivityBaseToolServiceImpl"/>
+
+	<bean id="quickMakeSheetService" class ="com.gudeng.commerce.gd.api.service.impl.QuickMakeSheetServiceImpl"/>
+
+	<bean id="activityUserintegralToolService" class ="com.gudeng.commerce.gd.api.service.impl.ActivityUserintegralToolServiceImpl"/>
+	<bean id="activityUserIntegralChangeToolService" class ="com.gudeng.commerce.gd.api.service.impl.ActivityUserIntegralChangeToolServiceImpl"/>
+
+</beans>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="BusinessProducttype">
+	<!-- 根据businessId 精确查找 -->
+	<sql id="getByBusinessId">
+	<![CDATA[
+		SELECT 
+			   ptId ,   
+			   curLevel ,
+			   cateName ,
+			   parentId ,
+			   orderNum  ,
+			   status  ,
+			   createUserId  ,
+			   createTime ,
+			   updateUserId,
+			   updateTime 
+		FROM 
+			 business_producttype c
+		WHERE  
+			c.businessId=:businessId
+	 
+	]]>
+	</sql>
+	
+	<!-- 根据parentId 精确查找 -->
+	<sql id="getByParentId">
+	<![CDATA[
+		SELECT 
+			   ptId ,   
+			   curLevel ,
+			   cateName ,
+			   parentId ,
+			   orderNum  ,
+			   status  ,
+			   createUserId  ,
+			   createTime ,
+			   updateUserId,
+			   updateTime 
+		FROM 
+			 business_producttype c
+		WHERE  
+			c.parentId=:parentId
+	 
+	]]>
+	</sql>
+</sqlMap>

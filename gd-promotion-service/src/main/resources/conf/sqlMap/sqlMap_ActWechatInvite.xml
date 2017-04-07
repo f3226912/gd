@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ActWechatInvite">
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			invitorOpenid,
+			visitorOpenid,
+			unionid,
+			shareType,
+			createTime,
+			updateTime,
+			userid,
+			ghid,
+			avtivityId
+		FROM
+			act_wechat_invite t
+		WHERE
+			1= 1
+		<#if invitorOpenid?exists && invitorOpenid!="">
+			AND invitorOpenid =:invitorOpenid
+		</#if>
+		<#if visitorOpenid?exists && visitorOpenid!="">
+			AND visitorOpenid = :visitorOpenid
+		</#if>
+		<#if unionid?exists && unionid!="">
+			AND unionid = :unionid
+		</#if>
+		<#if shareType?exists && shareType!="">
+			AND shareType = :shareType
+		</#if>
+		<#if userid?exists && userid!="">
+			AND userid= :userid
+		</#if>
+		<#if ghid?exists && ghid!="">
+			AND ghid= :ghid
+		</#if>
+		<#if avtivityId?exists && avtivityId!="">
+			AND avtivityId= :avtivityId
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="getTotalCountByCondition">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_wechat_invite
+		WHERE
+			1= 1
+		<#if invitorOpenid?exists && invitorOpenid!="">
+			AND invitorOpenid =:invitorOpenid
+		</#if>
+		<#if visitorOpenid?exists && visitorOpenid!="">
+			AND visitorOpenid = :visitorOpenid
+		</#if>
+		<#if unionid?exists && unionid!="">
+			AND unionid = :unionid
+		</#if>
+		<#if shareType?exists && shareType!="">
+			AND shareType = :shareType
+		</#if>
+		<#if userid?exists && userid!="">
+			AND userid= :userid
+		</#if>
+		<#if ghid?exists && ghid!="">
+			AND ghid= :ghid
+		</#if>
+		<#if avtivityId?exists && avtivityId!="">
+			AND avtivityId= :avtivityId
+		</#if>
+	]]>
+	</sql>
+</sqlMap>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>@{maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="demoToolService" class ="com.gudeng.commerce.info.admin.service.impl.DemoToolServiceImpl"></bean>
+	<!-- sysmgr start-->
+	<bean id="sysLoginService" class ="com.gudeng.commerce.info.admin.service.impl.SysLoginServiceImpl"></bean>
+	<bean id="sysMenuButtonService" class ="com.gudeng.commerce.info.admin.service.impl.SysMenuButtonServiceImpl"></bean>
+	<bean id="sysMenuService" class ="com.gudeng.commerce.info.admin.service.impl.SysMenuServiceImpl"></bean>
+	<bean id="sysRegisterUserService" class ="com.gudeng.commerce.info.admin.service.impl.SysRegisterUserServiceImpl"></bean>
+	<bean id="sysRoleManagerService" class ="com.gudeng.commerce.info.admin.service.impl.SysRoleManagerServiceImpl"></bean>
+	<bean id="sysRoleService" class ="com.gudeng.commerce.info.admin.service.impl.SysRoleServiceImpl"></bean>
+	<bean id="sysUserRoleService" class ="com.gudeng.commerce.info.admin.service.impl.SysUserRoleServiceImpl"></bean>
+	<bean id="sysrolereportsService" class ="com.gudeng.commerce.info.admin.service.impl.SysrolereportsToolServiceImpl"></bean>
+	<!-- 交易流水图表服务 -->
+	<bean id="proBszbankToolService" class ="com.gudeng.commerce.info.admin.service.impl.ProBszbankToolServiceImpl"></bean>
+	<!-- sysmgr end-->
+	
+	<bean id="reportsToolService" class="com.gudeng.commerce.info.admin.service.impl.ReportsToolServiceImpl"></bean>
+	
+	<bean id="boardToolService" class="com.gudeng.commerce.info.admin.service.impl.BoardToolServiceImpl"></bean>
+	<bean id="datasourceToolService" class="com.gudeng.commerce.info.admin.service.impl.DatasourceToolServiceImpl"></bean>
+	<bean id="datasourceBaiduToolService" class="com.gudeng.commerce.info.admin.service.impl.DatasourceBaiduToolServiceImpl"></bean>
+	<bean id="orderBillToolService" class="com.gudeng.commerce.info.admin.service.impl.OrderBillToolServiceImpl"></bean>
+	<bean id="sysroleboardService" class="com.gudeng.commerce.info.admin.service.impl.SysroleboardToolServiceImpl"></bean>
+	<bean id="sysmessageService" class="com.gudeng.commerce.info.admin.service.impl.SysmessageToolServiceImpl"></bean>
+	<bean id="sysmessageuserService" class="com.gudeng.commerce.info.admin.service.impl.SysmessageuserToolServiceImpl"></bean>
+
+	<bean id="proBaiduToolService" class="com.gudeng.commerce.info.admin.service.impl.ProBaiduToolServiceImpl"></bean>
+	
+	<bean id="proOperateService" class="com.gudeng.commerce.info.admin.service.impl.ProOperateToolServiceImpl"></bean>
+</beans>

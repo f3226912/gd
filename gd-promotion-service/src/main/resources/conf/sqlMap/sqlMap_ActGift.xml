@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ActGift">
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			stock_total as stockTotal,
+			stock_available as stockAvailable,
+			createUserId,
+			ifnull(b.ct,0) as countApply,
+			createTime
+		FROM
+			act_gift_baseinfo a
+	   left join(select gift_id,count(1) as ct  from act_gift_exchange_apply where STATUS=2 group by gift_id) b on a.id=b.gift_id
+		WHERE
+			isDeleted != 1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+		ORDER BY createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotalCountByCondition">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_gift_baseinfo
+		WHERE
+			isDeleted != 1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="update">
+	<![CDATA[
+		UPDATE
+			act_gift_baseinfo
+		SET
+			NAME = :name,
+			stock_total = :stockTotal,
+			stock_available = :stockAvailable,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			stock_total as stockTotal,
+			stock_available as stockAvailable,
+			createUserId,
+			ifnull(b.ct,0) as countApply,
+			createTime
+		FROM
+			act_gift_baseinfo a
+		 left join(select gift_id,count(1) as ct  from act_gift_exchange_apply where STATUS=2 group by gift_id) b on a.id=b.gift_id
+		WHERE
+			id = :id
+	]]>
+	</sql>
+
+	<sql id="exist">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_gift_baseinfo
+		WHERE
+			isDeleted != 1 AND NAME = :name
+	]]>
+	</sql>
+
+	<sql id="queryListByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			NAME as name,
+			stock_total as stockTotal,
+			stock_available as stockAvailable,
+			createUserId,
+			ifnull(b.ct,0) as countApply,
+			createTime
+		FROM
+			act_gift_baseinfo a
+      left join(select gift_id,count(1) as ct  from act_gift_exchange_apply where STATUS=2 group by gift_id) b on a.id=b.gift_id
+			
+		WHERE
+			isDeleted != 1
+		<#if name?exists && name!="">
+			AND NAME like "%":name"%"
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="updateIsDeleted">
+	<![CDATA[
+		UPDATE
+			act_gift_baseinfo
+		SET
+			isDeleted = 1,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+
+	<sql id="updateGiftAvailableStock">
+	<![CDATA[
+		UPDATE
+			act_gift_baseinfo
+		SET
+			stock_available = :stockAvailable
+		WHERE
+			id = :id
+	]]>
+	</sql>
+
+	<sql id="updateStockTotal">
+	<![CDATA[
+		UPDATE
+			act_gift_baseinfo
+		SET
+			stock_total = :stockTotal
+		WHERE
+			id = :id
+	]]>
+	</sql>
+
+	<sql id="updateGiftBaseInfo">
+	<![CDATA[
+		 UPDATE
+		 	act_gift_baseinfo t
+		 SET
+			<#if stockTotal?exists && stockTotal!="" >
+		 		t.stock_total = :stockTotal,
+			</#if>
+			<#if stockAvailable?exists && stockAvailable!="" >
+		 		t.stock_available = :stockAvailable,
+			</#if>
+				t.updateUserId = :updateUserId,
+				t.updateTime = :updateTime
+		 WHERE
+		 	t.id = :id
+	]]>
+	</sql>
+</sqlMap>

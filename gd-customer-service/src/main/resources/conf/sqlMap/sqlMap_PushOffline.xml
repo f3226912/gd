@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PushOffline">
+	<sql id="getPushOfflineDTOList">
+		<![CDATA[
+		 	SELECT t.`id`,t.`industry`,t.`source`,t.`pushName`,t.`pushMobile`,t.`memberMobile`,t.`createTime` FROM push_offline t
+	 		WHERE 1=1 
+			<#if industry?exists && industry!="" >
+			      AND t.industry= :industry
+			</#if>
+			<#if source?exists && source!="" >
+			      AND t.source= :source
+			</#if>
+			<#if pushName?exists && pushName!="" >
+		      	AND t.pushName like "%":pushName"%"
+			</#if>
+			<#if pushMobile?exists && pushMobile!="" >
+			    AND t.pushMobile like "%":pushMobile"%"
+			</#if>
+			<#if memberMobile?exists && memberMobile!="" >
+		      	AND t.memberMobile like "%":memberMobile"%"
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime >= :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime <= :endDate
+			</#if>
+			LIMIT 
+			:startRow,:endRow 
+		]]>
+	</sql>
+
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			push_offline t 
+	  	WHERE  
+	  	1=1 
+	    <#if industry?exists && industry!="" >
+		      AND t.industry= :industry
+		</#if>
+		<#if source?exists && source!="" >
+		      AND t.source= :source
+		</#if>
+		<#if pushName?exists && pushName!="" >
+		      AND t.pushName like "%":pushName"%"
+		</#if>
+		<#if pushMobile?exists && pushMobile!="" >
+		      AND t.pushMobile like "%":pushMobile"%"
+		</#if>
+		<#if memberMobile?exists && memberMobile!="" >
+		      AND t.memberMobile like "%":memberMobile"%"
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		      AND t.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		      AND t.createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+	
+	<sql id="getOffLinePushInCondition">
+	<![CDATA[
+		SELECT 
+			 industry, source, pushName, pushMobile, memberMobile, createTime
+		FROM 
+			 push_offline
+		WHERE
+			1 = 1
+		<#if id?exists && id!="" >
+		      AND id  = :id
+		</#if>
+		<#if memberMobile?exists && memberMobile!="" >
+		      AND memberMobile  = :memberMobile
+		</#if>
+	]]>
+	</sql>
+</sqlMap>
+

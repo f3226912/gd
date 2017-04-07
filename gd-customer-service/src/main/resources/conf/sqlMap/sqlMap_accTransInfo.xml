@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="accTransInfo">
+	<sql id="getByMemberId">
+ 		SELECT 
+			  sId,
+			  accId,
+			  memberId ,
+			  orderNo,
+			  statementId,
+			  tradeType ,
+			  peType,
+			  tradeAmount,
+			  paymentAcc,
+			  recipientAcc,
+			   createTime,
+			  createUserId,
+			   updateTime,
+			  updateUserId
+		FROM 
+			 acc_trans_info 
+		WHERE 
+		 	 memberId=:memberId
+		ORDER BY createTime DESC
+		LIMIT 
+			:startRow,:endRow 
+	</sql>
+	
+	
+	<sql id="getByMemberIdAndDay">
+ 		SELECT 
+			  sId,
+			  accId,
+			  memberId ,
+			  orderNo,
+			  statementId,
+			  tradeType ,
+			  peType,
+			  tradeAmount,
+			  paymentAcc,
+			  recipientAcc,
+			   createTime,
+			  createUserId,
+			   updateTime,
+			  updateUserId
+		FROM 
+			 acc_trans_info 
+		WHERE 
+		 	 memberId=:memberId
+		AND 
+			 DATE_FORMAT(createTime,'%Y-%m-%d')=:createTime
+	</sql>
+	
+	
+	
+	
+	<sql id="add">
+ 	<![CDATA[
+	    INSERT INTO  acc_trans_info
+	          (
+			  	  sId,
+				  accId,
+				  memberId ,
+				  orderNo,
+				  statementId,
+				  tradeType ,
+				  peType,
+				  tradeAmount,
+				  paymentAcc,
+				  recipientAcc,
+				  createUserId,
+				  updateUserId
+              )
+	        values
+	         (
+	       		  :sId,
+				  :accId,
+				  :memberId ,
+				  :orderNo,
+				  :statementId,
+				  :tradeType ,
+				  :peType,
+				  :tradeAmount,
+				  :paymentAcc,
+				  :recipientAcc,
+				  :createUserId,
+				  :updateUserId
+              )
+	        
+		]]>
+	</sql>
+	
+	<sql id="getTotal">
+		<![CDATA[
+ 		SELECT 
+		 	count(*)
+		FROM 
+			 acc_trans_info 
+		WHERE 
+		<#if memberId?exists && memberId!="" >
+			   memberId = :memberId 
+		</#if>	
+		]]>
+	</sql>
+</sqlMap>

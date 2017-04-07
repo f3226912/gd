@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<sqlMap namespace="EnPostLog">
+	<sql id="getTotal">
+		<![CDATA[
+   select count(1) from en_post_log epl
+	where 1=1
+	<#if startDate?exists && startDate!="" >
+	AND epl.transdate >= :startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	AND epl.transdate <= :endDate
+	</#if>
+	<#if transseqno?exists && transseqno!="" >
+	AND (epl.transseqno like "%":transseqno"%" or epl.bz like "%":transseqno"%" )
+	</#if>
+		<#if state?exists && state!="" >
+	AND epl.state =:state
+	</#if>
+		]]>
+	</sql>
+	
+	<sql id="getByCondition">
+		<![CDATA[
+	select
+		Id ,
+	version ,
+	charset ,
+	machinenum ,
+	merchantnum ,
+	state ,
+	transype ,
+	orderno ,
+	orderfee ,
+	ratefee ,
+	payfee ,
+	payresultcode ,
+	payresultmsg ,
+	paycardno ,
+	transdate ,
+	transtime ,
+	createtime,
+	transseqno,
+	reserved,
+	bz
+	 from en_post_log epl
+	where 1=1
+	<#if startDate?exists && startDate!="" >
+	AND epl.transdate >= :startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	AND epl.transdate <= :endDate
+	</#if>
+	<#if transseqno?exists && transseqno!="" >
+	AND (epl.transseqno like "%":transseqno"%" or epl.bz like "%":transseqno"%" )
+	</#if>
+   <#if state?exists && state!="" >
+	AND epl.state =:state
+	</#if>
+	
+	ORDER BY epl.ID DESC		
+    LIMIT :startRow,:endRow
+	]]>
+	
+	</sql>
+	
+	<sql id="insertEnPostLog">
+		<![CDATA[
+		INSERT INTO en_post_log (
+			                   bz
+		                 <#if version?exists && version!="" >
+								,version
+	                       </#if>	
+								
+							<#if charset?exists && charset!="" >
+								,charset
+	                       </#if>	
+						   <#if machinenum?exists && machinenum!="" >
+									,machinenum
+	                       </#if>		
+								,state
+	                       <#if transype?exists && transype!="" >
+								,transype
+	                       </#if>
+	                      <#if orderno?exists && orderno!="" >
+							,orderno
+	                       </#if>
+	                    <#if orderfee?exists && orderfee!="" >
+								,orderfee
+	                       </#if>
+	                       <#if ratefee?exists && ratefee!="" >
+								,ratefee
+	                       </#if>
+	                       <#if payfee?exists && payfee!="" >
+								,payfee
+	                       </#if>
+	                       <#if payresultcode?exists && payresultcode!="" >
+								,payresultcode
+	                       </#if>
+	                       <#if payresultmsg?exists && payresultmsg!="" >
+								,payresultmsg
+	                       </#if>
+	                       <#if paycardno?exists && paycardno!="" >
+								,paycardno
+	                       </#if>	
+					       <#if transdate?exists && transdate!="" >
+								,transdate
+	                       </#if>
+	                       <#if transtime?exists && transtime!="" >
+								,transtime
+	                       </#if>
+	                        <#if transseqno?exists && transseqno!="" >
+								,transseqno
+	                       </#if>
+	                       <#if reserved?exists && reserved!="" >
+			                   ,reserved
+			                 </#if>	
+			               ,createtime
+									)
+								VALUES
+								(
+			                   :bz
+						   <#if version?exists && version!="" >
+								,:version
+	                       </#if>	
+							<#if charset?exists && charset!="" >
+								,:charset
+	                       </#if>	
+						   <#if machinenum?exists && machinenum!="" >
+									,:machinenum
+	                       </#if>		
+								,:state
+	                       <#if transype?exists && transype!="" >
+								,:transype
+	                       </#if>
+	                      <#if orderno?exists && orderno!="" >
+							,:orderno
+	                       </#if>
+	                    <#if orderfee?exists && orderfee!="" >
+								,:orderfee
+	                       </#if>
+	                       <#if ratefee?exists && ratefee!="" >
+								,:ratefee
+	                       </#if>
+	                       <#if payfee?exists && payfee!="" >
+								,:payfee
+	                       </#if>
+	                       <#if payresultcode?exists && payresultcode!="" >
+								,:payresultcode
+	                       </#if>
+	                       <#if payresultmsg?exists && payresultmsg!="" >
+								,:payresultmsg
+	                       </#if>
+	                       <#if paycardno?exists && paycardno!="" >
+								,:paycardno
+	                       </#if>	
+						   <#if transdate?exists && transdate!="" >
+								,:transdate
+	                       </#if>
+	                       <#if transtime?exists && transtime!="" >
+								,:transtime
+	                       </#if>
+	                        <#if transseqno?exists && transseqno!="" >
+								,:transseqno
+	                       </#if>
+	                       
+	                       	<#if reserved?exists && reserved!="" >
+			                   ,:reserved
+			                 </#if>
+			                ,SYSDATE()
+			                 
+								)
+		]]>
+	</sql>
+	
+	<sql id="updateEnPostLog">
+    	<![CDATA[
+    		update en_post_log epl set 
+    		epl.ID=:ID
+    		<#if transtime?exists>
+			  ,epl.transtime=:transtime
+			</#if>
+    	   <#if transdate?exists>
+			  ,epl.transdate=:transdate
+			</#if>
+			<#if version?exists && version!="" >
+			  , epl.version =:version
+			</#if>
+    			<#if charset?exists && charset!="" >
+			  , epl.charset =:charset
+			</#if>
+				<#if machinenum?exists && machinenum!="" >
+			  , epl.machinenum =:machinenum
+			</#if>
+				<#if merchantnum?exists && merchantnum!="" >
+			  , epl.merchantnum =:merchantnum
+			</#if>
+				<#if state?exists && state!="" >
+			  , epl.state =:state
+			</#if>
+				<#if transype?exists && transype!="" >
+			  , epl.transype =:transype
+			</#if>
+				<#if orderno?exists && orderno!="" >
+			  , epl.orderno =:orderno
+			</#if>
+				<#if orderfee?exists && orderfee!="" >
+			  , epl.orderfee =:orderfee
+			</#if>
+				<#if ratefee?exists && ratefee!="" >
+			  , epl.ratefee =:ratefee
+			</#if>
+				<#if payfee?exists && payfee!="" >
+			  , epl.payfee =:payfee
+			</#if>
+    				<#if payresultcode?exists && payresultcode!="" >
+			  , epl.payresultcode =:payresultcode
+			</#if>
+    				<#if payresultmsg?exists && payresultmsg!="" >
+			  , epl.payresultmsg =:payresultmsg
+			</#if>
+    				<#if paycardno?exists && paycardno!="" >
+			  , epl.paycardno =:paycardno
+			</#if>
+    		
+    		<#if transseqno?exists && transseqno!="" >
+			  , epl.transseqno =:transseqno
+			</#if>
+			<#if reserved?exists && reserved!="" >
+			  , epl.reserved =:reserved
+			</#if>
+			<#if bz?exists && bz!="" >
+			 , epl.bz =:bz
+			</#if> 
+			WHERE
+				epl.ID =:ID
+		]]>
+	</sql>
+	
+	
+	
+	
+	
+	<sql id="getById">
+	select
+	ID ,
+	version ,
+	charset ,
+	machinenum ,
+	merchantnum ,
+	state ,
+	transype ,
+	orderno ,
+	orderfee ,
+	ratefee ,
+	payfee ,
+	payresultcode ,
+	payresultmsg ,
+	paycardno ,
+	transdate ,
+	transtime ,
+	transseqno,
+	reserved,
+	bz,
+	createtime
+	 from en_post_log epl
+	 	WHERE epl.ID =:ID
+	</sql>
+	
+	
+	
+	
+	
+	
+</sqlMap>

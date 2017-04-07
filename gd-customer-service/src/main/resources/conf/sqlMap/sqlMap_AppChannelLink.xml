@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AppChannelLink">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO app_channel_link(
+	id,downloadLink,updateUserId,createTime,platform,channelName,updateTime,
+	state,pageLink,clientChannel,createUserId
+	) VALUES (
+	:id,:downloadLink,:updateUserId,:createTime,:platform,:channelName,:updateTime,
+	:state,:pageLink,:clientChannel,:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE app_channel_link SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if downloadLink?exists && downloadLink!="" >
+		downloadLink=:downloadLink,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if platform?exists && platform!="" >
+		platform=:platform,
+	</#if>	
+	<#if channelName?exists && channelName!="" >
+		channelName=:channelName,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if state?exists && state!="" >
+		state=:state,
+	</#if>	
+	<#if pageLink?exists && pageLink!="" >
+		pageLink=:pageLink,
+	</#if>	
+	<#if clientChannel?exists && clientChannel!="" >
+		clientChannel=:clientChannel,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT   t.id,  downloadLink,  updateUserId,  createTime,
+	  platform,  channelName,  updateTime,  t.state,  pageLink,  
+	  clientChannel,  s.`codeValue` AS clientChannelName,  
+	  ss.codeValue AS platformName,  createUserId 
+	FROM
+	  app_channel_link t 
+	  LEFT JOIN system_code s 
+	    ON t.`clientChannel` = s.`codeKey` 
+	    AND s.`type` = 'clientChannel' 
+	  LEFT JOIN system_code ss 
+	    ON t.`platform` = ss.codeKey 
+	    AND ss.type = 'platform' 
+	WHERE t.id = :id 
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	  t.id,  downloadLink,  updateUserId,  createTime,  platform,  channelName,  updateTime,  t.state,  pageLink,  
+	  clientChannel,  s.`codeValue` AS clientChannelName, ss.codeValue AS platformName,  createUserId 
+	FROM app_channel_link t
+	LEFT JOIN system_code s 
+	    ON t.`clientChannel` = s.`codeKey` 
+	    AND s.`type` = 'clientChannel' 
+	  LEFT JOIN system_code ss 
+	    ON t.`platform` = ss.codeKey 
+	    AND ss.type = 'platform' 
+	 WHERE 1=1
+	<#if downloadLink?exists && downloadLink!="" >
+		AND downloadLink=:downloadLink
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if platform?exists && platform!="" >
+		AND platform=:platform
+	</#if>
+	<#if channelName?exists && channelName!="" >
+		AND channelName like "%":channelName"%"
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if state?exists && state!="" >
+		AND t.state=:state
+	</#if>
+	<#if pageLink?exists && pageLink!="" >
+		AND pageLink=:pageLink
+	</#if>
+	<#if clientChannel?exists && clientChannel!="" >
+		AND clientChannel=:clientChannel
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	ORDER BY clientChannel , createTime DESC
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	  t.id,  downloadLink,  updateUserId,  createTime,  platform,  channelName,  updateTime,  t.state,  pageLink,  
+	  clientChannel,  s.`codeValue` AS clientChannelName, ss.codeValue AS platformName,  createUserId 
+	FROM app_channel_link t
+	LEFT JOIN system_code s 
+	    ON t.`clientChannel` = s.`codeKey` 
+	    AND s.`type` = 'clientChannel' 
+	  LEFT JOIN system_code ss 
+	    ON t.`platform` = ss.codeKey 
+	    AND ss.type = 'platform' 
+	 WHERE 1=1
+	<#if downloadLink?exists && downloadLink!="" >
+		AND downloadLink=:downloadLink
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if platform?exists && platform!="" >
+		AND platform=:platform
+	</#if>
+	<#if channelName?exists && channelName!="" >
+		AND channelName like "%":channelName"%"
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if state?exists && state!="" >
+		AND t.state=:state
+	</#if>
+	<#if pageLink?exists && pageLink!="" >
+		AND pageLink=:pageLink
+	</#if>
+	<#if clientChannel?exists && clientChannel!="" >
+		AND clientChannel=:clientChannel
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	ORDER BY clientChannel , createTime DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM app_channel_link WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if downloadLink?exists && downloadLink!="" >
+		AND downloadLink=:downloadLink
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if platform?exists && platform!="" >
+		AND platform=:platform
+	</#if>
+	<#if channelName?exists && channelName!="" >
+		AND channelName=:channelName
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if pageLink?exists && pageLink!="" >
+		AND pageLink=:pageLink
+	</#if>
+	<#if clientChannel?exists && clientChannel!="" >
+		AND clientChannel=:clientChannel
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	UPDATE app_channel_link SET state=0,updateTime=SYSDATE(),updateUserId=:updateUserId WHERE id=:id
+	]]>
+</sql>
+<!-- 	DELETE FROM app_channel_link WHERE id=:id -->
+</sqlMap>

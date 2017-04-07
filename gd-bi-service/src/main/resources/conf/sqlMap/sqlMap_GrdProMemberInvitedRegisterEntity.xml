@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdProMemberInvitedRegisterEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_pro_member_invited_register(
+	marketId,teamName,createTime,updateTime,grdMobile,regetypeName,grdUserName,
+	teamId,grdId,registerTime,id,updateUserId,marketName,
+	memberMobile,account,realName,memberId,regetype,createUserId,type
+	
+	) VALUES (
+	:marketId,:teamName,now(),:updateTime,:grdMobile,:regetypeName,:grdUserName,
+	:teamId,:grdId,:registerTime,:id,:updateUserId,:marketName,
+	:memberMobile,:account,:realName,:memberId,:regetype,:createUserId,:type
+	
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_pro_member_invited_register SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if teamName?exists && teamName!="" >
+		teamName=:teamName,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if grdMobile?exists && grdMobile!="" >
+		grdMobile=:grdMobile,
+	</#if>	
+	<#if regetypeName?exists && regetypeName!="" >
+		regetypeName=:regetypeName,
+	</#if>	
+	<#if grdUserName?exists && grdUserName!="" >
+		grdUserName=:grdUserName,
+	</#if>	
+	<#if teamId?exists && teamId!="" >
+		teamId=:teamId,
+	</#if>	
+	<#if grdId?exists && grdId!="" >
+		grdId=:grdId,
+	</#if>	
+	<#if registerTime?exists && registerTime!="" >
+		registerTime=:registerTime,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if memberMobile?exists && memberMobile!="" >
+		memberMobile=:memberMobile,
+	</#if>	
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>	
+	<#if realName?exists && realName!="" >
+		realName=:realName,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if regetype?exists && regetype!="" >
+		regetype=:regetype,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,updateTime,grdMobile,regetypeName,grdUserName,
+	teamId,grdId,registerTime,id,updateUserId,marketName,
+	memberMobile,account,realName,memberId,regetype,createUserId
+	
+	FROM grd_pro_member_invited_register WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,updateTime,grdMobile,regetypeName,grdUserName,
+	teamId,grdId,registerTime,id,updateUserId,marketName,type,
+	(CASE type WHEN 1 THEN '农批'
+	         			 WHEN 2 THEN '农速通' 
+	        			 ELSE '--' END ) AS typeStr,
+	memberMobile,account,realName,memberId,regetype,createUserId,
+	DATE_FORMAT(registerTime,'%Y-%m-%d %H:%i:%S') registerTimeString
+	
+	FROM grd_pro_member_invited_register WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if regetypeName?exists && regetypeName!="" >
+		AND regetypeName=:regetypeName
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+		AND date_format(registerTime, '%Y-%m-%d') >= :startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(registerTime, '%Y-%m-%d') <= :endDate
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if memberMobile?exists && memberMobile!="" >
+		AND memberMobile LIKE "%":memberMobile"%"
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,updateTime,grdMobile,regetypeName,grdUserName,
+	teamId,grdId,registerTime,id,updateUserId,marketName,type,
+	memberMobile,account,realName,memberId,regetype,createUserId
+	
+	FROM grd_pro_member_invited_register WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if regetypeName?exists && regetypeName!="" >
+		AND regetypeName=:regetypeName
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+		AND date_format(registerTime, '%Y-%m-%d') >= :startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(registerTime, '%Y-%m-%d') <= :endDate
+	</#if>	
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if memberMobile?exists && memberMobile!="" >
+		AND memberMobile LIKE "%":memberMobile"%"
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	ORDER BY registerTime DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_pro_member_invited_register WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if regetypeName?exists && regetypeName!="" >
+		AND regetypeName=:regetypeName
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+		AND date_format(registerTime, '%Y-%m-%d') >= :startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(registerTime, '%Y-%m-%d') <= :endDate
+	</#if>	
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if memberMobile?exists && memberMobile!="" >
+		AND memberMobile LIKE "%":memberMobile"%"
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+		AND realName=:realName
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if regetype?exists && regetype!="" >
+		AND regetype=:regetype
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_pro_member_invited_register WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

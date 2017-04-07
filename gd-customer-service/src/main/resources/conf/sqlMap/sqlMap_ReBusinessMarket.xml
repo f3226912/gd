@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ReBusinessMarket">
+ 
+	<!-- 全查找 -->
+	<sql id="getAll">
+	<![CDATA[
+		SELECT 
+			businessId,t.marketId,m.marketName
+		FROM 
+			Re_Business_Market  t 
+		LEFT JOIN 
+			market m 
+		ON
+			t.marketId=m.id
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	 
+	 	<!-- 全查找 -->
+	<sql id="getBySearch">
+	<![CDATA[
+		SELECT 
+			businessId,t.marketId,m.marketName
+		FROM 
+			Re_Business_Market  t 
+		LEFT JOIN 
+			market m 
+		ON
+			t.marketId=m.id
+		WHERE  1=1 
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId= :businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId= :marketId
+			</#if>
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	
+	<!-- 全查找  不带翻页-->
+	<sql id="getAllBySearch">
+	<![CDATA[
+		SELECT 
+			businessId,t.marketId,m.marketName
+		FROM 
+			Re_Business_Market  t 
+		LEFT JOIN 
+			market m 
+		ON
+			t.marketId=m.id
+		WHERE  1=1 
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId= :businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId= :marketId
+			</#if>
+	]]>
+	</sql>
+	
+	 
+	<!-- 统计总共记录数  -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			re_business_market  t 
+		WHERE  1=1 
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId= :businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId= :marketId
+			</#if>
+	]]>
+	</sql>
+	
+	<!-- 增加记录，注意date类型的，使用  _string 字段的值，代替date类型的值  -->
+	<sql id="addReBusinessMarket">
+	<![CDATA[
+	    INSERT INTO  
+	    	re_business_market
+	    	(
+			businessId,marketId
+			)
+	    VALUES
+	    	(
+			:businessId,:marketId
+			)
+	]]>
+	</sql>
+	
+	<!-- 根据 businessId，marketId 删除记录 -->
+	<sql id="deleteReBusinessMarket">
+	<![CDATA[
+	DELETE FROM 
+		re_business_market
+    WHERE 
+    	businessId=:businessId 
+    <#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	]]>
+	</sql>
+	
+	
+	<sql id="getByBusinessId">
+	<![CDATA[
+		SELECT 
+			businessId,t.marketId,m.marketName
+		FROM 
+			Re_Business_Market  t 
+		LEFT JOIN 
+			market m 
+		ON
+			t.marketId=m.id
+		WHERE    
+			t.businessId= :businessId
+	]]>
+	</sql>
+	
+	
+	
+	<!-- 暂时只做新增和删除，不做更新 -->
+	<sql id="updateMemberBaseinfo">
+	<![CDATA[
+	    
+	]]>
+	</sql>
+	
+</sqlMap>

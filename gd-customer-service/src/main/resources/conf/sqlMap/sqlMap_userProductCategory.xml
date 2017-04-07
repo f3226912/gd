@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="userProductCategory">
+ 
+	<sql id="deleUserProductCategoryId">
+	<![CDATA[
+		DELETE FROM usercollect_product_category 
+		WHERE productCategoryId=:categoryId and userId=:userId
+	]]>
+	</sql>
+	
+	<sql id="getFocusCategory">
+		<![CDATA[
+			SELECT 
+				a.id, a.userId, a.createTime, a.productCategoryId, b.cateName,
+				b.curLevel as curLevel, b.marketId, c.marketName
+			FROM usercollect_product_category AS a 
+				LEFT JOIN product_category AS b ON a.productCategoryId=b.categoryId
+				LEFT JOIN market c ON b.marketId = c.id
+			WHERE 
+				a.userId=:userId
+			AND 
+				c.marketType IN ('2','3')
+			<#if curLevel?exists && curLevel!="" >
+			     AND b.curLevel = :curLevel
+			</#if> 
+			<#if marketId?exists && marketId!="" >
+			     AND b.marketId = :marketId
+			</#if> 
+		]]>
+	</sql>
+	
+	
+</sqlMap>

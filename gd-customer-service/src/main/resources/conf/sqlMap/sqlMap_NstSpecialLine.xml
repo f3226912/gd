@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NstSpecialLine">
+	<sql id="getSpecialLineByCondition">
+	<![CDATA[
+		SELECT
+			id,
+			begin_areaId,
+			end_areaId
+		FROM
+		nst_special_line
+		where 1=1
+		<#if id?exists && id!="" >
+			AND id =:id 
+		</#if>
+		<#if begin_areaId?exists && begin_areaId!="" >
+			AND begin_areaId =:begin_areaId 
+		</#if>
+		<#if end_areaId?exists && end_areaId!="" >
+			AND end_areaId =:end_areaId 
+		</#if>
+	]]>
+	</sql>
+</sqlMap>

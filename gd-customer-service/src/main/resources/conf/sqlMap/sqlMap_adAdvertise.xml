@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AdAdvertise">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO ad_advertise(
+		state,categoryId,createUserId,createUserName,createTime,updateUserId,updateUserName,
+		updateTime,adSpaceId,adName,jumpType,jumpUrl,adWord,startTime,endTime,productId,adUrl,productSign,marketId
+		) VALUES (
+		:state,:categoryId,:createUserId,:createUserName,SYSDATE(),:updateUserId,:updateUserName,
+		SYSDATE(),:adSpaceId,:adName,:jumpType,:jumpUrl,:adWord,:startTimeStr,:endTimeStr,:productId,:adUrl,:productSign,:marketId
+		)
+	]]>
+</sql>
+<sql id="update">
+	<![CDATA[
+	UPDATE ad_advertise SET state=:state,categoryId=:categoryId,updateUserId=:updateUserId,updateUserName=:updateUserName,
+		updateTime=SYSDATE(),adSpaceId=:adSpaceId,adName=:adName,jumpType=:jumpType,jumpUrl=:jumpUrl,adWord=:adWord,
+		startTime=:startTimeStr,endTime=:endTimeStr,productId=:productId,adUrl=:adUrl,productSign=:productSign,marketId=:marketId
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT 
+	  count(*)
+	FROM
+	  ad_advertise t 
+	LEFT JOIN ad_space m 
+	ON t.`adSpaceId` = m.`id` 
+	LEFT JOIN market a 
+    ON t.`marketId` = a.`id` 
+    WHERE 1=1
+	<#if id?exists && id!="" >
+		AND t.id=:id
+	</#if>
+	<#if state?exists && state!="" >
+		AND t.state=:state
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND t.categoryId=:categoryId
+	</#if>
+	<#if adSpaceId?exists && adSpaceId!="" >
+		AND t.adSpaceId=:adSpaceId
+	</#if>
+	<#if adName?exists && adName!="" >
+		AND t.adName like "%":adName"%"
+	</#if>
+	<#if jumpType?exists && jumpType!="" >
+		AND t.jumpType=:jumpType
+	</#if>
+	<#if jumpUrl?exists && jumpUrl!="" >
+		AND t.jumpUrl=:jumpUrl
+	</#if>
+	<#if adWord?exists && adWord!="" >
+		AND t.adWord=:adWord
+	</#if>
+	<#if startTime?exists && startTime!="" >
+		AND t.startTime >=:startTime
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND t.startTime <= :endTime
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND t.productId=:productId
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if adType?exists && adType!="" >
+		AND adType=:adType
+	</#if>
+	<#if adspaceName?exists && adspaceName!="" >
+		AND m.`adName` like "%":adspaceName"%"
+	</#if>
+	]]>
+	</sql>
+<sql id="geAdAdvertiseDTOList">
+	<![CDATA[
+	SELECT 
+	  t.id, t.state, t.categoryId, t.createUserId, t.createUserName, t.createTime, t.updateUserId,
+	  t.updateUserName, t.updateTime, t.adSpaceId, t.adName, t.jumpType, t.jumpUrl, t.adWord,
+	  t.startTime, t.endTime, t.productId, m.`adName` AS adspaceName , t.marketId,t.adUrl,t.productSign,
+	  m.`adType`, a.`marketName`,m.spaceSign
+	FROM
+	  ad_advertise t 
+	LEFT JOIN ad_space m 
+	ON t.`adSpaceId` = m.`id` 
+	LEFT JOIN market a 
+    ON t.`marketId` = a.`id` 
+    WHERE 1=1
+	<#if id?exists && id!="" >
+		AND t.id=:id
+	</#if>
+	<#if state?exists && state!="" >
+		AND t.state=:state
+	</#if>
+	<#if stateList?exists>
+		<#assign n = stateList?size />
+		<#if n gt 0>
+			and(
+			<#list stateList as stateId>
+				<#if stateId_index != n-1>
+						t.state = '${stateId}' or
+					<#else>
+						t.state = '${stateId}'  
+				</#if>
+			</#list>
+			) 
+		</#if>
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND t.categoryId=:categoryId
+	</#if>
+	<#if adSpaceId?exists && adSpaceId!="" >
+		AND t.adSpaceId=:adSpaceId
+	</#if>
+	<#if adName?exists && adName!="" >
+		AND t.adName =:adName
+	</#if>
+	<#if jumpType?exists && jumpType!="" >
+		AND t.jumpType=:jumpType
+	</#if>
+	<#if jumpUrl?exists && jumpUrl!="" >
+		AND t.jumpUrl=:jumpUrl
+	</#if>
+	<#if adWord?exists && adWord!="" >
+		AND t.adWord=:adWord
+	</#if>
+	<#if startTime?exists && startTime!="" >
+		AND t.startTime >=:startTime
+	</#if>
+	<#if endTime?exists && endTime!="" >
+		AND t.startTime <= :endTime
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND t.productId=:productId
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if adType?exists && adType!="" >
+		AND adType=:adType
+	</#if>
+	<#if adspaceName?exists && adspaceName!="" >
+		AND m.`adName` like "%":adspaceName"%"
+	</#if>
+	<#if spaceSign?exists && spaceSign!="" >
+		AND m.`spaceSign` =:spaceSign
+	</#if>
+	<#if menuSign?exists && menuSign!="" >
+		AND m.`menuSign` =:menuSign
+	</#if>
+	ORDER BY t.`createTime` DESC
+	LIMIT :startRow ,:endRow
+	]]>
+</sql>
+<sql id="delete">
+	<![CDATA[
+		DELETE FROM AD_ADVERTISE WHERE ID =:id
+	]]>
+</sql>
+
+<!-- 获取根据菜单id获取广告 -->
+	<sql id="getAdByMenuId">
+		SELECT
+			ads.spaceSign,ads.replaceImg,
+			ad.*,pb.price as price,pb.businessId,
+			(select sc.codeValue from product_baseinfo as p,system_code as sc 
+			where p.productId=ad.productId and sc.type='ProductUnit' and p.unit=sc.codeKey
+			and p.productType = '1')as unit
+		FROM
+			ad_space AS ads
+		LEFT JOIN ad_advertise AS ad ON ad.adSpaceId = ads.id  and ad.state=1
+		LEFT JOIN product_baseinfo as pb ON ad.productId = pb.productId and pb.productType = '1'
+		WHERE
+			ads.menuId = (select id from ad_menu ttt where ttt.menuSign='YTHH01')
+		AND ads.state = 1 ORDER BY spaceSign asc
+	</sql>
+
+	<sql id="deleteByAdSpace">
+		UPDATE
+			ad_advertise
+		SET
+			state = 4,
+			updateUserId = :updateUserId,
+			updateUserName = :updateUserName,
+			updateTime = SYSDATE()
+		WHERE
+			adSpaceId = :adSpaceId
+	</sql>
+	<sql id="updateState">
+		UPDATE
+			ad_advertise
+		SET
+			state = :state,
+			updateUserId = :updateUserId,
+			updateUserName = :updateUserName,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	</sql>
+	
+<!-- 获取根据菜单标识和市场id获取广告 -->
+	<sql id="getAdBySignAndMarketId">
+		SELECT
+			ads.spaceSign,CONCAT(:ImgHost,ads.replaceImg) as replaceImg,
+			CONCAT(:ImgHost,ad.adUrl) as adUrl,
+			ad.id,ad.adSpaceId,ad.adName,ad.state,ad.jumpType,ad.jumpUrl,ad.adWord,ad.marketId,ad.categoryId,ad.productId,ad.productSign,
+			pb.price as price,pb.businessId,
+			(select sc.codeValue from product_baseinfo as p,system_code as sc 
+			where p.productId=ad.productId and sc.type='ProductUnit' and p.unit=sc.codeKey
+			and p.productType = '1')as unit,
+			(select mk.marketName from market mk where mk.id=ad.marketId ) as marketName
+		FROM
+			ad_space AS ads
+		LEFT JOIN ad_advertise AS ad ON ad.adSpaceId = ads.id  
+		LEFT JOIN product_baseinfo as pb ON ad.productId = pb.productId and pb.productType = '1'
+		WHERE
+			ads.menuId = (select id from ad_menu ttt where ttt.menuSign=:menuSign)
+		AND ads.state = 1 and spaceSign REGEXP '^[A]' 
+		 and ad.state=1 ORDER BY spaceSign asc
+	</sql>	
+	
+	<sql id="queryAdvertiseList">
+		<![CDATA[
+			SELECT 
+			  a.* 
+			FROM
+			  ad_advertise a 
+			  LEFT JOIN ad_space s 
+			    ON s.`id` = a.`adSpaceId` 
+			    AND s.`state` = '1' 
+			  LEFT JOIN ad_menu m 
+			    ON m.`id` = s.`menuId` 
+			    AND m.`state` = '1' 
+			WHERE a.`state` = '1' AND a.`startTime` <= SYSDATE() AND a.`endTime` >= SYSDATE()
+		<#if menuSign?exists && menuSign!="" >
+			AND m.`menuSign` =:menuSign
+		</#if>
+		ORDER BY a.`createTime` DESC
+		]]>
+	</sql>
+</sqlMap>

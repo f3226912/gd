@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GoodsTrade">
+	
+	<sql id="getGoodsTradeResult">
+		<![CDATA[
+		SELECT 
+			  a.productId,
+			  a.productName productName,
+			  SUM(a.purQuantity) sales,
+			  IFNULL(SUM(a.tradingPrice), 0) tradeAmt,
+			  a.unit,
+			  a.url170 url,
+			  a.codeValue unitString,
+			  IFNULL(a.visitCount, 0) pv,
+			  COUNT(a.preSalProductDetailId) orderNum,
+			  a.categoryId mainCategory
+		FROM (
+			SELECT 
+			  opd.productId,
+			  opd.productName,
+			  opd.purQuantity,
+			  ROUND(opd.tradingPrice * ob.payAmount / ob.orderAmount, 2) tradingPrice,
+			  pb.unit,
+			  pp.url170,
+			  sc.codeValue,
+			  pb.visitCount,
+			  opd.preSalProductDetailId,
+			  rbc.categoryId
+			FROM
+				(
+					SELECT a.*, SUM(p.tradingPrice) orderAmount FROM 
+					(
+					
+						SELECT o.orderNo, o.payAmount FROM order_baseinfo o WHERE 1=1
+							AND o.sellMemberId = :memberId
+							AND EXISTS (SELECT 1 FROM `pay_serialnumber` ps WHERE o.`orderNo` = ps.`orderNo` AND ps.payTime <= :endTime
+							AND ps.payTime >= :startTime)
+								
+					)  a LEFT JOIN order_product_detail p ON a.orderNo = p.`orderNo`
+					GROUP BY a.orderNo
+				) ob
+			
+			  LEFT JOIN order_product_detail opd 
+			 	ON ob.orderNo = opd.orderNo
+			  LEFT JOIN product_baseinfo pb 
+			    ON pb.productId = opd.productId and pb.productType = '1'
+			  LEFT JOIN system_code sc
+			  	ON (sc.codeKey=pb.unit AND sc.`type`='ProductUnit')
+			  LEFT JOIN `product_picture` pp
+			  	ON (pp.productId=opd.productId AND pp.pictureType=1)
+			  LEFT JOIN `re_business_category` rbc
+			  	ON (rbc.businessId=pb.businessId AND `businessType`=0)
+			) a WHERE a.productId IS NOT NULL
+		GROUP BY a.productId 
+		ORDER BY tradeAmt DESC
+			
+		]]>
+	</sql>
+	
+</sqlMap>

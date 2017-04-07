@@ -1,0 +1,249 @@
+.ditail-main {
+	background-color: #eee;
+	padding-bottom:0px;
+}
+
+.ditail-cont {
+	background-color: #fff;
+}
+
+.algn-right {
+	text-align: right;
+}
+
+.bor-bottom:after {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0px;
+	height: 1px;
+	content: '';
+	-webkit-transform: scaleY(.5);
+	transform: scaleY(.5);
+	background-color: #eee;
+}
+
+.top-text {
+	position: relative;
+	height: 30px;
+	line-height: 30px;
+	color: #fc6c21;
+	font-size: 12px;
+	padding-right: 18px;
+}
+.top-text em{
+	padding-left: 15px;
+	color: #666;
+}
+.view-list {
+	position: relative;
+	height: 45px;
+	line-height: 44px;
+	padding: 0 18px;
+	font-size: 16px;
+	color: #666;
+}
+
+.bg-icon {
+	background-image: url(../../images/transport/bgIcon.png);
+	background-repeat: no-repeat;
+	background-size: 375px auto;
+}
+
+.address-con {
+	position: relative;
+	padding-left: 28px;
+	background-color:#ffffff;
+}
+
+.fhd-text span {
+	color: #3bb650;
+	font-size: 14px;
+	webkit-box-sizing: initial;
+    box-sizing: initial;
+}
+
+.fhd-text .input-text,
+.mhd-text .input-text {
+	border: none;
+	font-size: 14px;
+	color: #666;
+	width: 75%;
+	float: right;
+	/* height: 20px; */
+	line-height: 20px;
+	padding: 14px 0;
+}
+
+.fhd-text .input-text {
+	border-bottom: 1px solid #ccc;
+	border-radius: 0;
+	display:block;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+.mhd-text,
+.fhd-text {
+	/* height: 50px; */
+	height: auto;
+    overflow: hidden;
+	line-height: 50px;
+	webkit-box-sizing: initial;
+    box-sizing: initial;
+}
+
+.mhd-text span {
+	font-size: 14px;
+	color: #fc6d22;
+}
+
+.fhd-text span i {
+	display: inline-block;
+	background-position: -70px -62px;
+	width: 15px;
+	height: 15px;
+}
+
+.mhd-text span i {
+	display: inline-block;
+	background-position: -119px -63px;
+	width: 15px;
+	height: 15px;
+}
+
+.add-img {
+	background-position: 0 -49px;
+	position: absolute;
+	width: 9px;
+	height: 52px;
+	left: 15px;
+	top: 24px;
+}
+
+.check-add {
+	background-color: #FFEEDD;
+	background-position: 0 0;
+	color: #fc6c21;
+	font-size: 14px;
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+}
+
+.mess-title {
+	font-size: 12px;
+	color: #999;
+	height: 34px;
+	background-color: #eee;
+	padding-left: 10px;
+	line-height: 34px;
+}
+
+.area-cont {
+	border-top: 10px solid #eee;
+	font-size: 16px;
+	color: #666;
+	padding: 7px 10px 7px 18px;
+}
+
+.textarea-text {
+	padding-left: 56px;
+}
+
+.textarea-text textarea {
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	background-color: #F7F7F7;
+	height: 70px;
+	border: 1px solid #eee;
+	border-radius: 5px;
+}
+
+.succ-start {
+	padding: 6px 28px;
+	position: relative;
+}
+
+.succ-start p {
+	color: #666;
+	font-size: 14px;
+	height: 18px;
+	line-height: 18px;
+}
+
+.succ-start p i {
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	background-position: -202px -61px;
+	margin-right: 15px;
+}
+.succ-hy p{
+	color: #ff6c00;
+}
+.succ-hy p i {
+	background-position: -170px -60px;
+}
+
+.succ-start p.time-text {
+	padding-left: 33px;
+	font-size: 12px;
+	margin-top: 6px;
+}
+.mt20{ margin-top: 20px;}
+.mb10{ margin-bottom: 10px;}
+.wuliu-mess{ position: relative;}
+.line-wuliu{ position: absolute; border-left: 1px dashed #999; height: 48px;top: 14px;
+    left: 37px;}
+.del-cont{ font-size: 16px; color: #666; height: 24px; line-height: 24px; border-top: 1px solid #DBDBDB; background-color: #fff; text-align: center; padding: 10px;}
+.del-cont span{ display: inline-block; width:49%;border-right: 1px solid #CDCDCD; box-sizing: border-box;}
+.del-cont span:last-child{ border-right: none;}
+.red-text{ color: #fc6c21;}
+
+.siji-cont{
+	background-color: #fff;
+	padding: 22px 16px;
+}
+.left-img{ float: left; width: 54px; height: 54px; border-radius: 54px; overflow: hidden;margin-top: 8px;}
+.left-img img{ width: 100%;}
+.siji-mess{ margin-left: 62px;}
+.siji-name{ background: url(../../images/transport/renzheng-icon.png) right center no-repeat; color: #666; font-size: 16px; background-size: 29px auto; padding-right: 34px;}
+.siji-wrz{ background: url(../../images/transport/renzheng-icon1.png) right center no-repeat;background-size: 29px auto;}
+.gongsi-name{ background: url(../../images/transport/renzheng-wuliu.png) right center no-repeat; color: #666; font-size: 16px; background-size: 65px auto; padding-right: 65px;}
+.gongsi-wrz{ background: url(../../images/transport/wrenzheng-wuliu.png) right center no-repeat;background-size: 65px auto;}
+.siji-num{ font-size: 14px; color: #999; margin-top: 6px;}
+.tip-time{  width: 100%; text-align: center; height: 40px; line-height: 40px; background-color: #ffeddf; color: #ff6c00;}
+.tip-time img{ width: 10px; margin-top: 15px; margin-right: 10px;}
+.del-three span{ width: 32.3%;}
+
+.pop-win{ position: fixed; width: 100%; height: 100%; left: 0; top: 0; display: none;}
+.filter{ position: absolute; width: 100%; height: 100%; left: 0; top: 0; background-color: #000; opacity: 0.5;}
+.pop-cont{ position: absolute; width: 280px; left: 50%; margin-left: -140px; top: 50%; margin-top:-85px;background-color: #fff; padding-top: 40px; border-radius: 10px;}
+.pop-cont p{ text-align: center; font-size: 16px; color: #666;}
+.pop-btn{ margin-top: 60px;}
+.pop-btn span{ box-sizing: border-box; display: inline-block;width: 50%; font-size: 16px; color: #666; height: 48px; line-height: 48px; text-align: center; border-top: 1px solid #ccc;}
+.pop-btn span:first-child{border-right: 1px solid #ccc;}
+.pop-btn span.curr-btn{ color:#ff6c00;}
+#driverName span{font-size:13px}
+
+
+.layer-title{text-align: center;height:3rem;line-height:3rem;margin:1rem 0;}
+.layui-layer{width:80%}
+.layui-layer .con{width:60%;border:1px solid #ccc;margin:2rem auto;text-align: center;padding:1rem 0;}
+.layui-layer .con input{border:none;margin-bottom:0;text-align: center;display: block;width: 100%;}
+.layui-layer .buttom{width:90%;margin:1rem auto;text-align: center;background-color: #3bb650;color:#fff;line-height:3rem;border-radius:4px;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

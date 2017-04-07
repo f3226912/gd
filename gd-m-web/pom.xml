@@ -1,0 +1,58 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.gudeng.commerce.gd</groupId>
+		<artifactId>gd-m-pom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../gd-m-pom/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>gd-m-web</artifactId>
+	<packaging>war</packaging>
+	<version>${gd.m.version}</version>
+	<name>gd-m-web Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<httpclient.version>4.5.2</httpclient.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-m-intf</artifactId>
+			<version>${gd.m.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-m-service</artifactId>
+			<version>${gd.m.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>gd-m</finalName>
+	</build>
+</project>

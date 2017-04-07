@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProBaidu">
+	<sql id="sumReport">
+	<![CDATA[
+		SELECT
+			reportsId,
+			DATE_FORMAT(datatimes, '%Y-%m-%d') as datatimes,
+			IFNULL(PVcount,0) as PVcount,
+			IFNULL(UVcount,0) as UVcount,
+		  	IFNULL(IPcount,0) as IPcount,
+			IFNULL(signout,0) as signout,
+			IFNULL(avstop,0) as avstop,
+			IFNULL(avvisit,0) as avvisit,
+			IFNULL(newuser,0) as newuser,
+		  	IFNULL(olduser,0) as olduser,
+			IFNULL(PVsum,0) as PVsum,
+			IFNULL(UVsum,0) as UVsum,
+			IFNULL(avvisitsum,0) as avvisitsum
+		FROM
+			pro_baidu
+		WHERE
+			reportsID = :reportsId
+		<#if queryStartDate?exists && queryStartDate!="" && queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(datatimes, '%Y-%m-%d') >= DATE_FORMAT(:queryStartDate, '%Y-%m-%d')
+			AND DATE_FORMAT(datatimes, '%Y-%m-%d') <= DATE_FORMAT(:queryEndDate, '%Y-%m-%d')
+		</#if>
+		GROUP BY DATE_FORMAT(datatimes, '%Y-%m-%d')
+	]]>
+	</sql>
+</sqlMap>

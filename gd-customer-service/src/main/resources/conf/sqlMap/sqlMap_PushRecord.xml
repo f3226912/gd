@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Pushrecord">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			pushrecord 
+		WHERE 
+			id=:id
+	]]>
+	</sql>
+ 
+	<sql id="getList">
+		<![CDATA[
+		 	SELECT id,type,receiveType,title,content,
+		 		p.memberId,p.createUserId,p.createTime,state,origin,redirectUrl,m.account,m.realName
+			FROM 
+				pushrecord p
+			LEFT JOIN 
+		 		member_baseinfo m
+			ON 
+		 	    p.memberId=m.memberId
+	 		WHERE 1=1 
+	 		AND  receiveType='1'
+			<#if state?exists && state!="" >
+			      AND state= :state
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND p.memberId= :memberId
+			</#if>
+			LIMIT 
+			:startRow,:endRow 
+		]]>
+ 	</sql>
+ 
+ 	<sql id="batchDel"  >
+ 		<![CDATA[
+		DELETE 
+			FROM pushrecord
+		WHERE id 
+		IN 
+  		<#assign n = productIds?size />
+		<#if n gt 0>
+			(
+			<#list productIds as productId>
+				<#if productId_index != n-1>
+						${productId} ,
+					<#else>
+						${productId}
+				</#if>
+			</#list>
+			) 
+		</#if>
+		]]>
+ 	</sql>
+ 
+ 	
+	<!-- 根据 id 更新记录，全部更新用此 sql -->
+	<sql id="updateById">
+	<![CDATA[
+	   UPDATE 
+	   		pushrecord
+	   SET
+			<#if type?exists && type!="" >
+			     type=:type,
+			</#if>	
+			<#if receiveType?exists && receiveType!="" >
+				 receiveType=:receiveType,
+			</#if>	
+			<#if title?exists && title!="" >
+				title=:title,
+			</#if>	
+			<#if content?exists && content!="" >
+				 content=:content,
+			</#if>	
+			<#if memberId?exists && memberId!="" >
+					  memberId=:memberId,
+			</#if>	
+			<#if state?exists && state!="" >
+					 state=:state,
+			</#if>	
+			<#if createUserId?exists && createUserId!="" >
+					 createUserId=:createUserId,
+			</#if>	
+				 id=:id
+			WHERE 
+		   		 id=:id
+		   		  AND  receiveType='1'
+	]]>
+	</sql>
+ 
+ 
+ 
+ 
+ <sql id="getCount">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			pushrecord 
+	  	WHERE  
+	  	1=1 
+	    <#if state?exists && state!="" >
+		    AND   state =:state
+		</#if> 
+		<#if memberId?exists && memberId!="" >
+		      AND memberId= :memberId
+		</#if>
+			AND  receiveType='1'
+	]]>
+	</sql>
+	
+	<!-- 判断是否可以推送用户 -->
+	 <sql id="getListByTime">
+ 		SELECT id,type,receiveType,title,content,
+	 		memberId,createUserId,createTime,state,origin,redirectUrl
+	 	FROM 
+	 	pushrecord
+	 		where memberId=:userId and receiveType=2  and (origin=0 or origin is null) and createTime BETWEEN date_sub(now(),interval :daycn DAY) and now();
+ 	</sql>
+ 
+ 	<!-- 统计总共记录数  -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 pushrecord
+		WHERE  1=1
+		<#if title?exists && title!="" >
+			     AND title like "%":title"%"
+			</#if>   
+			<#if startDate?exists && startDate!="" >
+				AND   createTime > :startDate 
+			</#if>	  
+			<#if endDate?exists && endDate!="" >
+				AND   createTime < :endDate 
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getBySearch" >
+    	<![CDATA[
+			SELECT id,type,receiveType,title,content,
+		 		p.memberId,p.createUserId,p.createTime,state,origin,redirectUrl,m.account,m.realName
+			FROM 
+				pushrecord p
+			LEFT JOIN 
+		 		member_baseinfo m
+			ON 
+		 	    p.memberId=m.memberId
+			WHERE   
+			1=1
+			<#if title?exists && title!="" >
+			     AND title like "%":title"%"
+			</#if>   
+			<#if startDate?exists && startDate!="" >
+				AND   p.createTime > :startDate 
+			</#if>	  
+			<#if endDate?exists && endDate!="" >
+				AND   p.createTime < :endDate 
+			</#if>	
+		 ORDER by createTime desc		
+		 LIMIT :startRow,:endRow
+		]]>
+    </sql>	
+    
+    <sql id="insertRecord">
+		insert into pushrecord(
+		type,receiveType,title,content,memberId,createUserId,createTime,state,origin,redirectUrl
+		) value(
+		:type,:receiveType,:title,:content,:memberId,:createUserId,now(),:state,:origin,:redirectUrl)
+    </sql>
+    
+</sqlMap>
+

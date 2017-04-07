@@ -1,0 +1,392 @@
+body{
+	 background-color: #eeeeee; 
+	-webkit-text-size-adjust: 100%;
+	font-family: "Helvetica Neue", Helvetica, sans-serif,Microsoft Yahei;
+	color:#666666; 
+	font-size: 16px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	padding: 0;
+	margin: 0;
+}
+//0.125rem=1px;1rem=8px;共150rem;
+@media screen and (min-width:1200px){html{font-size: 125%;/*10 ÷ 16 × 100% × 2 = 62.5%  pc chrom最小字体12px所以为了调试方便，rem定为20px*/}}
+@media screen and (min-width: 980px) and (max-width: 1199px) {html{font-size: 125%;}}
+@media screen and (min-width: 768px) and (max-width: 979px) {html{font-size: 100%;}}
+//0.075rem=1px;1rem=13.33px;共57rem;
+@media screen and (max-width: 767px){html{font-size: 75%;}}
+//0.0625rem=1px;1rem=16px;共30rem;
+@media screen and (max-width: 480px) {html{font-size: 62.5%;}}
+
+/* //共30rem;兼容375的屏幕px*percent/10=rem;percent=rem*10/px=30*10/370=81.08%;1rem=0.08108px;
+@media screen and (max-width: 321px) {html{font-size: 81.08%;}}*/
+
+
+/* 共30rem;兼容320的屏幕px*percent/10=rem;percent=rem*10/px=30*10/320=93.75%;1rem=0.09375px;
+@media screen and (max-width: 361px) {
+	
+
+}  */
+
+.row{
+	background-color: #fff;
+	/* padding-right: 15px;
+	    padding-left: 25px;
+	    margin-left: -15px;
+	    margin-right: -15px; */
+	position: relative;
+}
+*{
+
+}
+.clearfix:before, .clearfix:after
+{
+    display: table;
+
+    content: ' ';
+}
+.clearfix:after
+{
+    clear: both;
+}
+
+.head-outline{
+	padding-bottom: 8px;
+	padding-top: 8px;
+	width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.head-row{
+	text-align: center;
+	background-color: #eeeeee;
+	width: 100%;
+	overflow: hidden;
+}
+
+.thirty-days{
+	border-right:1px solid #ff6c00; 
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+.one-day{
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+
+/* 从这里是表格的样式 */
+.table-outline{
+	margin-top: 5px;
+	box-sizing: border-box;
+	background-color: #fff;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 30px;
+}
+.table{
+	width: 95%;
+    border: #dcdcdc;
+    font-size: 13px;
+    margin-left: auto;
+    margin-right: auto;
+	}
+th{
+	background-color: #eeeeee;
+}
+.td-rank{
+	background-color: #eeeeee;
+	text-align: left;
+	width: 80px; 
+}
+.td-amount{
+	text-align: right;
+	/* width: 67px; */
+}
+
+.chart-row{
+	position: relative;
+	text-align: center;
+	width: 100%;
+	background-color: #fff;
+}
+.chart-inner{
+	width: 90%;
+	height:300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.chart-instruction{
+	position: absolute;
+	left: 0;
+	text-align: center;
+	width: 100%;
+	bottom: 18px;
+    font-size: 12px;
+}
+.chart-instruction2{
+	position: absolute;
+	left: 0;
+	text-align: center;
+	width: 100%;
+	bottom: 18px;
+    font-size: 12px;
+    text-align: right;
+
+}
+.table-ins{
+	text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.table-in1{
+	color: #000;
+	font-weight: 700;
+	font-size: 15px;
+}
+.table-in2{
+	font-size: 12px;
+}
+.chart-ins-in{
+	width: 86%;
+	text-align: right;
+}
+.trade-amount{
+	text-align: center;
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 10px;
+    padding-bottom: 15px;
+}
+.td-re{
+	text-align: right;
+}
+.td-unre{
+	text-align: right;
+}
+.out-OA{
+	position: relative;
+}
+.order-left{
+	color: #e46b51;
+	left: 5%;
+	top: 0px;
+	position: absolute;
+}
+.amount-right{
+	color:#59c895;
+	top: 0px;
+	right: 5%;
+	position: absolute;
+}
+.td-goods{
+	text-align: center;
+}
+.td-sales{
+	text-align: center;
+}
+
+/* 从这开始是第二版的 */
+.wid-33{
+	width: 33.33%;
+	text-align: center;
+	float: left;
+}
+.top-trade{
+	position: relative;
+	left: 0;
+	top:0;
+	width: 100%;
+}
+.tapped{
+	background-color: #ff6c00;
+	color: #fff;
+}
+.not-tapped{
+	background-color: #fff;
+	color: #ff6c00;
+}
+.head-day{
+	width: 25%;
+    height: 30px;
+    text-align: center;
+    float: left;
+    border-top: 1px solid #ff6c00;
+    border-bottom: 1px solid #ff6c00;
+    border-left: 1px solid #ff6c00;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box
+}
+.proportion{
+	text-align: center;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.amount-words{
+	position: relative;
+	bottom:10px;
+	left: 0px;
+}
+.received{
+	margin-bottom: 10px;
+}
+.ratio-sit{
+	text-align: center;
+	position: relative;
+	bottom: 0px;
+	left: 0px;
+	padding-bottom: 15px;
+}
+.hr{
+	margin-top: 20px;
+	border-top:1px;
+}
+.pie-one,.pie-two,.pie-three,.pie-four{
+	margin-left: auto;
+	margin-right: auto;
+	width: 6.6rem;
+	height: 6.6rem;
+}
+.trade-num-pic{
+	position: relative;
+	top: 0px;
+	left: 50%;
+	width:5rem;
+	margin-left: -2.5rem;
+}
+.trade-num-tip{
+	position: absolute;
+	width: 100%;
+	left:0;
+	top:10%;
+}
+.trade-num-words{
+	text-align: center;
+	margin-top: 15px;
+	color: #fff;
+	font-size: 15px;
+	font-weight: 700;
+}
+.trade-num-a{
+	margin-left: 1rem;
+	color: #fff;
+}
+.left-arrow{
+	position: fixed;
+	width: 30px;
+	height: 30px;
+	background-color: #ccc;
+	opacity: 0.4;
+	border-radius:50%;
+	z-index: 150;
+	left: 20px;
+	top: 55%;
+	color:#fff;
+	font-size: 15px;
+	text-align: center;
+	padding: 5px;
+}
+.left-arrow > img,.right-arrow > img{
+	width: 100%;
+}
+.right-arrow{
+	position: fixed;
+	width: 30px;
+	height: 30px;
+	background-color: #ccc;
+	opacity: 0.4;
+	border-radius:50%;
+	z-index: 150;
+	right: 20px;
+	top: 55%;
+	color:#fff;
+	font-size: 15px;
+	text-align: center;
+	padding: 5px;
+}
+ .out-block{
+	position: relative;
+	width: 1000px;
+	overflow:scroll;
+} 
+.first-block{
+	position: relative;
+	width: 400px;
+	float: left;
+}
+.second-block{
+	position: relative;
+	width: 400px;
+	float:left;
+}
+.outline{
+				background-color: #eee;
+				padding-left:2%;
+				padding-right: 2%;
+				box-sizing: border-box;
+			}
+
+/* 谢伟龙版本2 */
+.cont{width:95%;border-radius:9px;margin:0 auto;background-color:#fff;}
+.cont ul{padding: 0;}
+.cont .tital{width:100%;background: url(../../images/data/tital_bg.png) no-repeat;background-size:100%;overflow: hidden;position: relative;}
+.cont .tital .nothing{width:100%;padding:2rem 0 0 0;}
+.cont .tital .nothing img{width:18%;margin:0 auto;display: block;}
+.cont .tital .pai{width:10rem;text-align: center;color:#fff;font-size:1.3rem;margin:.5rem auto;position:relative;}
+.cont .tital .paiAll{position:relative;}
+.cont .tital div .wenhao{position: absolute;top:.25rem;right:0rem;width:1rem;height:1rem;}
+.bomb{position:absolute;top:-1rem;left:-2.5%;width:100%;background-color: #fff;z-index:999000000;box-shadow:1px -1px 1px #cccccc;}
+.cont .tital>div>.wenhao>img{width:100%;}
+.cont .list{width:100%;margin:1rem 0;position:relative;}
+.cont .list li{list-style-type:none;}
+.cont .lists{overflow:hidden;}
+.cont .lists>img{width:37%;display:block;margin:3rem auto;}
+.cont .lists>li{width:88%;margin:0 0 0 12%;border-bottom:1px solid #ededed;position: relative;padding:1rem 0;}
+.cont .lists li>.num{width:1.5rem;height:1.5rem;text-align:center;line-height:1.5rem;color: #ff7006;position: absolute;top:1.3rem;left:-1.8rem; -webkit-transform: skew(30deg);transform: skew(-10deg);}
+.cont .lists li>.name{font-size:1.3rem;color:#ff6c00;font-weight:800;}
+.cont .lists li ul{margin:1rem 0;color:#ff6c00;}
+.cont .lists li li{overflow: hidden;font-size:.8rem;height:1rem;line-height:1rem;}
+.cont .lists li .doc{width:.5rem;height:.5rem;display: block;float:left;border-radius:50%;background-color:#ff6c00;margin:.25rem .2rem;}
+.cont .lists li>.fruits{width:100%;}
+.cont .lists li>.fruits img{width:6.66%;}
+.bomb .triangle{width:1rem;height:1rem;position:absolute;top:-.5rem;left:50%;background-color:#fff;margin-left:4rem;-webkit-transform:rotate(45deg);transform:rotate(45deg);}
+.bomb .contents{width:70%;margin:2rem auto;overflow: hidden;}
+.bomb .contents li{float:left;width:50%;overflow: hidden;line-height:2rem;color:#fc6c21;margin:.5rem 0 0 0;font-size:.7rem;}
+.bomb .contents li .photo{width:2rem;height:2rem;float: left;margin:0 1rem 0 0;}
+.bomb .contents li .photo img{width:100%;height:100%}
+.bomb .footer{width:85%;margin:2rem auto;overflow:hidden;font-size:.7rem;}
+.bomb .footer .left{width:20%;float: left;color:#ff6c00;}
+.bomb .footer .right{width:80%;float: left;color:#999999;}
+
+/*.explain{background: url(../../images/data/explain.png) no-repeat 0px 0px; background-size:18.95rem 14.35rem;width:3rem;height:3rem;}*/
+/*.cabbage{}
+.apple{ background-position: -16.5rem 0;}
+.shrimp{background-position: 0rem -4.25rem}
+.oil{background-position: -16.1rem -3.9rem}*/
+
+
+.mark {
+    position: fixed;
+    z-index: 998;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: .6;
+}
+.markPosi{
+	left: 0;
+    top: 15rem;
+}
+
+
+
+
+

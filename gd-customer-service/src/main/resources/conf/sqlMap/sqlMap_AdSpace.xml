@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AdSpace">
+	<sql id="queryByCondition">
+	<![CDATA[
+		SELECT
+			ad.id,
+			ad.menuId,
+			ad.adType,
+			ad.adName,
+			ad.spaceSign,
+			ad.adType,
+			ad.state,
+			ad.showImg,
+			ad.replaceImg,
+			ad.adSize,
+			ad.adPrice,
+			ad.createTime
+		FROM
+			ad_space ad
+		WHERE
+			1 = 1
+		<#if state?exists && state!="" >
+			AND state=:state
+		</#if>
+		<#if menuId?exists && menuId!="" >
+			AND menuId=:menuId
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="countByCondition">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			ad_space
+		WHERE
+			1 = 1
+	]]>
+	</sql>
+	
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM ad_space WHERE id = :id
+	]]>
+	</sql>
+	
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			ad.id,
+			ad.menuId,
+			m.menuName,
+			ad.adType,
+			ad.adName,
+			ad.spaceSign,
+			ad.adType,
+			ad.state,
+			ad.showImg,
+			ad.replaceImg,
+			ad.adSize,
+			ad.adPrice,
+			ad.createTime
+		FROM
+			ad_space ad
+		LEFT JOIN
+			ad_menu m ON m.id = ad.menuId
+		WHERE
+			ad.id = :id
+	]]>
+	</sql>
+	
+	<sql id="update">
+		<![CDATA[
+			UPDATE
+				ad_space
+			SET
+				spaceSign = :spaceSign,
+				adName = :adName,
+				adType = :adType,
+				adPrice = :adPrice,
+				adSize = :adSize,
+				showImg = :showImg,
+				replaceImg = :replaceImg,
+				updateUserId = :updateUserId,
+				updateUserName = :updateUserName,
+				updateTime = SYSDATE()
+			WHERE
+				id = :id
+		]]>
+	</sql>
+	<sql id="deleteByMenuId">
+		<![CDATA[
+			UPDATE
+				ad_space
+			SET
+				state = 2,
+				updateUserId = :updateUserId,
+				updateUserName = :updateUserName,
+				updateTime = SYSDATE()
+			WHERE
+				menuId = :menuId
+		]]>
+	</sql>
+	
+	<sql id="isExist">
+		<![CDATA[
+			SELECT
+				count(*)
+			FROM
+				ad_space
+			WHERE
+				menuId = :menuId AND spaceSign = :spaceSign AND state = '1'
+		]]>
+	</sql>
+	
+	<sql id="canDelete">
+	<![CDATA[
+		SELECT 
+			IF(count(*) > 0, 0, 1)
+		FROM 
+			ad_advertise 
+		WHERE 
+			adSpaceId = :adSpaceId and state = '1'
+	]]>
+	</sql>
+	
+	<sql id="updateState">
+	<![CDATA[
+		UPDATE
+			ad_space
+		SET
+			state = :state,
+			updateUserId = :updateUserId,
+			updateUserName = :updateUserName,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+</sqlMap>

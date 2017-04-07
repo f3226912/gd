@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdProSupplyofgoodHandoutEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_pro_supplyofgood_handout(
+	marketId,teamName,createTime,goodsId,updateTime,status,grdMobile,
+	grdUserName,teamId,grdId,publisher,id,updateUserId,
+	marketName,publisherTime,createUserId,mobile
+	) VALUES (
+	:marketId,:teamName,:createTime,:goodsId,:updateTime,:status,:grdMobile,
+	:grdUserName,:teamId,:grdId,:publisher,:id,:updateUserId,
+	:marketName,:publisherTime,:createUserId,:mobile
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_pro_supplyofgood_handout SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if teamName?exists && teamName!="" >
+		teamName=:teamName,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if goodsId?exists && goodsId!="" >
+		goodsId=:goodsId,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if grdMobile?exists && grdMobile!="" >
+		grdMobile=:grdMobile,
+	</#if>	
+	<#if grdUserName?exists && grdUserName!="" >
+		grdUserName=:grdUserName,
+	</#if>	
+	<#if teamId?exists && teamId!="" >
+		teamId=:teamId,
+	</#if>	
+	<#if grdId?exists && grdId!="" >
+		grdId=:grdId,
+	</#if>	
+	<#if publisher?exists && publisher!="" >
+		publisher=:publisher,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if publisherTime?exists && publisherTime!="" >
+		publisherTime=:publisherTime,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+	<#if mobile?exists && mobile!="" >
+		mobile=:mobile,
+	</#if>	
+	<#if isDeleted?exists && isDeleted!="" >
+		isDeleted=:isDeleted,
+	</#if>
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,goodsId,updateTime,status,grdMobile,
+	grdUserName,teamId,grdId,publisher,id,updateUserId,
+	marketName,publisherTime,createUserId,mobile,isDeleted
+	FROM grd_pro_supplyofgood_handout WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,goodsId,updateTime,status,grdMobile,
+	grdUserName,teamId,grdId,publisher,id,updateUserId,isDeleted,
+	marketName,publisherTime,createUserId,mobile,sourceType,
+	(CASE sourceType WHEN 1 THEN '干线'
+         			 WHEN 2 THEN '同城' 
+        			 ELSE '未知' END )AS sourceTypeStr,
+	DATE_FORMAT(publisherTime,'%Y-%m-%d %H:%i:%S') publisherTimeString,
+	(CASE  WHEN isDeleted=1 THEN '已删除'
+         WHEN status='1' and isDeleted=0 THEN '已发布' 
+         WHEN status='2' and isDeleted=0 THEN '已发布' 
+         WHEN status='3' and isDeleted=0 THEN '已接单' 
+         WHEN status='4' and isDeleted=0 THEN '已过期' ELSE '' END ) statusString
+	FROM grd_pro_supplyofgood_handout WHERE 1=1 
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if goodsId?exists && goodsId!="" >
+		AND goodsId=:goodsId
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status in(${status}) AND isDeleted=0
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if publisher?exists && publisher!="" >
+		AND publisher LIKE "%":publisher"%"
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if startDate?exists && startDate!="" >
+		AND date_format(publisherTime, '%Y-%m-%d') >= date_format(:startDate, '%Y-%m-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(publisherTime, '%Y-%m-%d')<= date_format(:endDate, '%Y-%m-%d')
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	<#if isDeleted?exists && isDeleted!="" >
+		AND isDeleted=:isDeleted
+	</#if>
+	<#if sourceType?exists && sourceType!="" >
+		AND sourceType=:sourceType
+	</#if>
+	ORDER BY publisherTime DESC
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,goodsId,updateTime,status,grdMobile,
+	grdUserName,teamId,grdId,publisher,id,updateUserId,isDeleted,
+	marketName,publisherTime,createUserId,mobile,sourceType
+	FROM grd_pro_supplyofgood_handout WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if goodsId?exists && goodsId!="" >
+		AND goodsId=:goodsId
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status in(${status}) AND isDeleted=0
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if publisher?exists && publisher!="" >
+		AND publisher LIKE "%":publisher"%"
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if startDate?exists && startDate!="" >
+		AND date_format(publisherTime, '%Y-%m-%d') >= date_format(:startDate, '%Y-%m-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(publisherTime, '%Y-%m-%d')<= date_format(:endDate, '%Y-%m-%d')
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile LIKE "%":mobile"%"
+	</#if>
+	<#if isDeleted?exists && isDeleted!="" >
+		AND isDeleted=:isDeleted
+	</#if>
+	<#if sourceType?exists && sourceType!="" >
+		AND sourceType=:sourceType
+	</#if>
+	ORDER BY publisherTime DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_pro_supplyofgood_handout WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if teamName?exists && teamName!="" >
+		AND teamName=:teamName
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if goodsId?exists && goodsId!="" >
+		AND goodsId=:goodsId
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status in(${status}) AND isDeleted=0
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if publisher?exists && publisher!="" >
+		AND publisher LIKE "%":publisher"%"
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName=:marketName
+	</#if>
+	<#if startDate?exists && startDate!="" >
+		AND date_format(publisherTime, '%Y-%m-%d') >= date_format(:startDate, '%Y-%m-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(publisherTime, '%Y-%m-%d')<= date_format(:endDate, '%Y-%m-%d')
+	</#if>		
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile LIKE "%":mobile"%"
+	</#if>
+	<#if isDeleted?exists && isDeleted!="" >
+		AND isDeleted=:isDeleted
+	</#if>
+	<#if sourceType?exists && sourceType!="" >
+		AND sourceType=:sourceType
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_pro_supplyofgood_handout WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

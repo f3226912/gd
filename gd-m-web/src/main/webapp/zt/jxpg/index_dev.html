@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+
+		<meta name="format-detection" content="telephone=no" />
+		<script src="../../v1.0/js/jquery-2.1.4.min.js"></script> 
+		<script src="../../v1.0/js/jquery.mobile.custom.min.js"></script>
+		<title>地方特色馆</title>
+
+		<style type="text/css">	
+			body{
+				background-color: #fff8e5;
+				font-size: 0;
+			}
+			img{
+				width: 100%;
+				position: relative;
+			 	margin-top: -1px; 
+
+			}	
+			*{
+				margin: 0;
+				padding: 0;
+
+			}
+			#extendHide{
+				display: none;
+			}
+			.time{
+				position: relative;
+				text-align: center;
+				background-color: #fff8e5;
+				height: 60px;
+				text-align: center;
+			}
+			.hr{
+				position: absolute;
+				top:50%;
+				left: 5%;
+				width: 90%;
+				height: 1px;
+				background-color: #ef4242;
+				z-index: 1;
+			}
+			.countdown{
+				position: absolute;
+				top: 33%;
+				left: 10%;
+				width: 80%;
+				background-color: #fff8e5;
+				text-align: center;
+				z-index: 2;
+				font-size: 15px;
+			}
+			.countdown .red-bg{
+				background-color: #ef4242;
+				border-radius: 50%;
+				display: inline-block;
+				width: 30px;
+				height: 30px;
+				line-height: 27px;
+				color: #fff;
+				margin-left: -5px;
+			}
+			.words{
+				display: inline-block;
+				text-align: center;
+				margin-left: 5px;
+			}
+			#jx1{
+				margin:0 0 1.8rem 0;
+			}
+			.pay{
+				width:93%;
+				margin:0 auto;
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		
+			<!--<img src="onejx.jpg" alt="">
+			<img src="towjx.jpg" alt="">	
+			<img src="threejx.jpg" alt="">	-->
+			<img src="onejx.png" alt="">
+
+			<!--<img src="fourAgainjx.jpg" alt="">	
+			<img id="pressShow" src="fiveAgainjx.jpg" alt="">-->
+			
+			<img id="extendHide" src="sixHidejx.jpg" alt=""> 
+
+			<img id="jx1" src="jx1.png" alt="">
+			<!--<img src="jx1.jpg" alt="">
+			<img src="jx2.jpg" alt="">-->
+			<img src="jx3.jpg" alt="">
+
+			<img src="jx4.jpg" alt="">
+			<img src="jx5.jpg" alt="">
+			<!-- <img src="../../v1.0/images/data/jx6.jpg" alt=""> -->
+			<!--<img src="jx61.jpg" alt="">
+			<div class="time">
+				<div class="hr"></div>
+				<div class="countdown">
+					<span>距结束时间：</span>
+					<span id="t_d" class="red-bg">12</span><span class="words">天</span>
+					<span id="t_h" class="red-bg">12</span><span class="words">时</span>
+					<span id="t_m" class="red-bg">12</span><span class="words">分</span>	
+					<span id="t_s" style="display:none;"></span>		
+				</div>
+				
+			</div>-->
+			
+				<!-- 开发环境 -->
+			<a href="../../product/getProductByProdId?fromCode=3&productId=359"><img src="jx71.png" alt=""></a>
+			<a href="../../product/getProductByProdId?fromCode=3&productId=360"><img src="jx81.png" alt=""></a>
+			<a href="../../product/getProductByProdId?fromCode=3&productId=361"><img src="jx91.png" alt=""></a>
+
+			<img src="jx101.jpg" alt="">
+		
+
+		<script>
+			$(document).ready(function() {
+				$("#pressShow").tap(function(){
+					$(this).hide();
+					$("#extendHide").show();
+					return false;
+				});
+
+				$("#extendHide").tap(function(){
+					$(this).hide();
+					$("#pressShow").show();
+					return false;
+				})
+			});
+
+			  function GetRTime(){
+			    var EndTime= new Date('2016/09/20 00:00:00');
+			    var NowTime = new Date();
+			    var t =EndTime.getTime() - NowTime.getTime();
+			    var d=0;
+			    var h=0;
+			    var m=0;
+			    var s=0;
+			    if(t>=0){
+			      d=Math.floor(t/1000/60/60/24);
+			      h=Math.floor(t/1000/60/60%24);
+			      m=Math.floor(t/1000/60%60);
+			      s=Math.floor(t/1000%60);
+			    }		 
+			    document.getElementById("t_d").innerHTML = d ;
+			    document.getElementById("t_h").innerHTML = h ;
+			    document.getElementById("t_m").innerHTML = m ;
+			    document.getElementById("t_s").innerHTML = s ;
+			  }
+// 			  setInterval(GetRTime,0);
+			
+		</script>
+		
+	</body>
+</html>

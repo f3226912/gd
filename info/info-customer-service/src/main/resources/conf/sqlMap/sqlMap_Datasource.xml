@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Datasource">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+datasource(
+
+state,name,iD,tableName,frequency,mode,lastUpdateTime,createUserID,
+createTime,updateUserID,updateTime
+) VALUES (
+
+:state,:name,:iD,:tableName,:frequency,:mode,:lastUpdateTime,:createUserID,
+:createTime,:updateUserID,:updateTime
+)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE datasource
+ SET 
+lastUpdateTime=:lastUpdateTimeStr 
+ WHERE iD=:id 
+]]>
+</sql>
+<sql id="getListByCondition">
+<![CDATA[
+	SELECT 
+
+state,name,id,tableName,frequency,mode,lastUpdateTime,createUserID,
+createTime,updateUserID,updateTime
+	FROM 
+datasource WHERE 1=1
+
+<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if tableName?exists && tableName!="" >
+AND tableName=:tableName
+</#if>
+<#if frequency?exists && frequency!="" >
+AND frequency=:frequency
+</#if>
+<#if mode?exists && mode!="" >
+AND mode=:mode
+</#if>
+<#if lastUpdateTime?exists && lastUpdateTime!="" >
+AND lastUpdateTime=:lastUpdateTime
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+]]>
+</sql>
+<sql id="getListByConditionPage">
+<![CDATA[
+	SELECT 
+state,name,id,tableName,frequency,mode,lastUpdateTime,createUserID,
+createTime,updateUserID,updateTime
+	FROM 
+datasource WHERE 1=1
+
+<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if iD?exists && iD!="" >
+AND id=:id
+</#if>
+<#if tableName?exists && tableName!="" >
+AND tableName=:tableName
+</#if>
+<#if frequency?exists && frequency!="" >
+AND frequency=:frequency
+</#if>
+<#if mode?exists && mode!="" >
+AND mode=:mode
+</#if>
+<#if lastUpdateTime?exists && lastUpdateTime!="" >
+AND lastUpdateTime=:lastUpdateTime
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if> 
+ORDER BY createTime desc 
+LIMIT :startRow,:endRow
+]]>
+</sql>
+<sql id="deleteById">
+<![CDATA[
+	DELETE datasource
+ WHERE id=:id
+]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			datasource t 
+		WHERE 1=1 
+			<#if state?exists && state!="" >
+AND state=:state
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if tableName?exists && tableName!="" >
+AND tableName=:tableName
+</#if>
+<#if frequency?exists && frequency!="" >
+AND frequency=:frequency
+</#if>
+<#if mode?exists && mode!="" >
+AND mode=:mode
+</#if>
+<#if lastUpdateTime?exists && lastUpdateTime!="" >
+AND lastUpdateTime=:lastUpdateTime
+</#if>
+<#if createUserID?exists && createUserID!="" >
+AND createUserID=:createUserID
+</#if>
+
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserID?exists && updateUserID!="" >
+AND updateUserID=:updateUserID
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if> 
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			state,name,iD,tableName,frequency,mode,lastUpdateTime,createUserID,
+createTime,updateUserID,updateTime 
+		FROM 
+			datasource t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+</sqlMap>

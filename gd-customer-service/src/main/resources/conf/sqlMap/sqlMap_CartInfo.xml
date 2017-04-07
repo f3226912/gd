@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CartInfoEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO cart_info(
+	createTime,updateTime,commonJson,state,purQuantity,shopsName,productId,
+	id,updateUserId,selected,price,memberId,tradingPrice,
+	businessId,productName,createUserId
+	) VALUES (
+	:createTime,:updateTime,:commonJson,:state,:purQuantity,:shopsName,:productId,
+	:id,:updateUserId,:selected,:price,:memberId,:tradingPrice,
+	:businessId,:productName,:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE cart_info SET 
+	
+	<#if updateTimeStr?exists && updateTimeStr!="" >
+		updateTime=:updateTimeStr,
+	</#if>	
+	<#if commonJson?exists && commonJson!="" >
+		commonJson=:commonJson,
+	</#if>	
+	<#if state?exists && state!="" >
+		state=:state,
+	</#if>	
+	<#if purQuantity?exists && purQuantity!="" >
+		purQuantity=:purQuantity,
+	</#if>	
+	<#if shopsName?exists && shopsName!="" >
+		shopsName=:shopsName,
+	</#if>	
+	<#if productId?exists && productId!="" >
+		productId=:productId,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if selected?exists && selected!="" >
+		selected=:selected,
+	</#if>	
+	<#if price?exists && price!="" >
+		price=:price,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if tradingPrice?exists && tradingPrice!="" >
+		tradingPrice=:tradingPrice,
+	</#if>	
+	<#if businessId?exists && businessId!="" >
+		businessId=:businessId,
+	</#if>	
+	<#if productName?exists && productName!="" >
+		productName=:productName,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	createTime,updateTime,commonJson,state,purQuantity,shopsName,productId,
+	id,updateUserId,selected,price,memberId,tradingPrice,
+	businessId,productName,createUserId
+	FROM cart_info WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	createTime,updateTime,commonJson,state,purQuantity,shopsName,productId,
+	id,updateUserId,selected,price,memberId,tradingPrice,
+	businessId,productName,createUserId
+	FROM cart_info WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if commonJson?exists && commonJson!="" >
+		AND commonJson=:commonJson
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if purQuantity?exists && purQuantity!="" >
+		AND purQuantity=:purQuantity
+	</#if>
+	<#if shopsName?exists && shopsName!="" >
+		AND shopsName=:shopsName
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND productId=:productId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if selected?exists && selected!="" >
+		AND selected=:selected
+	</#if>
+	<#if price?exists && price!="" >
+		AND price=:price
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if tradingPrice?exists && tradingPrice!="" >
+		AND tradingPrice=:tradingPrice
+	</#if>
+	<#if businessId?exists && businessId!="" >
+		AND businessId=:businessId
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND productName=:productName
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	createTime,updateTime,commonJson,state,purQuantity,shopsName,productId,
+	id,updateUserId,selected,price,memberId,tradingPrice,
+	businessId,productName,createUserId
+	FROM cart_info WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if commonJson?exists && commonJson!="" >
+		AND commonJson=:commonJson
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if purQuantity?exists && purQuantity!="" >
+		AND purQuantity=:purQuantity
+	</#if>
+	<#if shopsName?exists && shopsName!="" >
+		AND shopsName=:shopsName
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND productId=:productId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if selected?exists && selected!="" >
+		AND selected=:selected
+	</#if>
+	<#if price?exists && price!="" >
+		AND price=:price
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if tradingPrice?exists && tradingPrice!="" >
+		AND tradingPrice=:tradingPrice
+	</#if>
+	<#if businessId?exists && businessId!="" >
+		AND businessId=:businessId
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND productName=:productName
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM cart_info WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if commonJson?exists && commonJson!="" >
+		AND commonJson=:commonJson
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if purQuantity?exists && purQuantity!="" >
+		AND purQuantity=:purQuantity
+	</#if>
+	<#if shopsName?exists && shopsName!="" >
+		AND shopsName=:shopsName
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND productId=:productId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if selected?exists && selected!="" >
+		AND selected=:selected
+	</#if>
+	<#if price?exists && price!="" >
+		AND price=:price
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if tradingPrice?exists && tradingPrice!="" >
+		AND tradingPrice=:tradingPrice
+	</#if>
+	<#if businessId?exists && businessId!="" >
+		AND businessId=:businessId
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND productName=:productName
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM cart_info WHERE id=:id
+	]]>
+</sql>
+<sql id="deleteCartItemByParam">
+	<![CDATA[
+	DELETE FROM cart_info 
+	      WHERE productId=:productId 
+	        AND memberId=:memberId
+	]]>
+</sql>
+
+<sql id="getCartItemByParam">
+	<![CDATA[
+	  SELECT 
+			 createTime,updateTime,commonJson,state,purQuantity,shopsName,productId,
+			 id,updateUserId,selected,price,memberId,tradingPrice,
+			 businessId,productName,createUserId
+			 FROM cart_info 
+	   WHERE productId=:productId 
+	     AND memberId=:memberId
+	]]>
+</sql>
+
+<sql id="getTotalSearch">
+		<![CDATA[
+			SELECT FOUND_ROWS()
+		]]>
+	</sql>
+	
+	
+	<sql id="getCartItems">
+	<![CDATA[
+    SELECT SQL_CALC_FOUND_ROWS
+	   c.createTime,
+	   c.updateTime,
+	   c.commonJson,
+	   c.purQuantity,
+	   c.shopsName,
+	   c.productId,
+	   c.id,
+	   c.updateUserId,
+	   c.selected,
+	   c.memberId,
+	   c.tradingPrice,
+	   c.businessId,
+	   c.productName,
+	   c.createUserId,
+	   (case when p.state='4' then '-1' when p.stockCount=0 then '0' when p.state='3' then '1' else '-1' end )newState,
+	   c.state,
+	   c.price,
+	   p.price newPrice,
+	   s.codeValue unitName
+	FROM
+	   cart_info c
+	LEFT JOIN product_baseinfo p ON c.productId = p.productId AND p.productType = '1'
+	LEFT JOIN (
+	   SELECT
+	      s0.codeKey,
+	      s0.codeValue
+	   FROM
+	      system_code s0
+	   WHERE
+	      s0.type = 'ProductUnit'
+	) s ON s.codeKey = p.unit
+	WHERE
+	   1 = 1
+	<#if createTime?exists && createTime!="" >
+		AND c.createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND c.updateTime=:updateTime
+	</#if>
+	<#if commonJson?exists && commonJson!="" >
+		AND c.commonJson=:commonJson
+	</#if>
+	<#if state?exists && state!="" >
+		AND c.state=:state
+	</#if>
+	<#if purQuantity?exists && purQuantity!="" >
+		AND c.purQuantity=:purQuantity
+	</#if>
+	<#if shopsName?exists && shopsName!="" >
+		AND c.shopsName=:shopsName
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND c.productId=:productId
+	</#if>
+	<#if id?exists && id!="" >
+		AND c.id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND c.updateUserId=:updateUserId
+	</#if>
+	<#if selected?exists && selected!="" >
+		AND c.selected=:selected
+	</#if>
+	<#if price?exists && price!="" >
+		AND c.price=:price
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND c.memberId=:memberId
+	</#if>
+	<#if tradingPrice?exists && tradingPrice!="" >
+		AND c.tradingPrice=:tradingPrice
+	</#if>
+	<#if businessId?exists && businessId!="" >
+		AND c.businessId=:businessId
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND c.productName=:productName
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND c.createUserId=:createUserId
+	</#if>
+	ORDER BY
+   		c.updateTime DESC,
+   		c.createTime DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+</sqlMap>

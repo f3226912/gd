@@ -1,0 +1,71 @@
+@charset "utf-8";
+body{overflow: hidden;}
+.app-head{ height: 60px; z-index: 9;left: 50%;margin-left: -585px;position: absolute;}
+.app-h-wrap{/*position: relative;*/background-color: #fff; height: 60px;/*display: none;*/}
+.head-wrap{z-index: 10;position: absolute; width: 100%;background-color: #f4f4f4;}
+.app-head-log{margin-top: 0px;padding:  11px 0 0 11px;}
+.head-app-r{font-size: 14px; color: #363636; font-family: "Microsoft YaHei";}
+/*.head-spilt2{border-left: 1px solid #363636;margin-top: 21px;}*/
+.head-app-r {line-height: 60px;}
+.section0-bg{background: url(../../v1.0/images/appdown/first-bg.jpg) center bottom no-repeat; width: 100%; height:576px; }
+#menu{position:fixed;top:50%;right:60px;height: 132px;z-index: 70;width: 20px;padding: 0;margin:0;margin-top: -66px;}
+#menu li {display:inline-block;width: 20px; height: 20px;}
+#menu li.active{color: #fff;}
+#menu li a{text-decoration:none;display:inline-block;width: 20px; height: 20px;background-image: url(../../v1.0/images/appdown/tool-ico.png);}
+.first-sec li a{background-position: 0 -33px;}
+.second-sec li a{background-position: -35px 0;}
+.third-sec li a{background-position: -70px 0;}
+.fourth-sec li a{background-position: -105px 0;}
+.first-sec li.active a{background-position: 0 0px;}
+.second-sec li.active a{background-position: -35px -33px;}
+.third-sec li.active a{background-position: -70px -33px;}
+.fourth-sec li.active a{background-position: -105px -33px;}
+#menu li:hover{}
+#menu li a,#menu li.active a{display:block;}
+#menu li.active a{color: #fff;}
+.wrap-conten{ position: relative; height: 100%}
+.section0-bg{position: absolute; width: 100%; bottom: 0;}
+.sect-txt{position: absolute; font: 16px/30px "Microsoft YaHei";text-align: right;right: 112px;}
+.first-sect-txt{ /*display: none;*/top:0px;}
+
+.second-sect-txt{top:0px;opacity: 0;}
+.sec-posr{position: relative; width: 1170px ;margin: 0 auto; height: 100%;}
+.sect-txt-t{font: 34px/42px "Microsoft YaHei";}
+.first-sect-txt{ color: #3d5c59; opacity: 0;}
+.ewm-a-wrap{background: #fff;width: 197px; height: 215px;padding: 26px 0 0 28px;right: 134px;position: absolute; bottom:12px; z-index: 1;display: none;}
+.first-ewm{opacity:0; right: -225px;}
+.second-ewm{opacity:0; bottom: -225px;}
+.third-ewm{opacity:0; bottom: -225px;}
+.fourth-ewm{opacity:0; right: -225px;}
+.ewmdown-btn{background-image: url(../../v1.0/images/appdown/erweima-btn.jpg);display: inline-block;width: 171px; height: 50px;text-indent: -9999px;margin-top: 13px;}
+.android-d-btn{background-image: url(../../v1.0/images/appdown/android-d-btn.jpg);display: inline-block;width: 171px; height: 40px;text-indent: -9999px;margin-top: 8px;}
+.ios-d-btn{background-image: url(../../v1.0/images/appdown/ios-d-btn.jpg);display: inline-block;width: 171px; height: 40px;text-indent: -9999px;margin-top: 8px;}
+android-d-btn.jpg
+.second-sect-txt{color: #5c9c68;top:-15%; opacity: 0}
+.third-sect-txt{color: #58929a;/*top:15%;*/top:-15%; opacity: 0}
+.fourth-sect-txt{color: #a49462;top:-15%; opacity: 0}
+.second-sect-txt h2,.third-sect-txt h2,.fourth-sect-txt h2{margin-bottom: 20px;}
+.second-main{background: url(../../v1.0/images/appdown/second-main.png) no-repeat;width: 893px; height: 498px; /*bottom: 0;*/ position: absolute;opacity: 0;bottom: -500px;}
+.sect-ico{width: 196px; height: 196px; position: absolute;text-indent: -9999px;}
+.second-ico{left: 62px;top:-196px;background: url(../../v1.0/images/appdown/second-ico.png) no-repeat;position: absolute;opacity: 0;}
+.third-main{background: url(../../v1.0/images/appdown/third-main.png) no-repeat;width: 932px; height: 504px; position: absolute;bottom: 0;opacity: 0;left: -500px;}
+.third-ico{left: 332px;background: url(../../v1.0/images/appdown/third-ico.png) no-repeat;top:-52%;opacity: 0;}
+.fourth-main{background: url(../../v1.0/images/appdown/fourth-main.png) no-repeat;width: 628px; height: 505px; position: absolute;/*bottom: 0*/bottom: -505px; opacity: 0;left:-628px;}
+.fourth-ico{/*left: 77px;*/left:-100px;opacity: 0;top:54%;background: url(../../v1.0/images/appdown/fourth-ico.png) no-repeat;}
+.sec-arrow{position: absolute;left: 50%;width: 58px; height: 36px; display: inline-block;background: url(../../v1.0/images/appdown/app-arrow.png) no-repeat;bottom: 20px;margin-left: -28px;animation:arrowShake 1s infinite;-webkit-animation:arrowShake 1s infinite; /* Safari and Chrome */}
+@keyframes arrowShake
+{
+0%   {bottom:20px;}
+25%   {bottom:15px;}
+50%  {bottom:10px;}
+75%  {bottom:15px;}
+100% {bottom:20px;}
+}
+@-webkit-keyframes arrowShake /* Safari and Chrome */
+{
+0%   {bottom:20px;}
+25%   {bottom:15px;}
+50%  {bottom:10px;}
+75%  {bottom:15px;}
+100% {bottom:20px;}
+}

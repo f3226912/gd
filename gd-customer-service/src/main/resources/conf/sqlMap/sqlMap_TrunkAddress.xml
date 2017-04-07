@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="TrunkAddress">
+	  <!--干线我要找货优化  -->
+	  <sql id="getTrunkAddressList">
+	  	<![CDATA[
+	  		SELECT
+				ma.id,
+				ma.userId AS memberId,
+				IF (mb.userType = 2,mc.linkMan,mb.realName) AS linkMan,
+				IF(mb.userType=2,mc.mobile,mb.mobile) AS mobile,
+				<#if closest?exists && closest!="" && closest=="Y" >
+			      ROUND(6378.138*2*ASIN(SQRT(POW(SIN(
+					 (:clat*PI()/180-a.lat*PI()/180)/2),2)+
+					 COS(:clat*PI()/180)*COS(a.lat*PI()/180)*
+	 				 POW(SIN( (:clng*PI()/180-a.lng*PI()/180)/2),2))),2) AS distance,
+				</#if>
+				ma.s_provinceId,
+				ma.s_cityId,
+				ma.s_areaId,
+				ma.f_provinceId,
+				ma.f_cityId,
+				ma.f_areaId,
+				ma.goodsType,
+				ma.carType,
+				ma.carlength AS carLength,
+				ma.totalWeight,
+				ma.totalSize,
+				ma.sendGoodsType,
+				mb.andupurl,
+				mc.nstStatus AS isCertify,
+				ma.createTime,
+				ma.createUserId
+			FROM
+				member_address ma
+			LEFT JOIN area a ON ma.s_cityId=areaID
+			LEFT JOIN member_baseinfo mb ON ma.userId=mb.memberId
+			LEFT JOIN member_certifi mc ON ma.userId=mc.memberId
+			LEFT JOIN (SELECT n2.memberAddressId,n2.orderStatus
+						FROM ( SELECT n.memberAddressId,n.orderStatus FROM nst_order_baseinfo n WHERE n.sourceType=0 or n.sourceType is null ORDER BY n.id DESC) n2
+						GROUP BY n2.memberAddressId ) nob  ON nob.memberAddressId=ma.id
+			WHERE (ma.isDeleted IS NULL OR ma.isDeleted=0) AND ma.createTime >= date_sub(current_date(),INTERVAL 5 DAY)
+				  AND (nob.orderStatus not in (1,2,3) OR nob.orderStatus is NULL)
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND ma.s_provinceId= :s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND ma.s_cityId= :s_cityId
+			</#if>
+			<#if s_areaId?exists && s_cityId!="" >
+			      AND ma.s_areaId= :s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!="" >
+			      AND ma.f_provinceId= :f_provinceId
+			</#if>
+			<#if f_cityId?exists && f_cityId!="" >
+			      AND ma.f_cityId= :f_cityId
+			</#if>
+			<#if f_areaId?exists && f_areaId!="" >
+			      AND ma.f_areaId= :f_areaId
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND ma.carType= :carType
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND ma.goodsType= :goodsType
+			</#if>
+			<#if minCarLength?exists && minCarLength!="" >
+			      AND IFNULL(ma.carlength,0) >= :minCarLength
+			</#if>
+			<#if maxCarLength?exists && maxCarLength!="" >
+			      AND IFNULL(ma.carlength,0) <= :maxCarLength
+			</#if>
+			<#if minTotalWeight?exists && minTotalWeight!="" >
+			      AND IFNULL(ma.totalWeight,0) >= :minTotalWeight
+			</#if>
+			<#if maxTotalWeight?exists && maxTotalWeight!="" >
+			      AND IFNULL(ma.totalWeight,0) <= :maxTotalWeight
+			</#if>
+			<#if minTotalSize?exists && minTotalSize!="" >
+			      AND IFNULL(ma.totalSize,0) >= :minTotalSize
+			</#if>
+			<#if maxTotalSize?exists && maxTotalSize!="" >
+			      AND IFNULL(ma.totalSize,0) <= :maxTotalSize
+			</#if>
+			<#if carlength?exists && carlength!="" && carlength!=0 >
+			      AND ma.carlength= :carlength
+			</#if>
+			 ORDER BY id DESC
+			<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>	
+	  	]]>
+	  </sql>
+	  
+	  <sql id="getTrunkAddressListCount">
+	  	<![CDATA[
+	  		SELECT
+				COUNT(ma.id)
+			FROM
+				member_address ma
+			LEFT JOIN (SELECT n2.memberAddressId,n2.orderStatus
+						FROM ( SELECT n.memberAddressId,n.orderStatus FROM nst_order_baseinfo n WHERE n.sourceType=0 or n.sourceType is null ORDER BY n.id DESC) n2
+						GROUP BY n2.memberAddressId ) nob  ON nob.memberAddressId=ma.id
+			WHERE (ma.isDeleted IS NULL OR ma.isDeleted=0) AND ma.createTime >= date_sub(current_date(),INTERVAL 5 DAY)
+				  AND (nob.orderStatus not in (1,2,3) OR nob.orderStatus is NULL)
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND ma.s_provinceId= :s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND ma.s_cityId= :s_cityId
+			</#if>
+			<#if s_areaId?exists && s_cityId!="" >
+			      AND ma.s_areaId= :s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!="" >
+			      AND ma.f_provinceId= :f_provinceId
+			</#if>
+			<#if f_cityId?exists && f_cityId!="" >
+			      AND ma.f_cityId= :f_cityId
+			</#if>
+			<#if f_areaId?exists && f_areaId!="" >
+			      AND ma.f_areaId= :f_areaId
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND ma.carType= :carType
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND ma.goodsType= :goodsType
+			</#if>
+			<#if minCarLength?exists && minCarLength!="" >
+			      AND IFNULL(ma.carlength,0) >= :minCarLength
+			</#if>
+			<#if maxCarLength?exists && maxCarLength!="" >
+			      AND IFNULL(ma.carlength,0) <= :maxCarLength
+			</#if>
+			<#if minTotalWeight?exists && minTotalWeight!="" >
+			      AND IFNULL(ma.totalWeight,0) >= :minTotalWeight
+			</#if>
+			<#if maxTotalWeight?exists && maxTotalWeight!="" >
+			      AND IFNULL(ma.totalWeight,0) <= :maxTotalWeight
+			</#if>
+			<#if minTotalSize?exists && minTotalSize!="" >
+			      AND IFNULL(ma.totalSize,0) >= :minTotalSize
+			</#if>
+			<#if maxTotalSize?exists && maxTotalSize!="" >
+			      AND IFNULL(ma.totalSize,0) <= :maxTotalSize
+			</#if>
+			<#if carlength?exists && carlength!="" && carlength!=0 >
+			      AND ma.carlength= :carlength
+			</#if>
+	  	]]>
+	  </sql>
+	  
+	  <!--干线我发的货优化  -->
+	  <sql id="getTrunkAddressListByMemberId">
+	  	<![CDATA[
+	  		SELECT
+				ma.id,
+				ma.userId AS memberId,
+				ma.userType,
+				ma.nstRule,
+				IF (mb.userType = 2,mc.linkMan,mb.realName) AS linkMan,
+				IF(mb.userType=2,mc.mobile,mb.mobile) AS mobile,
+				ma.s_provinceId,
+				ma.s_cityId,
+				ma.s_areaId,
+				ma.f_provinceId,
+				ma.f_cityId,
+				ma.f_areaId,
+				ma.goodsType,
+				ma.carType,
+				ma.carlength AS carLength,
+				ma.totalWeight,
+				ma.sendGoodsType,
+				ma.sendDate,
+				ma.sendDateType,
+				mb.andupurl,
+				ma.createTime,
+				ma.createUserId
+			FROM
+				member_address ma
+			LEFT JOIN member_baseinfo mb ON ma.userId=mb.memberId
+			LEFT JOIN member_certifi mc ON ma.userId=mc.memberId
+			WHERE (ma.isDeleted IS NULL OR ma.isDeleted=0)
+			<#if memberId?exists && memberId!="" >
+			      AND (ma.userId= :memberId OR ma.createUserId=:memberId)
+			</#if>
+			<#if userType?exists && userType!="" && userType==2 >
+				AND ma.createTime >= date_sub(current_date(),INTERVAL 3 DAY)
+			</#if>
+			 ORDER BY id DESC
+			<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+				
+	  	]]>
+	  </sql>
+	  
+	   <!--干线我发的货优化  -->
+	  <sql id="getTrunkAddressListCountByMemberId">
+	  	<![CDATA[
+	  		SELECT
+				COUNT(ma.id)
+			FROM
+				member_address ma
+			LEFT JOIN member_baseinfo mb ON ma.userId=mb.memberId
+			LEFT JOIN member_certifi mc ON ma.userId=mc.memberId
+			WHERE (ma.isDeleted IS NULL OR ma.isDeleted=0)
+			<#if memberId?exists && memberId!="" >
+			      AND (ma.userId= :memberId OR ma.createUserId=:memberId)
+			</#if>
+			<#if userType?exists && userType!="" && userType==2 >
+				AND ma.createTime >= date_sub(current_date(),INTERVAL 3 DAY)
+			</#if>
+	  	]]>
+	  </sql>
+	  
+</sqlMap>

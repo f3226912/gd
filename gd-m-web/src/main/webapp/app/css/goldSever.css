@@ -1,0 +1,252 @@
+* {
+	box-sizing: border-box;
+}
+
+body,
+html {
+	font-family: Helvetica Neue, Helvetica, Arial, sans-serif， Microsoft Yahei, Tahoma;
+	-webkit-text-size-adjust: 100%;
+	-webkit-overflow-scrolling: touch;
+	overflow-scrolling: touch;
+	min-height: 100%;
+	max-width: 750px;
+	min-width: 320px;
+	margin: 0 auto;
+	font-size: .28rem;
+	background: #FFFFFF;
+	color: #666;
+}
+
+.head-top {
+	height: 60px;
+	background-color: #3bb650;
+}
+
+.main-cont img {
+	display: block;
+}
+
+.mt1 {
+	margin-top: -1px;
+}
+
+.succAl {
+	background: url(../images/gysWeb/cont03.jpg) top center no-repeat;
+	background-size: 100%;
+}
+
+.bottom-cont img {
+	width: 100%;
+}
+
+.cont-text {
+	position: relative;
+}
+
+.cont-text p {
+	position: absolute;
+	font-size: 0.28rem;
+	text-align: center;
+	color: #fff;
+	width: 70%;
+	left: 15%;
+	top: 1.3rem;
+	line-height: 0.4rem;
+}
+
+.lineOrder {
+	position: relative;
+}
+
+.lineOrderText {
+	position: absolute;
+	top: 1.2rem;
+	width: 100%;
+	color: #fff;
+}
+
+.lineOrderText h5 {
+	width: 60%;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 0.28rem;
+	line-height: 0.4rem;
+}
+
+.orderList {
+	margin-top: 0.76rem;
+}
+
+.orderList li {
+	margin-bottom: 1.1rem;
+}
+
+.orderList li:first-child {
+	margin-left: 1.9rem;
+}
+
+.orderList li:nth-child(2) {
+	margin-left: 3rem;
+}
+
+.orderList li:last-child {
+	margin-left: 2.3rem;
+}
+
+.orderList span {
+	font-size: 0.32rem;
+}
+
+.orderList p {
+	font-size: 0.28rem;
+}
+
+.succAl {
+	padding: 3.5rem 0 0.36rem;
+}
+
+.succAl h5 {
+	text-align: center;
+	font-size: 0.32rem;
+	color: #fdfdfd;
+}
+
+.alList {
+	margin-top: 0.64rem;
+	padding: 0 0.2rem;
+}
+
+.alList li {
+	padding: 0.12rem;
+	background: #fff;
+	border-radius: 0.2rem;
+	margin-bottom: 0.52rem;
+	position: relative;
+}
+
+.alList li em {
+	position: absolute;
+	background: url(../images/gysWeb/icon6.png) 0 -30px no-repeat;
+	width: 50px;
+	height: 28px;
+	font-size: 0.24rem;
+	color: #fff;
+	background-size: 62px auto;
+	padding-left: 6px;
+	line-height: 24px;
+	top: 0.2rem;
+	left: -0.2rem;
+}
+
+.left-img {
+	width: 50%;
+	float: left;
+	margin-right: 2%;
+}
+
+.rightText {
+	width: 48%;
+	float: left;
+	font-size: 0.2rem;
+	color: #232323;
+}
+
+.gold-icon {
+	background: url(../images/gysWeb/icon6.png) 0 0 no-repeat;
+	width: 65px;
+	height: 27px;
+	background-size: 62px auto;
+	display: block;
+	margin: 0 auto;
+}
+
+.rightText p {
+	font-size: 0.24rem;
+	color: #f73030;
+	text-align: center;
+}
+
+.bottom-cont {
+	position: relative;
+}
+
+.gysEwm {
+	position: absolute;
+	top: 4.3rem;
+	left: 0.7rem;
+}
+
+.gysEwm img {
+	width: 3rem;
+}
+
+.dowm-btn {
+	position: absolute;
+	top: 4.7rem;
+	left: 4.36rem;
+}
+
+.dowm-btn a {
+	display: block;
+	width: 2.64rem;
+	height: 0.74rem;
+	padding-left: 0.6rem;
+	line-height: 0.74rem;
+	font-size: 0.28rem;
+	color: #fff;
+}
+
+.dowm-btn a.and-btn {
+	background: url(../images/gysWeb/and-btn.png) center no-repeat;
+	background-size: 2.64rem;
+	margin-bottom: 0.7rem;
+}
+
+.dowm-btn a.ios-btn {
+	background: url(../images/gysWeb/ios-btn.png) center no-repeat;
+	background-size: 2.64rem;
+}
+
+.footer-main {
+	position: fixed;
+	width: 100%;
+	height: 49px;
+	left: 0;
+	bottom: 0;
+}
+
+.foot-cont {
+	background: url(../images/gysWeb/icon6.png) left -100px no-repeat;
+	background-size: 62px auto;
+	display: block;
+	height: 31px;
+	margin-top: 9px;
+	padding-top: 0.2rem;
+	margin-left: 0.24rem;
+	padding-left: 0.82rem;
+	color: #fff;
+	font-size: 0.28rem;
+	position: relative;
+	z-index: 8;
+}
+
+.foot-cont i {
+	background: url(../images/gysWeb/icon6.png) left -68px no-repeat;
+	background-size: 62px auto;
+	display: block;
+	width: 23px;
+	height: 23px;
+	margin-right: 0.26rem;
+	margin-top: -0.1rem;
+	float: right;
+}
+
+.foot-filter {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #000;
+	width: 100%;
+	height: 100%;
+	opacity: 0.5;
+}

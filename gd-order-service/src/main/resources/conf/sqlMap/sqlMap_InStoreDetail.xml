@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="InStoreDetail">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+	in_store_detail(
+	isdId,businessId,productName,purQuantity,createTime,createUserId,updateTime,updateUserId,
+	pwdId,productId,price,weigh,unit,inStoreNo
+	) VALUES (
+	:isdId,:businessId,:productName,:purQuantity,:createTime,:createUserId,:updateTime,:updateUserId,
+	:pwdId,:productId,:price,:weigh,:unit,:inStoreNo
+	)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE 
+		in_store_detail
+	SET 
+		<#if businessId?exists && businessId!="" >
+			businessId=:businessId,
+		</#if>
+		<#if productName?exists && productName!="" >
+			productName=:productName,
+		</#if>
+		<#if purQuantity?exists && purQuantity!="" >
+			purQuantity=:purQuantity,
+		</#if>
+		<#if createTime?exists && createTime!="" >
+			createTime=:createTime,
+		</#if>
+		<#if createUserId?exists && createUserId!="" >
+			createUserId=:createUserId,
+		</#if>
+		<#if updateTime?exists && updateTime!="" >
+			updateTime=:updateTime,
+		</#if>
+		<#if updateUserId?exists && updateUserId!="" >
+			updateUserId=:updateUserId,
+		</#if>
+		<#if pwdId?exists && pwdId!="" >
+			pwdId=:pwdId,
+		</#if>
+		<#if productId?exists && productId!="" >
+			productId=:productId,
+		</#if>
+		<#if price?exists && price!="" >
+			price=:price,
+		</#if>
+		<#if weigh?exists && weigh!="" >
+			weigh=:weigh,
+		</#if>
+		<#if unit?exists && unit!="" >
+			unit=:unit
+		</#if>
+	 WHERE isdId=:isdId
+	)
+]]>
+</sql>
+
+<sql id="queryById">
+<![CDATA[
+	SELECT 
+		isdId,businessId,productName,purQuantity,createTime,createUserId,updateTime,updateUserId,
+		pwdId,productId,price,weigh,unit,inStoreNo
+	FROM 
+		in_store_detail
+	WHERE  isdId=:isdId
+	 
+]]>
+</sql>
+
+<sql id="queryByCondition">
+<![CDATA[
+	SELECT 
+		isdId,businessId,productName,purQuantity,createTime,createUserId,updateTime,updateUserId,
+		pwdId,productId,price,weigh,unit,inStoreNo
+	FROM 
+		in_store_detail
+	WHERE 1=1
+		<#if isdId?exists && isdId!="" >
+			AND isdId=:isdId
+		</#if>
+		<#if businessId?exists && businessId!="" >
+			AND businessId=:businessId
+		</#if>
+		<#if productName?exists && productName!="" >
+			AND productName=:productName
+		</#if>
+		<#if purQuantity?exists && purQuantity!="" >
+			AND purQuantity=:purQuantity
+		</#if>
+		<#if createTime?exists && createTime!="" >
+			AND createTime=:createTime
+		</#if>
+		<#if createUserId?exists && createUserId!="" >
+			AND createUserId=:createUserId
+		</#if>
+		<#if updateTime?exists && updateTime!="" >
+			AND updateTime=:updateTime
+		</#if>
+		<#if updateUserId?exists && updateUserId!="" >
+			AND updateUserId=:updateUserId
+		</#if>
+		
+		<#if pwdId?exists && pwdId!="" >
+			AND pwdId=:pwdId
+		</#if>
+		<#if productId?exists && productId!="" >
+			AND productId=:productId
+		</#if>
+		<#if price?exists && price!="" >
+			AND price=:price
+		</#if>
+		<#if weigh?exists && weigh!="" >
+			AND weigh=:weigh
+		</#if>
+		<#if unit?exists && unit!="" >
+			AND unit=:unit
+		</#if>
+]]>
+</sql>
+
+<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+		isdId,businessId,productName,purQuantity,createTime,createUserId,updateTime,updateUserId,
+		pwdId,productId,price,weigh,unit,inStoreNo
+	FROM 
+		in_store_detail
+	WHERE 1=1
+		<#if isdId?exists && isdId!="" >
+			AND isdId=:isdId
+		</#if>
+		<#if businessId?exists && businessId!="" >
+			AND businessId=:businessId
+		</#if>
+		<#if productName?exists && productName!="" >
+			AND productName=:productName
+		</#if>
+		<#if purQuantity?exists && purQuantity!="" >
+			AND purQuantity=:purQuantity
+		</#if>
+		<#if createTime?exists && createTime!="" >
+			AND createTime=:createTime
+		</#if>
+		<#if createUserId?exists && createUserId!="" >
+			AND createUserId=:createUserId
+		</#if>
+		<#if updateTime?exists && updateTime!="" >
+			AND updateTime=:updateTime
+		</#if>
+		<#if updateUserId?exists && updateUserId!="" >
+			AND updateUserId=:updateUserId
+		</#if>
+		
+		<#if pwdId?exists && pwdId!="" >
+			AND pwdId=:pwdId
+		</#if>
+		<#if productId?exists && productId!="" >
+			AND productId=:productId
+		</#if>
+		<#if price?exists && price!="" >
+			AND price=:price
+		</#if>
+		<#if weigh?exists && weigh!="" >
+			AND weigh=:weigh
+		</#if>
+		<#if unit?exists && unit!="" >
+			AND unit=:unit
+		</#if>
+		LIMIT :startRow,:endRow
+]]>
+</sql>
+
+<sql id="getTotal">
+<![CDATA[
+	SELECT 
+		count(isd.isdId)
+	FROM 
+		in_store_detail isd
+	LEFT JOIN
+		pre_weighcar_detail pwd
+	ON
+		pwd.pwdId = isd.pwdId
+	LEFT JOIN
+		weigh_car wc
+	ON
+		wc.weighCarId = isd.weighCarId
+	WHERE 1=1
+		<#if isdId?exists && isdId!="" >
+			AND isd.isdId=:isdId
+		</#if>
+		<#if businessId?exists && businessId!="" >
+			AND isd.businessId=:businessId
+		</#if>
+		<#if productName?exists && productName!="" >
+			AND isd.productName=:productName
+		</#if>
+		<#if purQuantity?exists && purQuantity!="" >
+			AND isd.purQuantity=:purQuantity
+		</#if>
+		<#if createTime?exists && createTime!="" >
+			AND isd.createTime=:createTime
+		</#if>
+		<#if createUserId?exists && createUserId!="" >
+			AND isd.createUserId=:createUserId
+		</#if>
+		<#if updateTime?exists && updateTime!="" >
+			AND isd.updateTime=:updateTime
+		</#if>
+		<#if updateUserId?exists && updateUserId!="" >
+			AND isd.updateUserId=:updateUserId
+		</#if>
+		
+		<#if pwdId?exists && pwdId!="" >
+			AND isd.pwdId=:pwdId
+		</#if>
+		<#if productId?exists && productId!="" >
+			AND isd.productId=:productId
+		</#if>
+		<#if price?exists && price!="" >
+			AND isd.price=:price
+		</#if>
+		<#if weigh?exists && weigh!="" >
+			AND isd.weigh=:weigh
+		</#if>
+		<#if unit?exists && unit!="" >
+			AND isd.unit=:unit
+		</#if>
+		<#if totalStartTime?exists && totalStartTime!="" >
+			AND wc.totalCreateTime>=:totalStartTime
+		</#if>
+		<#if totalEndTime?exists && totalEndTime!="" >
+			AND wc.totalCreateTime<=:totalEndTime
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="" >
+			AND wc.tareCreateTime=:tareStartTime
+		</#if>
+		<#if tareEndTime?exists && tareEndTime!="" >
+			AND wc.tareCreateTime=:tareEndTime
+		</#if>
+]]>
+</sql>
+
+<sql id="queryByConditionPageForAdmin">
+<![CDATA[
+	SELECT 
+		isd.isdId,isd.businessId,isd.productName,isd.purQuantity,isd.createTime,isd.createUserId,isd.updateTime,isd.updateUserId,
+		isd.pwdId,isd.productId,isd.price,isd.weigh,isd.unit,isd.inStoreNo,pc.cateName
+	FROM 
+		in_store_detail isd
+	LEFT JOIN
+		pre_weighcar_detail pwd
+	ON
+		pwd.pwdId = isd.pwdId
+	LEFT JOIN
+		weigh_car wc
+	ON
+		wc.weighCarId = isd.weighCarId
+	LEFT JOIN
+		product_baseinfo pb
+	ON
+		pb.productId = isd.productId and pb.productType = '1'
+	LEFT JOIN
+		product_category pc
+	ON
+		pb.cateId = pc.categoryId
+	WHERE 1=1
+		<#if isdId?exists && isdId!="" >
+			AND isd.isdId=:isdId
+		</#if>
+		<#if businessId?exists && businessId!="" >
+			AND isd.businessId=:businessId
+		</#if>
+		<#if productName?exists && productName!="" >
+			AND isd.productName=:productName
+		</#if>
+		<#if purQuantity?exists && purQuantity!="" >
+			AND isd.purQuantity=:purQuantity
+		</#if>
+		<#if createTime?exists && createTime!="" >
+			AND isd.createTime=:createTime
+		</#if>
+		<#if createUserId?exists && createUserId!="" >
+			AND isd.createUserId=:createUserId
+		</#if>
+		<#if updateTime?exists && updateTime!="" >
+			AND isd.updateTime=:updateTime
+		</#if>
+		<#if updateUserId?exists && updateUserId!="" >
+			AND isd.updateUserId=:updateUserId
+		</#if>
+		
+		<#if pwdId?exists && pwdId!="" >
+			AND isd.pwdId=:pwdId
+		</#if>
+		<#if productId?exists && productId!="" >
+			AND isd.productId=:productId
+		</#if>
+		<#if price?exists && price!="" >
+			AND isd.price=:price
+		</#if>
+		<#if weigh?exists && weigh!="" >
+			AND isd.weigh=:weigh
+		</#if>
+		<#if unit?exists && unit!="" >
+			AND isd.unit=:unit
+		</#if>
+		<#if totalStartTime?exists && totalStartTime!="" >
+			AND wc.totalCreateTime>=:totalStartTime
+		</#if>
+		<#if totalEndTime?exists && totalEndTime!="" >
+			AND wc.totalCreateTime<=:totalEndTime
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="" >
+			AND wc.tareCreateTime=:tareStartTime
+		</#if>
+		<#if tareEndTime?exists && tareEndTime!="" >
+			AND wc.tareCreateTime=:tareEndTime
+		</#if>
+		LIMIT :startRow,:endRow
+]]>
+</sql>
+
+<sql id="getByBusinessId">
+<![CDATA[
+	select 
+		isd.price,isd.weigh,isd.businessId,isd.unit,isd.inStoreNo,isd.isdId,pwd.cateId,pwd.productName,
+		pwd.memberId,mb.realName AS supplierName 
+	from 
+		in_store_detail isd 
+	LEFT JOIN 
+		pre_weighcar_detail pwd 
+	on 
+		isd.pwdId=pwd.pwdid
+	LEFT JOIN 
+		member_baseinfo mb 
+	on 
+		mb.memberId=pwd.memberId
+	where 
+		businessId=:businessId
+	ORDER BY isd.productid asc
+	LIMIT 
+		:startRow,:endRow
+]]>
+</sql>
+
+
+<sql id="getCountByBusinessId">
+<![CDATA[
+	select 
+		count(isd.isdId) count
+	from 
+		in_store_detail isd 
+	LEFT JOIN 
+		pre_weighcar_detail pwd 
+	on 
+		isd.pwdId=pwd.pwdid
+	LEFT JOIN 
+		member_baseinfo mb 
+	on 
+		mb.memberId=pwd.memberId
+	where 
+		businessId=:businessId
+]]>
+</sql>
+
+
+<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+		isdId,businessId,productName,purQuantity,createTime,createUserId,updateTime,updateUserId,
+		pwdId,productId,price,weigh,unit,inStoreNo
+	FROM 
+		in_store_detail
+	WHERE 1=1
+		<#if isdId?exists && isdId!="" >
+			AND isdId=:isdId
+		</#if>
+		<#if businessId?exists && businessId!="" >
+			AND businessId=:businessId
+		</#if>
+		<#if productName?exists && productName!="" >
+			AND productName=:productName
+		</#if>
+		<#if purQuantity?exists && purQuantity!="" >
+			AND purQuantity=:purQuantity
+		</#if>
+		<#if createTime?exists && createTime!="" >
+			AND createTime=:createTime
+		</#if>
+		<#if createUserId?exists && createUserId!="" >
+			AND createUserId=:createUserId
+		</#if>
+		<#if updateTime?exists && updateTime!="" >
+			AND updateTime=:updateTime
+		</#if>
+		<#if updateUserId?exists && updateUserId!="" >
+			AND updateUserId=:updateUserId
+		</#if>
+		
+		<#if pwdId?exists && pwdId!="" >
+			AND pwdId=:pwdId
+		</#if>
+		<#if productId?exists && productId!="" >
+			AND productId=:productId
+		</#if>
+		<#if price?exists && price!="" >
+			AND price=:price
+		</#if>
+		<#if weigh?exists && weigh!="" >
+			AND weigh=:weigh
+		</#if>
+		<#if unit?exists && unit!="" >
+			AND unit=:unit
+		</#if>
+		LIMIT :startRow,:endRow
+]]>
+</sql>
+
+<sql id="deleteById">
+<![CDATA[
+	DELETE 
+		in_store_detail
+	WHERE 
+		isdId=:isdId
+]]>
+</sql>
+
+		<sql id="getInstoreProductList">
+		<![CDATA[
+		SELECT
+			pwd.pwdId,
+			isd.inStoreNo,
+			mb.account AS supplierAccount,
+			mb.realName AS supplierName,
+			pwd.productName,
+			bc.cateName,
+			pwd.weigh,
+			bb.createTime AS productTime,
+			mb2.realName AS createName,
+			mb3.account AS specialAccount,
+			mb3.realName AS specialName,
+			isd.purQuantity,
+			isd.createTime AS instoreTime,
+		
+		IF (
+			isd.inStoreNo IS NULL,
+			'0',
+			'1'
+		) AS istoreStatus
+	FROM
+		pre_weighcar_detail pwd
+		LEFT JOIN in_store_detail isd ON pwd.pwdId = isd.pwdId
+		LEFT JOIN weigh_car wc ON pwd.weighCarId = wc.weighCarId
+		LEFT JOIN member_baseinfo mb ON wc.memberId = mb.memberId
+		LEFT JOIN product_baseinfo bb ON pwd.productId = bb.productId and bb.productType = '1'
+		LEFT JOIN product_category bc ON bb.cateId = bc.categoryId
+		LEFT JOIN member_baseinfo mb2 ON bb.createUserId = mb2.memberId
+		LEFT JOIN business_baseinfo businessb ON isd.businessId = businessb.businessId
+		LEFT JOIN member_baseinfo mb3 ON businessb.userId = mb3.memberId
+	where 1=1
+		<#if supplierAccount?exists && supplierAccount!="" >
+			AND mb.account=:supplierAccount
+		</#if>
+		<#if specialAccount?exists && specialAccount!="" >
+			AND mb3.account=:specialAccount
+		</#if>
+		<#if createName?exists && createName!="" >
+			AND mb2.realName like "%":createName"%"
+		</#if>
+		<#if inStoreNo?exists && inStoreNo!="" >
+			AND isd.inStoreNo=:inStoreNo
+		</#if>
+		<#if productStartTime?exists && productStartTime!="" >
+			AND bb.createTime >=:productStartTime
+		</#if>
+		<#if productEndTime?exists && productEndTime!="" >
+			AND bb.createTime <=:productEndTime
+		</#if>
+		<#if istoreStatus?exists && istoreStatus=="0" >
+			AND isd.inStoreNo is NULL
+		</#if>
+		<#if istoreStatus?exists && istoreStatus=="1" >
+			AND isd.inStoreNo is NOT NULL
+		</#if>
+		ORDER BY pwd.pwdId
+	LIMIT :startRow,:endRow
+	
+]]>
+</sql>
+<sql id="getInstoreProductListTotal">
+		<![CDATA[
+		SELECT
+			count(1)
+	FROM
+		pre_weighcar_detail pwd
+		LEFT JOIN in_store_detail isd ON pwd.pwdId = isd.pwdId
+		LEFT JOIN weigh_car wc ON pwd.weighCarId = wc.weighCarId
+		LEFT JOIN member_baseinfo mb ON wc.memberId = mb.memberId
+		LEFT JOIN product_baseinfo bb ON isd.productId = bb.productId and bb.productType = '1'
+		LEFT JOIN product_category bc ON bb.cateId = bc.categoryId
+		LEFT JOIN member_baseinfo mb2 ON bb.createUserId = mb2.memberId
+		LEFT JOIN business_baseinfo businessb ON isd.businessId = businessb.businessId
+		LEFT JOIN member_baseinfo mb3 ON businessb.userId = mb3.memberId
+	where 1=1
+		<#if supplierAccount?exists && supplierAccount!="" >
+			AND mb.account=:supplierAccount
+		</#if>
+		<#if specialAccount?exists && specialAccount!="" >
+			AND mb3.account=:specialAccount
+		</#if>
+		<#if createName?exists && createName!="" >
+			AND mb2.realName like "%":createName"%"
+		</#if>
+		<#if inStoreNo?exists && inStoreNo!="" >
+			AND isd.inStoreNo=:inStoreNo
+		</#if>
+		<#if productStartTime?exists && productStartTime!="" >
+			AND bb.createTime >=:productStartTime
+		</#if>
+		<#if productEndTime?exists && productEndTime!="" >
+			AND bb.createTime <=:productEndTime
+		</#if>
+		<#if istoreStatus?exists && istoreStatus=="0" >
+			AND isd.inStoreNo is NULL
+		</#if>
+		<#if istoreStatus?exists && istoreStatus=="1" >
+			AND isd.inStoreNo is NOT NULL
+		</#if>
+]]>
+</sql>
+
+
+</sqlMap>

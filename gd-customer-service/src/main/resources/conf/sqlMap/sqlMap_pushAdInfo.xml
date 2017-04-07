@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PushAdInfo">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			push_adinfo 
+		WHERE 
+			id=:id
+	]]>
+	</sql>
+	
+	<sql id="updateDTO">
+	<![CDATA[
+	    UPDATE 
+	    	push_adinfo t 
+	    SET 
+			      t.adCanal=:adCanal, 
+			      t.adType=:adType, 
+			      t.adName=:adName, 
+			<#if categoryId?exists && categoryId!="" >
+			      t.categoryId=:categoryId, 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      t.marketId=:marketId, 
+			</#if>
+			      t.state=:state, 
+			      t.adUrl=:adUrl, 
+			      t.adLinkUrl=:adLinkUrl, 
+			<#if endTimeStr?exists && endTimeStr!="" >
+			      t.endTime=:endTimeStr,
+			</#if>
+			<#if startTimeStr?exists && startTimeStr!="" >
+			      t.startTime=:startTimeStr,
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      t.updateUserId=:updateUserId, 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      t.updateUserName=:updateUserName, 
+			</#if>
+			      t.productId=:productId, 
+			      t.sort=:sort, 
+			 t.updateTime=SYSDATE() 
+			
+	    WHERE 
+	    	t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			push_adinfo t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if adCanal?exists && adCanal!="" >
+			      AND t.adCanal = :adCanal 
+			</#if>
+			<#if adType?exists && adType!="" >
+			      AND t.adType = :adType 
+			</#if>
+			<#if adName?exists && adName!="" >
+			      AND t.adName like "%":adName"%" 
+			</#if>
+			<#if categoryId?exists && categoryId!="" >
+			      AND t.categoryId = :categoryId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if adUrl?exists && adUrl!="" >
+			      AND t.adUrl = :adUrl 
+			</#if>
+			<#if adLinkUrl?exists && adLinkUrl!="" >
+			      AND t.adLinkUrl = :adLinkUrl 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+			<#if sort?exists && sort!="" >
+			      AND t.sort = :sort 
+			</#if> 
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.id,t.adCanal,t.adType,t.adName,t.categoryId,t.marketId,t.state,t.adUrl,t.adLinkUrl,t.endTime,t.createUserId,t.createUserName,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime,t.productId,t.sort,t.startTime 
+		FROM 
+			push_adinfo t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.id,t.adCanal,t.adType,t.adName,t.categoryId,t.marketId,t.state,t.adUrl,t.adLinkUrl,t.endTime,t.createUserId,t.createUserName,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime,t.productId,t.sort,t.startTime 
+		FROM 
+			push_adinfo t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if adCanal?exists && adCanal!="" >
+			      AND t.adCanal = :adCanal 
+			</#if>
+			<#if adType?exists && adType!="" >
+			      AND t.adType = :adType 
+			</#if>
+			<#if adName?exists && adName!="" >
+			      AND t.adName like "%":adName"%" 
+			</#if>
+			<#if categoryId?exists && categoryId!="" >
+			      AND t.categoryId = :categoryId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if adUrl?exists && adUrl!="" >
+			      AND t.adUrl = :adUrl 
+			</#if>
+			<#if adLinkUrl?exists && adLinkUrl!="" >
+			      AND t.adLinkUrl = :adLinkUrl 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+			<#if sort?exists && sort!="" >
+			      AND t.sort = :sort 
+			</#if> 
+		ORDER BY 
+			t.sort 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.id,t.adCanal,t.adType,t.adName,t.categoryId,t.marketId,t.state,t.adUrl,t.adLinkUrl,t.endTime,t.createUserId,t.createUserName,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime,t.productId,t.sort,t.startTime 
+		FROM 
+			push_adinfo t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if adCanal?exists && adCanal!="" >
+			      AND t.adCanal = :adCanal 
+			</#if>
+			<#if adType?exists && adType!="" >
+			      AND t.adType = :adType 
+			</#if>
+			<#if adName?exists && adName!="" >
+			      AND t.adName like "%":adName"%" 
+			</#if>
+			<#if categoryId?exists && categoryId!="" >
+			      AND t.categoryId = :categoryId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if adUrl?exists && adUrl!="" >
+			      AND t.adUrl = :adUrl 
+			</#if>
+			<#if adLinkUrl?exists && adLinkUrl!="" >
+			      AND t.adLinkUrl = :adLinkUrl 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+			<#if sort?exists && sort!="" >
+			      AND t.sort = :sort 
+			</#if> 
+		ORDER BY 
+			t.sort 
+	]]>
+	</sql>
+	
+	<sql id="getListByShow">
+	<![CDATA[
+		SELECT 
+			t.id,t.adCanal,t.adType,t.adName,t.categoryId,t.marketId,t.state,t.adUrl,t.adLinkUrl,t.endTime,t.createUserId,t.createUserName,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime,t.productId,t.sort,t.startTime 
+		FROM 
+			push_adinfo t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if adCanal?exists && adCanal!="" >
+			      AND t.adCanal = :adCanal 
+			</#if>
+			<#if adType?exists && adType!="" >
+			      AND t.adType = :adType 
+			</#if>
+			<#if adName?exists && adName!="" >
+			      AND t.adName like "%":adName"%" 
+			</#if>
+			<#if categoryId?exists && categoryId!="" >
+			      AND t.categoryId = :categoryId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if adUrl?exists && adUrl!="" >
+			      AND t.adUrl = :adUrl 
+			</#if>
+			<#if adLinkUrl?exists && adLinkUrl!="" >
+			      AND t.adLinkUrl = :adLinkUrl 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+			<#if sort?exists && sort!="" >
+			      AND t.sort = :sort 
+			</#if> 
+			AND SYSDATE() > t.startTime and SYSDATE() < t.endTime
+		ORDER BY 
+			t.sort 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getPushProductList">
+	<![CDATA[
+		SELECT
+			a.productId, a.marketId, b.marketName, c.`name` AS productName,
+			CASE WHEN c.priceType = "1" THEN pp.minPrice else c.price end price, c.unit, g.codeValue AS unitName, 
+			c.businessId, d.shopsName, e.mobile, a.startTime AS adTime, c.updateTime AS startTime, a.adUrl AS imageUrl
+		FROM
+			push_adinfo a 
+		LEFT JOIN market b ON a.marketId = b.id 
+		LEFT JOIN product_baseinfo c ON  a.productId = c.productId 
+		LEFT JOIN system_code g ON c.unit = g.codeKey AND g.type = "ProductUnit"
+		LEFT JOIN business_baseinfo d ON c.businessId = d.businessId 
+		LEFT JOIN member_baseinfo e ON d.userId = e.memberId
+		LEFT JOIN (SELECT b.productId, MIN(b.price) AS minPrice FROM product_price b GROUP BY b.productId) pp ON c.productId = pp.productId
+		WHERE
+			c.state = 3 and c.productType = '1'
+		<#if adCanal?exists && adCanal!="" >
+		      AND a.adCanal = :adCanal 
+		</#if>
+		<#if adType?exists && adType!="" >
+		      AND a.adType = :adType 
+		</#if>
+		<#if state?exists && state!="" >
+		      AND a.state = :state 
+		</#if>
+		<#if marketId?exists && marketId!="" >
+		      AND a.marketId = :marketId 
+		</#if>
+		ORDER BY a.sort
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getProductTotal">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			push_adinfo a 
+		LEFT JOIN market b ON a.marketId = b.id 
+		LEFT JOIN product_baseinfo c ON  a.productId = c.productId 
+		LEFT JOIN system_code g ON c.unit = g.codeKey AND g.type = "ProductUnit"
+		LEFT JOIN business_baseinfo d ON c.businessId = d.businessId 
+		LEFT JOIN member_baseinfo e ON d.userId = e.memberId
+		LEFT JOIN (SELECT b.productId, MIN(b.price) AS minPrice FROM product_price b GROUP BY b.productId) pp ON c.productId = pp.productId
+		WHERE 
+			c.state = 3 and c.productType = '1'
+		<#if adCanal?exists && adCanal!="" >
+		      AND a.adCanal = :adCanal 
+		</#if>
+		<#if adType?exists && adType!="" >
+		      AND a.adType = :adType 
+		</#if>
+		<#if state?exists && state!="" >
+		      AND a.state = :state 
+		</#if>
+		<#if marketId?exists && marketId!="" >
+		      AND a.marketId = :marketId 
+		</#if>
+	]]>
+	</sql>
+	
+	<!-- 广告过期处理或者上线处理  semon-->
+	<sql id="updataAdExpired">
+		UPDATE push_adinfo
+		SET state = '03'
+		WHERE
+			state = '01'
+		AND endTime BETWEEN date_sub(now(), INTERVAL :hourcn HOUR)
+		AND now();
+	</sql>
+	
+	<sql id="updataAdStart">
+		UPDATE push_adinfo
+		SET state = '01'
+		WHERE
+			state = '02'
+		AND startTime BETWEEN date_sub(now(), INTERVAL :hourcn HOUR)
+		AND now();
+	</sql>
+	
+	<sql id="getNoticeList">
+		<![CDATA[
+		SELECT notice FROM nst_notice WHERE DATE_FORMAT(SYSDATE(),'%Y-%m-%d')<=endTime
+		]]>
+	</sql>
+	
+	
+</sqlMap>

@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdPurchaseEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_purchase(
+	marketId,updateUserName,createTime,purchaser,remark,status,updateTime,
+	warehouseId,id,createUser,createUserName,purchaseNO,updateUser
+	
+	) VALUES (
+	:marketId,:updateUserName,:createTime,:purchaser,:remark,:status,:updateTime,
+	:warehouseId,:id,:createUser,:createUserName,:purchaseNO,:updateUser
+	
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_purchase SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if updateUserName?exists && updateUserName!="" >
+		updateUserName=:updateUserName,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if purchaser?exists && purchaser!="" >
+		purchaser=:purchaser,
+	</#if>	
+	<#if remark?exists && remark!="" >
+		remark=:remark,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if warehouseId?exists && warehouseId!="" >
+		warehouseId=:warehouseId,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createUser?exists && createUser!="" >
+		createUser=:createUser,
+	</#if>	
+	<#if createUserName?exists && createUserName!="" >
+		createUserName=:createUserName,
+	</#if>	
+	<#if purchaseNO?exists && purchaseNO!="" >
+		purchaseNO=:purchaseNO,
+	</#if>	
+	<#if updateUser?exists && updateUser!="" >
+		updateUser=:updateUser
+	</#if>	
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,updateUserName,createTime,purchaser,remark,status,updateTime,
+	warehouseId,id,createUser,createUserName,purchaseNO,updateUser
+	
+	FROM grd_purchase WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	p.marketId,p.updateUserName,p.createTime,p.purchaser,p.remark,p.status,p.updateTime,
+	p.warehouseId,p.id,p.createUser,p.createUserName,p.purchaseNO,p.updateUser,m.marketName,gs.name warehouseName,
+	(select sum(ifnull(amount,0)) from grd_purchasegift where purchaseNO = p.purchaseNO) orderamount
+	FROM grd_purchase p
+	join grd_gd_giftstore gs on gs.id = p.warehouseId
+	join gudeng.market m on m.id = p.marketId 
+	WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND p.marketId=:marketId
+	</#if>
+	<#if warehouseId?exists && warehouseId!="" >
+		AND p.warehouseId=:warehouseId
+	</#if>
+	<#if status?exists && status!="" >
+		AND p.status=:status
+		<#else>
+		AND p.status>0 
+	</#if>
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND p.purchaseNO like "%":purchaseNO"%"
+	</#if>
+	<#if id?exists && id!="" >
+		AND p.id=:id
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	p.marketId,p.updateUserName,p.createTime,p.purchaser,p.remark,p.status,p.updateTime,
+	p.warehouseId,p.id,p.createUser,p.createUserName,p.purchaseNO,p.updateUser,m.marketName,gs.name warehouseName,
+	(select sum(ifnull(amount,0)) from grd_purchasegift where purchaseNO = p.purchaseNO) orderamount
+	FROM grd_purchase p
+	join grd_gd_giftstore gs on gs.id = p.warehouseId
+	join gudeng.market m on m.id = p.marketId 
+	<#if marketId?exists && marketId!="" >
+		AND p.marketId=:marketId
+	</#if>
+	<#if warehouseId?exists && warehouseId!="" >
+		AND p.warehouseId=:warehouseId
+	</#if>
+	<#if status?exists && status!="" >
+		AND p.status=:status
+		<#else>
+		AND p.status>0 
+	</#if>
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND p.purchaseNO like "%":purchaseNO"%"
+	</#if>
+	<#if id?exists && id!="" >
+		AND p.id=:id
+	</#if>
+	ORDER BY p.purchaseNO desc
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) 
+	FROM grd_purchase p
+	join grd_gd_giftstore gs on gs.id = p.warehouseId
+	join gudeng.market m on m.id = p.marketId 
+	<#if marketId?exists && marketId!="" >
+		AND p.marketId=:marketId
+	</#if>
+	<#if warehouseId?exists && warehouseId!="" >
+		AND p.warehouseId=:warehouseId
+	</#if>
+	<#if status?exists && status!="" >
+		AND p.status=:status
+		<#else>
+		AND p.status >0 
+	</#if>
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND p.purchaseNO like "%":purchaseNO"%"
+	</#if>
+	<#if id?exists && id!="" >
+		AND p.id=:id
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	update grd_purchase set status=0 WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getPurchaseByStatusTotal">
+	<![CDATA[
+	SELECT gp.`purchaseNO` AS purchaseNO FROM grd_purchase gp WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	AND status in('1','2')
+	<#if warehouseId?exists && warehouseId!="" >
+		AND warehouseId=:warehouseId
+	</#if>
+	]]>
+</sql>
+<sql id="getPurchaseBatch">
+	<![CDATA[
+	SELECT gpg.`purchaseNO` AS purchaseNO,
+		   gpg.`giftNO` AS giftNO,
+		   gpg.`unitPrice` AS unitPrice,
+		   gp.`createTime` AS createTime,
+		   gp.`remark` AS remark
+	FROM grd_purchasegift gpg,grd_purchase gp 
+	WHERE gpg.`purchaseNO`=gp.`purchaseNO`
+	<#if giftNO?exists && giftNO!="" >
+		AND gpg.giftNO=:giftNO
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND gp.marketId=:marketId
+	</#if>
+	<#if warehouseId?exists && warehouseId!="" >
+		AND gp.warehouseId=:warehouseId
+	</#if>
+	ORDER BY gp.`createTime` DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+<sql id="getPurchaseBatchTotal">
+	<![CDATA[
+	SELECT COUNT(1)
+	FROM grd_purchasegift gpg,grd_purchase gp 
+	WHERE gpg.`purchaseNO`=gp.`purchaseNO`
+	<#if giftNO?exists && giftNO!="" >
+		AND giftNO=:giftNO
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND gp.marketId=:marketId
+	</#if>
+	<#if warehouseId?exists && warehouseId!="" >
+		AND gp.warehouseId=:warehouseId
+	</#if>
+	]]>
+</sql>
+<sql id="queryPurchaseSelect">
+	<![CDATA[
+	SELECT 
+	marketId,updateUserName,createTime,purchaser,remark,status,updateTime,
+	warehouseId,id,createUser,createUserName,purchaseNO,updateUser,
+	(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= gp.warehouseId)AS warehouseName,
+	(SELECT IFNULL(SUM(gpg.amount),0) FROM grd_purchasegift gpg WHERE gpg.purchaseNO=gp.`purchaseNO`
+	AND gpg.status in('0','1'))AS totalPrice
+	FROM grd_purchase gp WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	AND `status` in('1','2')
+	
+	<#if warehouseId?exists && warehouseId!="" >
+		AND warehouseId=:warehouseId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND purchaseNO=:purchaseNO
+	</#if>
+	
+	ORDER BY createTime DESC
+	]]>
+</sql>
+
+<sql id="queryPurchasegiftList">
+	<![CDATA[
+	SELECT 
+		t.giftNO, t.giftName,t.purchaseGiftId,t.unit,t.purchaseNO,t.count AS purchaseCount,
+		(CASE WHEN t.count-t.incount <=0 THEN 0
+		ELSE t.count-t.incount END)AS count
+	FROM(SELECT 
+		   gpg.`giftNO` AS giftNO,
+		   ggg.`name` AS giftName,
+		   gpg.purchaseGiftId AS purchaseGiftId,
+		   ggg.`unit` AS unit,
+		   gp.`purchaseNO` AS purchaseNO,
+		   IFNULL(gpg.count,0) AS count,
+	   	   gpg.`status` AS status,
+	   	   (SELECT IFNULL(SUM(gid.`inCount`),0) FROM grd_instoragedetail gid WHERE gid.`purchaseGiftId`=gpg.`purchaseGiftId`)AS incount
+	FROM grd_purchasegift gpg
+	LEFT JOIN grd_purchase gp
+	ON gpg.`purchaseNO`=gp.`purchaseNO`
+	LEFT JOIN grd_gd_gift ggg
+	ON ggg.`giftNO`=gpg.`giftNO`
+	)t
+	WHERE 1=1
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND t.purchaseNO=:purchaseNO
+	</#if>
+		AND t.status in ('0','1')
+	ORDER BY t.`giftNO` ASC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+<sql id="queryPurchasegiftListTotal">
+	<![CDATA[
+	SELECT COUNT(1)
+	FROM grd_purchasegift gpg
+	LEFT JOIN grd_purchase gp
+	ON gpg.`purchaseNO`=gp.`purchaseNO`
+	LEFT JOIN grd_gd_gift ggg
+	ON ggg.`giftNO`=gpg.`giftNO`
+	WHERE 1=1
+	<#if purchaseNO?exists && purchaseNO!="" >
+		AND gpg.purchaseNO=:purchaseNO
+	</#if>
+	AND gpg.status in('0','1')
+	]]>
+</sql>
+
+<sql id="findCountByDay">
+select count(*) from grd_purchase where date_format(createTime,'%Y-%m-%d')=date_format(now(),'%Y-%m-%d')
+</sql>
+<sql id="getPurchaseGiftList">
+	<![CDATA[
+		select p.purchaseNO,m.marketName,gs.name warehouseName,p.purchaser,pg.giftNO,g.name,g.unit,
+		pg.unitPrice,pg.count,pg.amount
+		from grd_purchase p 
+		join grd_purchasegift pg on p.purchaseNO = pg.purchaseNO
+		join grd_gd_gift g on pg.giftNO = g.giftNo
+		join grd_gd_giftstore gs on gs.id = p.warehouseId
+		join gudeng.market m on m.id = p.marketId
+		where p.id = :id
+	]]>
+</sql>
+
+<sql id="closeById">
+	<![CDATA[
+	update grd_purchase set status=3 WHERE id=:id
+	]]>
+</sql>
+
+<sql id="updateByPurchaseNO">
+	<![CDATA[
+	UPDATE grd_purchase SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if updateUserName?exists && updateUserName!="" >
+		updateUserName=:updateUserName,
+	</#if>	
+	<#if purchaser?exists && purchaser!="" >
+		purchaser=:purchaser,
+	</#if>	
+	<#if remark?exists && remark!="" >
+		remark=:remark,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=now(),
+	</#if>	
+	<#if warehouseId?exists && warehouseId!="" >
+		warehouseId=:warehouseId,
+	</#if>	
+	<#if updateUser?exists && updateUser!="" >
+		updateUser=:updateUser
+	</#if>	
+	WHERE purchaseNO=:purchaseNO
+	]]>
+</sql>
+
+
+<sql id="findGiftInstoreInfoList">
+	<![CDATA[
+select tt.*,gigd.*,
+(select n.`name` from grd_purchase m,grd_gd_giftstore n where m.purchaseNO=:purchaseNo and m.warehouseId=n.id) as store
+from
+(select gi.purchaseNO, gi.createUserName,gi.inStorageId,DATE_FORMAT(gi.createTime,'%y-%m-%d %H:%i:%s')as createTime,gid.inCount,gid.purchaseGiftId
+ from grd_instorage gi,grd_instoragedetail gid where gi.inStorageId=gid.inStorageId and gi.purchaseNO=:purchaseNo ) as gigd
+left JOIN
+(select gp.giftNO,ggg.`name`,ggg.unit,gp.purchaseNO,gp.purchaseGiftId from grd_purchasegift gp 
+LEFT JOIN
+grd_gd_gift ggg
+on gp.giftNO = ggg.giftNo
+where gp.purchaseNO=:purchaseNo) as tt
+ on tt.purchaseGiftId=gigd.purchaseGiftId
+ <#if startRow?exists && startRow!="" >
+ 	LIMIT :startRow, :endRow
+</#if>	
+
+	]]>
+</sql>
+
+<sql id="findGiftInstoreInfoCount">
+	<![CDATA[
+select count(0) from
+(select gi.purchaseNO, gi.createUserName,gi.inStorageId,DATE_FORMAT(gi.createTime,'%y-%m-%d %H:%m:%s')as createTime,gid.inCount,gid.purchaseGiftId
+ from grd_instorage gi,grd_instoragedetail gid where gi.inStorageId=gid.inStorageId and gi.purchaseNO=:purchaseNo ) as gigd
+left JOIN
+(select gp.giftNO,ggg.`name`,ggg.unit,gp.purchaseNO,gp.purchaseGiftId from grd_purchasegift gp 
+LEFT JOIN
+grd_gd_gift ggg
+on gp.giftNO = ggg.giftNo
+where gp.purchaseNO=:purchaseNo) as tt
+ on tt.purchaseGiftId=gigd.purchaseGiftId
+	]]>
+</sql>
+
+
+
+
+</sqlMap>
+
+
+
+

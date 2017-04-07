@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="reBusinessSteelyard">
+	<!-- 全查找 -->
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT 
+			bs.businessId 
+		FROM 
+			re_business_steelyard bs
+		WHERE 1=1
+		<#if macAddr?exists && macAddr!="" >
+		     and bs.macAddr = :macAddr
+		</#if>
+		<#if stlydId?exists && stlydId!="" >
+		     and bs.stlydId = :stlydId
+		</#if>
+		LIMIT 1
+	]]>
+	</sql>
+	
+	<sql id="deleteByBusinessId">
+	<![CDATA[
+		delete from 
+			re_business_steelyard 
+		where 
+			businessId = :businessId
+	]]>
+	</sql>
+	
+	<sql id="deleteById">
+	<![CDATA[
+		delete from 
+			re_business_steelyard 
+		where 
+			id=:id
+	]]>
+	</sql>
+	
+	<sql id="queryByBusinessId">
+	<![CDATA[
+		SELECT 
+			bs.id, bs.businessId, bs.macAddr, bs.stlydId, bs.createUserId, bs.createTime, 
+			bs.updateUserId, bs.updateTime 
+		FROM 
+			re_business_steelyard bs
+		where
+			bs.businessId = :businessId
+	]]>
+	</sql>
+</sqlMap>

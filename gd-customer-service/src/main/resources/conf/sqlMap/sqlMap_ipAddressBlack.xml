@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="IpAddressBlack">
+    <sql id="countTotal">
+		<![CDATA[
+		   SELECT COUNT(1) FROM ipaddress_black WHERE to_days(createTime)=to_days(now()) AND state=:state AND ipAddress=:ipAddress
+		]]>
+	</sql>
+	
+	 <sql id="insert">
+      <![CDATA[
+	    INSERT INTO gudeng.ipaddress_black
+           (id,type,ipAddress,chennel,state,createTime)
+        VALUES 
+           (:id,:type,:ipAddress,:chennel,:state,now())
+      ]]>
+	</sql>
+</sqlMap>

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PaySerialnumber">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			pay_serialnumber 
+		WHERE 
+			payId=:payId
+	]]>
+	</sql>
+	
+	<sql id="updateDTO">
+	<![CDATA[
+	    UPDATE 
+	    	pay_serialnumber t 
+	    SET 
+			 t.updateTime=SYSDATE()
+			<#if payImage?exists && payImage!="" >
+			      , t.payImage = :payImage 
+			</#if>
+			<#if statementId?exists && statementId!="" >
+			      , t.statementId = :statementId 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      , t.updateUserId = :updateUserId 
+			</#if> 
+	    WHERE 
+	    	t.payId=:payId
+	]]>
+	</sql>
+	
+	<sql id="updateStatementId">
+	<![CDATA[
+	    UPDATE 
+	    	pay_serialnumber t 
+	    SET 
+			 t.statementId=:statementId
+	    WHERE 
+	    	t.payId=:payId
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			pay_serialnumber t 
+		WHERE 1=1 
+			<#if payId?exists && payId!="" >
+			      AND t.payId = :payId 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if statementId?exists && statementId!="" >
+			      AND t.statementId = :statementId 
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType like "%":payType"%" 
+			</#if>
+			<#if payStatus?exists && payStatus!="" >
+			      AND t.payStatus = :payStatus 
+			</#if>
+			<#if paymentAcc?exists && paymentAcc!="" >
+			      AND t.paymentAcc = :paymentAcc 
+			</#if>
+			<#if recipientAcc?exists && recipientAcc!="" >
+			      AND t.recipientAcc = :recipientAcc 
+			</#if>
+			<#if tradeAmount?exists && tradeAmount!="" >
+			      AND t.tradeAmount = :tradeAmount 
+			</#if>
+			<#if remark?exists && remark!="" >
+			      AND t.remark = :remark 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.payTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.payTime < :endDate
+			</#if>
+			<#if payImage?exists && payImage!="" >
+			      AND t.payImage = :payImage 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+	]]>
+	</sql>
+	
+	<sql id="getTotalByStatementId">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			pay_serialnumber t 
+		WHERE t.statementId = :statementId
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.payId,t.orderNo,t.statementId,t.payType,t.payStatus,t.paymentAcc,t.recipientAcc,
+			t.tradeAmount,t.remark,t.payTime,t.createUserId,t.payImage,
+			t.createTime,t.updateUserId,t.updateTime 
+		FROM 
+			pay_serialnumber t 
+		WHERE 
+			t.payId=:payId
+	]]>
+	</sql>
+	
+	<sql id="getByOrderNo">
+	<![CDATA[
+		SELECT 
+			t.payId,t.orderNo,t.statementId,t.payType,t.payStatus,t.paymentAcc,t.recipientAcc,
+			t.tradeAmount,t.remark,t.payTime,t.createUserId,t.payImage,t.thirdStatementId,
+			t.createTime,t.updateUserId,t.updateTime 
+		FROM 
+			pay_serialnumber t 
+		WHERE 
+			t.orderNo = :orderNo
+		<#if serialType?exists && serialType!="" >
+	       AND t.serialType = :serialType 
+		<#else>
+	       AND t.serialType is null  
+		</#if>
+		ORDER BY t.payType DESC LIMIT 1
+	]]>
+	</sql>
+	
+	<sql id="getByOrderNoAndPayType">
+	<![CDATA[
+		SELECT 
+			t.payId,t.orderNo,t.statementId,t.payType,t.payStatus,t.paymentAcc,t.recipientAcc,
+			t.tradeAmount,t.remark,t.payTime,t.createUserId,t.payImage,
+			t.createTime,t.updateUserId,t.updateTime,t.upImageTime,t.posNumber,t.thirdStatementId
+		FROM 
+			pay_serialnumber t 
+		WHERE 
+			t.orderNo = :orderNo
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.payId,t.orderNo,t.statementId,t.payType,t.payStatus,t.paymentAcc,t.recipientAcc,
+			t.tradeAmount,t.remark,t.payTime,t.createUserId,t.payImage,
+			t.createTime,t.updateUserId,t.updateTime 
+		FROM 
+			pay_serialnumber t 
+		WHERE 1=1 
+			<#if payId?exists && payId!="" >
+			      AND t.payId = :payId 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if statementId?exists && statementId!="" >
+			      AND t.statementId = :statementId 
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType like "%":payType"%" 
+			</#if>
+			<#if payStatus?exists && payStatus!="" >
+			      AND t.payStatus = :payStatus 
+			</#if>
+			<#if paymentAcc?exists && paymentAcc!="" >
+			      AND t.paymentAcc = :paymentAcc 
+			</#if>
+			<#if recipientAcc?exists && recipientAcc!="" >
+			      AND t.recipientAcc = :recipientAcc 
+			</#if>
+			<#if tradeAmount?exists && tradeAmount!="" >
+			      AND t.tradeAmount = :tradeAmount 
+			</#if>
+			<#if remark?exists && remark!="" >
+			      AND t.remark = :remark 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.payTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.payTime < :endDate
+			</#if>
+			<#if payImage?exists && payImage!="" >
+			      AND t.payImage = :payImage 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+		ORDER BY 
+			t.payTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.payId,t.orderNo,t.statementId,t.payType,t.payStatus,t.paymentAcc,t.recipientAcc,
+			t.tradeAmount,t.remark,t.payTime,t.createUserId,t.payImage,
+			t.createTime,t.updateUserId,t.updateTime,t.posNumber,thirdStatementId,serialType
+		FROM 
+			pay_serialnumber t 
+		WHERE 1=1 
+			<#if payId?exists && payId!="" >
+			      AND t.payId = :payId 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if statementId?exists && statementId!="" >
+			      AND t.statementId = :statementId 
+			</#if>
+			<#if serialType?exists && serialType!="" >
+			      AND t.serialType = :serialType
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType like "%":payType"%" 
+			</#if>
+			<#if payStatus?exists && payStatus!="" >
+			      AND t.payStatus = :payStatus 
+			</#if>
+			<#if paymentAcc?exists && paymentAcc!="" >
+			      AND t.paymentAcc = :paymentAcc 
+			</#if>
+			<#if recipientAcc?exists && recipientAcc!="" >
+			      AND t.recipientAcc = :recipientAcc 
+			</#if>
+			<#if tradeAmount?exists && tradeAmount!="" >
+			      AND t.tradeAmount = :tradeAmount 
+			</#if>
+			<#if remark?exists && remark!="" >
+			      AND t.remark = :remark 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.payTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.payTime < :endDate
+			</#if>
+			<#if payImage?exists && payImage!="" >
+			      AND t.payImage = :payImage 
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if> 
+		ORDER BY 
+			t.payTime desc  
+	]]>
+	</sql>
+	
+	
+	
+	
+	
+	<sql id="getByMemberIdAndDay">
+	<![CDATA[
+ 		SELECT 
+			t.payId,t.orderNo,t.statementId,
+			t.payType as payType,
+			t.payStatus,t.paymentAcc,t.recipientAcc,
+			t.tradeAmount,t.remark,t.payTime,t.createUserId,t.payImage,
+			t.createTime,t.updateUserId,t.updateTime ,
+			
+			ob.persaleId,ob.orderNo,ob.orderSource,ob.channel,ob.orderType,
+			ob.orderAmount,ob.discountAmount,ob.subAmount,
+			ob.payAmount,ob.orderStatus,ob.memberId,ob.orderTime,ob.shopName,
+			ob.businessId,ob.marketId,
+			ob.createUserId, ob.updateUserId,t.updateTime 
+			FROM 
+				 pay_serialnumber AS t,  order_baseinfo AS ob
+			WHERE
+				t.orderNo = ob.orderNo
+			AND
+			 DATE_FORMAT(t.createTime,'%Y-%m-%d')=:createTime
+			
+			<#if memberId?exists && memberId!="" >
+			  AND	 t.memberid=:memberId
+			</#if>
+			
+			<#if businessId?exists && businessId!="" >
+			  AND	 ob.businessId=:businessId
+			</#if>
+		ORDER BY t.createTime DESC	
+		 ]]>
+	</sql>
+	 
+	<sql id="updateTradeAmount">
+	<![CDATA[
+		update pay_serialnumber 
+		set updateUserId = :updateuserid, updateTime = sysdate(), tradeAmount = :tradeAmount
+		WHERE orderNo = :orderNo AND statementId = :statementId 
+	]]>
+	</sql>
+</sqlMap>

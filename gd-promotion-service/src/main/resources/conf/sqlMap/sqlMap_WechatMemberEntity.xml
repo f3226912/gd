@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="WechatMemberEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO wechat_member(
+	id,actId,createTime,appId,inviteId,unionId,memberId,
+	type,openId
+	) VALUES (
+	:id,:actId,:createTime,:appId,:inviteId,:unionId,:memberId,
+	:type,:openId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE wechat_member SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if actId?exists && actId!="" >
+		actId=:actId,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if appId?exists && appId!="" >
+		appId=:appId,
+	</#if>	
+	<#if inviteId?exists && inviteId!="" >
+		inviteId=:inviteId,
+	</#if>	
+	<#if unionId?exists && unionId!="" >
+		unionId=:unionId,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>	
+	<#if openId?exists && openId!="" >
+		openId=:openId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,actId,createTime,appId,inviteId,unionId,memberId,
+	type,openId
+	FROM wechat_member WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,actId,createTime,appId,inviteId,unionId,memberId,
+	type,openId
+	FROM wechat_member WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if appId?exists && appId!="" >
+		AND appId=:appId
+	</#if>
+	<#if inviteId?exists && inviteId!="" >
+		AND inviteId=:inviteId
+	</#if>
+	<#if unionId?exists && unionId!="" >
+		AND unionId=:unionId
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if openId?exists && openId!="" >
+		AND openId=:openId
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,actId,createTime,appId,inviteId,unionId,memberId,
+	type,openId
+	FROM wechat_member WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if appId?exists && appId!="" >
+		AND appId=:appId
+	</#if>
+	<#if inviteId?exists && inviteId!="" >
+		AND inviteId=:inviteId
+	</#if>
+	<#if unionId?exists && unionId!="" >
+		AND unionId=:unionId
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if openId?exists && openId!="" >
+		AND openId=:openId
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM wechat_member WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if appId?exists && appId!="" >
+		AND appId=:appId
+	</#if>
+	<#if inviteId?exists && inviteId!="" >
+		AND inviteId=:inviteId
+	</#if>
+	<#if unionId?exists && unionId!="" >
+		AND unionId=:unionId
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if openId?exists && openId!="" >
+		AND openId=:openId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM wechat_member WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

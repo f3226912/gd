@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MqAsyncErrorEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO mq_async_error(
+	content,id,createTime,status,crud,type
+	) VALUES (
+	:content,:id,:createTime,:status,:crud,:type
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE mq_async_error SET 
+	<#if content?exists && content!="" >
+		content=:content,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if crud?exists && crud!="" >
+		crud=:crud,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	content,id,createTime,status,crud,type
+	FROM mq_async_error WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	content,id,createTime,status,crud,type
+	FROM mq_async_error WHERE 1=1
+	<#if content?exists && content!="" >
+		AND content=:content
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if crud?exists && crud!="" >
+		AND crud=:crud
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	content,id,createTime,status,crud,type
+	FROM mq_async_error WHERE 1=1
+	<#if content?exists && content!="" >
+		AND content=:content
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if crud?exists && crud!="" >
+		AND crud=:crud
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM mq_async_error WHERE 1=1
+	<#if content?exists && content!="" >
+		AND content=:content
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if crud?exists && crud!="" >
+		AND crud=:crud
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM mq_async_error WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

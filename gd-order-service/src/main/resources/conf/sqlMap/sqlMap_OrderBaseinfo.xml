@@ -1,0 +1,2278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderBaseinfo">
+	<sql id="callBackUpdateStatus">
+	<![CDATA[
+	    UPDATE 
+	    	order_baseinfo t 
+	    SET 
+	    	t.updateTime = SYSDATE()
+	    	<#if orderStatus?exists && orderStatus!="" >
+			     ,t.orderStatus = :orderStatus 
+			</#if>
+			<#if cancelReason?exists && cancelReason!="" >
+			     ,t.cancelReason = :cancelReason 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			     ,t.updateUserId = :updateUserId 
+			</#if>
+			<#if deliverTimeStr?exists && deliverTimeStr!="" >
+			     ,t.deliverTime = :deliverTimeStr 
+			</#if>
+			<#if closeTimeStr?exists && closeTimeStr!="" >
+			     ,t.closeTime = :closeTimeStr 
+			</#if>
+	    WHERE 
+	    	t.orderNo= (SELECT orderNo FROM product_delivery_detail WHERE memberAddressId=:memberAddressId LIMIT 1)
+	]]>
+	</sql>
+	<sql id="updateCustomer">
+	<![CDATA[
+		UPDATE 
+		    order_baseinfo t
+		SET
+		    t.updateTime = SYSDATE()
+			<#if orderAmount?exists && orderAmount != "" >
+			     , t.orderAmount = :orderAmount 
+			</#if>
+			<#if hasCustomer?exists && hasCustomer != ""  >
+			     , t.hasCustomer = :hasCustomer
+			</#if>
+			<#if memberId?exists && memberId != "" >
+				 , t.memberId = :memberId 
+			</#if>
+			<#if totalPayAmt?exists && totalPayAmt!="" >
+			    , t.totalPayAmt = :totalPayAmt 
+			</#if>
+		WHERE
+			t.orderNo = :orderNo
+		AND 
+			t.hasCustomer = '0'
+	]]>
+	</sql>
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			order_baseinfo 
+		WHERE 
+			persaleId=:persaleId
+	]]>
+	</sql>
+	
+	<sql id="updateDTO">
+	<![CDATA[
+	    UPDATE 
+	    	order_baseinfo t 
+	    SET 
+			t.orderStatus=:orderStatus 
+	    WHERE 
+	    	t.persaleId=:persaleId
+	]]>
+	</sql>
+	
+	<sql id="updateByOrderNo">
+	<![CDATA[
+	    UPDATE 
+	    	order_baseinfo t 
+	    SET 
+	    	t.updateTime = SYSDATE()
+	    	<#if orderStatus?exists && orderStatus!="" >
+			     ,t.orderStatus = :orderStatus 
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			     , t.memberId = :memberId 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      , t.orderAmount = :orderAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			     , t.payAmount = :payAmount 
+			</#if>
+			<#if totalPayAmt?exists && totalPayAmt!="" >
+			     , t.totalPayAmt = :totalPayAmt 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			     , t.examineStatus = :examineStatus 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			     ,t.subAmount = :subAmount 
+			</#if>
+			<#if sellSubAmount?exists && sellSubAmount!="" >
+			     ,t.sellSubAmount = :sellSubAmount 
+			</#if>
+			<#if suppSubAmount?exists && suppSubAmount!="" >
+			     ,t.suppSubAmount = :suppSubAmount 
+			</#if>
+			<#if payType?exists && payType!="" >
+			     ,t.payType = :payType 
+			</#if>
+			<#if paySubType?exists && paySubType!="" >
+			     ,t.paySubType = :paySubType 
+			</#if>
+			<#if buySubStatus?exists && buySubStatus!="" >
+			     ,t.buySubStatus = :buySubStatus 
+			</#if>
+			<#if sellSubStatus?exists && sellSubStatus!="" >
+			     ,t.sellSubStatus = :sellSubStatus 
+			</#if>
+			<#if suppSubStatus?exists && suppSubStatus!="" >
+			     ,t.suppSubStatus = :suppSubStatus 
+			</#if>
+			<#if subStatus?exists && subStatus!="" >
+			     ,t.subStatus = :subStatus 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			     ,t.updateUserId = :updateUserId 
+			</#if>
+			<#if outmarkStatus?exists && outmarkStatus!="" >
+			     ,t.outmarkStatus = :outmarkStatus 
+			</#if>
+			<#if examineTime?exists && examineTime!="" >
+			     ,t.examineTime = SYSDATE() 
+			</#if>
+			<#if upPayFlag?exists && upPayFlag!="" >
+			     ,t.upPayFlag = :upPayFlag
+			</#if>
+			<#if subRuleId?exists && subRuleId!="" >
+			     ,t.subRuleId = :subRuleId
+			</#if>
+			<#if closeTime?exists && closeTime!=""  >
+			     ,t.closeTime = :closeTime
+			</#if>
+			<#if closeTimeStr?exists && closeTimeStr!=""  >
+			     ,t.closeTime = :closeTimeStr
+			</#if>
+			<#if closeUserId?exists && closeUserId!=""  >
+			     ,t.closeUserId = :closeUserId 
+			</#if>
+			<#if isLock?exists && isLock!="" >
+			     ,t.isLock = :isLock
+			</#if>
+			<#if lockTime?exists && lockTime!=""  >
+			     ,t.lockTime = SYSDATE()
+			</#if>
+			<#if deliverTime?exists && deliverTime!=""  >
+			     ,t.deliverTime = SYSDATE()
+			</#if>
+			<#if hasCustomer?exists && hasCustomer!=""  >
+			     ,t.hasCustomer = :hasCustomer
+			</#if>
+			<#if orderTime?exists && orderTime!=""  >
+			     ,t.orderTime = :orderTime
+			</#if>
+			<#if cancelReason?exists && cancelReason!=""  >
+			     ,t.cancelReason = :cancelReason
+			</#if>
+			<#if activityIntegral?exists && activityIntegral!=""  >
+			     ,t.activityIntegral = :activityIntegral
+			</#if>
+	    WHERE 
+	    	t.orderNo= :orderNo
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			COUNT(1) 
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m
+		ON
+		     t.memberId = m.memberId 
+		WHERE 1=1 
+			<#if account?exists && account!="" >
+			      AND m.account = :account 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			      AND t.examineStatus = :examineStatus 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			<#if orderType?exists && orderType!="">
+			      AND t.orderType = :orderType  
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType = :payType 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" && orderStatus!="8" && orderStatus!="3">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus = 3 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if> 
+			<#if upPayFlag?exists && upPayFlag!="" >
+			      AND t.upPayFlag = :upPayFlag 
+			</#if> 
+	]]>
+	</sql>
+	<sql id="getOrderTotal">
+	<![CDATA[
+		SELECT 
+			count(DISTINCT t.orderNo)
+		FROM 
+			order_baseinfo t 
+		<#if asFlow?exists && asFlow!="">
+		INNER JOIN (
+		   SELECT
+		      tradeMoney,
+			  tradeDay,
+			  clientNo
+		   FROM
+		      order_bill ob
+		   WHERE
+		      tradeDay >= date_sub(SYSDATE(), INTERVAL 45 DAY)
+		) ob1 ON ob1.tradeMoney = t.totalPayAmt
+		AND ob1.clientNo IN (
+		   SELECT
+		      posNumber
+		   FROM
+		      re_business_pos rp
+		   WHERE
+		      rp.businessId = t.businessId
+		)
+		AND ob1.tradeDay >= date_sub(t.createTime, INTERVAL 3 DAY)
+		AND ob1.tradeDay <= date_add(t.createTime, INTERVAL 3 DAY)
+		AND t.OrderStatus IN (1, 8, 9)
+		</#if>
+		<#if orderStatus?exists && orderStatus == "17"> 
+		INNER JOIN order_refund_record rd ON rd.orderNo=t.orderNo
+		</#if>
+		WHERE 1=1 
+			
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			      AND t.examineStatus = :examineStatus 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" && orderType == "1" >
+			      AND (t.orderType = :orderType  OR t.orderType IS NULL)
+			</#if>
+			<#if orderType?exists && orderType!="" && orderType != "1"  >
+			      AND t.orderType = :orderType  
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType = :payType 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" && orderStatus!="8" && orderStatus!="3"&& orderStatus!="17">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus IN(3,10) 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9,13) 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if> 
+			<#if upPayFlag?exists && upPayFlag!="" >
+			      AND t.upPayFlag = :upPayFlag 
+			</#if>
+			<#if hasCustomer?exists && hasCustomer!="" >
+			      AND t.hasCustomer = :hasCustomer 
+			</#if> 
+			<#if activityType?exists && activityType != "">
+				AND t.activityType = :activityType
+			</#if>
+			<#if statementId?exists && statementId!="" >
+			      AND t.orderNo in(select orderNo from pay_serialnumber s where s.statementId like "%":statementId"%" ) 
+			</#if>
+			<#if posNumber?exists && posNumber!="" >
+			      AND t.orderNo in(select orderNo from pay_serialnumber s where s.posNumber like "%":posNumber"%" ) 
+			</#if> 
+			 <#if mobile?exists && mobile!="" >
+			      AND t.memberid  in(select memberid from member_baseinfo m0 where m0.mobile like "%":mobile"%" )
+			</#if>
+			<#if account?exists && account!="" >
+				 AND t.memberid  in(select memberid from member_baseinfo m0 where m0.account like "%":account"%" )
+			</#if>
+	        <#if realName?exists && realName!="" >
+			      AND t.memberid  in(select memberid from member_baseinfo m1 where m1.realName like "%":realName"%" )
+			</#if>
+		]]>
+		</sql>
+		
+	<sql id="getSuppOrderTotal">
+		<![CDATA[
+		SELECT 
+			COUNT(1) 
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m
+		ON
+		     t.memberId = m.memberId
+		LEFT JOIN pay_serialnumber s 
+		    ON t.`orderNo` = s.`orderNo` AND t.`payType` = '2'
+		LEFT JOIN business_baseinfo bb
+		ON bb.userId = t.memberId
+		LEFT JOIN re_business_market rbm
+		ON rbm.businessId = bb.businessId
+		
+		WHERE 1=1 
+			<#if account?exists && account!="" >
+			      AND m.account = :account 
+			</#if>
+			<#if mobile?exists && mobile!="" >
+			      AND m.mobile = :mobile 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			      AND t.examineStatus = :examineStatus 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType = :orderType  
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType = :payType 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND rbm.marketId = :marketId 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" && orderStatus!="8" && orderStatus!="3">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus IN(3,10)
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if upPayFlag?exists && upPayFlag!="" >
+			      AND t.upPayFlag = :upPayFlag 
+			</#if>
+			<#if statementId?exists && statementId!="" >
+			      AND s.statementId like "%":statementId"%"  
+			</#if>
+			<#if posNumber?exists && posNumber!="" >
+			      AND s.posNumber like "%":posNumber"%"   
+			</#if> 
+			 <#if mobile?exists && mobile!="" >
+			      AND t.memberid  in(select memberid from member_baseinfo m0 where m0.mobile like "%":mobile"%" )
+			</#if>
+	        <#if realName?exists && realName!="" >
+			      AND t.memberid  in(select memberid from member_baseinfo m1 where m1.realName like "%":realName"%" )
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="getServiceOrderTotal">
+		<![CDATA[
+		SELECT 
+			COUNT(1) 
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m ON t.memberId = m.memberId 
+		LEFT JOIN 
+			pay_serialnumber s ON t.`orderNo` = s.`orderNo`
+		LEFT JOIN 
+			invoice_info ii on t.`orderNo` = ii.`orderNo`
+		WHERE t.orderType = '4' 
+			<#if account?exists && account!="" >
+			      AND m.account = :account 
+			</#if>
+			<#if mobile?exists && mobile!="" >
+			      AND m.mobile = :mobile 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" && orderStatus!="8" && orderStatus!="3">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus IN(3,10) 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if thirdStatementId?exists && thirdStatementId!="" >
+			      AND s.thirdStatementId like "%":thirdStatementId"%"  
+			</#if>
+		]]>
+	</sql>
+		
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.persaleId,
+			t.activityType,
+			t.activityIntegral,
+			t.orderNo,
+			t.orderSource,
+			t.channel,
+			t.orderType,
+			t.orderAmount,
+			t.discountAmount,
+			t.payAmount,
+			t.orderStatus,
+			t.memberId,
+			t.orderTime,
+			t.shopName,
+			t.businessId,
+			t.marketId,
+			t.payType,
+			t.examineStatus,
+			t.message,
+			t.createUserId,
+			t.createTime,
+			t.updateUserId,
+			t.updateTime,
+			m.account as account,
+			m.realName as realName,
+			t.subAmount,
+			t.sellSubAmount,
+			t.suppSubAmount,
+			t.buySubStatus,
+			t.sellSubStatus,
+			t.suppSubStatus,
+			t.subStatus,
+			t.deliverTime,
+			t.sellMemberId,
+			t.suppMemberId,
+			t.outmarkStatus,
+			m2.account as sellAccount,
+			t.upPayFlag,
+			t.closeUserId,
+			t.sellMemberId,
+			t.memberId,
+			t.promType,
+			t.buySubStatus ,
+			t.closeTime,
+			pop.stateComment,
+			pop.prepayTime,
+			pop.buyerPoundage,
+			pop.sellerPoundage,
+			ma.marketName,
+			mab.marketName  bMarketName,			
+			t.distributeMode,
+			m.mobile buyerMobile,
+			m2.mobile sellMobile,
+			t.totalPayAmt,
+			t.restAmt,
+			m2.realName sellRealName,
+			cancelReason,
+			(select marketName from market  where id=t.marketId) marketRealName
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m
+		ON
+		    t.memberId = m.memberId 
+		LEFT JOIN 
+			member_baseinfo m2
+		ON
+		    t.sellMemberId = m2.memberId 
+		LEFT JOIN gd_promotion.prom_order_prominfo pop
+			ON pop.orderNo = t.orderNo
+		LEFT JOIN business_baseinfo bb
+		ON bb.userId = t.sellMemberId
+		LEFT JOIN re_business_market rbm
+		ON rbm.businessId = bb.businessId
+		LEFT JOIN market ma
+		ON ma.id = rbm.marketId
+		LEFT JOIN business_baseinfo bbb
+		ON bbb.userId = t.memberId
+		LEFT JOIN re_business_market rbmb
+		ON rbmb.businessId = bbb.businessId
+		LEFT JOIN market mab
+		ON mab.id = rbmb.marketId
+		WHERE 
+			t.persaleId=:persaleId
+	]]>
+	</sql>
+	
+	<sql id="getByOrderNo">
+	<![CDATA[
+		SELECT
+			t.persaleId,t.orderNo,t.orderSource,t.channel,t.orderType,t.`activityType`,t.`activityIntegral`,t.orderAmount,t.discountAmount, t.totalPayAmt,
+			m.regetype AS buyerType, roc.realName AS customerName, t.payAmount,t.orderStatus, t.deliverTime,
+			t.memberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType,t.examineStatus, t.cancelReason,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,t.closeTime, t.closeUserId, t.hasCustomer,
+			m.account as account,m.realName as realName, m.mobile AS buyerMobile, t.subAmount, t.promType,
+			t.sellSubAmount,t.suppSubAmount,t.buySubStatus,t.sellSubStatus,t.suppSubStatus,t.subStatus,
+			t.isLock, t.lockTime, t.sellMemberId,t.suppMemberId,t.outmarkStatus,m2.account as sellAccount,
+			t.upPayFlag, m2.mobile AS mobile, t.subRuleId, roc.mobile AS customerMobile, roc.memberId AS memberIdStr,
+			t.message,t.distributeMode,m2.realName sellMemberName,mt.marketName,t.validPosNum,t.restAmt ,od.amount as prepayAmt,od.createTime as prepayTime,
+			SUM(od1.amount) as penalty ,orr.amount as refundment,da.nstOrderNo,da.companyId,bb.address,da.arriveTime,orr.status as oorStatus 
+		FROM
+			order_baseinfo t
+		LEFT JOIN re_order_customer roc ON t.orderNo = roc.orderNo
+		LEFT JOIN member_baseinfo m ON t.memberId = m.memberId
+		LEFT JOIN member_baseinfo m2 ON t.sellMemberId = m2.memberId
+		LEFT JOIN market mt on mt.id=t.marketId
+	 	LEFT JOIN order_fee_item_detail od on od.orderNo =  t.orderNo and od.feeType = 3
+	  	LEFT JOIN order_fee_item_detail od1 on od1.orderNo =  t.orderNo and od1.feeType = 4
+	 	LEFT JOIN order_refund_record orr on orr.orderNo =  t.orderNo
+	 	left join delivery_address da on da.orderNo = t.orderNo
+	 	LEFT JOIN business_baseinfo bb ON bb.businessId=t.businessId
+		WHERE
+			t.orderNo=:orderNo
+		LIMIT 1
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.persaleId,t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount,
+			t.subAmount,t.sellSubAmount,t.suppSubAmount,t.examineStatus,t.upPayFlag,
+			t.payAmount,t.orderStatus,t.memberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,m.account as account,m.realName as realName,
+			s.`posNumber`,s.`paymentAcc`,s.statementId,
+			  (SELECT 
+			    GROUP_CONCAT(cateName) 
+			  FROM
+			    re_business_category rbc 
+			    LEFT JOIN product_category pc 
+			      ON rbc.categoryId = pc.categoryId 
+			  WHERE pc.curLevel = 0 
+			    AND rbc.`businessId` = t.`businessId`) AS cateNames 
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m
+		ON
+		     t.memberId = m.memberId 
+		LEFT JOIN pay_serialnumber s 
+		    ON t.`orderNo` = s.`orderNo` AND t.`payType` = '2'
+		WHERE 1=1 
+			<#if account?exists && account!="" >
+			      AND m.account = :account 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			      AND t.examineStatus = :examineStatus 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" && orderType == "1" >
+			      AND (t.orderType = :orderType  OR t.orderType IS NULL)
+			</#if>
+			<#if orderType?exists && orderType!="" && orderType != "1"  >
+			      AND t.orderType = :orderType  
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType = :payType 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" && orderStatus!="8" && orderStatus!="3">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus IN (3,10)
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if> 
+			<#if upPayFlag?exists && upPayFlag!="" >
+			      AND t.upPayFlag = :upPayFlag 
+			</#if> 
+		ORDER BY 
+			t.orderTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	<sql id="getOrderListByConditionPage">
+	<![CDATA[
+		SELECT t.* ,m.account as account,m.realName as realName,m.mobile buyerMobile,
+            s.`posNumber`,s.`paymentAcc`,s.statementId,s.payTime finishedTime,
+            t2.marketName,
+            <#if isFirst?exists && isFirst==1 >
+				:isFirst isFirst,
+			</#if>
+			<#if isFirst?exists && isFirst==2 >
+				:isFirst isFirst,
+			</#if>
+            (SELECT 
+					GROUP_CONCAT(cateName) 
+				FROM
+					re_business_category rbc 
+				LEFT JOIN product_category pc 
+				  ON rbc.categoryId = pc.categoryId 
+				WHERE pc.curLevel = 0 AND rbc.`businessType` = 0
+					AND rbc.`businessId` = t.`businessId`) AS cateNames ,
+				(SELECT 
+					GROUP_CONCAT(cateName) 
+				FROM
+					re_business_category rbc 
+					LEFT JOIN product_category pc 
+						ON rbc.categoryId = pc.categoryId 
+				WHERE pc.curLevel = 0 AND rbc.`businessType` = 1
+					AND rbc.`businessId` = t.`businessId`) AS otherCateNames
+        FROM(
+        	SELECT  DISTINCT
+			t.persaleId,
+			t.orderNo,
+			t.payType,
+			t.orderSource,
+			t.channel,
+			t.orderType,
+			t.orderAmount,
+			t.discountAmount,
+			t.subAmount,
+			t.sellSubAmount,
+			t.suppSubAmount,
+			t.examineStatus,
+			t.upPayFlag,
+			t.distributeMode,
+			t.payAmount,
+			t.orderStatus,
+			t.memberId,
+			t.orderTime,
+			t.closeTime,
+			t.shopName,
+			t.businessId,
+			t.marketId,
+			t.message,
+			t.deliverTime,
+			t.createUserId,
+			t.createTime,
+			t.updateUserId,
+			t.updateTime,
+			t.totalPayAmt,
+			t.activityType,
+			t.activityIntegral
+		FROM 
+			order_baseinfo t 
+		
+		<#if asFlow?exists && asFlow!="">
+			INNER JOIN (
+			   SELECT
+			      tradeMoney,
+						tradeDay,
+						clientNo
+			   FROM
+			      order_bill ob
+			   WHERE
+			      tradeDay >= date_sub(SYSDATE(), INTERVAL 45 DAY)
+			) ob1 ON ob1.tradeMoney = t.totalPayAmt
+			AND ob1.clientNo IN (
+			   SELECT
+			      posNumber
+			   FROM
+			      re_business_pos rp
+			   WHERE
+			      rp.businessId = t.businessId
+			)
+			AND ob1.tradeDay >= date_sub(t.createTime, INTERVAL 3 DAY)
+			AND ob1.tradeDay <= date_add(t.createTime, INTERVAL 3 DAY)
+			AND t.OrderStatus IN (1, 8, 9)
+		</#if>
+		<#if orderStatus?exists && orderStatus == "17"> 
+		INNER JOIN order_refund_record rd ON rd.orderNo=t.orderNo
+		</#if>
+		WHERE 1=1 
+			
+			<#if hasCustomer?exists && hasCustomer!="" >
+			      AND t.hasCustomer = :hasCustomer 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			      AND t.examineStatus = :examineStatus 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" && orderType == "1" >
+			      AND (t.orderType = :orderType  OR t.orderType IS NULL)
+			</#if>
+			<#if orderType?exists && orderType!="" && orderType != "1"  >
+			      AND t.orderType = :orderType  
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType = :payType 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if totalPayAmt?exists && totalPayAmt!="" >
+			      AND t.totalPayAmt = :totalPayAmt 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" >
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if> 
+			<#if upPayFlag?exists && upPayFlag!="" >
+			      AND t.upPayFlag = :upPayFlag 
+			</#if>
+			 
+			<#if isFirst?exists && isFirst==1 >
+		    	AND EXISTS 
+		    	(SELECT 
+					    b.orderNo 
+					  FROM
+					    (SELECT 
+					      o.orderNo, o.memberId
+					    FROM
+					      (SELECT 
+					        t.orderNo,
+					        t.memberId,
+					        ps.payTime 
+					      FROM
+					        order_baseinfo t 
+					        LEFT JOIN `pay_serialnumber` ps
+		      				ON (ps.orderNo = t.orderNo)
+		      				LEFT JOIN `member_baseinfo` mb
+		      				ON (mb.memberId = t.memberId)
+					      WHERE t.memberId IS NOT NULL AND t.`orderType`= 1 
+					      AND t.orderStatus = '3'
+						  AND t.orderSource <> '3'
+						  AND t.hasCustomer <> '1'
+						  AND mb.regetype <> '7'
+					      ORDER BY ps.payTime ASC) o 
+					    GROUP BY o.`memberId`
+					    ORDER BY o.payTime ASC) b WHERE b.orderNo=t.orderNo) 
+		</#if>
+		<#if isFirst?exists && isFirst==2 >
+		    	AND NOT EXISTS 
+		    	(SELECT 
+					    b.orderNo 
+					  FROM
+					    (SELECT 
+					      o.orderNo, o.memberId
+					    FROM
+					      (SELECT 
+					        t.orderNo,
+					        t.memberId,
+					        ps.payTime 
+					      FROM
+					        order_baseinfo t 
+					        LEFT JOIN `pay_serialnumber` ps
+		      				ON (ps.orderNo = t.orderNo)
+		      				LEFT JOIN `member_baseinfo` mb
+		      				ON (mb.memberId = t.memberId)
+					      WHERE t.memberId IS NOT NULL AND t.`orderType`= 1 
+					      AND t.orderStatus = '3'
+						  AND t.orderSource <> '3'
+						  AND t.hasCustomer <> '1'
+						  AND mb.regetype <> '7'
+					      ORDER BY ps.payTime ASC) o 
+					    GROUP BY o.`memberId`
+					    ORDER BY o.payTime ASC) b WHERE b.orderNo=t.orderNo) 
+		</#if>
+		<#if activityType?exists && activityType != "">
+			AND t.activityType = :activityType
+		</#if>
+		<#if statementId?exists && statementId!="" >
+			 AND t.orderNo in(select orderNo from pay_serialnumber s where s.statementId like "%":statementId"%" ) 
+		</#if>
+		<#if posNumber?exists && posNumber!="" >
+			AND t.orderNo in(select orderNo from pay_serialnumber s where s.posNumber like "%":posNumber"%" ) 
+		</#if> 
+		<#if mobile?exists && mobile!="" >
+			AND t.memberid  in(select memberid from member_baseinfo m0 where m0.mobile like "%":mobile"%" )
+		</#if>
+		<#if account?exists && account!="" >
+			AND t.memberid  in(select memberid from member_baseinfo m0 where m0.account like "%":account"%" )
+		</#if>
+	    <#if realName?exists && realName!="" >
+			AND t.memberid  in(select memberid from member_baseinfo m1 where m1.realName like "%":realName"%" )
+	    </#if>
+		ORDER BY 
+			t.orderTime desc 
+		LIMIT 
+			:startRow,:endRow 
+		)t 
+		LEFT JOIN member_baseinfo m ON t.memberId = m.memberId 
+		LEFT JOIN pay_serialnumber s ON t.`orderNo` = s.`orderNo` AND s.`payType` = '2'
+   		LEFT JOIN market t2 on t.marketId=t2.id
+		ORDER BY t.orderTime DESC 
+	]]>
+	</sql>
+	
+	<sql id="getTotalByStatusPage">
+	<![CDATA[
+		SELECT 
+			COUNT(1) 
+		FROM 
+			order_baseinfo t
+			LEFT JOIN delivery_address da on da.orderNo = t.orderNo
+		WHERE 1=1
+			<#if orderStatus?exists && orderStatus == "1">
+			      AND t.orderStatus = "1"
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus = "3" 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "11">
+			      AND t.orderStatus = "11"
+			</#if>
+			<#if orderStatus?exists && orderStatus == "">
+			      AND t.orderStatus IN (1, 3, 8)
+			</#if>
+			<#if orderStatus?exists && orderStatus == "12">
+			      AND t.orderStatus = "12"
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if orderSource?exists && orderSource!="">
+			      AND t.orderSource != :orderSource
+			</#if>
+			<#if hasCustomer?exists && hasCustomer!="">
+			      AND t.hasCustomer = :hasCustomer
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType = :orderType 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if hasArrived?exists && hasArrived!="" >
+			      AND da.arriveTime IS NOT NULL
+			</#if>
+		ORDER BY 
+			t.orderTime DESC 
+	]]>
+	</sql>
+	
+	<sql id="getListByStatusPage">
+	<![CDATA[
+		SELECT 
+			t.orderNo,t.orderSource,t.channel,t.orderType,t.`activityType`,t.`activityIntegral`,t.orderAmount,t.discountAmount, roc.memberId AS memberIdStr,
+			mb.regetype AS buyerType, roc.realName AS customerName, mb.realName, t.createTime, t.examineStatus,
+			roc.mobile AS customerMobile, t.payAmount,t.orderStatus,t.memberId,t.sellMemberId,t.orderTime,
+			t.shopName, t.businessId, t.marketId, t.payType, t.totalPayAmt, t.cancelReason,t.distributeMode,
+			t.restAmt ,od.amount as prepayAmt,od.createTime as prepayTime,da.arriveTime,da.nstOrderNo,da.companyId,
+			orr.status as oorStatus ,
+			IFNULL((SELECT SUM(amount) from order_fee_item_detail of WHERE of.orderNo=t.orderNo AND of.payerType = 'nps' and of.feeType=1 ),0) as sellerCommision
+		FROM 
+			order_baseinfo t  
+			LEFT JOIN member_baseinfo mb ON t.memberId = mb.memberId
+			LEFT JOIN re_order_customer roc ON t.orderNo = roc.orderNo
+			LEFT JOIN order_fee_item_detail od on od.orderNo =  t.orderNo and od.feeType = 3
+			LEFT JOIN delivery_address da on da.orderNo = t.orderNo
+		 	LEFT JOIN order_refund_record orr on orr.orderNo =  t.orderNo
+		WHERE 1=1
+			<#if orderStatus?exists && orderStatus == "1">
+			      AND t.orderStatus = "1"
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+   			      AND orderStatus = "3"
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "11">
+			      AND t.orderStatus = "11"
+			</#if>
+			<#if orderStatus?exists && orderStatus == "12">
+			      AND t.orderStatus = "12"
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if orderSource?exists && orderSource!="">
+			      AND t.orderSource != :orderSource
+			</#if>
+			<#if hasCustomer?exists && hasCustomer!="">
+			      AND t.hasCustomer = :hasCustomer
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType = :orderType 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if hasArrived?exists && hasArrived!="" >
+			      AND da.arriveTime IS NOT NULL
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      		ORDER BY 
+								t.closeTime DESC
+			</#if>
+			<#if orderStatus?exists && orderStatus != "8"> 
+						ORDER BY 
+			 					t.createTime DESC
+			 </#if>
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.persaleId,t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount,
+			t.subAmount,t.sellSubAmount,t.suppSubAmount,t.examineStatus,t.upPayFlag,
+			t.payAmount,t.orderStatus,t.memberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime 
+		FROM 
+			order_baseinfo t 
+		WHERE 1=1 
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			      AND t.examineStatus = :examineStatus 
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType = :orderType 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" >
+			      AND t.orderStatus = :orderStatus 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if> 
+			<#if upPayFlag?exists && upPayFlag!="" >
+			      AND t.upPayFlag = :upPayFlag 
+			</#if> 
+			<#if memberAddressId?exists && memberAddressId!="" >
+			      AND t.orderNo= (SELECT orderNo FROM product_delivery_detail WHERE memberAddressId=:memberAddressId LIMIT 1)
+			</#if> 
+		ORDER BY 
+			t.orderTime desc 
+	]]>
+	</sql>
+	
+	<!-- 修改其他表格 start -->
+	<sql id="batchUpdateStockCount">
+		<![CDATA[
+			UPDATE 
+				product_baseinfo 
+			SET 
+				stockCount = :stockCount
+			<#if status?exists && status!="" >
+				, state = :status
+			</#if>
+				
+			WHERE
+				productId =:productId
+		]]>
+	</sql>
+	
+	<sql id="updateAccInfo">
+	<![CDATA[
+ 		 UPDATE 
+	   		acc_info
+	  	 SET
+			<#if balTotal?exists && balTotal!="" >
+					     balTotal=:balTotal,
+			</#if>	
+			 <#if balAvailable?exists && balAvailable!="" >
+					     balAvailable=:balAvailable,
+			</#if>	
+			 <#if balblock?exists && balblock!="" >
+					     balblock=:balblock,
+			</#if>	
+			 <#if updateuserId?exists && updateuserId!="" >
+					     updateuserId=:updateuserId,
+			</#if>	
+			 updateTime=SYSDATE() 
+		]]>
+		WHERE 
+		 	 memberId=:memberId
+	</sql>
+	
+	<sql id="addTransInfo">
+ 	<![CDATA[
+	    INSERT INTO  acc_trans_info
+	          (
+				  accId,
+				  memberId ,
+				  orderNo,
+				  statementId,
+				  tradeType ,
+				  peType,
+				  tradeAmount,
+				  paymentAcc,
+				  recipientAcc,
+				  createUserId,
+				  updateUserId
+              )
+	        values
+	         (
+				  :accId,
+				  :memberId ,
+				  :orderNo,
+				  :statementId,
+				  :tradeType ,
+				  :peType,
+				  :tradeAmount,
+				  :paymentAcc,
+				  :recipientAcc,
+				  :createUserId,
+				  :updateUserId
+              )
+	        
+		]]>
+	</sql>
+	<!-- 修改其他表格 end -->
+	
+	<sql id="getOrderInfo">
+	<![CDATA[
+		SELECT
+			o.memberId,
+			m.realName,
+			o.shopName,
+			m.mobile,
+			o.orderNo,
+			o.orderTime,
+			(select max(payTime) from pay_serialnumber ps where o.orderNo = ps.orderNo) as payTime
+	    FROM
+	    	order_baseinfo o
+		LEFT JOIN 
+			member_baseinfo m ON m.memberId = o.memberId 
+		where 
+			(o.outmarkStatus != '1' or o.outmarkStatus IS NULL) AND o.orderStatus = 3
+		<#if memberIdStr?exists && memberIdStr!="" >
+			AND m.memberId=:memberIdStr
+		</#if>	
+		<#if memberId?exists && memberId!="" >
+			AND m.memberId=:memberId
+		</#if>	
+		<#if mobile?exists && mobile!="" >
+			AND (m.account = :mobile or m.mobile=:mobile)
+		</#if>	
+		ORDER BY payTime
+	]]>
+	</sql>
+	
+	<sql id="getOutmarketOrderList">
+	<![CDATA[
+		SELECT
+			o.memberId,
+			m.realName,
+			o.shopName,
+			m.mobile,
+			o.orderNo,
+			o.orderTime,
+			(select max(payTime) from pay_serialnumber ps where o.orderNo = ps.orderNo) as payTime
+	    FROM
+	    	order_baseinfo o
+		LEFT JOIN 
+			member_baseinfo m ON m.memberId = o.memberId 
+		where 
+			(
+				o.outmarkStatus != '1' OR o.outmarkStatus IS NULL
+			)
+			AND o.orderStatus = 3
+		<#if memberIdStr?exists && memberIdStr!="" >
+			AND o.memberId=:memberIdStr
+		</#if>	
+		<#if memberId?exists && memberId!="" >
+			AND o.memberId=:memberId
+		</#if>	
+		<#if mobile?exists && mobile!="" >
+			AND (m.account = :mobile or m.mobile=:mobile)
+		</#if>	
+		ORDER BY payTime
+	]]>
+	</sql>
+	
+	<sql id="getOrderProductInfo">
+	<![CDATA[
+		SELECT
+			p.orderNo,
+			p.productId,
+			p.productName,
+			p.purQuantity,
+			p.unit,
+			sc.codeValue as unitName
+	    FROM
+	        order_product_detail p
+	    LEFT JOIN
+	    	system_code sc ON p.unit = sc.codeKey AND sc.type = 'ProductUnit' 
+	    where 1=1
+	    <#if orderNo?exists && orderNo!="" >
+			AND p.orderNo=:orderNo
+		</#if>	
+	]]>
+	</sql>
+	
+	<sql id="queryOrderAmountByMemberId">
+	<![CDATA[
+		SELECT 
+			SUM(t.orderAmount) 
+	    FROM 
+			order_baseinfo t 
+		WHERE 1=1 
+	    AND (t.memberId=:memberId OR t.sellMemberId=:memberId OR t.suppMemberId=:memberId) 
+	    AND t.orderTime >= :startDate 
+	    AND t.orderTime <= :endDate 
+	]]>
+	</sql>
+	 
+	<sql id="getOverOrderInfoList">
+	<![CDATA[
+		SELECT
+			orderNo
+		FROM
+			order_baseinfo
+	    where orderStatus=1 AND createTime<:afterSubTime
+	]]>
+	</sql> 
+	
+	<sql id="getTwoAlreadyPayOrderList">
+	<![CDATA[
+		SELECT
+			*
+		FROM
+			order_baseinfo
+		WHERE
+			orderStatus = 3
+		AND examineStatus = 1
+		AND TIMESTAMPDIFF(SECOND,examineTime,SYSDATE()) > 7200
+	]]>
+	</sql>
+	
+	<sql id="getUnpaidOrderList">
+	<![CDATA[
+		SELECT 
+			t.orderNo, t.orderAmount, t.payAmount, t.discountAmount, t.businessId, t.shopName, 
+			t.memberId, mb.mobile AS buyerMobile, mb.realName, t.createTime, t.orderType, t.totalPayAmt   
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo mb ON t.memberId = mb.memberId
+		WHERE 
+			t.orderStatus = 1
+		<#if businessId?exists && businessId!="" >
+			AND t.businessId = :businessId 
+		</#if>
+		<#if orderType?exists && orderType!="" >
+			AND t.orderType = :orderType 
+		</#if>
+		<#if dateTime?exists && dateTime!="" >
+			AND t.createTime < :dateTime
+		</#if>	
+		ORDER BY 
+			t.updateTime DESC 
+	]]>
+	</sql>
+	
+	<sql id="getPageTotal">
+	<![CDATA[
+		SELECT 
+			COUNT(1) 
+		FROM 
+			order_baseinfo t
+		WHERE 1=1
+			<#if orderStatus?exists && orderStatus == "3">
+			      AND t.orderStatus = 3
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND (t.memberId = :memberId OR t.sellMemberId = :memberId)
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getListByPage">
+	<![CDATA[
+		SELECT 
+			t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount, t.buySubStatus,
+			t.sellSubStatus, t.subAmount,t.sellSubAmount,t.suppSubAmount, t.createTime,t.examineStatus, t.updateTime,
+			t.payAmount,t.orderStatus,t.memberId,t.sellMemberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType 
+		FROM 
+			order_baseinfo t
+		WHERE 1=1
+			<#if orderStatus?exists && orderStatus == "3">
+			      AND t.orderStatus = 3
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND (t.memberId = :memberId OR t.sellMemberId = :memberId)
+			</#if>
+		ORDER BY 
+			t.updateTime DESC 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="queryOrderForSinxin">
+	<![CDATA[
+		SELECT 
+		  b.`orderNo`,
+  		  IF(b.`orderStatus` = '9', '8', b.`orderStatus`) As orderStatus,
+		  (SELECT 
+		    DATE_FORMAT(MIN(s.payTime), '%Y-%c-%d %H:%i:%s')
+		  FROM
+		    pay_serialnumber s 
+		  WHERE s.`orderNo` = b.`orderNo`) AS transTime,
+		  b.payAmount
+		FROM
+		  order_baseinfo b 
+		where 1 = 1
+		<#if orderNos?exists>
+			<#assign n = orderNos?size />
+			<#if n gt 0>
+				AND b.orderNo in (
+				<#list orderNos as orderNo>
+					<#if orderNo_index != n-1>
+						${orderNo} ,
+					<#else>
+						${orderNo}
+					</#if>
+				</#list>
+				)
+			</#if>
+		</#if>
+		<#if orderNo?exists && orderNo!="">
+		      AND b.orderNo = :orderNo 
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getDeliveredProductTotal">
+	<![CDATA[
+		SELECT 
+			COUNT(1) 
+		FROM 
+			order_baseinfo t
+		WHERE 
+			t.orderStatus = 3
+		AND 
+			DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= date(t.updateTime)
+			<#if memberId?exists && memberId!="">
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getDeliveredProductList">
+	<![CDATA[
+		SELECT 
+			t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount, t.buySubStatus, t.updateTime,
+			t.sellSubStatus, t.subAmount,t.sellSubAmount,t.suppSubAmount, mb.realName, t.createTime,t.examineStatus,
+			t.payAmount,t.orderStatus,t.memberId,t.sellMemberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType 
+		FROM 
+			order_baseinfo t  LEFT JOIN member_baseinfo mb ON t.memberId = mb.memberId
+		WHERE 
+			t.orderStatus = 3
+			<#if memberId?exists && memberId!="">
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+		AND 
+			DATE_SUB(CURDATE(), INTERVAL 1 MONTH) <= date(t.updateTime)
+		ORDER BY 
+			t.updateTime DESC, t.createTime DESC 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	<!-- 	
+		2016年6月25日14:29:07 增加逻辑：买家和卖家都可以领取订单的礼品，但是一个订单仅仅只能领一次
+			(o.memberId=:memberId OR O.sellMemberId ) 
+			
+		2016年6月27日16:43:20 
+		select 
+			orderNo,orderStatus,orderAmount,payAmount,orderTime,businessId,shopName,m.mobile,m.realName
+		from 
+			order_baseinfo o
+		left join
+		    member_baseinfo m
+		on
+		    o.memberId=m.memberId
+		where  
+			1=1 
+		AND 
+			(o.memberId=:memberId OR o.sellMemberId=:memberId ) 
+		and 
+			orderStatus=3 
+		and 
+			ordertime BETWEEN DATE_ADD( NOW(),INTERVAL -3 day ) and NOW()
+		and orderNo in (
+				select orderNo from order_product_detail  
+			)
+		ORDER BY 
+			o.orderTime DESC
+			
+			
+			orderTimer 改为payTime 
+			
+			
+(o.memberId=:memberId OR o.sellMemberId=:memberId ) 
+改为
+(
+o.sellMemberId=:memberId and ( o.memberId is not null or o.memberId is null  and o.orderNo  in ( select orderNo from re_order_customer )) 
+OR 
+o.memberId=:memberId 
+OR
+o.orderNo  in (select orderNo from re_order_customer roc WHERE roc.memberId=:memberId  )
+)
+2016-6-29 10:16:07 再改为，并且在代码中过滤
+ (
+			o.sellMemberId=:memberId  or o.memberId=:memberId  or roc.memberId=:memberId 
+			)
+			
+ 	-->
+	<sql id="getAbleGiftOrder">
+	<![CDATA[
+		select 
+			o.memberId,o.payType,o.orderNo,o.orderStatus,o.orderAmount,o.payAmount,p.payTime as orderTime,
+			o.businessId,o.shopName,m.mobile,m.realName,roc.mobile as customerMobile,roc.realName as customerName,m.regetype AS buyerType,o.marketId
+		from 
+			order_baseinfo o 
+		left join
+		    member_baseinfo m
+		on
+		    o.memberId=m.memberId
+		LEFT JOIN 
+       		pay_serialnumber p
+   		ON 
+        	p.orderNo=o.orderNo 
+		LEFT JOIN 
+			re_order_customer roc 
+		ON 
+			o.orderNo = roc.orderNo 
+		JOIN 
+			order_product_detail opd 
+		ON 
+			opd.orderNo=o.orderNo  
+			
+		LEFT JOIN 
+			gd_promotion.grd_gift_detail d 
+		ON  
+			o.orderNo = d.orderNo and d.type=2 	
+		where  
+			1=1 
+		<#if marketId?exists && marketId != "">
+		      AND  o.marketId = :marketId
+		</#if>
+		AND  
+			orderStatus=3 
+		AND 
+		(
+			o.sellMemberId=:memberId  or o.memberId=:memberId  or roc.memberId=:memberId 
+		)
+		and 
+			p.payTime  BETWEEN DATE_ADD( NOW(),INTERVAL -3 day ) and NOW()
+		and d.orderNo is null 
+		GROUP BY 
+			o.orderNo 
+		ORDER BY 
+			p.payTime DESC
+	]]>
+	</sql>
+	
+	<sql id="searchSellerOrderList">
+	<![CDATA[
+		SELECT SQL_CALC_FOUND_ROWS
+			t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount, t.buySubStatus,
+			mb.mobile AS buyerMobile, t.sellSubStatus, t.subAmount,t.sellSubAmount,t.suppSubAmount, 
+			roc.memberId AS memberIdStr, mb.realName, t.createTime,t.examineStatus, mb.regetype AS buyerType, 
+			roc.realName AS customerName,roc.mobile AS customerMobile, t.payAmount,t.orderStatus,
+			t.memberId,t.sellMemberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType, 
+			t.promType, pt.prepayAmt, pt.restAmt, pt.totalAmt, t.updateTime, t.deliverTime, t.closeTime 
+		FROM 
+			order_baseinfo t  
+			LEFT JOIN member_baseinfo mb ON t.memberId = mb.memberId
+			LEFT JOIN member_baseinfo sb ON t.sellMemberId = sb.memberId
+			LEFT JOIN re_order_customer roc ON t.orderNo = roc.orderNo
+			LEFT JOIN gd_promotion.prom_order_prominfo pt ON t.orderNo = pt.orderNo
+			LEFT JOIN order_product_detail op ON t.orderNo = op.orderNo
+		WHERE 1=1
+			<#if orderStatus?exists && orderStatus != "0">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if memberId?exists && memberId != "" && searchOrderType = "1">
+			      AND (t.memberId = :memberId OR roc.memberId = :memberId)
+			</#if>
+			<#if memberId?exists && memberId != "" && searchOrderType = "2">
+			      AND t.memberId = :memberId
+			</#if>
+			<#if businessId?exists && businessId != "" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId != "" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if searchOrderType?exists && searchOrderType != "" >
+			      AND t.orderType = :searchOrderType
+			</#if>
+			<#if searchStr?exists && searchStr != "" && searchOrderType = "1" 
+				&& searchUserType = "1" && orderNoStr?exists>
+				AND (t.orderNo = :orderNoStr 
+					OR mb.mobile = :searchStr 
+					OR roc.mobile = :searchStr)
+			</#if>
+			<#if searchStr?exists && searchStr != "" && searchOrderType = "1" 
+				&& searchUserType = "1" && !orderNoStr?exists>
+				AND (op.productName LIKE "%":searchStr"%" 
+					OR mb.realName LIKE "%":searchStr"%"  
+					OR roc.realName LIKE "%":searchStr"%" )
+			</#if>
+			<#if searchStr?exists && searchStr != "" && searchOrderType = "2" 
+				&& searchUserType = "1" && orderNoStr?exists>
+				AND (t.orderNo = :orderNoStr OR mb.mobile = :searchStr OR sb.mobile = :searchStr)
+			</#if>
+			<#if searchStr?exists && searchStr != "" && searchOrderType = "2" 
+				&& searchUserType = "1" && !orderNoStr?exists>
+				AND (op.productName LIKE "%":searchStr"%" OR t.shopName LIKE "%":searchStr"%")
+			</#if>
+			<#if searchStr?exists && searchStr != "" && searchUserType = "2" && orderNoStr?exists>
+				AND (t.orderNo = :orderNoStr OR mb.mobile = :searchStr)
+			</#if>
+			<#if searchStr?exists && searchStr != "" && searchUserType = "2" && !orderNoStr?exists>
+				AND (op.productName LIKE "%":searchStr"%" OR mb.realName LIKE "%":searchStr"%")
+			</#if>
+		GROUP BY 
+			t.orderNo
+		ORDER BY 
+			t.createTime DESC
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getSearchSellerOrdersTotal">
+	<![CDATA[
+		SELECT FOUND_ROWS()
+	]]>
+	</sql>
+	
+	<sql id="getByOrderNoList">
+	<![CDATA[
+		SELECT 
+			t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount, t.buySubStatus,
+			mb.mobile AS buyerMobile, t.sellSubStatus, t.subAmount,t.sellSubAmount,t.suppSubAmount, 
+			roc.memberId AS memberIdStr, mb.realName, t.createTime,t.examineStatus, mb.regetype AS buyerType, 
+			roc.realName AS customerName,roc.mobile AS customerMobile, t.payAmount,t.orderStatus, t.totalPayAmt,
+			t.memberId,t.sellMemberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType, t.cancelReason,
+			t.promType, pt.prepayAmt, pt.restAmt, pt.totalAmt, t.updateTime, t.deliverTime, t.closeTime 
+		FROM 
+			order_baseinfo t  
+			LEFT JOIN member_baseinfo mb ON t.memberId = mb.memberId
+			LEFT JOIN re_order_customer roc ON t.orderNo = roc.orderNo
+			LEFT JOIN gd_promotion.prom_order_prominfo pt ON t.orderNo = pt.orderNo
+		WHERE 1=1
+			<#if orderStatus?exists && orderStatus != "0">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+			<#if orderNoList?exists>
+				<#assign n = orderNoList?size />
+				<#if n gt 0>
+					AND(
+					<#list orderNoList as orderNo>
+						<#if orderNo_index != n-1>
+								t.orderNo = '${orderNo}' or
+							<#else>
+								t.orderNo = '${orderNo}'  
+						</#if>
+					</#list>
+					) 
+				</#if>
+			</#if>
+		ORDER BY 
+			t.createTime DESC
+	]]>
+	</sql>
+	
+	<sql id="getSuppOrderListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.persaleId,t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount,
+			t.subAmount,t.sellSubAmount,t.suppSubAmount,t.examineStatus,t.upPayFlag,
+			t.payAmount,t.orderStatus,t.memberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType,t.deliverTime,t.message,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,m.account as account,m.realName as realName,m.mobile buyerMobile,
+			s.`posNumber`,s.`paymentAcc`,s.statementId,pop.prepayAmt,pop.stateComment,t.closeUserId,t.sellMemberId,t.memberId,t.promType,
+			  (SELECT 
+			    GROUP_CONCAT(cateName) 
+			  FROM
+			    re_business_category rbc 
+			    LEFT JOIN product_category pc 
+			      ON rbc.categoryId = pc.categoryId 
+			  WHERE pc.curLevel = 0 AND rbc.`businessType` = 0
+			    AND rbc.`businessId` = t.`businessId`) AS cateNames ,
+			  (SELECT 
+			    GROUP_CONCAT(cateName) 
+			  FROM
+			    re_business_category rbc 
+			    LEFT JOIN product_category pc 
+			      ON rbc.categoryId = pc.categoryId 
+			  WHERE pc.curLevel = 0 AND rbc.`businessType` = 1
+			    AND rbc.`businessId` = t.`businessId`) AS otherCateNames 
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m
+		ON
+		     t.memberId = m.memberId 
+		LEFT JOIN pay_serialnumber s 
+		    ON t.`orderNo` = s.`orderNo` AND t.`payType` = '2'
+		LEFT JOIN business_baseinfo bb
+			ON bb.userId = t.memberId
+		LEFT JOIN re_business_market rbm
+			ON rbm.businessId = bb.businessId
+		LEFT JOIN gd_promotion.prom_order_prominfo pop
+			ON pop.orderNo = t.orderNo
+		WHERE 1=1 
+			<#if account?exists && account!="" >
+			      AND m.account = :account 
+			</#if>
+			<#if mobile?exists && mobile!="" >
+			      AND m.mobile = :mobile 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if examineStatus?exists && examineStatus!="" >
+			      AND t.examineStatus = :examineStatus 
+			</#if>
+			<#if orderSource?exists && orderSource!="" >
+			      AND t.orderSource = :orderSource 
+			</#if>
+			<#if channel?exists && channel!="" >
+			      AND t.channel = :channel 
+			</#if>
+			<#if orderType?exists && orderType!="" >
+			      AND t.orderType = :orderType  
+			</#if>
+			<#if payType?exists && payType!="" >
+			      AND t.payType = :payType 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      AND t.orderAmount = :orderAmount 
+			</#if>
+			<#if discountAmount?exists && discountAmount!="" >
+			      AND t.discountAmount = :discountAmount 
+			</#if>
+			<#if subAmount?exists && subAmount!="" >
+			      AND t.subAmount = :subAmount 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND rbm.marketId = :marketId 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			      AND t.payAmount = :payAmount 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" && orderStatus!="8" && orderStatus!="3">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus = 3 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if shopName?exists && shopName!="" >
+			      AND t.shopName = :shopName 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if upPayFlag?exists && upPayFlag!="" >
+			      AND t.upPayFlag = :upPayFlag 
+			</#if>
+			<#if statementId?exists && statementId!="" >
+			      AND s.statementId like "%":statementId"%"  
+			</#if>
+			<#if posNumber?exists && posNumber!="" >
+			      AND s.posNumber like "%":posNumber"%"   
+			</#if>  
+		ORDER BY 
+			t.orderTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getServiceOrderListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.persaleId,t.orderNo,'金牌供应商' serviceName,t.orderAmount, t.payAmount,t.orderStatus, t.orderTime, m.account , m.realName,m.mobile buyerMobile,
+			s.payTime finishedTime, if(ii.id is null, '', '已发') invoice, ii.content invoiceContent, s.payType, s.statementId, s.thirdStatementId
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m ON t.memberId = m.memberId 
+		LEFT JOIN 
+			pay_serialnumber s ON t.`orderNo` = s.`orderNo`
+		LEFT JOIN 
+			invoice_info ii on t.`orderNo` = ii.`orderNo`
+		WHERE t.orderType = '4' 
+			<#if account?exists && account!="" >
+			      AND m.account = :account 
+			</#if>
+			<#if mobile?exists && mobile!="" >
+			      AND m.mobile = :mobile 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" && orderStatus!="8" && orderStatus!="3">
+			      AND t.orderStatus = :orderStatus
+			</#if>
+			<#if orderStatus?exists && orderStatus == "3"> 
+			      AND t.orderStatus = 3 
+			</#if>
+			<#if orderStatus?exists && orderStatus == "8"> 
+			      AND t.orderStatus IN (8, 9) 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if thirdStatementId?exists && thirdStatementId!="" >
+			      AND s.thirdStatementId like "%":thirdStatementId"%"  
+			</#if>
+		ORDER BY 
+			t.orderTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getPurchaseOrderListByPage">
+	<![CDATA[
+		SELECT 
+			t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount, mb.realName, t.createTime, t.promType,
+			t.payAmount,t.orderStatus,t.memberId,t.sellMemberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType,
+			pt.prepayAmt, pt.restAmt, pt.totalAmt, t.updateTime, t.deliverTime, t.closeTime, mb.mobile AS buyerMobile
+		FROM 
+			order_baseinfo t  
+			LEFT JOIN member_baseinfo mb ON t.memberId = mb.memberId
+			LEFT JOIN gd_promotion.prom_order_prominfo pt ON t.orderNo = pt.orderNo
+		WHERE t.orderType = 2
+			<#if orderStatus?exists && orderStatus !="" && orderStatus ="8" >
+			      AND (t.orderStatus = 8 OR t.orderStatus = 9)
+			</#if>
+			<#if orderStatus?exists && orderStatus !="" && orderStatus !="8" >
+			      AND t.orderStatus = :orderStatus 
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if> 
+		ORDER BY 
+			t.createTime DESC
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getPurchaseOrderTotal">
+	<![CDATA[
+		SELECT 
+			COUNT(1) 
+		FROM 
+			order_baseinfo t
+		WHERE t.orderType = 2
+			<#if orderStatus?exists && orderStatus !="" && orderStatus ="8" >
+			      AND (t.orderStatus = 8 OR t.orderStatus = 9)
+			</#if>
+			<#if orderStatus?exists && orderStatus !="" && orderStatus !="8" >
+			      AND t.orderStatus = :orderStatus 
+			</#if>
+			<#if memberId?exists && memberId!="">
+			      AND t.memberId = :memberId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND t.marketId = :marketId 
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getFirstOrder">
+	<![CDATA[
+		
+		SELECT 
+		  orderNo
+		FROM
+		  order_baseinfo a 
+		WHERE EXISTS 
+		  (SELECT 
+		    1 
+		  FROM
+		    (SELECT 
+		      o.orderNo 
+		    FROM
+		      (SELECT 
+		        t.orderNo,
+		        t.memberId,
+		        ps.payTime 
+		      FROM
+		        order_baseinfo t 
+		      LEFT JOIN `pay_serialnumber` ps
+		      ON (ps.orderNo = t.orderNo)
+		      LEFT JOIN `member_baseinfo` mb
+     		  ON (mb.memberId = t.memberId)
+		      WHERE t.memberId IS NOT NULL  
+		      	AND t.`orderType`= :orderType 
+				AND t.orderStatus = '3'
+				AND t.orderSource <> '3'
+				AND t.hasCustomer <> '1'
+				AND mb.regetype <> '7'
+		      ORDER BY ps.payTime ASC) o 
+		    GROUP BY o.`memberId` 
+		    ORDER BY o.payTime ASC) b 
+		  WHERE a.orderNo = b.orderNo) 
+		  
+		  AND 
+		  <#assign n = orderNos?size />
+			a.orderNo IN (
+			<#list orderNos as orderNo>
+				<#if orderNo_index != n-1>
+					${orderNo} ,
+				<#else>
+					${orderNo}
+				</#if>
+			</#list>
+			)
+
+	]]>
+	</sql>
+	<sql id="getSendnowOrderTotal">
+	<![CDATA[
+		SELECT 
+			COUNT(0)
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m
+		ON
+		     t.memberId = m.memberId 
+		LEFT JOIN pay_serialnumber s 
+		    ON t.`orderNo` = s.`orderNo` AND t.`payType` = '2'
+		LEFT JOIN order_product_detail p
+			ON t.`orderNo` = p.`orderNo`
+		LEFT JOIN delivery_address da
+			ON t.`orderNo` = da.`orderNo`
+		WHERE 1=1 
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId
+			</#if>
+	]]>
+	</sql>
+	<sql id="getSendnowOrderListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.persaleId,t.orderNo,t.orderSource,t.channel,t.orderType,t.orderAmount,t.discountAmount,t.examineStatus,t.upPayFlag,
+			t.payAmount,t.orderStatus,t.memberId,t.orderTime,t.shopName,t.businessId,t.marketId,t.payType,t.deliverTime,t.closeTime,t.closeUserId,
+			t.sellMemberId,t.promType,t.createTime,t.message,t.distributeMode,
+			p.productName,p.purQuantity,p.price,p.tradingPrice,
+			m.account as account,m.realName as realName,
+			s.`posNumber`,s.`paymentAcc`,s.statementId,s.payTime,
+			da.linkman deliveryLinkman,da.mobile deliveryMobile,CONCAT(da.district1, da.district2, da.district3, '  ', detail) deliveryDetail
+		FROM 
+			order_baseinfo t 
+		LEFT JOIN 
+			member_baseinfo m
+		ON
+		     t.memberId = m.memberId 
+		LEFT JOIN pay_serialnumber s 
+		    ON t.`orderNo` = s.`orderNo` AND t.`payType` = '2'
+		LEFT JOIN order_product_detail p
+			ON t.`orderNo` = p.`orderNo`
+		LEFT JOIN delivery_address da
+			ON t.`orderNo` = da.`orderNo`
+		WHERE 1=1 
+			<#if startDate?exists && startDate!="" >
+			      AND t.orderTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.orderTime < :endDate
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId
+			</#if>
+			 <#if mobile?exists && mobile!="" >
+			      AND t.memberid  in(select memberid from member_baseinfo m0 where m0.mobile like "%":mobile"%" )
+			</#if>
+	        <#if realName?exists && realName!="" >
+			      AND t.memberid  in(select memberid from member_baseinfo m1 where m1.realName like "%":realName"%" )
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+		ORDER BY 
+			t.createTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="queryOderSameStatement">
+		<![CDATA[
+			select sysRefeNo from (
+				select t1.orderno,t2.sysRefeNo,t2.tradeDay,t1.orderTime, abs((UNIX_TIMESTAMP(t2.tradeDay)-UNIX_TIMESTAMP(t1.orderTime))/60/60) st
+					from order_baseinfo t1
+					inner JOIN order_bill t2 on t1.payAmount=t2.tradeMoney  
+					inner join re_business_pos t3  on t1.businessId=t3.businessId and t2.clientNo=t3.posNumber
+					where t1.persaleId=:persaleId order by st asc) t 
+					where 1=1
+					and t.sysRefeNo not in (select statementid from pay_serialnumber WHERE statementId is not null) 
+					and st<=72 limit 0,1
+	]]>
+	</sql>
+	
+	<sql id="queryPosNumberByBusiness">
+		<![CDATA[
+			select posNumber from re_business_pos where businessId=:businessId
+	]]>
+	</sql>
+	
+	<sql id="updateSupplementOrder">
+	<![CDATA[
+	    UPDATE 
+	    	order_baseinfo t 
+	    SET 
+	    	t.updateTime = SYSDATE()
+	    	<#if orderStatus?exists && orderStatus!="" >
+			     ,t.orderStatus = :orderStatus 
+			</#if>
+			<#if memberId?exists && memberId!="" >
+			     , t.memberId = :memberId 
+			</#if>
+			<#if orderAmount?exists && orderAmount!="" >
+			      , t.orderAmount = :orderAmount 
+			</#if>
+			<#if payAmount?exists && payAmount!="" >
+			     , t.payAmount = :payAmount 
+			</#if>
+
+			<#if payType?exists && payType!="" >
+			     ,t.payType = :payType 
+			</#if>
+			<#if paySubType?exists && paySubType!="" >
+			     ,t.paySubType = :paySubType 
+			</#if>
+
+			<#if updateUserId?exists && updateUserId!="" >
+			     ,t.updateUserId = :updateUserId 
+			</#if>
+
+			<#if closeUserId?exists && closeUserId!=""  >
+			     ,t.closeUserId = :closeUserId 
+			</#if>
+
+			<#if hasCustomer?exists && hasCustomer!=""  >
+			     ,t.hasCustomer = :hasCustomer
+			</#if>
+			<#if orderTime?exists && orderTime!=""  >
+			     ,t.orderTime = :orderTime
+			</#if>
+			,closeTime=:closeTime
+	    WHERE 
+	    	t.orderNo= :orderNo
+	]]>
+	</sql>
+	
+	<sql id="getExpireOrderAdvance">
+		<![CDATA[
+		SELECT 
+			t.`orderNo` AS orderNo,
+			da.nstOrderNo AS nstOrderNo
+		FROM order_baseinfo t 
+		LEFT JOIN delivery_address da ON t.`orderNo`= da.`orderNo`
+		WHERE t.`orderStatus` = '1' 
+		AND t.`distributeMode`='1'
+		AND DATE_SUB(t.`orderTime` ,INTERVAL -3 DAY)<SYSDATE()
+		AND NOT EXISTS(SELECT s.`orderNo` FROM pay_serialnumber s WHERE t.`orderNo` = s.`orderNo`)
+		]]>
+	</sql>
+	<sql id="callExpireOrderAdvance">
+		<![CDATA[
+	    UPDATE 
+	    	order_baseinfo t 
+	    SET 
+	    	t.updateTime = SYSDATE(),
+	    	closeTime= SYSDATE()
+	    	<#if orderStatus?exists && orderStatus!="" >
+			     ,t.orderStatus = :orderStatus 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			     ,t.updateUserId = :updateUserId 
+			</#if>
+			<#if closeUserId?exists && closeUserId!="" >
+			     ,t.closeUserId = :closeUserId 
+			</#if>
+			<#if cancelReason?exists && cancelReason!="" >
+			     ,t.cancelReason = :cancelReason 
+			</#if>
+	    WHERE 1=1
+			<#if orderNos?exists>
+					<#assign n = orderNos?size />
+					<#if n gt 0>
+						AND t.orderNo in (
+						<#list orderNos as orderNo>
+							<#if orderNo_index != n-1>
+								${orderNo} ,
+							<#else>
+								${orderNo}
+							</#if>
+						</#list>
+						)
+					</#if>
+				</#if>
+			]]>
+	</sql>
+	
+	<sql id="updateAdvance">
+	<![CDATA[
+	    UPDATE 
+	    	order_fee_item_detail t 
+	    SET 
+	    	amount=:payAmt
+	    WHERE 1=1
+	    	<#if orderNo?exists && orderNo!="" >
+			     AND t.orderNo = :orderNo 
+			</#if>
+			<#if feeType?exists && feeType!="" >
+			     AND t.feeType = :feeType 
+			</#if>
+			<#if payerType?exists && payerType!="" >
+			     AND t.payerType = :payerType 
+			</#if>
+			<#if payeeType?exists && payeeType!="" >
+			     AND t.payeeType = :payeeType 
+			</#if>
+		]]>
+		</sql>
+		
+		<sql id="updateAdvanceAndPayment">
+		<![CDATA[
+	   UPDATE 
+	    	order_baseinfo t 
+	    SET 
+	    	t.updateTime = SYSDATE()
+	    	<#if orderStatus?exists && orderStatus!="" >
+			     ,t.orderStatus = :orderStatus 
+			</#if>
+			<#if type="2" && payAmt?exists && payAmt!="" >
+			     ,t.restAmt = :payAmt 
+			</#if>
+			<#if type="0" && payAmt?exists && payAmt!="" >
+			     ,t.payAmount = :payAmt 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			     ,t.updateUserId = :updateUserId 
+			</#if>
+	    WHERE 1=1
+	    AND t.orderNo =:orderNo
+		]]>
+		</sql>
+		
+	<sql id="queryOrderProductInfo">
+	<![CDATA[
+		SELECT t.*,t1.imageUrl FROM (select opd.*
+		from order_product_detail opd 
+		WHERE 1=1      
+			 <#if orderNo?exists && orderNo!="" >
+			  AND opd.orderNo=:orderNo
+		    </#if>	
+			) AS t LEFT JOIN 
+			(SELECT pp.productId,pp.url170 AS imageUrl FROM product_picture pp where pp.pictureType=4) AS t1 
+			ON t.productId=t1.productId
+	]]>
+	</sql>
+	
+	<sql id="queryOrderBaseInfoByCondition">
+	<![CDATA[
+		SELECT
+			*
+	    FROM
+	        order_baseinfo p
+	    where 1=1
+	    <#if orderNo?exists && orderNo!="" >
+			AND p.orderNo=:orderNo
+		</#if>	
+	    <#if orderNo1?exists && orderNo1!="" >
+			AND p.orderNo!=:orderNo1
+		</#if>	
+		 <#if memberId?exists && memberId!="" >
+			AND p.memberId=:memberId
+		</#if>	
+		 <#if marketId?exists && marketId!="" >
+			AND p.marketId=:marketId
+		</#if>	
+		 <#if activityType?exists && activityType!="" >
+			AND p.activityType=:activityType
+		</#if>	
+		 <#if activityType?exists && activityType!="" >
+			AND p.activityType=:activityType
+		</#if>	
+		 <#if orderStatus?exists && orderStatus!="" >
+			AND p.orderStatus=:orderStatus
+		</#if>	
+		 <#if orderStatus1?exists && orderStatus1!="" >
+			AND p.orderStatus in(3,10)
+		</#if>	
+	]]>
+	</sql>
+	<sql id="updateStockCount">
+		<![CDATA[
+			UPDATE 
+				product_baseinfo 
+			SET 
+				stockCount = (CASE WHEN stockCount + :stockCount > :maxCount THEN :maxCount
+								   ELSE stockCount + :stockCount END)
+			WHERE
+				productId =:productId
+		]]>
+	</sql>
+	
+</sqlMap>

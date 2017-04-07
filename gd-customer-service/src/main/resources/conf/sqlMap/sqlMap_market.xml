@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Market">
+	<sql id="getMarket">
+	<![CDATA[
+		SELECT id ,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address,
+                marketShortName,
+               marketArea,
+               tradeAmount,
+               tradeMoney,
+               marketImg,
+               sort,
+               businessAmount,
+               businessClassAmount 
+		FROM 
+			market t
+		WHERE id=:id
+	]]>
+	</sql>
+	
+	
+		<sql id="getMarketList">
+	<![CDATA[
+		SELECT id ,
+			   id as ids,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address
+		FROM 
+			   market t
+		WHERE  status !='2'  
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getListByName">
+	<![CDATA[
+		SELECT id ,
+		id as ids,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address,
+               marketShortName,
+               marketArea,
+               tradeAmount,
+               tradeMoney,
+               marketImg,
+               sort,
+               businessAmount,
+               businessClassAmount 
+		FROM 
+			market t
+		WHERE status !='2'
+		    <#if marketName?exists && marketName!="" >
+			    AND  marketName like "%":marketName"%"
+			</#if> 
+			 <#if marketType?exists && marketType!="" >
+			    AND  marketType  =:marketType
+			</#if> 
+		ORDER BY createtime DESC	
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	
+	<sql id="getMarketByName">
+	<![CDATA[
+		SELECT id ,
+				id as ids,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address
+		FROM 
+			   market t
+		WHERE 
+			marketName =:marketName
+	]]>
+	</sql>
+
+	
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			market t
+	  WHERE status !='2'
+		    <#if marketName?exists && marketName!="" >
+			    AND  marketName like "%":marketName"%"
+			</#if> 
+			<#if marketType?exists && marketType!="" >
+			    AND  marketType  =:marketType
+			</#if> 
+	]]>
+	</sql>
+	
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT id ,
+		id as ids,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               sort,
+               lon ,
+               lat ,
+               address
+		FROM 
+			market  t 
+		WHERE status !='2'
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+			<#if marketName?exists && marketName!="" >
+			      AND marketName like "%":marketName"%"
+			</#if>
+			ORDER BY createtime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getAllByCondition">
+	<![CDATA[
+		SELECT id ,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address
+		FROM 
+			market  t 
+		WHERE 1=1
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+			<#if marketName?exists && marketName!="" >
+			      AND marketName like "%":marketName"%"
+			</#if>
+			<#if marketType?exists && marketType!="" >
+			      AND marketType = :marketType
+			</#if>
+			<#if provinceId?exists && provinceId!="" >
+			      AND provinceId = :provinceId
+			</#if>
+			<#if cityId?exists && cityId!="" >
+			      AND cityId = :cityId
+			</#if>
+			<#if areaId?exists && areaId!="" >
+			      AND areaId = :areaId
+			</#if>
+			<#if status?exists && status!="" >
+			      AND status = :status
+			</#if>
+			
+			ORDER BY t.id ASC
+	]]>
+	</sql>
+	
+   <sql id="getAllByStatus">
+	<![CDATA[
+		SELECT id ,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address
+		FROM 
+			market  t 
+		WHERE 1=1
+			<#if status?exists && status!="" >
+			      AND status =:status
+			</#if>
+	]]>
+	</sql>	
+   <sql id="getAllBySearch">
+	<![CDATA[
+		SELECT id ,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address
+		FROM 
+			market  t 
+		WHERE 
+			1 = 1
+		<#if marketId?exists && marketId!="" >
+		      AND id = :marketId
+		</#if>
+		<#if marketIdList?exists>
+			<#assign n = marketIdList?size />
+			<#if n gt 0>
+				and(
+				<#list marketIdList as marketId>
+					<#if marketId_index != n-1>
+							t.id = '${marketId}' or
+						<#else>
+							t.id = '${marketId}'
+					</#if>
+				</#list>
+				)
+			</#if>
+			<#if n == 0>
+				and 1 = 2
+			</#if>
+		</#if>		
+		<#if status?exists && status!="" >
+		      AND status =:status
+		</#if>
+		<#if marketType?exists && marketType!="" >
+		      AND marketType =:marketType
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getAllByStatusAndType">
+	<![CDATA[
+		SELECT id ,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address
+		FROM 
+			market  t 
+		WHERE 1=1
+			<#if status?exists && status!="" >
+			      AND status =:status
+			</#if>
+			<#if marketType?exists && marketType!="" >
+			      AND marketType =:marketType
+			</#if>
+	]]>
+	</sql>
+	
+	
+  <sql id="getAllByType">
+	<![CDATA[
+		SELECT id ,
+		       marketName,
+		       marketType,
+               provinceId, 
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               createUserId,
+               createTime ,
+               updateUserId ,
+               updateTime ,
+               lon ,
+               lat ,
+               address
+		FROM 
+			  market  t 
+		WHERE 1=1
+		  AND status ='0'
+			<#if marketType?exists && marketType!="" >
+			      AND marketType =:marketType
+			</#if>
+	]]>
+	</sql>
+	
+	
+	<sql id="addMarketDTO">
+	<![CDATA[
+	    INSERT INTO  market
+	          (marketName,
+	           marketType, 
+               provinceId,
+               cityId,
+               areaId ,
+               status ,
+               description ,
+               lon ,
+               lat ,
+               address,
+               createUserId,
+               createTime,
+               marketShortName,
+               marketArea,
+               tradeAmount,
+               tradeMoney,
+               marketImg,
+               sort 
+              )
+	        values
+	         ( :marketName,
+	           :marketType,
+               :provinceId, 
+               :cityId,
+               :areaId ,
+               :status ,
+               :description ,
+               :lon ,
+               :lat ,
+               :address,
+               :createUserId,
+               :createTimeString,
+               :marketShortName,
+               :marketArea,
+               :tradeAmount,
+               :tradeMoney,
+               :marketImg,
+               :sort  
+              )
+	        
+	]]>
+	</sql>
+	 
+   <sql id="deleteMarketDTO">
+	<![CDATA[
+	    UPDATE market 
+	    SET  
+               status       ='2'
+	    WHERE  id=:id
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="updateMarketDTO">
+	<![CDATA[
+	    UPDATE market 
+	    SET  
+			<#if marketName?exists >
+	        marketName=:marketName,
+			</#if>
+			<#if provinceId?exists>
+			   provinceId = :provinceId,
+			</#if>
+			<#if cityId?exists >
+			   cityId = :cityId,
+			</#if>
+			<#if description?exists >
+			   description = :description,
+			</#if>
+			<#if marketType?exists >
+			   marketType = :marketType,
+			</#if>
+			
+			<#if areaId?exists >
+			   areaId = :areaId,
+			</#if>			
+			<#if address?exists >
+	        address=:address,
+			</#if>
+			<#if status?exists>
+	        status=:status,
+			</#if>
+			<#if lat?exists >
+			lat=:lat,
+			</#if>
+			<#if lon?exists >
+			lon=:lon,
+			</#if>
+			<#if marketShortName?exists >
+			marketShortName=:marketShortName,
+			</#if>
+			<#if marketArea?exists >
+			marketArea=:marketArea,
+			</#if>
+			<#if tradeAmount?exists >
+			tradeAmount=:tradeAmount,
+			</#if>
+			<#if tradeMoney?exists >
+			tradeMoney=:tradeMoney,
+			</#if>
+			<#if marketImg?exists >
+			marketImg=:marketImg,
+			</#if>
+			<#if sort?exists>
+			sort=:sort,
+			</#if>
+			<#if businessAmount?exists>
+			businessAmount=:businessAmount,
+			</#if>
+			<#if businessClassAmount?exists>
+			businessClassAmount=:businessClassAmount,
+			</#if>
+			<#if category?exists>
+			category=:category,
+			</#if>
+            updateUserId =:updateUserId,
+            updateTime=SYSDATE()
+	    WHERE id=:id
+	]]>
+	</sql>
+	 
+	<sql id="getAllByTypes">
+	<![CDATA[
+		SELECT 
+		   	id,
+	       	marketName,
+	       	marketType,
+           	provinceId, 
+           	cityId,
+           	areaId ,
+           	status ,
+           	description ,
+           	createUserId,
+           	createTime ,
+           	updateUserId ,
+           	updateTime ,
+           	lon ,
+           	lat ,
+           	address
+		FROM 
+			market  t 
+		WHERE 
+		  	status ='0'
+		<#if marketTypes?exists>
+			AND marketType in
+		    <#assign n = marketTypes?size />
+			<#if n gt 0>
+				(
+				<#list marketTypes as omId>
+					<#if omId_index != n-1>
+							${omId} ,
+						<#else>
+							${omId}
+					</#if>
+				</#list>
+				) 
+			</#if>
+		     
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getNearbyMarket">
+	<![CDATA[
+		SELECT
+			m.id, m.marketName,
+			ROUND(
+				6378.138 * 2 * ASIN(
+					SQRT(
+						POW(
+							SIN(
+								(
+									:cityLat * PI() / 180 - m.lat * PI() / 180
+								) / 2
+							),
+							2
+						) + COS(:cityLat * PI() / 180) * COS(m.lat * PI() / 180) * POW(
+							SIN(
+								(
+									:cityLng * PI() / 180 - m.lon * PI() / 180
+								) / 2
+							),
+							2
+						)
+					)
+				),
+				2
+			) AS distance,
+			m.lon,
+			m.lat
+		FROM
+			market m
+		WHERE
+			m.marketType = 2
+		AND m.`status` = 0
+		AND m.lon IS NOT NULL
+		AND m.lat IS NOT NULL
+		ORDER BY distance ASC
+	]]>
+	</sql>
+	
+	<!-- Add By ZYZ , 能用就用, 不要乱改; 不符合特定需求, 自己另写接口; -->
+	<sql id="getCountOfMarketList">
+	<![CDATA[
+		SELECT 
+			count(1) as count
+		FROM 
+			market  t 
+		LEFT JOIN area province ON (t.provinceId = province.areaID)
+		LEFT JOIN area city ON (t.cityId = city.areaID)
+		LEFT JOIN area region ON (t.areaId = region.areaID)			
+		WHERE 
+			1 = 1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id
+			</#if>
+			<#if excludeStatus?exists && excludeStatus!="" &&  exstatus?exists && exstatus!="">
+			      AND t.status != :exstatus
+			</#if>
+			<#if status?exists && status!="" >
+			      AND t.status = :status
+			</#if>
+			<#if marketType?exists && marketType!="" >
+			      AND t.marketType = :marketType
+			</#if>			
+			<#if marketName?exists && marketName!="" >
+			      AND t.marketName like "%":marketName"%"
+			</#if>
+	]]>
+	</sql>	
+	
+	<!-- Add By ZYZ , 能用就用, 不要乱改; 不符合特定需求, 自己另写接口; -->
+	<sql id="getListOfMarket">
+	<![CDATA[
+		SELECT	
+			t.id ,
+			t.marketName,
+			t.marketType,
+			t.provinceId, 
+			t.cityId,
+			t.areaId ,
+			t.status ,
+			t.description ,
+			t.createUserId,
+			t.createTime ,
+			t.updateUserId ,
+			t.updateTime ,
+			t.lon ,
+			t.lat ,
+			province.area as provinceName,
+			city.area as cityName,
+			region.area as areaName,
+			t.address
+		FROM 
+			market  t 
+		LEFT JOIN area province ON (t.provinceId = province.areaID)
+		LEFT JOIN area city ON (t.cityId = city.areaID)
+		LEFT JOIN area region ON (t.areaId = region.areaID)			
+		WHERE 
+			1 = 1
+			<#if id?exists && id!="" >
+			      AND t.id = :id
+			</#if>
+			<#if excludeStatus?exists && excludeStatus!="" &&  exstatus?exists && exstatus!="">
+			      AND t.status != :exstatus
+			</#if>
+			<#if status?exists && status!="" >
+			      AND t.status = :status
+			</#if>
+			<#if marketType?exists && marketType!="" >
+			      AND t.marketType = :marketType
+			</#if>			
+			<#if marketName?exists && marketName!="" >
+			      AND t.marketName like "%":marketName"%"
+			</#if>
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getMarketById">
+	<![CDATA[
+		SELECT
+			m.id,
+			m.marketName,
+			m.marketType,
+			m.sort,
+			m.createTime,
+			a.area as provinceName,
+			b.area as cityName,
+			c.area as areaName,
+			m.description,
+			m.createUserId,
+			m.updateUserId,
+			m.updateTime,
+			m.lon,
+			m.lat,
+			m.address,
+			m.marketShortName,
+			m.marketArea,
+			m.tradeAmount,
+			m.tradeMoney,
+			m.marketImg,
+			m.businessAmount,
+			m.businessClassAmount,
+			m.category
+		FROM 
+			market m
+		LEFT JOIN area a ON (m.provinceId = a.areaID)
+		LEFT JOIN area b ON (m.cityId = b.areaID)
+		LEFT JOIN area c ON (m.areaId = c.areaID)
+		WHERE 1=1
+		<#if marketId?exists && marketId!="" >
+		   AND m.id = :marketId
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getMarketList">
+	<![CDATA[
+		SELECT
+			m.id,
+			m.marketName,
+			m.marketType,
+			m.sort,
+			m.createTime,
+			a.area as provinceName,
+			b.area as cityName,
+			c.area as areaName,
+			m.description,
+			m.createUserId,
+			m.updateUserId,
+			m.updateTime,
+			m.lon,
+			m.lat,
+			m.address,
+			m.marketShortName,
+			m.marketArea,
+			m.tradeAmount,
+			m.tradeMoney,
+			m.marketImg,
+			m.businessAmount,
+			m.businessClassAmount,
+			m.category
+		FROM
+			market m
+		LEFT JOIN area a ON (m.provinceId = a.areaID)
+		LEFT JOIN area b ON (m.cityId = b.areaID)
+		LEFT JOIN area c ON (m.areaId = c.areaID)
+		WHERE 1=1 AND m.status = 0 AND m.marketType = 2
+		<#if marketId?exists && marketId!="" >
+		   AND m.id = :marketId
+		</#if>
+		ORDER BY m.sort DESC, m.createtime ASC
+		LIMIT :startRow, :endRow
+	]]>
+	</sql>
+	<sql id="getMarketListByCondition">
+	<![CDATA[
+		SELECT	
+			t.id ,
+			t.marketName,
+			t.marketType,
+			t.provinceId, 
+			t.cityId,
+			t.areaId ,
+			t.status ,
+			t.description ,
+			t.createUserId,
+			t.createTime ,
+			t.updateUserId ,
+			t.updateTime ,
+			t.lon ,
+			t.lat ,
+			province.area as provinceName,
+			city.area as cityName,
+			region.area as areaName,
+			t.address
+		FROM 
+			market  t 
+		LEFT JOIN area province ON (t.provinceId = province.areaID)
+		LEFT JOIN area city ON (t.cityId = city.areaID)
+		LEFT JOIN area region ON (t.areaId = region.areaID)			
+		WHERE 
+			1 = 1
+			<#if status?exists && status!="" >
+			      AND t.status = :status
+			</#if>
+			<#if marketType?exists && marketType!="" >
+			      AND t.marketType = :marketType
+			</#if>			
+			<#if marketName?exists && marketName!="" >
+			      AND t.marketName like "%":marketName"%"
+			</#if>
+		ORDER BY t.createtime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	<sql id="getMarketCountByCondition">
+	<![CDATA[
+		SELECT	
+			count(1)
+		FROM 
+			market  t	
+		WHERE 
+			1 = 1
+			<#if status?exists && status!="" >
+			      AND t.status = :status
+			</#if>
+			<#if marketType?exists && marketType!="" >
+			      AND t.marketType = :marketType
+			</#if>			
+			<#if marketName?exists && marketName!="" >
+			      AND t.marketName like "%":marketName"%"
+			</#if>
+	
+	]]>
+	</sql>
+</sqlMap>

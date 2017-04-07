@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PayResult">
+	<sql id="updateOrderStatus">
+ 	<![CDATA[
+		UPDATE 
+		  order_baseinfo 
+		SET
+		  orderStatus = :orderStatus 
+		  <#if cancelReason?exists && cancelReason != "">
+		      ,cancelReason = :cancelReason
+		</#if>
+		WHERE orderNo = :orderNo 
+	]]>
+	</sql>
+	
+	<sql id="updateOrderBase">
+ 	<![CDATA[
+		UPDATE 
+		  order_baseinfo 
+		SET
+		  orderStatus = :orderStatus 
+		  <#if payType?exists && payType != "">
+		      ,payType = :payType
+		</#if>
+		WHERE orderNo = :orderNo 
+	]]>
+	</sql>
+	
+	<sql id="updateMemberGrade">
+ 	<![CDATA[
+		UPDATE 
+		  member_baseinfo 
+		SET
+		  `memberGrade` = 1 ,
+		  `validTime` = SYSDATE(),
+		  `expireTime` = DATE_SUB(
+		    DATE_ADD(SYSDATE(), INTERVAL 1 YEAR),
+		    INTERVAL 1 DAY
+		  ) 
+		WHERE memberId = :memberId 
+	]]>
+	</sql>
+	
+	<sql id="addOrderRefundRecord">
+ 	<![CDATA[
+		INSERT INTO `order_refund_record` (
+		  `orderNo`,
+		  `memberId`,
+		  `type`,
+		  `amount`,
+		  `reason`,
+		  `refund_time`,
+		  `status`,
+		  `createTime`,
+		  `createUserId`,
+		  `updateTime`,
+		  `updateUserId`
+		) 
+		VALUES
+		  (
+		  :orderNo,
+		  :memberId,
+		  :type,
+		  :amount,
+		  :reason,
+		  :refund_time,
+		  :status,
+		  :createTime,
+		  :createUserId,
+		  :updateTime,
+		  :updateUserId
+		)
+	]]>
+	</sql>
+	
+	<sql id="getDinJinPayOuter">
+ 	<![CDATA[
+		SELECT 
+		  o.`orderNo`,
+		  o.`orderType`,
+		  o.`orderTime`,
+		  o.`orderStatus`,
+		  p.`memberAddressId`
+		FROM
+		  `order_baseinfo` o
+		LEFT JOIN
+		  `product_delivery_detail` p
+		ON
+		  o.`orderNo` = p.`orderNo`
+		WHERE o.`orderType` = 3 
+		  AND o.`orderStatus` = 1 
+		  AND DATE_ADD(
+		    o.orderTime,
+		    INTERVAL 3 * 24 * 60 MINUTE
+		  ) < SYSDATE()
+	]]>
+	</sql>
+	
+	<sql id="getByStatementId">
+	<![CDATA[
+		SELECT 
+			t.payId,t.orderNo,t.statementId,t.payType,t.payStatus,t.paymentAcc,t.recipientAcc,
+			t.tradeAmount,t.remark,t.payTime,t.createUserId,t.payImage,
+			t.createTime,t.updateUserId,t.updateTime 
+		FROM 
+			pay_serialnumber t 
+		WHERE 
+			t.statementId=:statementId
+	]]>
+	</sql>
+	
+</sqlMap>

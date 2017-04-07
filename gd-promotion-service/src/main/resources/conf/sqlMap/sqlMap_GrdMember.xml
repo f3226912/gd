@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdMember">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+grd_member(
+
+context,id,name,mobile,marketId,loginStatus,createTime,updateTime,
+createUserId,updateUserId,password,status,giftteamId
+) VALUES (
+
+:context,:id,:name,:mobile,:marketId,:loginStatus,:createTime,:updateTime,
+:createUserId,:updateUserId,:password,:status,:giftteamId
+)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE grd_member
+ SET 
+ 
+<#if needLogin?exists && needLogin!="" >
+needLogin=:needLogin,
+</#if>
+<#if context?exists && context!="" >
+context=:context,
+</#if>
+<#if name?exists && name!="" >
+name=:name,
+</#if>
+<#if mobile?exists && mobile!="" >
+mobile=:mobile,
+</#if>
+<#if marketId?exists && marketId!="" >
+marketId=:marketId,
+</#if>
+<#if giftteamId?exists && giftteamId!="" >
+giftteamId=:giftteamId,
+</#if>
+<#if loginStatus?exists && loginStatus!="" >
+loginStatus=:loginStatus,
+</#if>
+<#if createTime?exists && createTime!="" >
+createTime=:createTime,
+</#if>
+
+<#if createUserId?exists && createUserId!="" >
+createUserId=:createUserId,
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+updateUserId=:updateUserId,
+</#if>
+<#if password?exists && password!="" >
+password=:password,
+</#if>
+<#if status?exists && status!="" >
+status=:status,
+</#if>
+updateTime=now()
+
+ WHERE id=:id
+
+]]>
+</sql>
+<sql id="getByCondition">
+<![CDATA[
+	SELECT 
+
+context,id,name,mobile,marketId,market,loginStatus,createTime,updateTime,needLogin,
+createUserId,updateUserId,password,status,giftteamId,
+(SELECT GROUP_CONCAT(ggg.`name`)FROM  grd_user_team gut LEFT JOIN
+			grd_gd_giftteam ggg ON ggg.`id`=gut.`teamId` WHERE gut.`grdUserId`=gm.`id`)AS giftteamName
+	FROM 
+grd_member gm WHERE 1=1
+
+<#if context?exists && context!="" >
+AND context=:context
+</#if>
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if mobile?exists && mobile!="" >
+AND mobile=:mobile
+</#if>
+<#if marketId?exists && marketId!="" >
+AND marketId=:marketId
+</#if>
+<#if loginStatus?exists && loginStatus!="" >
+AND loginStatus=:loginStatus
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if password?exists && password!="" >
+AND password=:password
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if giftteamId?exists && giftteamId!="" >
+AND giftteamId=:giftteamId
+</#if>
+]]>
+</sql>
+<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+
+context,id,name,mobile,marketId,loginStatus,createTime,updateTime,needLogin,
+createUserId,updateUserId,password,status,giftteamId
+	FROM 
+grd_member WHERE 1=1
+
+<#if context?exists && context!="" >
+AND context=:context
+</#if>
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if mobile?exists && mobile!="" >
+AND mobile=:mobile
+</#if>
+<#if marketId?exists && marketId!="" >
+AND marketId=:marketId
+</#if>
+<#if loginStatus?exists && loginStatus!="" >
+AND loginStatus=:loginStatus
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if password?exists && password!="" >
+AND password=:password
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if giftteamId?exists && giftteamId!="" >
+AND giftteamId=:giftteamId
+</#if>
+LIMIT :startRow, :endRow
+]]>
+</sql>
+<sql id="getTotal">
+<![CDATA[
+	SELECT count(*)
+	FROM 
+grd_member WHERE 1=1
+
+<#if context?exists && context!="" >
+AND context=:context
+</#if>
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if name?exists && name!="" >
+AND name=:name
+</#if>
+<#if mobile?exists && mobile!="" >
+AND mobile=:mobile
+</#if>
+<#if marketId?exists && marketId!="" >
+AND marketId=:marketId
+</#if>
+<#if loginStatus?exists && loginStatus!="" >
+AND loginStatus=:loginStatus
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+<#if password?exists && password!="" >
+AND password=:password
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+<#if giftteamId?exists && giftteamId!="" >
+AND giftteamId=:giftteamId
+</#if>
+<#if giftteamIds?exists>
+	<#assign n = giftteamIds?size />
+	<#if n gt 0>
+		AND (
+		<#list giftteamIds as singleId>
+		<#if singleId_index != n-1>
+			giftteamId =${singleId}  OR
+		<#else>
+			giftteamId =${singleId}
+		</#if>
+		</#list>
+		)
+	</#if>
+</#if>
+]]>
+</sql>
+<sql id="deleteById">
+<![CDATA[
+	DELETE grd_member
+ WHERE id=:id
+]]>
+</sql>
+
+
+<!-- 根据相应参数获取实体 -->
+<sql id="getByParams">
+<![CDATA[
+	SELECT 
+
+context,t.id,t.name,mobile,t.marketId,market,loginStatus,t.createTime,t.updateTime,needLogin,
+createUserId,updateUserId,password,status
+	FROM 
+grd_member t  WHERE 1=1 
+
+<#if context?exists && context!="" >
+AND context=:context
+</#if>
+<#if id?exists && id!="" >
+AND t.id=:id
+</#if>
+<#if name?exists && name!="" >
+AND t.name=:name
+</#if>
+<#if mobile?exists && mobile!="" >
+AND mobile=:mobile
+</#if>
+<#if marketId?exists && marketId!="" >
+AND t.marketId=:marketId
+</#if>
+<#if loginStatus?exists && loginStatus!="" >
+AND loginStatus=:loginStatus
+</#if>
+<#if password?exists && password!="" >
+AND password=:password
+</#if>
+<#if status?exists && status!="" >
+AND status=:status
+</#if>
+
+]]>
+</sql>
+	
+		<!-- 根据查询条件 获取数据。 -->
+	<sql id="queryBySearch">
+		<![CDATA[
+			SELECT
+				gm.id,
+				gm.name,
+				gm.mobile,
+				gm.market,
+				gm.giftteamId,
+				(SELECT `name` FROM grd_gd_giftteam t WHERE t.`id`= gm.giftteamId)AS giftteamName,
+				(SELECT count(id) FROM grd_gift_detail gd
+					WHERE (gd.type = '3' OR gd.type = '4') AND gd.createUserId = gm.id
+				) AS registerAmount,
+				(SELECT count(id) FROM grd_gift_detail gd
+					WHERE gd.type = '2' AND gd.createUserId = gm.id
+				) AS orderAmount,
+				(SELECT sum(gd.orderPrice) FROM grd_gift_detail gd
+					WHERE gd.type = '2' AND gd.createUserId = gm.id
+				) AS orderPriceAmount,
+				gm.status,
+				gm.context,
+				gm.needLogin
+			FROM
+				grd_member gm
+			WHERE
+				1 = 1
+			<#if marketId?exists && marketId!="" >
+				AND gm.marketId = :marketId
+			</#if>
+			<#if giftteamId?exists && giftteamId!="" >
+				AND EXISTS(SELECT 1 FROM grd_user_team ut WHERE ut.grdUserId = gm.id AND ut.teamId = :giftteamId)
+			</#if>
+			<#if mobile?exists && mobile!="" >
+				AND gm.mobile LIKE "%":mobile"%"
+			</#if>
+			<#if name?exists && name!="" >
+				AND gm.name LIKE "%":name"%"
+			</#if>
+			<#if startDate?exists && startDate!="" >
+				 AND  DATE_FORMAT(gm.createTime,'%Y-%m-%d') >= DATE_FORMAT(:startDate,'%Y-%m-%d')	
+			</#if>
+		    <#if endDate?exists && endDate!="" >
+			     AND DATE_FORMAT(gm.createTime,'%Y-%m-%d') <= DATE_FORMAT(:endDate,'%Y-%m-%d')
+			</#if>
+			
+			ORDER BY
+				gm.createTime desc 
+			
+			<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+		]]>
+	</sql>
+	
+	
+	<!-- 根据查询条件统计 -->
+	<sql id="countBySearch">
+		<![CDATA[
+			SELECT
+				count(*)
+			FROM
+				grd_member gm
+			WHERE
+				1 = 1
+			<#if marketId?exists && marketId!="" >
+				AND gm.marketId = :marketId
+			</#if>
+			<#if giftteamId?exists && giftteamId!="" >
+				AND EXISTS(SELECT 1 FROM grd_user_team ut WHERE ut.grdUserId = gm.id AND ut.teamId = :giftteamId)
+			</#if>			
+			<#if mobile?exists && mobile!="" >
+				AND gm.mobile LIKE "%":mobile"%"
+			</#if>
+			<#if name?exists && name!="" >
+				AND gm.name LIKE "%":name"%"
+			</#if>		
+			<#if startDate?exists && startDate!="" >
+				 AND  DATE_FORMAT(gm.createTime,'%Y-%m-%d') >= DATE_FORMAT(:startDate,'%Y-%m-%d')	
+			</#if>
+		    <#if endDate?exists && endDate!="" >
+			     AND DATE_FORMAT(gm.createTime,'%Y-%m-%d') <= DATE_FORMAT(:endDate,'%Y-%m-%d')
+			</#if>
+			
+		
+			
+			
+		]]>
+	</sql>
+	
+	<!-- 根据id批量删除 -->
+	<sql id="deleteByIds">
+		<![CDATA[
+			DELETE
+			FROM
+				grd_member
+			WHERE
+				id IN (
+					<#assign num = ids?size />
+					<#list ids as theId>
+						<#if theId_index != num-1>
+								${theId} ,
+							<#else>
+								${theId}
+						</#if>
+					</#list>
+				)
+		]]>
+	</sql>
+	
+	<!-- 根据id批量重置用户密码。ps：会重置登录状态，让用户首次登录进行修改默认密码。 -->
+	<sql id="resetPwdByIds">
+		<![CDATA[
+			UPDATE
+				grd_member
+			SET
+				password = :defaultPwd,
+				updateUserId = :updateUserId,
+				loginStatus = '0'
+			WHERE
+				id IN (
+					<#assign num = ids?size />
+					<#list ids as theId>
+						<#if theId_index != num-1>
+								${theId} ,
+							<#else>
+								${theId}
+						</#if>
+					</#list>
+				)
+		]]>
+	</sql>
+	
+	
+	
+	<sql id="resetStatusByIds">
+		<![CDATA[
+			UPDATE
+				grd_member
+			SET
+				 context= CONCAT(context,:context)
+				,updateUserId = :updateUserId
+				,STATUS= :status
+			WHERE
+				id IN (
+					<#assign num = ids?size />
+					<#list ids as theId>
+						<#if theId_index != num-1>
+								${theId} ,
+							<#else>
+								${theId}
+						</#if>
+					</#list>
+				)
+		]]>
+	</sql>
+	<sql id="getChildTeamInfo">
+	<![CDATA[
+		SELECT id AS giftteamId,
+			  `name` AS giftteamName 
+		FROM grd_gd_giftteam t
+		WHERE t.`marketId`=:marketId
+		]]>
+	</sql>
+	
+	<sql id="getUserType">
+	<![CDATA[
+		SELECT type from grd_gd_giftstore s where s.id in(
+			SELECT giftstoreId  from grd_gd_giftteam 
+			where id in (
+				SELECT teamId from grd_user_team where grdUserId=:grdUserId
+			)
+		)
+		]]>
+	</sql>
+	
+	<sql id="getMember2TeamTotal">
+	<![CDATA[
+	SELECT COUNT(1) FROM grd_user_team t 
+	LEFT JOIN grd_member gm ON t.`grdUserId`=gm.`id`
+	WHERE 1=1
+	<#if giftteamIds?exists>
+		<#assign n = giftteamIds?size />
+		<#if n gt 0>
+			AND (
+			<#list giftteamIds as singleId>
+			<#if singleId_index != n-1>
+				t.teamId =${singleId}  OR
+			<#else>
+				t.teamId =${singleId}
+			</#if>
+			</#list>
+			)
+		</#if>
+	</#if>
+]]>
+</sql>
+	
+</sqlMap>
+
+
+
+

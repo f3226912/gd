@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head> 
+	<title>【谷登白沙洲市场补贴方案 即将重磅推出】</title>
+	<meta name="keywords" content="谷登农批网,谷登电商,谷登,白沙洲市场,补贴方案"/>
+	<meta name="description" content="谷登农批网推出武汉白沙周市场补贴方案，更多更全的农产品价格信息尽在谷登农批网。" />
+	<meta name="Content-Type" content="text/html; charset=UTF-8">	
+	<meta name="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit">	
+	<!--#include virtual="pub/head.inc"-->
+	<link rel="stylesheet" href="../v1.0/css/act/BSZMarketSubsidy.css">		
+</head>
+
+<body style="background-color:#DF3826">
+	<!--head star-->
+	<!--#include virtual="pub/head.html"-->
+	<!--head end-->	
+	<div class="body-subsidy">
+		<div class="act-butie01">
+			<div class="cont-det">
+				武汉白沙洲市场1500万，农商友交易享补贴等你拿！
+			</div>
+		</div>
+		<div class="act-butie02"></div>
+		<div class="act-butie03"></div>
+		<!-- <img class="subsidyPic" src="<butie01 class="jpg"></butie01>" >
+		<img class="subsidyPic" src="../v1.0/images/act/act-butie02.jpg" >
+		<img class="subsidyPic" src="../v1.0/images/act/act-butie03.jpg" > -->
+		<div class="cont-pos">
+			<div class="subsidy-content">
+				<h2>
+					A、买家采购获补贴：
+				</h2>
+				<p>
+					任何买家使用“<span style="color:yellow;">农商友</span>”于武汉白沙洲市场商铺达成交易并使用POS机付款即可获得补贴。
+				</p>
+				<h2>
+					B、卖家带货获补贴：
+				</h2>
+				<p>
+					任何卖家带货入场使用“<span style="color:yellow;">农商友</span>”在武汉白沙洲市场商铺达成交易 并使用POS机付款即可获得补贴。
+				</p>
+				<h2>
+					</br>
+					<p>详情请致电：4007600800咨询</br>详情请参照市场公告，最终解释权归深圳市谷登科技有限公司所有。</p>
+				</h2>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="act-butie04">
+		<img src="../v1.0/images/act/butie/act-butie04.jpg" alt="">
+	</div> -->
+
+	<!--底部 star-->
+	<!--#include virtual="pub/foot.html"-->
+	<!--底部 end-->
+
+</body>
+</html>

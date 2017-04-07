@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdUserTeamEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_user_team(
+	grdUserId,teamId
+	) VALUES (
+	:grdUserId,:teamId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_user_team SET 
+	<#if grdUserId?exists && grdUserId!="" >
+		grdUserId=:grdUserId,
+	</#if>	
+	<#if teamId?exists && teamId!="" >
+		teamId=:teamId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE grdUserId=:grdUserId
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	grdUserId,teamId
+	FROM grd_user_team WHERE grdUserId=:grdUserId
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	grdUserId,teamId
+	FROM grd_user_team WHERE 1=1
+	<#if grdUserId?exists && grdUserId!="" >
+		AND grdUserId=:grdUserId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	grdUserId,teamId
+	FROM grd_user_team WHERE 1=1
+	<#if grdUserId?exists && grdUserId!="" >
+		AND grdUserId=:grdUserId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+
+<sql id="getReUserTeamList">
+	<![CDATA[
+		SELECT 	
+			gut.grdUserId, gut.teamId, gm.`NAME` as userName, gt.`name` as teamName
+		FROM 
+			grd_user_team gut, grd_member gm, grd_gd_giftteam gt
+		WHERE 
+			gt.id = gut.teamId AND gut.grdUserId = gm.id
+		<#if grdUserId?exists && grdUserId!="" >
+			AND gut.grdUserId=:grdUserId
+		</#if>
+		<#if teamId?exists && teamId!="" >
+			AND gut.teamId=:teamId
+		</#if>
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_user_team WHERE 1=1
+	<#if grdUserId?exists && grdUserId!="" >
+		AND grdUserId=:grdUserId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND teamId=:teamId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteByGrdUserId">
+	<![CDATA[
+	DELETE FROM grd_user_team WHERE grdUserId=:grdUserId
+	]]>
+</sql>
+</sqlMap>

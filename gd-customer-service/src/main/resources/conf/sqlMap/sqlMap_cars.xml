@@ -1,0 +1,1151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Car">
+	<sql id="getCar">
+	<![CDATA[
+		SELECT 
+	           id                  ,           
+               userId              ,
+               phone               ,           
+               carNumber         	,           
+               carType           	,
+               transportCarType     ,
+               transportType        ,                          
+               category          	, 
+               maxLoad              ,           
+               price             	,           
+               priceDescription  	,
+               t.createUserId         ,
+               t.createTime           ,           
+               products          	,           
+               carLength            , 
+                 		CASE
+    		   carType 
+    	WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS carTypeString,
+   
+    CASE   transportCarType 
+WHEN 0 THEN '小型面包'
+WHEN 1 THEN '金杯'
+WHEN 2 THEN '小型平板'
+WHEN 3 THEN '中型平板'
+WHEN 4 THEN '小型厢货'
+WHEN 5 THEN '大型厢货'
+ELSE '不限' 
+END AS transportCarTypeString,
+  	    CASE   transportType 
+    	WHEN 0 THEN '干线'
+        WHEN 1 THEN '同城'
+  		END AS transportTypeString,	
+  		m.realName  AS contact ,
+  		m.userType ,
+  	    nst_vehiclePhotoUrl,
+        nst_driverPhotoUrl
+		FROM 
+			Cars t, member_baseinfo m 
+		WHERE t.userId = m.memberId
+		and  id=:id
+	]]>
+	</sql>
+	
+	
+		<sql id="getCarsList">
+	<![CDATA[
+		SELECT 
+		       id                  ,           
+               userId              ,           
+               phone               ,           
+               carNumber         	,           
+               carType           	,           
+               category          	, 
+               maxLoad              ,           
+               price             	,           
+               priceDescription  	,           
+               products          	,           
+               carLength         	   
+		FROM 
+			Cars t
+		WHERE  1=1  
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getAllByType">
+	<![CDATA[
+		SELECT id ,
+		       userId              ,           
+               phone               ,           
+               carNumber         	,           
+               carType           	,           
+               category          	, 
+               maxLoad              ,           
+               price             	,           
+               priceDescription  	,           
+               products          	,           
+               carLength         	   
+		FROM 
+			Cars t
+		WHERE 1=1
+			<#if carType?exists && carType!="" >
+			      AND carType =:carType
+			</#if>
+	]]>
+	</sql>
+	
+	
+	<sql id="queryByParameters">
+	<![CDATA[
+			SELECT
+			    id,
+			    userId,
+				CASE
+				WHEN mb.usertype = '1' THEN
+				mb.mobile
+				WHEN mb.usertype = '2' THEN
+				mc.mobile
+				END phone,
+			    carNumber,
+			    carType,
+			    transportCarType,
+			    transportType,
+			    category,
+			    maxLoad,
+			    price,
+			    priceDescription,
+			    products,
+			    carLength,
+			    t.createUserId,
+			    t.createTime,
+			    mb.userType AS userType,
+				CASE
+				WHEN mb.usertype = '1' THEN
+				mb.realName
+				WHEN mb.usertype = '2' THEN
+				mc.linkMan
+				END nickName,
+				mc.companyName,
+				t.isDeleted
+			FROM
+			    cars t
+			LEFT JOIN member_baseinfo mb on t.userId = mb.memberId
+			LEFT JOIN member_certifi mc on mb.memberId = mc.memberid
+			where 1=1
+			<#if phone?exists && phone!="" >
+			      AND  phone =:phone
+			</#if>
+			<#if carType?exists && carType!="" >
+			      <#if transportType?exists && transportType =="0" >
+				   AND t.carType =:carType
+			      </#if>
+			      <#if transportType?exists && transportType =="1" >
+				   AND t.transportCarType =:carType
+			      </#if>		
+			</#if>
+			<#if carNumber?exists && carNumber!="" >
+			      AND carNumber like "%":carNumber"%"
+			</#if>
+			<#if userId?exists && userId!="" >
+			      AND  userId =:userId
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND mb.userType =:userType
+			</#if>
+		    <#if startDate?exists && startDate!="" >
+			 AND DATE_FORMAT(t.createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+			</#if>
+		   <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+		    </#if>
+		    <#if transportType?exists && transportType =="0" >
+				 AND ( t.transportType is null or transportType =0  )
+			</#if>	
+			<#if transportType?exists && transportType =="1" >
+				 AND t.transportType =:transportType 
+			</#if>	
+		ORDER BY t.id DESC		
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	
+		
+	<sql id="getByCarNumber">
+	<![CDATA[
+		SELECT
+		       id                   ,           
+               userId               ,           
+               phone                ,           
+               carNumber         	,           
+               carType           	,
+               transportCarType     ,
+               transportType        ,                
+               category          	,
+               maxLoad              ,           
+               price             	,           
+               priceDescription  	,           
+               products          	,           
+               carLength         	,
+               nst_vehiclePhotoUrl  ,
+               nst_driverPhotoUrl
+		FROM 
+			Cars t
+		WHERE 
+			carNumber =:carNumber
+	]]>
+	</sql>
+	
+	<sql id="getByEntUserId">
+	<![CDATA[
+		SELECT
+		       id                   ,           
+               userId               ,           
+               phone                ,           
+               carNumber         	,           
+               carType           	,           
+               category          	,
+               maxLoad              ,           
+               price             	,           
+               priceDescription  	,           
+               products          	,           
+               carLength         	,
+               nst_vehiclePhotoUrl  ,
+               nst_driverPhotoUrl
+		FROM 
+			Cars t
+		WHERE 
+			entUserId =:entUserId 
+			order by updateTime  desc 
+			limit 1;
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			  count(1)  
+		FROM 
+			  cars  t ,  member_baseinfo m
+		WHERE 1=1 
+		AND   t.userId=m.memberId
+			<#if phone?exists && phone!="" >
+			      AND  t.phone =:phone
+			</#if>
+			<#if carType?exists && carType!="" >
+			      <#if transportType?exists && transportType =="0" >
+				   AND t.carType =:carType
+			      </#if>
+			      <#if transportType?exists && transportType =="1" >
+				   AND t.transportCarType =:carType
+			      </#if>		
+			</#if>
+			<#if carNumber?exists && carNumber!="" >
+			      AND t.carNumber like "%":carNumber"%"
+			</#if>
+			<#if userId?exists && userId!="" >
+			      AND  t.userId =:userId
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND m.userType =:userType
+			</#if>
+		   <#if startDate?exists && startDate!="" >
+			 AND DATE_FORMAT(t.createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+			</#if>
+		   <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+		   </#if>
+			<#if transportType?exists && transportType =="0" >
+				 AND ( t.transportType is null or transportType =0  )
+			</#if>	
+			<#if transportType?exists && transportType =="1" >
+				 AND t.transportType =:transportType 
+			</#if>	
+	]]>
+	</sql>
+	
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT
+		    id,
+		    userId,
+			CASE
+			WHEN mb.usertype = '1' THEN
+			mb.mobile
+			WHEN mb.usertype = '2' THEN
+			mc.mobile
+			END phone,
+		    carNumber,
+		    carType,
+		    transportCarType,
+		    transportType,
+		    category,
+		    maxLoad,
+		    price,
+		    priceDescription,
+		    products,
+		    carLength,
+		    t.createUserId,
+		    t.createTime,
+		    mb.userType AS userType,
+			CASE
+			WHEN mb.usertype = '1' THEN
+			mb.realName
+			WHEN mb.usertype = '2' THEN
+			mc.linkMan
+			END nickName,
+			mc.companyName,
+			t.isDeleted
+		FROM
+		    cars t
+		LEFT JOIN member_baseinfo mb on t.userId = mb.memberId
+		LEFT JOIN member_certifi mc on mb.memberId = mc.memberid
+		where 1=1
+			<#if carNumber?exists && carNumber!="" >
+			      AND t.carNumber like "%":carNumber"%"
+			</#if>
+			<#if transportType?exists && transportType =="0" >
+				 AND ( t.transportType is null or transportType =0  )
+			</#if>	
+			<#if transportType?exists && transportType =="1" >
+				 AND t.transportType =:transportType 
+			</#if>	
+		ORDER BY t.id DESC	
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+  
+	
+	<sql id="addCarsDTO">
+	<![CDATA[
+	    INSERT INTO  cars
+	          (
+	             userId              ,
+                 phone               ,  
+                 carNumber         	,  
+                 carType           	,  
+                 transportCarType   ,
+                 transportType      ,
+                 category          	,  
+                 maxLoad            ,
+                 price             	,  
+                 priceDescription  	,  
+                 carLength         	,
+                 createUserId       ,
+                 createTime         
+              )
+	        values
+	         (
+	            :userId             , 
+                :phone              ,  
+                :carNumber         	,  
+                :carType           	,  
+                :transportCarType   ,
+                :transportType      ,
+                :category          	, 
+                :maxLoad            ,
+                :price             	,  
+                :priceDescription  	,  
+                :carLength         	,
+                :userId       ,
+                sysdate()            
+              )
+	        
+	]]>
+	</sql>
+	 
+	<sql id="deleteCarsDTO">
+	<![CDATA[
+	DELETE FROM cars WHERE id=:id
+	]]>
+	</sql>
+	
+	<sql id="deleteCarsById">
+	<![CDATA[
+	UPDATE cars SET isDeleted=1  WHERE id=:id
+	]]>
+	</sql>
+	
+	<sql id="updateCarsDTO">
+	<![CDATA[
+	    UPDATE cars 
+	    SET    
+	           phone        =:phone       ,  
+               carNumber    =:carNumber   ,  
+	           carLength    =:carLength   ,
+	           maxLoad      =:maxLoad     ,
+	        <#if carType?exists && carType!="" >
+			       carType =:carType ,
+			</#if>  
+	        <#if transportCarType?exists && transportCarType!="" >
+			       transportCarType =:transportCarType ,
+			</#if>  
+	        <#if entUserId?exists && entUserId!="" >
+			       entUserId =:entUserId ,
+			</#if>   
+	        <#if nst_vehiclePhotoUrl?exists && nst_vehiclePhotoUrl!="" >
+			       nst_vehiclePhotoUrl =:nst_vehiclePhotoUrl ,
+			</#if>
+		    <#if nst_driverPhotoUrl?exists && nst_driverPhotoUrl!="" >
+			       nst_driverPhotoUrl =:nst_driverPhotoUrl ,
+			</#if>
+			       updateTime=SYSDATE() 
+	    WHERE  id=:id
+	]]>
+	</sql>
+	
+	
+    <sql id="getByUserId">
+	<![CDATA[
+		SELECT
+       	 	 c.id,           
+             c.userId,           
+             IF(m.userType=2,mc.mobile,m.mobile) AS phone,           
+             c.carNumber,           
+             c.carType,
+             c.transportCarType,
+             c.transportType,      
+             CASE c.carType
+				WHEN 0 THEN '厢式货车'
+				WHEN 1 THEN '敞车'
+				WHEN 2 THEN '冷藏车'
+				WHEN 3 THEN '保温车'
+				WHEN 4 THEN '其他'
+				WHEN 5 THEN '高栏车'
+				WHEN 6 THEN '平板车'
+				WHEN 7 THEN '活鲜水车'
+				WHEN 8 THEN '集装箱'
+				WHEN 9 THEN '不限'
+				ELSE '不限' END   AS carTypeString,    
+		   	 CASE c.transportCarType 
+				WHEN 0 THEN '小型面包'
+				WHEN 1 THEN '金杯'
+				WHEN 2 THEN '小型平板'
+				WHEN 3 THEN '中型平板'
+				WHEN 4 THEN '小型厢货'
+				WHEN 5 THEN '大型厢货'
+				ELSE '不限' 
+				END AS transportCarTypeString,
+		  	 CASE c.transportType 
+		    	WHEN 0 THEN '干线'
+		        WHEN 1 THEN '同城'
+		  		END AS transportTypeString,	
+             c.category,
+             c.maxLoad,           
+             c.price,           
+             c.priceDescription,           
+             c.products,           
+             c.carLength,
+             m.realName AS contact
+		FROM 
+			Cars c
+			INNER JOIN member_baseinfo m ON c.userId=m.memberId
+			LEFT JOIN member_certifi mc ON c.userId=mc.memberId
+			WHERE	
+			c.userId=:userId		
+	]]>
+	</sql>
+	 
+	
+		 	<sql id="getlistCarNumber">
+	<![CDATA[
+		SELECT
+		       id                   ,                    
+               carNumber         	                 	   
+		FROM 
+			Cars t
+			where 	userId=:userId	
+			<#if interfaceType ='1'>
+			   and IFNULL(t.transportType,0) =0
+			</#if>  
+			and carNumber is not null	
+	]]>
+	</sql>
+	
+	<sql id="getlistCarNumberTotal">
+	<![CDATA[
+		SELECT count(1)  as carTotal               	   
+		FROM 
+			Cars t
+			where 	userId=:userId	
+			and IFNULL(t.transportType,0) =0
+			and carNumber is not null	
+	]]>
+	</sql >
+	
+	<sql id="selectCarByCarNumber">
+		<![CDATA[
+			SELECT * FROM cars WHERE  1=0
+			
+			<#if carNumber?exists && carNumber!="" >
+			       or carNumber =:carNumber
+			</#if>
+				
+		]]>
+	</sql>
+	
+		<sql id="addActity">
+		<![CDATA[
+           SELECT gd_nst_addIntWithCar(:userId,:carNumber);
+				
+		]]>
+	    </sql>
+	    
+	   <sql id="getRecommendedUserTotal2">
+		<![CDATA[
+			
+SELECT COUNT(1) FROM (
+	SELECT * FROM (		
+				SELECT
+	b.mobile  AS mobile ,
+	b.realname AS userName ,
+	k.mobile  AS recommendedMobile ,
+	k.realname AS recommendedUserName ,
+	k.createtime AS createUserTime ,
+	k.type AS userType ,
+	k.companyName AS companyName ,
+	k.linkMan AS linkMan ,
+	r.carNumber AS carNumber ,
+	r.createtime AS createCarTime ,
+	n.createtime AS createCarLineTime ,
+    e.areaName
+FROM
+	(
+		SELECT
+			m.mobile,
+			m.realname,
+			m.createtime,
+			CASE
+		WHEN m.usertype = '1' THEN
+			'个人'
+		WHEN m.usertype = '2' THEN
+			'公司'
+		END type,
+		c.companyName,
+		c.linkMan,
+		t.memberid,
+		t.memberid_ed
+	FROM
+		member_baseinfo m
+	LEFT JOIN member_certifi c ON m.memberId = c.memberid
+	INNER JOIN integral t ON m.memberid = t.memberid_ed
+	WHERE
+	(m.userType = 1 or m.userType = 2)
+	AND t.type = 3
+	) k
+LEFT JOIN cars r ON k.memberid_ed = r.userid
+LEFT JOIN carline n ON r.id = n.carid
+LEFT JOIN member_baseinfo b ON k.memberid = b.memberid
+LEFT JOIN area_setting e ON k.memberid = e.memberId
+GROUP BY 
+	k.memberid_ed ) z 
+    WHERE 1=1
+	<#if mobile?exists && mobile!="" >
+		 and  z.mobile =:mobile 
+	</#if>
+	<#if recommendedMobile?exists && recommendedMobile!="" >
+		 and  z.recommendedMobile =:recommendedMobile 
+	</#if>
+	<#if areaName?exists && areaName!="" >
+		 and  z.areaName =:areaName 
+	</#if>
+	 <#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	 </#if>
+	  <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	  </#if>
+ ) y	
+		]]>
+	    </sql>
+	    
+	    
+	     <sql id="getRecommendedUserTotal">
+		<![CDATA[
+			
+SELECT COUNT(1) FROM (
+				SELECT
+	b.mobile  AS mobile ,
+	b.realname AS userName ,
+	k.mobile  AS recommendedMobile ,
+	k.realname AS recommendedUserName ,
+	k.createtime AS createUserTime ,
+	k.companyName AS companyName ,
+	k.nstStatus ,
+	k.linkMan AS linkMan ,
+	car.createTime AS carCreateTime,
+    cl.createTime AS carLineCreateTime,
+    e.areaName
+FROM
+	(
+		SELECT
+			m.mobile,
+			m.realname,
+			m.createtime,
+		c.companyName,
+		c.linkMan,
+		c.nstStatus ,
+		t.memberid,
+		t.memberid_ed
+	FROM
+		member_baseinfo m
+	LEFT JOIN member_certifi c ON m.memberId = c.memberid
+	INNER JOIN integral t ON m.memberid = t.memberid_ed
+	WHERE
+	(m.userType = 1 or m.userType = 2)
+	AND t.type = 3 AND t.memberId <> t.memberid_ed
+	) k
+LEFT JOIN member_baseinfo b ON k.memberid = b.memberid
+LEFT JOIN area_setting e ON k.memberid = e.memberId
+LEFT JOIN carline cl on k.memberid_ed = cl.memberId
+LEFT JOIN cars car on k.memberid_ed=car.userId
+GROUP BY 
+	k.memberid_ed ) z 
+    WHERE 1=1
+	<#if mobile?exists && mobile!="" >
+		 and  z.mobile =:mobile 
+	</#if>
+	<#if recommendedMobile?exists && recommendedMobile!="" >
+		 and  z.recommendedMobile =:recommendedMobile 
+	</#if>
+	<#if areaName?exists && areaName!="" >
+		 and  z.areaName =:areaName 
+	</#if>
+	<#if areaName ==null || areaName =="" >
+		 and  z.areaName is not null
+	</#if>
+	 <#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	 </#if>
+	  <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if carStartDate?exists && carStartDate!="" >
+	    AND DATE_FORMAT(z.carCreateTime,'%Y-%c-%d') >=DATE_FORMAT(:carStartDate, '%Y-%c-%d')
+	  </#if>
+	  <#if carEndDate?exists && carEndDate!="" >
+		   AND DATE_FORMAT(z.carCreateTime,'%Y-%c-%d') <= DATE_FORMAT(:carEndDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if carLineStartDate?exists && carLineStartDate!="" >
+	    AND DATE_FORMAT(z.carLineCreateTime,'%Y-%c-%d') >=DATE_FORMAT(:carLineStartDate, '%Y-%c-%d')
+	   </#if>
+	  <#if carLineEndDate?exists && carLineEndDate!="" >
+		   AND DATE_FORMAT(z.carLineCreateTime,'%Y-%c-%d') <= DATE_FORMAT(:carLineEndDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if nstStatus?exists && nstStatus!="" >
+		 and  z.nstStatus =:nstStatus 
+	   </#if>
+
+		]]>
+	    </sql>
+	    
+ 
+	     <sql id="delTotalCars">
+		<![CDATA[
+		SELECT COUNT(1)  FROM 
+		(
+SELECT  a.id
+FROM carline a  WHERE carId=:carId  AND (isDeleted=0 or isDeleted is null)
+UNION ALL
+SELECT  b.id
+FROM nst_same_city_carline b  WHERE carId=:carId  AND (isDeleted=0 or isDeleted is null)
+)z
+		]]>
+	    </sql>
+				
+		
+		  <sql id="getRecommendedUserList">
+		<![CDATA[
+		SELECT * FROM (		
+				SELECT
+	b.mobile  AS mobile ,
+	b.realname AS userName ,
+	k.mobile  AS recommendedMobile ,
+	k.realname AS recommendedUserName ,
+	k.createtime AS createUserTime ,
+	k.type AS userType ,
+	k.level AS levelType ,
+	k.companyName AS companyName ,
+	k.linkMan AS linkMan ,
+	k.nstStatus ,
+    e.areaName,
+    car.createTime AS carCreateTime,
+    cl.createTime AS carLineCreateTime
+    FROM
+	(
+		SELECT
+			m.mobile,
+			m.realname,
+			m.createtime,
+			CASE
+		WHEN m.usertype = '1' THEN
+			'个人'
+		WHEN m.usertype = '2' THEN
+			'公司'
+		END type,
+	        CASE
+		WHEN m.level = '1' THEN
+			'谷登农批'
+		WHEN m.level = '2' THEN
+			'农速通'
+		WHEN m.level = '3' THEN
+			'农商友'
+	    WHEN m.level = '4' THEN
+			'产地供应商'
+		END level,
+        c.nstStatus ,
+		c.companyName,
+		c.linkMan,
+		t.memberid,
+		t.memberid_ed
+	FROM
+		member_baseinfo m
+	LEFT JOIN member_certifi c ON m.memberId = c.memberid
+	INNER JOIN integral t ON m.memberid = t.memberid_ed
+	WHERE
+	(m.userType = 1 or m.userType = 2)
+	AND t.type = 3
+	AND t.memberId <> t.memberid_ed
+	) k
+
+LEFT JOIN member_baseinfo b ON k.memberid = b.memberid
+LEFT JOIN area_setting e ON k.memberid = e.memberId
+LEFT JOIN carline cl on k.memberid_ed = cl.memberId
+LEFT JOIN cars car on k.memberid_ed=car.userId
+GROUP BY 
+	k.memberid_ed ) z 
+    WHERE 1=1 
+	<#if mobile?exists && mobile!="" >
+		 and  z.mobile =:mobile 
+	</#if>
+	<#if recommendedMobile?exists && recommendedMobile!="" >
+		 and  z.recommendedMobile =:recommendedMobile 
+	</#if>
+	<#if areaName?exists && areaName!="" >
+		 and  z.areaName =:areaName 
+	</#if>
+	<#if areaName ==null || areaName =="" >
+		 and  z.areaName is not null
+	</#if>
+	 <#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	 </#if>
+	  <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	  </#if>
+	  
+	  <#if carStartDate?exists && carStartDate!="" >
+	    AND DATE_FORMAT(z.carCreateTime,'%Y-%c-%d') >=DATE_FORMAT(:carStartDate, '%Y-%c-%d')
+	  </#if>
+	  <#if carEndDate?exists && carEndDate!="" >
+		   AND DATE_FORMAT(z.carCreateTime,'%Y-%c-%d') <= DATE_FORMAT(:carEndDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if carLineStartDate?exists && carLineStartDate!="" >
+	    AND DATE_FORMAT(z.carLineCreateTime,'%Y-%c-%d') >=DATE_FORMAT(:carLineStartDate, '%Y-%c-%d')
+	   </#if>
+	  <#if carLineEndDate?exists && carLineEndDate!="" >
+		   AND DATE_FORMAT(z.carLineCreateTime,'%Y-%c-%d') <= DATE_FORMAT(:carLineEndDate, '%Y-%c-%d')
+	  </#if>
+	  
+	  <#if nstStatus?exists && nstStatus!="" >
+		 and  z.nstStatus =:nstStatus 
+	  </#if>
+	
+	LIMIT :startRow,:endRow			
+		]]>
+	    </sql>
+	    
+	     <sql id="getUserInfoCount">
+		<![CDATA[
+SELECT * from(
+(SELECT COUNT(a.id) carCount FROM  cars a , member_baseinfo mb where  a.userId =mb.memberId and  mb.mobile=:mobile  
+     <#if carStartDate?exists && carStartDate!="" >
+	    AND DATE_FORMAT(a.createTime,'%Y-%c-%d') >=DATE_FORMAT(:carStartDate, '%Y-%c-%d')
+	 </#if>
+	  <#if carEndDate?exists && carEndDate!="" >
+		   AND DATE_FORMAT(a.createTime,'%Y-%c-%d') <= DATE_FORMAT(:carEndDate, '%Y-%c-%d')
+	  </#if>
+) as carCount,
+(SELECT COUNT(n.id) carLineCount FROM  carline n ,  cars a , member_baseinfo mb  where  a.id = n.carid AND  n.memberId =mb.memberId and mb.mobile=:mobile
+     <#if carLineStartDate?exists && carLineStartDate!="" >
+	    AND DATE_FORMAT(n.createTime,'%Y-%c-%d') >=DATE_FORMAT(:carLineStartDate, '%Y-%c-%d')
+	 </#if>
+	  <#if carLineEndDate?exists && carLineEndDate!="" >
+		   AND DATE_FORMAT(n.createTime,'%Y-%c-%d') <= DATE_FORMAT(:carLineEndDate, '%Y-%c-%d')
+	  </#if>
+	   <#if carStartDate?exists && carStartDate!="" >
+	    AND DATE_FORMAT(a.createTime,'%Y-%c-%d') >=DATE_FORMAT(:carStartDate, '%Y-%c-%d')
+	   </#if>
+	  <#if carEndDate?exists && carEndDate!="" >
+		   AND DATE_FORMAT(a.createTime,'%Y-%c-%d') <= DATE_FORMAT(:carEndDate, '%Y-%c-%d')
+	  </#if>
+        )as  carLineCount ,
+      (SELECT  COUNT(cs.id) callCount FROM  callstatistics cs , member_baseinfo mb  where cs.e_Mobile =mb.mobile and sysCode='2'  and mb.mobile=:mobile) AS callCount )			
+         ]]>
+	    </sql>
+	    
+ <!--通过拨打电话时间查询会员列表  -->
+	<sql id="getRecommendedUserListByCallTime">
+		<![CDATA[
+		SELECT * FROM (		
+				SELECT
+	b.mobile  AS mobile ,
+	b.realname AS userName ,
+	k.mobile  AS recommendedMobile ,
+	k.realname AS recommendedUserName ,
+	k.createtime AS createUserTime ,
+	k.type AS userType ,
+	k.level AS levelType ,
+	k.companyName AS companyName ,
+	k.linkMan AS linkMan ,
+   calls.createTime AS callCreateTime,
+ (SELECT  COUNT(cs.id) callCount FROM  callstatistics cs , member_baseinfo mb  where cs.e_Mobile =mb.mobile and sysCode='2' and cs.e_Mobile =k.mobile  
+     <#if callStartDate?exists && callStartDate!="" >
+	    AND DATE_FORMAT(cs.createTime,'%Y-%c-%d') >=DATE_FORMAT(:callStartDate, '%Y-%c-%d')
+	   </#if>
+	  <#if callEndDate?exists && callEndDate!="" >
+		   AND DATE_FORMAT(cs.createTime,'%Y-%c-%d') <= DATE_FORMAT(:callEndDate, '%Y-%c-%d')
+	  </#if>
+ )	 AS callCount,	
+    e.areaName
+    FROM
+	(
+		SELECT
+			m.mobile,
+			m.realname,
+			m.createtime,
+			CASE
+		WHEN m.usertype = '1' THEN
+			'个人'
+		WHEN m.usertype = '2' THEN
+			'公司'
+		END type,
+	        CASE
+		WHEN m.level = '1' THEN
+			'谷登农批'
+		WHEN m.level = '2' THEN
+			'农速通'
+		WHEN m.level = '3' THEN
+			'农商友'
+	    WHEN m.level = '4' THEN
+			'产地供应商'
+		END level,
+		
+		c.companyName,
+		c.linkMan,
+		t.memberid,
+		t.memberid_ed
+	FROM
+		member_baseinfo m
+	LEFT JOIN member_certifi c ON m.memberId = c.memberid
+	INNER JOIN integral t ON m.memberid = t.memberid_ed
+	WHERE
+	(m.userType = 1 or m.userType = 2)
+	AND t.type = 3
+	AND t.memberId <> t.memberid_ed
+	) k
+
+LEFT JOIN member_baseinfo b ON k.memberid = b.memberid
+LEFT JOIN area_setting e ON k.memberid = e.memberId
+LEFT JOIN  callstatistics calls   ON  k.mobile = calls.e_Mobile
+GROUP BY 
+	k.memberid_ed ) z 
+    WHERE 1=1 
+	<#if mobile?exists && mobile!="" >
+		 and  z.mobile =:mobile 
+	</#if>
+	<#if recommendedMobile?exists && recommendedMobile!="" >
+		 and  z.recommendedMobile =:recommendedMobile 
+	</#if>
+	<#if areaName?exists && areaName!="" >
+		 and  z.areaName =:areaName 
+	</#if>
+	<#if areaName ==null || areaName =="" >
+		 and  z.areaName is not null
+	</#if>
+	 <#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	 </#if>
+	  <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if callStartDate?exists && callStartDate!="" >
+	    AND DATE_FORMAT(z.callCreateTime,'%Y-%c-%d') >=DATE_FORMAT(:callStartDate, '%Y-%c-%d')
+	   </#if>
+	  <#if callEndDate?exists && callEndDate!="" >
+		   AND DATE_FORMAT(z.callCreateTime,'%Y-%c-%d') <= DATE_FORMAT(:callEndDate, '%Y-%c-%d')
+	  </#if>
+	
+	LIMIT :startRow,:endRow			
+		]]>
+	    </sql>
+	    
+	    
+  <sql id="getListTotalByCallTime">
+		<![CDATA[
+		SELECT COUNT(1) FROM (
+		SELECT
+	b.mobile  AS mobile ,
+	b.realname AS userName ,
+	k.mobile  AS recommendedMobile ,
+	k.realname AS recommendedUserName ,
+	k.createtime AS createUserTime ,
+	k.companyName AS companyName ,
+	k.linkMan AS linkMan ,
+    calls.createTime AS callCreateTime,
+    e.areaName
+    FROM
+	(
+		SELECT
+			m.mobile,
+			m.realname,
+			m.createtime,
+		c.companyName,
+		c.linkMan,
+		t.memberid,
+		t.memberid_ed
+	FROM
+		member_baseinfo m
+	LEFT JOIN member_certifi c ON m.memberId = c.memberid
+	INNER JOIN integral t ON m.memberid = t.memberid_ed
+	WHERE
+	(m.userType = 1 or m.userType = 2)
+	AND t.type = 3
+	AND t.memberId <> t.memberid_ed
+	) k
+
+LEFT JOIN member_baseinfo b ON k.memberid = b.memberid
+LEFT JOIN area_setting e ON k.memberid = e.memberId
+LEFT JOIN  callstatistics calls   ON  k.mobile = calls.e_Mobile
+GROUP BY 
+	k.memberid_ed ) z 
+    WHERE 1=1 
+	<#if mobile?exists && mobile!="" >
+		 and  z.mobile =:mobile 
+	</#if>
+	<#if recommendedMobile?exists && recommendedMobile!="" >
+		 and  z.recommendedMobile =:recommendedMobile 
+	</#if>
+	<#if areaName?exists && areaName!="" >
+		 and  z.areaName =:areaName 
+	</#if>
+	<#if areaName ==null || areaName =="" >
+		 and  z.areaName is not null
+	</#if>
+	 <#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	 </#if>
+	  <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if callStartDate?exists && callStartDate!="" >
+	    AND DATE_FORMAT(z.callCreateTime,'%Y-%c-%d') >=DATE_FORMAT(:callStartDate, '%Y-%c-%d')
+	   </#if>
+	  <#if callEndDate?exists && callEndDate!="" >
+		   AND DATE_FORMAT(z.callCreateTime,'%Y-%c-%d') <= DATE_FORMAT(:callEndDate, '%Y-%c-%d')
+	  </#if>
+		]]>
+	  </sql>
+	    
+	    
+	    
+	    
+	 <!--通过拨打电话时间查询会员列表,查询每条通话记录  -->
+	<sql id="getUserListByCallTime">
+		<![CDATA[
+		SELECT * FROM (
+			SELECT
+	b.mobile AS mobile,
+	b.realname AS userName,
+	k.mobile AS recommendedMobile,
+	k.realname AS recommendedUserName,
+	k.createtime AS createUserTime,
+	k.companyName AS companyName,
+	k.linkMan AS linkMan,
+	k.type AS userType ,
+	k.level AS levelType ,
+    k.nstStatus ,
+    e.areaName,
+	cs.createTime AS  createCallTime,
+	cs.source
+FROM
+	callstatistics cs
+INNER JOIN (		
+		SELECT
+			m.mobile,
+			m.realname,
+			m.createtime,
+			CASE
+		WHEN m.usertype = '1' THEN
+			'个人'
+		WHEN m.usertype = '2' THEN
+			'公司'
+		END type,
+	        CASE
+		WHEN m.level = '1' THEN
+			'谷登农批'
+		WHEN m.level = '2' THEN
+			'农速通'
+		WHEN m.level = '3' THEN
+			'农商友'
+	    WHEN m.level = '4' THEN
+			'产地供应商'
+		END level,
+		c.companyName,
+		c.linkMan,
+		t.memberid,
+		t.memberid_ed,
+		c.nstStatus 
+	FROM
+		member_baseinfo m
+	LEFT JOIN member_certifi c ON m.memberId = c.memberid
+	INNER JOIN integral t ON m.memberid = t.memberid_ed
+	WHERE
+	m.userType is not NULL
+	AND t.type = 3
+	AND t.memberId <> t.memberid_ed
+	) k
+ ON  cs.e_Mobile=k.mobile and cs.sysCode='2'
+LEFT JOIN member_baseinfo b ON k.memberid = b.memberid
+LEFT JOIN area_setting e ON k.memberid = e.memberId
+where  e.areaName is not NULL
+GROUP BY cs.id
+) z 
+    WHERE 1=1 
+   	<#if TCType == "1" >
+		 and  z.source in ('TCWYZH','TCWYZC','TCNSTORDER')
+	</#if>
+	<#if TCType == "0" >
+		 and  z.source not in ('TCWYZH','TCWYZC','TCNSTORDER')
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		 and  z.mobile =:mobile 
+	</#if>
+	<#if recommendedMobile?exists && recommendedMobile!="" >
+		 and  z.recommendedMobile =:recommendedMobile 
+	</#if>
+	<#if areaName?exists && areaName!="" >
+		 and  z.areaName =:areaName 
+	</#if>
+	
+	 <#if startDate?exists && startDate!="" >
+	    AND z.createUserTime >= :startDate
+	 </#if>
+	  <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if callStartDate?exists && callStartDate!="" >
+	    AND z.createCallTime >= :callStartDate
+	   </#if>
+	  <#if callEndDate?exists && callEndDate!="" >
+		   AND DATE_FORMAT(z.createCallTime,'%Y-%c-%d') <= DATE_FORMAT(:callEndDate, '%Y-%c-%d')
+	  </#if>
+	ORDER BY z.createCallTime DESC LIMIT :startRow,:endRow			
+		]]>
+	    </sql>
+	    
+	    <sql id="getTotalByCallTime">
+		<![CDATA[
+	SELECT COUNT(1) FROM (
+			SELECT
+	b.mobile AS mobile,
+	b.realname AS userName,
+	k.mobile AS recommendedMobile,
+	k.realname AS recommendedUserName,
+	k.createtime AS createUserTime,
+	k.companyName AS companyName,
+	k.linkMan AS linkMan,
+    k.nstStatus ,
+    e.areaName,
+	cs.createTime AS  createCallTime
+FROM
+	callstatistics cs
+INNER JOIN (		
+		SELECT
+			m.mobile,
+			m.realname,
+			m.createtime,
+			
+		c.companyName,
+		c.linkMan,
+		t.memberid,
+		t.memberid_ed,
+		c.nstStatus 
+	FROM
+		member_baseinfo m
+	LEFT JOIN member_certifi c ON m.memberId = c.memberid
+	INNER JOIN integral t ON m.memberid = t.memberid_ed
+	WHERE
+	m.userType is not NULL
+	AND t.type = 3
+	AND t.memberId <> t.memberid_ed
+	) k
+ ON  cs.e_Mobile=k.mobile and cs.sysCode='2'
+LEFT JOIN member_baseinfo b ON k.memberid = b.memberid
+LEFT JOIN area_setting e ON k.memberid = e.memberId
+where  e.areaName is not NULL
+GROUP BY cs.id
+) z 
+    WHERE 1=1 
+	<#if mobile?exists && mobile!="" >
+		 and  z.mobile =:mobile 
+	</#if>
+	<#if recommendedMobile?exists && recommendedMobile!="" >
+		 and  z.recommendedMobile =:recommendedMobile 
+	</#if>
+	<#if areaName?exists && areaName!="" >
+		 and  z.areaName =:areaName 
+	</#if>
+	
+    <#if startDate?exists && startDate!="" >
+	    AND z.createUserTime >= :startDate
+	 </#if>
+	  <#if endDate?exists && endDate!="" >
+		   AND DATE_FORMAT(z.createUserTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	  </#if>
+	  
+	   <#if callStartDate?exists && callStartDate!="" >
+	    AND z.createCallTime >= :callStartDate
+	   </#if>
+	  <#if callEndDate?exists && callEndDate!="" >
+		   AND DATE_FORMAT(z.createCallTime,'%Y-%c-%d') <= DATE_FORMAT(:callEndDate, '%Y-%c-%d')
+	  </#if>
+		]]>
+	    </sql>
+	    
+	    
+	   	     <sql id="addCarMessageVity">
+		<![CDATA[
+		SELECT COUNT(id)  FROM cars  WHERE carNumber=:carNumber
+				]]>
+	    </sql> 
+	    
+	    <!-- 通过车牌号码查询。查询结果按创建时间升序。 -->
+    	<sql id="queryByCarNumber">
+			<![CDATA[
+				SELECT * FROM cars 
+				WHERE  carNumber =:carNumber AND IFNULL(isDeleted, 0)=:isDeleted
+				ORDER BY cars.createTime ASC
+			]]>
+		</sql>
+	    
+	    
+	    
+</sqlMap>

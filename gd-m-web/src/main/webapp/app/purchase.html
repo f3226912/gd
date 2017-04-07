@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>现场采销</title>
+    <link href="lib/css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/purchase.css" />
+    <script type="text/javascript" src="lib/mui.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/rem.js"></script>
+    <!-- <script type="text/javascript" src="lib/baidu.statistics.min.js"></script> -->
+    <script type="text/javascript" src="js/basic.js"></script>
+</head>
+
+<body style="height: 100%;">
+    <header id="header" class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">现场采销</h1>
+        <button id="backer" class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left"><span class="mui-icon mui-icon-left-nav"></span>返回</button>
+        <button class="mui-btn mui-btn-blue mui-btn-link mui-pull-right">编辑</button>
+    </header>
+    <div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <div id="boxx"></div>
+            <div class="pleasechose">请选择标准商品</div>
+            <div class="goods">
+                <div id="VTabbedPanels" class="TabbedPanels mui-row">
+                    <div class="mui-col-xs-3" style="height: 100%;">
+                        <div id="segmentedControls" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-vertical" style="height: 100%;">
+                        </div>
+                    </div>
+                    <div id="segmentedControlContents" class="mui-col-xs-9" style="min-height: 9.6rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="addgoods">
+        <div class="tianjia">
+            <img src="images/icon_image_H5_GO.png">
+        </div>
+    </div>
+    <script type="text/javascript" charset="utf-8">
+    if (location.search.indexOf('app=1') != -1) {
+        var member = $.getReqParam("memberId");
+        var shop = $.getReqParam("shopName");
+        var business = $.getReqParam("businessId");
+        /*var obj_str = $.get("obj_str");
+        var objh = JSON.parse(obj_str);
+        var memberId = objh.memberId;*/
+        //$('#boxx').text(shopName);
+        //var sourceId = "132663"
+        $.set("sellMemberId", member);
+        $.set("shopName", shop);
+        $.set("businessId", business);
+    }
+    var memberId = $.get("sellMemberId");
+    var shopName = $.get("shopName");
+    var businessId = $.get("businessId");
+    //保存商品数据
+    //var shopData;
+    var memData = {
+        memberId: memberId
+    };
+    /*  var memData = {
+         memberId: "281593"
+     };*/
+    var anVal = JSON.stringify(memData);
+    // ios查询参数串
+    var iosVal = {
+        data: memData,
+        fun: "handleData"
+    };
+    //getData("PlCDlgG+u3OsEQdYgW/T98BEeE6IWw0i/C+DKiBA7gM=");
+    var gdata = $.enCode(anVal, JSON.stringify(iosVal), 'handleData', function(gdata) {
+        getData(gdata);
+    });
+    if ($.appVersion.android) {
+        getData(gdata);
+    };
+    mui.init({
+        pullRefresh: {
+            contentdown: "下拉可以刷新",
+            contentover: "释放立即刷新",
+            contentrefresh: '正在刷新...',
+            container: '#pullrefresh',
+            down: {
+                callback: pulldownRefresh
+            }
+
+        }
+    });
+
+    function pulldownRefresh() {
+        setTimeout(function() {
+            mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+        }, 800);
+        //getData("PlCDlgG+u3OsEQdYgW/T98BEeE6IWw0i/C+DKiBA7gM=");
+        var pdata = $.enCode(anVal, JSON.stringify(iosVal), 'handleData', function(data) {
+
+            getData(data);
+        });
+        if ($.appVersion.android) {
+
+            getData(pdata);
+        };
+        //window.location.reload()
+
+    };
+    //var curWwwPath = getRootPath_web();
+    //var CONTEXT="https://test201.gdeng.cn:8086";
+    //ios导航处理
+    if ($.appVersion.ios) {
+        $('.mui-bar').addClass('ios');
+        $('.mui-content').addClass('ios')
+    };
+    //var localUser = JSON.parse(window.localStorage.getItem("user"));
+    /* var stringmem = window.localStorage.getItem("memberId");
+     var memberId = JSON.parse(stringmem);*/
+    //var memberId = "12";
+    //console.log(memberId)
+
+    //var mem = JSON.stringify(memData);
+    //var memberId = "12";
+    //$("#boxx").text(mem);
+    //var curWwwPath = "http://10.17.3.237:8089/gd-api";
+    //var url = curWwwPath+"/quickMakeSheet/getStandardLibraryProductList?memberId="+memberId;
+    //var url = "/gd-api/quickMakeSheet/getStandardLibraryProductList?memberId="+memberId;
+    // $("#boxx").html(url);
+    //console.log('dif'+url);
+    /* if ($.appVersion.ios) {
+         handleIos(mem);
+     } else if ($.appVersion.android) {
+         handleAn(mem);
+     };*/
+    // 安卓查询处理
+    /* function handleAn(param) {
+         alert("param"+param)
+         $("#aaa").html("aa "+param);
+         var params = JavaH5WebInterface.enCode(JSON.stringify({"sourceId": param}));
+         var params = JsBridge.encode(param);
+         var params = JsBridge.encode(JSON.stringify({"memberId": param}));
+         $("#boxx").text(params);
+         getData(params);
+     };*/
+    // ios查询处理
+    /* function handleIos(param) {
+
+          window.webkit.messageHandlers.NativeEncrypt.postMessage('{"data":'+'"{\'memberId\':'+param+'}'+'","fun":"handleData"}');
+        
+         window.webkit.messageHandlers.NativeEncrypt.postMessage('{"data":"' + param + '","fun":"handleData"}');
+         $("#boxx").text(data);
+         window["handleData"] = function(data) {
+             $("#boxx").text(data);
+             getData(data);
+
+         }
+     };*/
+
+    function getData(param) {
+        //var curWwwPath = "https://test201.gdeng.cn:8086";
+        // $("#boxx").text(param);
+        $.ajax({
+            url: "/quickMakeSheet/getStandardLibraryProductList",
+            //url: "/gd-m/quickMakeSheet/getStandardLibraryProductList",
+            //url: curWwwPath+ "/quickMakeSheet/getStandardLibraryProductList",
+            data: {
+                "param": param
+            },
+            type: "get",
+            dataType: "text",
+            contentType: "application/json",
+            cache: false,
+            success: function(data) {
+                    //$("#boxx").html(1111);
+                    // $("#boxx").html(data);
+                    //alert(111)
+                    if ($.appVersion.ios) {
+                        window.webkit.messageHandlers.NativeDecrypt.postMessage('{"data":"' + data + '","fun":"decryptCompleted"}');
+
+                        window["decryptCompleted"] = function(data) {
+                            var datasVal = JSON.stringify(data).replace(/\\| /g, "");
+                            datasVal = JSON.parse(datasVal.substring(1, datasVal.length - 1));
+                            render(datasVal);
+                        }
+                    } else if ($.appVersion.android) {
+                        // $("#boxx").html(data);
+                        var adata = JSON.parse(JsBridge.decode(data));
+                        //var ad = JsBridge.decode(data);
+                        // alert(JSON.stringify(adata))
+                        //$("#boxx").html(adata);
+                        render(adata);
+
+                    }
+                }
+                /*,error:function(error) {
+                                 $("#boxx").html("error");
+                            };*/
+        })
+    };
+
+    function render(data) {
+        var shopData;
+        shopData = data.object;
+        //console.log(shopData);
+        //渲染左侧导航右侧div
+        var str = '';
+        var strr = '';
+        $.each(shopData, function(index, el) {
+            str += '<a class="mui-control-item">' + el.categoryName + '</a>';
+        });
+        $("#segmentedControls").html(str);
+        //添加右侧分类内容
+        $.each(shopData, function(index, el) {
+            strr += '<div class="mui-control-content"><div class="goodslist clearfix">';
+            if (el.productList.length == 0) {
+                strr += '<img src="images/icon_common_blank.png" style="width: 70%;margin: 2rem .6rem 3rem .7rem;"/>';
+            } else {
+                $.each(el.productList, function(i, et) {
+                    // console.log(et);
+                    //debugger;
+                    strr += '<div class="wrap"><div class="goodskist_item" data-img="' + et.imgUrl + '" data-id="' + et.productId + '">' + et.productName + '</div></div>';
+
+                })
+            }
+            strr += '</div></div>';
+        });
+
+        $("#segmentedControlContents").html(strr);
+        //点击编辑时候跳转至编辑页面
+        $('button.mui-pull-right').on('tap', function() {
+            if (location.search.indexOf('app=2') != -1) {
+                window.location.href = 'edit.html?memberId=' + memberId + '&app=2';
+            } else {
+                window.location.href = 'edit.html?memberId=' + memberId;
+            }
+        });
+        $(".addgoods").on("tap", ".tianjia", function() {
+            //window.location.href = 'chosegoods.html?memberId=' + memberId;
+            if (location.search.indexOf('app=2') != -1) {
+                window.location.href = 'chosegoods.html?memberId=' + memberId + '&app=2';
+            } else {
+                window.location.href = 'chosegoods.html?memberId=' + memberId;
+            }
+        })
+
+        //点击返回按钮判断返回路径返回
+        $("button.mui-pull-left").on("click", function() {
+            //e.stopPropagation();
+            //e.preventDefault();
+            //$.remove("orderProductDetail");
+            //if (location.search.indexOf('app=1') != -1) {
+            if (location.search.indexOf('app=2') != -1) {
+                window.location.href = "submitOrder.html"
+                //window.history.back(-1);
+                //window.opener.location.reload();
+            } else {
+                $.retur()
+            }
+            //$.remove("orderProductDetail");
+            /* } else {*/
+            //window.location.href = 'guidepage.html?memberId=' + memberId;
+            //window.history.go(-1);
+            //window.opener.location.reload();
+            //window.history.back(-1);
+            //window.opener.location.reload();
+            /*}*/
+            /* if($.appVersion.ios){
+                window.webkit.messageHandlers.NativeMethod.postMessage("finish");
+            }
+            else if($.appVersion.android){
+                JsBridge.finish();
+            } */
+        });
+        //选项卡切换事件
+        $("#segmentedControls").on("tap", ".mui-control-item", function() {
+            var $this = $(this),
+                index = $this.index();
+            $.set('indep', index);
+            $this.addClass("mui-active").siblings(".mui-control-item").removeClass("mui-active");
+            $("#segmentedControlContents .mui-control-content").eq(index).addClass("mui-active").siblings(".mui-control-content").removeClass("mui-active");
+        });
+        //点击X关闭提示框
+        $(".close").on("tap", ".close_icon", function() {
+            $(this).parent(".close").hide();
+        });
+        //默认显示第一个导航和第一块儿内容
+        var getindep = $.get('indep') ? $.get('indep') : 0;
+        $('.mui-control-item').eq(getindep).addClass('mui-active');
+        $('.mui-control-content').eq(getindep).addClass('mui-active');
+        // 跳转页面
+        /*$('.yellow').click(function(){*/
+        $('#segmentedControlContents .goodslist .wrap .goodskist_item').on('tap', function() {
+            window.location = 'priceInput.html?id=' + $(this).attr('data-id') + '&name=' + $(this).text() + '&imgUrl=' + $(this).attr('data-img');
+
+        })
+    }
+
+
+
+    /* window.onload = function() {
+         //点击编辑时候跳转至编辑页面
+         $('button.mui-pull-right').on('tap', function() {
+             window.location = 'edit.html'
+         });
+         //点击返回按钮返回
+         $('button.mui-pull-left').on('tap', function() {
+             window.history.go(-1)
+         });
+         //选项卡切换事件
+         $("#segmentedControls").on("tap", ".mui-control-item", function() {
+             var $this = $(this),
+                 index = $this.index();
+             $this.addClass("mui-active").siblings(".mui-control-item").removeClass("mui-active");
+             $("#segmentedControlContents .mui-control-content").eq(index).addClass("mui-active").siblings(".mui-control-content").removeClass("mui-active");
+         });
+         //点击X关闭提示框
+         $(".close").on("tap", ".close_icon", function() {
+             $(this).parent(".close").hide();
+         });
+         //默认显示第一个导航和第一块儿内容
+         $('.mui-control-item').eq(0).addClass('mui-active');
+         $('.mui-control-content').eq(0).addClass('mui-active');
+         // 跳转页面
+         /*$('.yellow').click(function(){*/
+    /*  $('#segmentedControlContents .goodslist .wrap .goodskist_item').on('tap', function() {
+            window.location = 'priceInput.html?id=' + $(this).attr('data-id') + '&name=' + $(this).text();
+
+        })
+
+    }*/
+    </script>
+</body>
+
+</html>

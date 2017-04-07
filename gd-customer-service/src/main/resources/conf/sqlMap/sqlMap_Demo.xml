@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Demo">
+	<sql id="getDic">
+	<![CDATA[
+		SELECT 
+			id,name,birthday
+		FROM 
+			t_dic  t 
+		WHERE  1=1  
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getByName">
+	<![CDATA[
+		SELECT 
+			id,name,birthday
+		FROM 
+			t_dic  t 
+		WHERE 
+			name like "%":name"%"
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getByBirthday">
+	<![CDATA[
+		SELECT 
+			id,name,birthday
+		FROM 
+			t_dic  t 
+		WHERE 
+			birthday > :startdate and  birthday< :enddate
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT 
+			id,name,birthday
+		FROM 
+			t_dic  t 
+		WHERE 1=1
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			t_dic  t 
+		WHERE  1=1
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="addDictDTO">
+	<![CDATA[
+	    INSERT INTO  t_dic(id,name,birthday) values(:id,:name,:birthday_string)
+	]]>
+	</sql>
+	 
+		<sql id="deleteDictDTO">
+	<![CDATA[
+	DELETE FROM t_dic WHERE id=:id
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="updateDictDTO">
+	<![CDATA[
+	    UPDATE  t_dic SET name=:name,birthday=:birthday_string  WHERE id=:id
+	]]>
+	</sql>
+	 
+    <sql id="getDicDTO" >
+	 	<![CDATA[
+		 	SELECT 
+			id,name,birthday
+			FROM 
+				t_dic  t 
+			WHERE  1=1  
+				
+			<#if name?exists && name!="" >
+			      AND name like "%":name"%"
+			</#if>
+			<#if startdate?exists && startdate!="" >
+			      AND 	birthday > :startdate
+			</#if>
+			  <#if enddate?exists && enddate!="" >
+			      AND birthday< :enddate
+			</#if>
+			    LIMIT :startRow,:endRow
+		]]>
+    </sql>
+	
+	
+	
+</sqlMap>

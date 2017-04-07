@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>添加标准库商品</title>
+    <link href="lib/css/mui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/purchase.css" />
+    <script type="text/javascript" src="lib/mui.min.js"></script>
+    <script type="text/javascript" src="lib/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/rem.js"></script>
+    <!-- <script type="text/javascript" src="lib/baidu.statistics.min.js"></script> -->
+    <script type="text/javascript" src="js/basic.js"></script>
+</head>
+
+<body style="height: 100%;">
+    <header id="header" class="mui-bar mui-bar-nav">
+        <h1 class="mui-title">添加标准库商品</h1>
+        <!-- <button class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left"><span class="mui-icon mui-icon-left-nav"></span>返回</button> -->
+        <button class="mui-btn mui-btn-blue mui-btn-link mui-btn-nav mui-pull-left"><span class="mui-icon mui-icon-left-nav"></span>返回</button>
+    </header>
+    <div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <!--  <div class="close clearfix">
+               <span class="reminder fl">说明：添加商品至现场采购商品列表 </span>
+               <span class="close_icon fr"><img src="images/close_icon.png" alt=""></span>
+           </div> -->
+            <div id="box"></div>
+            <div class="pleasechose">请选择标准商品</div>
+            <div class="goods">
+                <div id="VTabbedPanels" class="TabbedPanels mui-row">
+                    <div class="mui-col-xs-3" style="height: 100%;">
+                        <div id="segmentedControls" class="mui-segmented-control mui-segmented-control-inverted mui-segmented-control-vertical" style="height: 100%;">
+                        </div>
+                    </div>
+                    <div id="segmentedControlContents" class="mui-col-xs-9" style="min-height: 9.6rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer"><span class="con-wc">完成(0)</span></div>
+    <script type="text/javascript" charset="utf-8">
+    /*var objstr = $.get("obj_str");
+                            var objh = JSON.parse(objstr);
+                            var memberId = objh.memberId;*/
+    var memberId = $.get("sellMemberId");
+    var shopName = $.get("shopName");
+    var businessId = $.get("businessId");
+    // 获取个人信息
+    var memData = {
+        memberId: memberId
+    };
+    var anV = JSON.stringify(memData);
+    // ios查询参数串
+    var iosV = {
+        data: memData,
+        fun: "handleData"
+    };
+    /* getdata(); */
+    var medata = $.enCode(anV, JSON.stringify(iosV), 'handleData', function(medata) {
+        getmeberdata(medata);
+    });
+    if ($.appVersion.android) {
+        getmeberdata(medata);
+    };
+    var repeatId; //判断重复
+    mui.init({
+        pullRefresh: {
+            contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+            contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+            contentrefresh: '正在刷新...',
+            container: '#pullrefresh',
+            down: {
+                callback: pulldownRefresh
+            }
+
+        }
+    });
+    //下拉刷新具体业务实现
+    function pulldownRefresh() {
+        setTimeout(function() {
+            mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+        }, 500);
+        //getdata();
+        var mcedata = $.enCode(anV, JSON.stringify(iosV), 'handleData', function(mcedata) {
+            getmeberdata(mcedata);
+        });
+        if ($.appVersion.android) {
+            getmeberdata(mcedata);
+        };
+        //window.location.reload()
+        $('.footer .con-wc').text('完成(' + 0 + ')').css('background', '#ccc');
+    };
+    //ios导航处理
+    if ($.appVersion.ios) {
+        $('.mui-bar').addClass('ios');
+        $('.mui-content').addClass('ios')
+    };
+    /* var mId = $.getReqParam("memberId");
+     var obj = {
+         memberId: mId
+     };*/
+    /*$.remove("memberId");*/
+    /*var obj_str = JSON.stringify(obj);
+    $.set("obj_str", obj_str);*/
+
+    //getdata(); //获取标准库数据
+    //var CONTEXT = getRootPath_web();
+    //var host = 'http://www.baidu.com';
+    //var CONTEXT="https://test201.gdeng.cn:8086";
+
+    //var memberId = "12";
+    //$('#box').text(memberId);
+    /* var shopName = $.getReqParam("shopName");
+     var businessId = $.getReqParam("businessId");
+     $.set("sellMemberId", mId);
+     $.set("shopName", shopName);
+     $.set("businessId", businessId);*/
+
+    var addData = [];
+
+    function render(data) {
+        var shopData;
+        //var shopData;
+        shopData = data.object;
+        //console.log(shopData);
+        //渲染左侧导航右侧div
+        var str = '';
+        var strr = '';
+        $.each(shopData, function(index, el) {
+            str += '<a class="mui-control-item" data-categoryId = "' + el.categoryId + '">' + el.categoryName + '</a>';
+        });
+        $("#segmentedControls").html(str);
+        //添加右侧分类内容
+        $.each(shopData, function(index, el) {
+            strr += '<div class="mui-control-content"><div class="goodslist clearfix">';
+            if (el.productList.length == 0) {
+                strr += '<img src="images/icon_common_blank.png" style="width: 70%;margin: 2rem .6rem 3rem .7rem;"/>';
+
+
+            } else {
+
+                $.each(el.productList, function(i, et) {
+                    // console.log(et);
+                    //debugger;
+                    strr += '<div class="wrap"><div class="goodskist_item" data-id="' + et.productId + '" data-cat="' + et.categoryId + '">' + et.productName + '</div></div>';
+
+                });
+            }
+
+            strr += '</div></div>';
+        });
+
+        $("#segmentedControlContents").html(strr);
+
+        $(".goodslist").on("tap", ".goodskist_item", function() {
+            var product_id = $(this).attr('data-id');
+            var repppId = $.get('repId');
+            var num = 0;
+            if (repppId.indexOf(product_id) > -1) {
+                if ($(this).hasClass("endadd")) {
+                    $(this).removeClass("endadd");
+                    mui.toast('已取消', {
+                        duration: 500,
+                        type: 'div'
+                    })
+                } else {
+                    $(this).addClass("endadd");
+                    mui.toast('已选择', {
+                        duration: 500,
+                        type: 'div'
+                    })
+                }
+            } else {
+
+                if ($(this).hasClass("yellow")) {
+                    $(this).removeClass("yellow");
+                    mui.toast('已取消', {
+                        duration: 500,
+                        type: 'div'
+                    })
+                } else {
+                    $(this).addClass("yellow");
+                    mui.toast('已选择', {
+                        duration: 500,
+                        type: 'div'
+                    })
+                }
+            }
+            $.each($(".goodskist_item"), function(index, el) {
+                if ($(el).hasClass('yellow') || $(el).hasClass('endadd')) {
+                    num += 1;
+                }
+
+            });
+            if (num == 0) {
+                $('.footer .con-wc').css('background', '#ccc');
+            } else {
+                $('.footer .con-wc').css('background', '#ff6c00');
+                /* $('.close .reminder').text('说明：添加商品至现场采购商品列表 '); */
+
+            }
+            if (num > 12) {
+                $(this).removeClass("yellow");
+                return mui.alert('可选商品数量已达上限，最多可选12个商品', '提示', function() {
+
+                })
+
+            } else {
+                $('.footer .con-wc').text('完成(' + num + ')');
+            }
+
+        });
+        //选项卡切换事件
+        $("#segmentedControls").on("tap", ".mui-control-item", function() {
+            var $this = $(this),
+                index = $this.index();
+            $.set('indeg', index);
+            $this.addClass("mui-active").siblings(".mui-control-item").removeClass("mui-active");
+            //绑定
+            //addData.categoryId = $this.attr('data-categoryId');
+            //console.log(data);
+            $("#segmentedControlContents .mui-control-content").eq(index).addClass("mui-active").siblings(".mui-control-content").removeClass("mui-active");
+        });
+        //点击关闭隐藏提示框
+        $(".close").on("tap", ".close_icon", function() {
+            $(this).parent(".close").hide();
+        });
+
+        //默认显示第一个导航和第一块儿内容 默认使用第一块分类ID
+        var getindeg = $.get('indeg') ? $.get('indeg') : 0;
+        $('.mui-control-item').eq(getindeg).addClass('mui-active');
+        $('.mui-control-content').eq(getindeg).addClass('mui-active');
+        //addData.categoryId = $('.mui-control-item').eq(0).attr('data-categoryId');
+        //点击返回按钮弹框判断      
+        //alert(111);
+        $("button.mui-btn").on("tap", function() {
+            if ($('.footer .con-wc').text().slice(3, 4) != 0) {
+
+                var btnArray = ['取消', '确认'];
+
+                mui.confirm('确认放弃添加商品吗？', '提示', btnArray, function(e) {
+                    if (e.index == 1) {
+
+                        if (location.search.indexOf('app=2') != -1) {
+                            window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+                        } else {
+                            window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId;
+                        }
+
+                    }
+                })
+            } else {
+
+                if (location.search.indexOf('app=2') != -1) {
+                    window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+                } else {
+                    window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId;
+                }
+
+
+            }
+            /*if (location.search.indexOf('app=1') != -1) {
+                if ($.appVersion.ios) {
+                    window.webkit.messageHandlers.NativeMethod.postMessage("finish");
+                } else if ($.appVersion.android) {
+                    JsBridge.finish();
+                }
+            } else {
+                if ($('.footer .con-wc').text().slice(3, 4) != 0) {
+                    
+                    var btnArray = ['取消', '确认'];
+                    
+                    mui.confirm('确认放弃添加商品吗？', '提醒一下哦', btnArray, function(e) {
+                        if (e.index == 1) {
+
+                            window.location.href = 'chosegoods.html';
+                        } 
+                    })
+                } else {
+                   
+                    window.location.href = 'chosegoods.html';
+                  
+                }
+            }*/
+        });
+
+
+
+        //点击完成
+        $('.footer').on('tap', '.con-wc', function() {
+            if ($(this).text().slice(3, 4) != 0) {
+                //addData.productId = [];
+                addData = [];
+
+
+                //addData.productId = '';
+                $.each($('.yellow'), function(index, el) {
+                    //addData.productId += $(el).attr('data-id') + ',';
+                    //addData.productId.push($(el).attr('data-id'));
+                    //addData.categoryId.push($(el).attr('data-cat')); 
+                    //addData.productId.push($(el).attr('data-id'));
+                    //$("#box").html($(el).attr('data-id'));
+
+                    addData.push({ //后台要的数据
+                        memberId: memberId,
+                        categoryId: $(el).attr('data-cat'),
+                        productId: $(el).attr('data-id')
+                    });
+
+                });
+
+                //addData.productId = addData.productId.slice(0, addData.productId.length - 1);
+                //console.log(addData);
+                //$("#box").html(anVal);
+                var anVal = JSON.stringify(addData);
+                // ios查询参数串
+                var iosVal = {
+                    data: addData,
+                    fun: "handleData"
+                };
+                var maddata = $.enCode(anVal, JSON.stringify(iosVal), 'handleData', function(maddata) {
+                    request(maddata);
+                });
+                if ($.appVersion.android) {
+                    request(maddata);
+                }
+            }
+        })
+
+
+        //console.log(data)
+        //var num = 0;
+
+    };
+    //请求数据
+
+    function getdata() {
+        // var CONTEXT = "https://test201.gdeng.cn:8086";
+        //var CONTEXT = getRootPath_web();
+        //保存商品数据
+
+        $.ajax({
+            //url: 'js/base.json',
+            url: "/quickMakeSheet/getQuickMakeSheetList",
+            //url: CONTEXT+"/quickMakeSheet/getQuickMakeSheetList",
+            //url: "/gd-m/quickMakeSheet/getQuickMakeSheetList",
+            type: "get",
+            dataType: "text",
+            contentType: "application/json",
+            //dataType: 'json',
+            cache: false,
+            success: function(data) {
+                //render(data)
+                //alert(data)
+                //$("#box").html(data);
+                var iVal = {
+                    data: data,
+                    fun: "decryptCompleted"
+                };
+                var reddd = $.deCode(data, JSON.stringify(iVal), "decryptCompleted", function(reddd) {
+                    render(JSON.parse(reddd));
+                });
+
+                if ($.appVersion.android) {
+                    render(reddd);
+                }
+
+            }
+
+        })
+    };
+
+    function getmeberdata(pram) {
+        //var curWwwPath = "https://test201.gdeng.cn:8086";
+        // $("#boxx").text(param);
+        $.ajax({
+            url: "/quickMakeSheet/getStandardLibraryProductList",
+            //url: "/gd-m/quickMakeSheet/getStandardLibraryProductList",
+            //url: curWwwPath+"/quickMakeSheet/getStandardLibraryProductList",
+            data: {
+                "param": pram
+            },
+            type: "get",
+            dataType: "text",
+            contentType: "application/json",
+            cache: false,
+            success: function(data) {
+                    //$("#box").text(1111);
+                    //$("#box").text(data);
+                    //alert(111)
+                    var iphoneVal = {
+                        data: data,
+                        fun: "decryptCompleted"
+                    };
+                    var redd = $.deCode(data, JSON.stringify(iphoneVal), "decryptCompleted", function(redd) {
+                        rend(JSON.parse(redd));
+
+                    });
+
+                    if ($.appVersion.android) {
+                        rend(redd);
+                        //$("#box").text(redd);
+                    }
+
+                }
+                /*,error:function(error) {
+                                 $("#boxx").html("error");
+                            };*/
+        })
+    };
+
+    function rend(res) {
+        res.object = res.object ? res.object : [];
+        //$("#box").text(res.object);
+        repeatId = [];
+
+        if (res.object.length > 0) {
+
+            res.object.forEach(function(val) {
+                //console.log(val.productList)
+                if (val.productList.length > 0) {
+                    val.productList.forEach(function(value) {
+                            repeatId.push(value.productId);
+                        })
+                        /*$('.close').hide();*/
+                } else {
+                    /*$('.close').show();*/
+                }
+            });
+            //$("#box").text(repeatId);
+            $.set("repId", repeatId);
+        }
+        getdata();
+    };
+
+    function adder(res) {
+        if (res.object > 0) {
+            if (location.search.indexOf('app=2') != -1) {
+                window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+            } else {
+                window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId;
+            }
+        }
+    };
+
+    function request(param) {
+        // var curWwwPath = "https://test201.gdeng.cn:8086";
+        $.ajax({
+            url: "/quickMakeSheet/addProduct",
+            //url: "/gd-m/quickMakeSheet/addProduct",
+            //url: curWwwPath+"/quickMakeSheet/addProduct",
+            data: {
+                "param": param
+            },
+            type: "get",
+            dataType: "text",
+            contentType: "application/json",
+            cache: false,
+            success: function(data) {
+                    var ioal = {
+                        data: data,
+                        fun: "decryptCompleted"
+                    };
+                    var d = $.deCode(data, JSON.stringify(ioal), "decryptCompleted", function(d) {
+                        adder(JSON.parse(d));
+                        if (location.search.indexOf('app=2') != -1) {
+                            window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+                        } else {
+                            window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId;
+                        }
+                    });
+
+                    if ($.appVersion.android) {
+                        adder(d);
+                        if (location.search.indexOf('app=2') != -1) {
+                            window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';
+                        } else {
+                            window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId;
+                        }
+                        /*window.location.href = 'purchase.html?memberId=' + memberId + '&shopName=' + shopName + '&businessId=' + businessId + '&app=2';*/
+                    }
+                    /* if (res.result > 0) {
+                        window.location = 'purchase.html';
+                    } */
+                    //window.location = 'purchase.html'
+                    //$("#box").html(data);
+                    /* if ($.appVersion.ios) {
+                         window.webkit.messageHandlers.NativeDecrypt.postMessage('{"data":"' + data + '","fun":"decryptCompleted"}');
+                         
+                         window["decryptCompleted"] = function(data) {
+                             var datasVal = JSON.stringify(data).replace(/\\| /g, "");
+                             datasVal = JSON.parse(datasVal.substring(1, datasVal.length - 1));
+                             adder(datasVal);
+                         }
+                     }
+                    else if ($.appVersion.android) {
+                                       $("#box").html(data);
+                                       var hdata = JSON.stringify(data);
+                                       
+                                       var adata = JSON.parse(JsBridge.decode(data));
+                                       var adata = JsBridge.decode(hdata);
+                                       alert(JSON.stringify(adata))
+                                      $("#box").html(JSON.stringify(adata));
+                                       $("#box").text(adata);
+                                       adder(adata)
+                                   }*/
+                }
+                //$("#box").text(data);
+                //window.location.href = 'purchase.html'
+
+
+            //window.location = 'purchase.html'
+        })
+    }
+
+
+
+    /* window.localStorage.setItem("obj_str", obj_str); */
+    /*  var user = {
+         memberId: memberId,
+         shopName: shopName,
+         businessId: businessId
+     } */
+    /*   user = JSON.stringify(user);
+      $.set("user", user); */
+    /*  var memberId = "12";
+      var shopName = "李小二的商铺";
+      var businessId = "123434";
+      window.localStorage.setItem("memberId", memberId);
+      var user = {
+          memberId: memberId,
+          shopName: shopName,
+          businessId: businessId
+      }
+      user = JSON.stringify(user);
+      window.localStorage.setItem("user", user); */
+
+
+    /*var data = { //后台要的数据
+            id : ''
+        };*/
+    /*var addData =  [后台要的数据
+       {memberId: memberId,
+        categoryId: "",
+        productId: ""} 
+    ];*/
+
+    //console.log(anVal);
+    /* $("#box").text(anVal);
+     if ($.appVersion.ios) {
+         handIos(anVal);
+     } else if ($.appVersion.android) {
+         handAn(anVal);
+     };*/
+    // 安卓查询处理
+    /* function handAn(param) {
+         alert("param"+param)
+         $("#aaa").html("aa "+param);
+         var params = JavaH5WebInterface.enCode(JSON.stringify({"sourceId": param}));
+         var params = JavaH5WebInterface.enCode("sourceId:"+param);
+         var params = JsBridge.encode(param);
+         $("#box").html(params);
+         request(params);
+     };*/
+    // ios查询处理
+    /* function handIos(param) {
+
+              window.webkit.messageHandlers.NativeEncrypt.postMessage('{"data":'+'"{\'sourceId\':'+param+'}'+'","fun":"handleData"}');
+
+         window.webkit.messageHandlers.NativeEncrypt.postMessage('{"data":"' + param + '","fun":"handleData"}');
+         window["handleData"] = function(data) {
+             request(data);
+         }
+     };*/
+    </script>
+</body>
+
+</html>

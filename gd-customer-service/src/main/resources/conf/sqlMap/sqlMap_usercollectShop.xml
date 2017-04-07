@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="usercollectShop">
+ 
+	<sql id="insertCollectShop">
+	<![CDATA[
+		INSERT INTO usercollect_shop(userId,businessId,createTime) 
+			VALUES
+		(:userId , :businessId , now())
+	]]>
+	</sql>
+	
+	<sql id="deleteCollectShopByUserIdAndBusinessId">
+		<![CDATA[
+			DELETE FROM usercollect_shop 
+				WHERE 
+			userId = :userId AND businessId = :businessId
+		]]>
+	</sql>
+	
+	<sql id="deleteCollectShopById">
+		<![CDATA[
+			DELETE FROM usercollect_shop 
+				WHERE 
+			id = :id
+		]]>
+	</sql>
+	
+	<sql id="deleteCollectShopByUserIdAndBusinessIds">
+		<![CDATA[
+			DELETE FROM usercollect_shop 
+				WHERE 
+			userId = :userId 
+			
+			AND businessId in 
+		
+			<#assign n = businessIds?size />
+			<#if n gt 0>
+				(
+				<#list businessIds as businessId>
+					<#if businessId_index != n-1>
+							${businessId} ,
+						<#else>
+							${businessId}
+					</#if>
+				</#list>
+				) 
+			</#if>
+			
+		]]>
+	</sql>
+	
+	<sql id="deleteCollectShopById">
+		<![CDATA[
+			DELETE FROM usercollect_shop 
+				WHERE 
+			id = :id
+		]]>
+	</sql>
+	
+	<sql id="getCollectShopByUserIdAndBusinessId">
+		<![CDATA[
+			SELECT id , userId , businessId , createTime
+				FROM usercollect_shop s
+				WHERE s.userId = :userId
+					AND s.businessId = :businessId
+		]]>
+	</sql>
+	
+	<sql id="getAll">
+		<![CDATA[
+			SELECT id , userId , businessId , createTime
+				FROM usercollect_shop s
+		WHERE 1=1 
+			<#if userId?exists && userId!="" >
+			      AND userId = :userId 
+			</#if>
+			ORDER BY s.createTime DESC
+		]]>
+	</sql>
+	
+	
+	<sql id="getCollectList">
+		<![CDATA[
+			SELECT 
+				s.id , s.userId , s.businessId , s.createTime , 
+				b.shopsName shopsName,mt.marketName marketName ,
+				m.mobile mobile , m.status status
+				FROM usercollect_shop s
+			LEFT JOIN 
+				business_baseInfo b
+			ON
+				s.businessId = b.businessId
+			LEFT JOIN
+				member_baseInfo m
+			ON
+				m.memberId = b.userId
+			LEFT JOIN 
+				re_business_market r 
+			ON 
+				(r.businessId=s.businessId)
+		 	LEFT JOIN 
+		 		market mt 
+		 	ON 
+		 		(mt.id=r.marketId)
+			WHERE 1=1 
+			<#if userId?exists && userId!="" >
+			      AND s.userId = :userId 
+			</#if>
+			ORDER BY s.createTime DESC
+			LIMIT 
+			:startRow,:endRow 
+		]]>
+	</sql>
+	
+	<sql id="getFocusMeCollectList">
+		<![CDATA[
+			SELECT 
+				s.Id, 
+				b2.memberId , 
+				b2.realName memberName,
+				b2.mobile
+			FROM 
+				usercollect_shop s
+			LEFT JOIN 
+				business_baseInfo b
+			ON
+				s.businessId = b.businessId
+			LEFT JOIN
+				member_baseInfo m
+			ON
+				m.memberId = b.userId
+			LEFT JOIN
+				member_baseInfo b2
+			ON
+				b2.memberId = s.userId
+			WHERE 1=1 
+			<#if userId?exists && userId!="" >
+			      AND m.memberId = :userId 
+			</#if>
+			ORDER BY s.createTime DESC
+			LIMIT 
+			:startRow,:endRow 
+		]]>
+	</sql>
+	
+	<sql id="getFocusMeCount">
+		<![CDATA[
+			SELECT 
+				count(s.Id)
+			FROM 
+				member_baseInfo m
+			LEFT JOIN 
+				business_baseInfo b
+			ON
+				m.memberId = b.userId
+			LEFT JOIN
+				usercollect_shop s
+			ON
+				s.businessId = b.businessId
+			LEFT JOIN
+				member_baseInfo b2
+			ON
+				b2.memberId = s.userId
+		WHERE 1=1 
+			<#if userId?exists && userId!="" >
+			      AND m.memberId = :userId 
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="getCount">
+		<![CDATA[
+			SELECT count(s.id)
+				FROM usercollect_shop s
+			WHERE 1=1 
+			<#if userId?exists && userId!="" >
+			      AND s.userId = :userId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND s.businessId = :businessId 
+			</#if>
+			
+		]]>
+	</sql>
+	
+</sqlMap>

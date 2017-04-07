@@ -1,0 +1,5118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberAddress">
+	<sql id="getMemberAddress">
+	<![CDATA[
+		SELECT
+			id, userId, type, personalLine, s_provinceId, s_cityId, s_areaId, s_detail, s_detailed_address,
+			s_receiver, s_zipCode, s_mobile, s_telPhone, f_provinceId, f_cityId, f_areaId, f_detail,
+			f_detailed_address, f_receiver, f_zipCode, f_mobile, f_telPhone, isDefault, isDeleted,
+			createUserId, createTime, updateUserId, updateTime, sendDate, sendDateType, goodsType,
+			totalWeight, hundredweight, totalSize, carType, sendGoodsType, goodsName, price,
+			priceUnitType, userMobile, endDate, endDateType, userType, carlength, remark,
+			mileage, clients, contactName, nstRule
+		FROM
+			member_address t
+		WHERE 
+			(isDeleted=0 or isDeleted is null) 
+		AND  
+			id=:id
+	]]>
+	</sql>
+	
+	
+	<sql id="getMemberAddressList">
+	<![CDATA[
+		SELECT 
+		        id          		,
+                userId      		,
+                type        		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,
+                isDefault      		,
+                isDeleted      		,
+                createUserId   		,
+                createTime     		,
+                updateUserId   		,
+                updateTime    
+		FROM 
+			member_address  t
+		WHERE  1=1  AND (isDeleted=0 or isDeleted is null)
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getByName">
+	<![CDATA[
+		select a.*  from (
+         SELECT 
+		        t.id          		,
+                userId      		,
+                goodsName      		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,               
+                isDefault      		,
+                t.isDeleted      		,
+                sendDate            ,      
+                sendDateType        ,
+                endDate             ,      
+                endDateType         ,      
+                goodsType           ,      
+                totalWeight         ,   
+                totalSize           ,
+                hundredweight       ,                   
+                carType             ,        
+                sendGoodsType       ,        
+                price               ,        
+                priceUnitType       ,
+                t.createTime        , 
+                t.createUserId      ,
+                t.userType  AS userType ,
+                t.clients,
+                m.mobile  AS  userMobile,         
+                m.realName   AS nickName,
+                m.cCityId    AS ccityId ,
+                nob.orderStatus,
+                nob.isDeleted AS  isOrderDeleted
+
+		FROM   
+		        member_address t 
+		        INNER JOIN member_baseinfo m ON t.userId=m.memberId  AND   t.userType=1 	 
+		        LEFT JOIN  nst_order_baseinfo nob on nob.memberAddressId =t.id 
+                and nob.orderStatus=(select orderStatus from  nst_order_baseinfo nob2  where nob2.memberAddressId =t.id ORDER BY nob2.createTime DESC LIMIT 1  )
+	    WHERE 1=1
+	    	  <#if isDel?exists && isDel!="" >
+			      AND t.isDeleted=1
+			      <#else>
+			      AND (t.isDeleted=0 or t.isDeleted is null)
+			  </#if> 
+		      <#if realName?exists && realName!="" >
+			      AND m.realName  like "%":realName"%"
+			  </#if>  
+			  <#if startDate?exists && startDate!="" >
+			              AND DATE_FORMAT(t.createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+			  </#if>
+			  <#if endDate?exists && endDate!="" >
+			              AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			  </#if> 
+			   <#if userType?exists && userType!="" >
+			      AND t.userType  =:userType
+			   </#if> 
+			    <#if cCityId?exists && cCityId!="" >
+			      AND m.cCityId  =:cCityId
+			    </#if> 
+			    <#if clients?exists && clients!=""  && clients!="2" && clients!="5">
+		             and  t.clients =:clients 
+	             </#if>
+	             <#if clients?exists && clients =="2" >
+		             and  (t.clients =2 OR t.clients is NULL) 
+	             </#if>
+	             <#if clients?exists && clients =="5" >
+		             and  (t.clients = 5 OR t.clients = 6) 
+	             </#if>
+			     <#if orderStatus?exists && orderStatus!="" >
+			      AND  nob.orderStatus  =:orderStatus
+			    </#if>
+			     <#if isOrderDeleted?exists && isOrderDeleted =="1" >
+			      AND  nob.isDeleted  =:isOrderDeleted
+			     </#if>  
+			      <#if isOrderDeleted?exists && isOrderDeleted =="0" >
+			      AND  (nob.isDeleted is null or nob.isDeleted ='0' )
+			     </#if>  
+
+		UNION ALL
+		
+		SELECT 
+		        t2.id          		,
+                userId      		,
+                goodsName      		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,
+                isDefault      		,
+                t2.isDeleted      		,
+                sendDate            ,      
+                sendDateType        ,
+                endDate             ,      
+                endDateType         ,      
+                goodsType           ,      
+                totalWeight         ,       
+                totalSize           , 
+                hundredweight       ,             
+                carType             ,        
+                sendGoodsType       ,        
+                price               ,        
+                priceUnitType       ,  
+                t2.createTime        ,
+                t2.createUserId      ,
+                t2.userType  AS userType ,
+                t2.clients ,
+                c.mobile  AS  userMobile,           
+                c.linkMan   AS nickName,
+                mb.cCityId  AS ccityId ,
+                nob.orderStatus,
+                nob.isDeleted AS  isOrderDeleted
+		FROM   
+		        member_address t2 
+	INNER JOIN member_baseinfo mb ON t2.userId=mb.memberId  AND ( t2.userType=2  or  t2.userType is null)
+    LEFT JOIN member_certifi c  ON   t2.userId=c.memberId
+    LEFT JOIN  nst_order_baseinfo nob on nob.memberAddressId =  t2.id 
+    and nob.orderStatus=(select orderStatus from  nst_order_baseinfo nob2  where nob2.memberAddressId =t2.id ORDER BY nob2.createTime DESC LIMIT 1  )
+	WHERE 1=1
+		        <#if isDel?exists && isDel!="" >
+			      AND t2.isDeleted=1
+			      <#else>
+			      AND (t2.isDeleted=0 or t2.isDeleted is null)
+			    </#if> 
+		        <#if realName?exists && realName!="" >
+			      AND c.linkMan  like "%":realName"%"
+			    </#if>
+			    <#if startDate?exists && startDate!="" >
+			              AND DATE_FORMAT(t2.createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+			    </#if>
+			    <#if endDate?exists && endDate!="" >
+			              AND DATE_FORMAT(t2.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			    </#if> 
+			     <#if userType?exists && userType!="" >
+			      AND t2.userType  =:userType
+			     </#if> 
+			     <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			     </#if> 
+			      <#if clients?exists && clients!=""  && clients!="2" && clients!="5">
+		             and  t2.clients =:clients 
+	             </#if>
+	             <#if clients?exists && clients =="2" >
+		             and  (t2.clients =2 OR t2.clients is NULL) 
+	             </#if>
+	             <#if clients?exists && clients =="5" >
+		             and  (t2.clients=5 OR t2.clients=6) 
+	             </#if>
+			     <#if orderStatus?exists && orderStatus!="" >
+			      AND  nob.orderStatus  =:orderStatus
+			     </#if> 
+			     <#if isOrderDeleted?exists && isOrderDeleted =="1" >
+			      AND  nob.isDeleted  =:isOrderDeleted
+			     </#if>  
+			      <#if isOrderDeleted?exists && isOrderDeleted =="0" >
+			      AND  (nob.isDeleted is null or nob.isDeleted ='0' )
+			     </#if>
+			    
+		        
+		) a order  by a.createTime  DESC
+		  LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM   
+		        member_address t , member_baseinfo m 
+		WHERE   t.userId=m.memberId AND (t.isDeleted=0 or t.isDeleted is null)
+		      
+		    <#if realName?exists && realName!="" >
+			      AND m.realName  like "%":realName"%"
+			</#if>
+			<#if userId?exists && userId!="" >
+			      AND userId =:userId
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND t.f_provinceId =:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND t.f_cityId =:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND t.f_areaId =:s_areaId
+			</#if>
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND t.s_provinceId =:e_provinceId
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND t.s_cityId =:e_cityId
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND t.s_areaId =:e_areaId
+			</#if>
+	]]>
+	</sql>
+	
+	
+      <sql id="getTotalByName">
+	<![CDATA[
+	select COUNT(1)  from (
+         SELECT 
+		        t.id 
+		FROM   
+		        member_address t 
+		        INNER JOIN member_baseinfo m ON t.userId=m.memberId  AND   t.userType=1 	 
+		        LEFT JOIN  nst_order_baseinfo nob on nob.memberAddressId =t.id 
+                and nob.orderStatus=(select orderStatus from  nst_order_baseinfo nob2  where nob2.memberAddressId =t.id ORDER BY nob2.createTime DESC LIMIT 1  )
+		WHERE   1=1
+		      <#if isDel?exists && isDel!="" >
+			      AND t.isDeleted=1
+			      <#else>
+			      AND (t.isDeleted=0 or t.isDeleted is null)
+			    </#if> 
+		      <#if realName?exists && realName!="" >
+			      AND m.realName  like "%":realName"%"
+			  </#if>  
+			   <#if startDate?exists && startDate!="" >
+			      AND DATE_FORMAT(t.createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+			   </#if>
+			   <#if endDate?exists && endDate!="" >
+			       AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			   </#if> 
+			    <#if userType?exists && userType!="" >
+			      AND t.userType  =:userType
+			    </#if>
+			     <#if cCityId?exists && cCityId!="" >
+			      AND m.cCityId  =:cCityId
+			    </#if> 
+			    <#if clients?exists && clients!=""  && clients!="2" && clients!="5" >
+		             and  t.clients =:clients 
+	             </#if>
+	             <#if clients?exists && clients =="2" >
+		             and  (t.clients =2 OR t.clients is NULL) 
+	             </#if>
+	             <#if clients?exists && clients =="5" >
+		             and  (t.clients =5 OR t.clients = 6) 
+	             </#if>
+			     <#if orderStatus?exists && orderStatus!="" >
+			      AND  nob.orderStatus  =:orderStatus
+			     </#if> 
+			      <#if isOrderDeleted?exists && isOrderDeleted =="1" >
+			      AND  nob.isDeleted  =:isOrderDeleted
+			     </#if>  
+			      <#if isOrderDeleted?exists && isOrderDeleted =="0" >
+			      AND  (nob.isDeleted is null or nob.isDeleted ='0' )
+			     </#if>
+
+		UNION ALL
+		
+		SELECT 
+		        t2.id
+	    FROM   
+		        member_address t2 
+	    INNER JOIN member_baseinfo mb ON t2.userId=mb.memberId  AND ( t2.userType=2  or  t2.userType is null)
+        LEFT JOIN member_certifi c  ON   t2.userId=c.memberId
+        LEFT JOIN  nst_order_baseinfo nob on nob.memberAddressId =  t2.id 
+        and nob.orderStatus=(select orderStatus from  nst_order_baseinfo nob2  where nob2.memberAddressId =t2.id ORDER BY nob2.createTime DESC LIMIT 1  )
+	    WHERE 1=1	
+	        <#if isDel?exists && isDel!="" >
+			      AND t2.isDeleted=1
+			      <#else>
+			      AND (t2.isDeleted=0 or t2.isDeleted is null)
+			    </#if> 	
+	        <#if realName?exists && realName!="" >
+			      AND c.linkMan  like "%":realName"%"
+			 </#if>
+			 <#if startDate?exists && startDate!="" >
+			      AND DATE_FORMAT(t2.createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND DATE_FORMAT(t2.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+		    </#if> 
+		     <#if userType?exists && userType!="" >
+			      AND t2.userType  =:userType
+			 </#if> 
+			 <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			 </#if> 
+			  <#if clients?exists && clients!=""  && clients!="2" >
+
+		             and  t2.clients =:clients 
+	          </#if>
+	          <#if clients?exists && clients =="2" >
+		             and  (t2.clients =2 OR t2.clients is NULL) 
+	           </#if>
+			 <#if orderStatus?exists && orderStatus!="" >
+			      AND  nob.orderStatus  =:orderStatus
+			 </#if> 
+			     <#if isOrderDeleted?exists && isOrderDeleted =="1" >
+			      AND  nob.isDeleted  =:isOrderDeleted
+			     </#if>  
+			      <#if isOrderDeleted?exists && isOrderDeleted =="0" >
+			      AND  (nob.isDeleted is null or nob.isDeleted ='0' )
+			     </#if>
+		)a
+	
+	]]>
+	</sql>
+	
+	<sql id="getListByAreaId">
+	<![CDATA[
+	
+		SELECT 
+		        id          		,
+                userId      		,
+                goodsName      		,
+                type        		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,
+                userMobile          ,
+                isDefault      		,
+                isDeleted      		,
+                sendDate            ,      
+                sendDateType        ,
+                endDate             ,      
+                endDateType         ,      
+                goodsType           ,      
+                totalWeight         ,       
+                totalSize           , 
+                hundredweight       ,             
+                carType             ,
+                carlength           ,        
+                sendGoodsType       ,        
+                price               ,        
+                priceUnitType       ,  
+                t.createTime        ,
+                CASE t.userType
+WHEN 1 THEN  (SELECT  m.realName  FROM  member_baseinfo  m where m.memberId = t.userId)
+WHEN 2 THEN  (SELECT  c.linkMan   FROM  member_certifi   c where c.memberId = t.userId LIMIT 1 )
+ELSE '' END   AS nickName,
+  (SELECT  c.nstStatus FROM member_certifi c WHERE c.memberId=t.userId LIMIT 1)  AS  isCertify
+		FROM    member_address t 
+		WHERE  1=1
+	     AND   t.createtime >= date_sub(current_date(),interval 3 day)
+	     AND   (t.isDeleted=0 or t.isDeleted is null)
+			   <#if s_cityId?exists && s_cityId!="" >
+			      AND
+			    (  t.s_cityId =:s_cityId  OR t.f_cityId =:s_cityId)
+			   </#if>
+			
+		ORDER BY t.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+		
+	
+	
+	
+	 <sql id="getTotalByUserId">
+	<![CDATA[
+  					 SELECT count(id)          		       
+                     FROM  member_address m   
+                     left  JOIN  member_baseinfo  b
+                      ON   m.userId = b.memberId
+	 
+	                <#if userId?exists && userId!="" >
+	                	where   m.userId =:userId AND  (m.isDeleted=0 or m.isDeleted is null)
+			        </#if>
+					 <#if createUserId?exists && createUserId!="" >
+	                	where   m.createUserId =:createUserId AND  (m.isDeleted=0 or m.isDeleted is null) 
+			        </#if>
+	]]>
+	</sql>
+	
+	
+	 <sql id="getListByUserId">
+	 <![CDATA[
+	 				 SELECT  id          		    ,
+                             userId      		    ,
+                             goodsName      		,
+                             personalLine   		,
+                             s_provinceId   		,
+                             s_cityId       		,
+                             s_areaId       		,
+                             s_detail       		,
+                             s_receiver     		,
+                             s_zipCode      		,
+                             s_mobile       		,
+                             s_telPhone     		,
+                             f_provinceId   		,
+                             f_cityId       		,
+                             f_areaId       		,
+                             f_detail       		,
+                             f_receiver     		,
+                             f_zipCode      		,
+                             f_mobile       		,
+                             f_telPhone     		,
+                             userMobile             ,
+                             isDefault      		,
+                             isDeleted      		,
+                             sendDate            ,      
+                             sendDateType        ,
+                             endDate             ,      
+                             endDateType         ,      
+                             goodsType           ,      
+                             totalWeight         ,   
+                             totalSize           ,
+                             hundredweight       ,                   
+                             carType             , 
+                             carLength           ,      
+                             sendGoodsType       ,        
+                             price               ,        
+                             priceUnitType       ,
+                             m.userType  AS userType,
+                             m.createTime ,
+                             b.realName   AS nickName,
+                            ( select mc.mobile from member_certifi mc where mc.memberId=m.createUserId LIMIT 1 )   AS  companyMobile,           
+                            ( select mc.linkman from member_certifi mc where mc.memberId=m.createUserId LIMIT 1 )  AS companyContact,
+                            ( select mc.companyName from member_certifi mc where mc.memberId=m.createUserId LIMIT 1  )  AS companyName     
+                     FROM  member_address m   
+                     left  JOIN  member_baseinfo  b
+                      ON   m.userId = b.memberId
+					 <#if userId?exists && userId!="" >
+	                	where   m.userId =:userId AND (m.isDeleted=0 or m.isDeleted is null)  
+			        </#if>
+					 <#if createUserId?exists && createUserId!="" >
+	                	where   m.createUserId =:createUserId  AND  (m.isDeleted=0 or m.isDeleted is null)
+			        </#if>
+	          
+		  order  by m.createTime  DESC
+		  LIMIT :startRow,:endRow
+	
+	]]>
+	</sql>
+	
+	<sql id="getTotalForOrder">
+	<![CDATA[
+		SELECT 
+	 		COUNT(ma.id)		
+		FROM (	
+			SELECT
+				ma.id,				
+				ma.goodsName,
+				ma.totalSize,
+				ma.userId,
+				ma.totalWeight,
+				ma.hundredweight,
+				ma.contactName,
+				ma.s_detailed_address,
+				ma.f_detailed_address,
+				ma.nstRule,
+				ma.id AS memberAddressId,
+				ma.s_provinceId   		,
+				ma.s_cityId       		,
+				ma.s_areaId       		,
+				ma.f_provinceId   		,
+				ma.f_cityId       		,
+				ma.f_areaId       		,
+				ma.createTime,
+				ma.carType,
+				ma.goodsType,
+				nob.ownerName,
+				nob.ownerMobile,
+				nob.id nobId,
+				nob.orderType,
+				nob.orderTime,
+				nob.confirmMemberId,
+				nob.f_address_detail,
+				nob.s_address_detail,
+				nob.shipperName,
+				nob.shipperMobile,
+				nob.orderStatus AS orderStatusInt,
+				0 AS source
+		FROM member_address ma		
+		LEFT JOIN nst_order_baseinfo nob ON nob.memberAddressId = ma.id 
+		LEFT JOIN cars car ON nob.carId = car.id	
+		WHERE 1=1 
+				AND (ma.isDeleted IS NULL OR ma.isDeleted='0') AND (nob.isDeleted IS NULL OR nob.isDeleted='0')					
+				<#if memberId?exists && memberId!="" >
+					AND ma.userId = :memberId
+				</#if>
+				<#if userId?exists && userId!="" >
+					AND ma.userId = :userId
+				</#if>
+				<#if id?exists && id!="" >
+					AND nob.id = :id 
+				</#if>
+				<#if orderType?exists && orderType!="" >
+					AND nob.orderType = :orderType 
+				</#if>			
+				<#if s_provinceId?exists && s_provinceId!="" >
+					AND  ma.s_provinceId=:s_provinceId
+				</#if>
+				<#if s_cityId?exists && s_cityId!="" >
+					AND  ma.s_cityId=:s_cityId
+				</#if>
+				<#if s_areaId?exists && s_areaId!="" >
+					AND  ma.s_areaId=:s_areaId
+				</#if>
+				<#if f_provinceId?exists && f_provinceId!="" >
+					AND  ma.f_provinceId=:f_provinceId
+				</#if>
+				<#if f_cityId?exists && f_cityId!="" >
+					AND  ma.f_cityId=:f_cityId
+				</#if>
+				<#if f_areaId?exists && f_areaId!="" >
+					AND  ma.f_areaId=:f_areaId
+				</#if>
+				<#if shipperName?exists && shipperName!="" >
+					AND  nob.shipperName like "%":shipperName"%"
+				</#if>
+				<#if shipperMobile?exists && shipperMobile!="" >
+					AND  nob.shipperMobile=:shipperMobile
+				</#if>
+				<#if ownerName?exists && ownerName!="" >
+					AND  nob.ownerName=:ownerName
+				</#if>
+				<#if ownerMobile?exists && ownerMobile!="" >
+					AND  nob.ownerMobile like "%":ownerMobile"%"
+				</#if>
+				<#if beginTime?exists && beginTime!="" >
+					AND  ma.sendDate >=:beginTime
+				</#if>
+				<#if endTime?exists && endTime!="" >
+					AND  ma.sendDate <=:endTime
+				</#if>
+				<#if orderStatusInt?exists && orderStatusInt!="" >
+					AND  nob.orderStatus =:orderStatusInt
+				</#if>
+				<#if canDelete?exists && canDelete!="" >
+					AND  nob.orderStatus in (3,4,5)
+				</#if>
+				<#if showRejectAndCal?exists && showRejectAndCal >
+					AND  nob.orderStatus in (4,5)
+				</#if>
+				<#if sendData?exists && sendData>
+	       			AND nob.id is null
+	       		</#if>
+	       		<#if orderNo?exists && orderNo!="">
+	       			AND ma.id IN (SELECT pdd1.memberAddressId FROM product_delivery_detail pdd1 WHERE pdd1.orderNo = :orderNo)
+	       		</#if>								
+		UNION ALL
+		SELECT
+				ma.id,			
+				NULL AS goodsName,
+				ma.totalSize,
+				ma.memberId,
+				ma.totalWeight,
+				ma.hundredweight,
+				ma.contactName,
+				ma.s_detailed_address,
+				ma.f_detailed_address,
+				ma.nstRule,
+				ma.id AS memberAddressId,
+				ma.s_provinceId   		,
+				ma.s_cityId       		,
+				ma.s_areaId       		,
+				ma.f_provinceId   		,
+				ma.f_cityId       		,
+				ma.f_areaId       		,
+				ma.createTime,
+				ma.needCarType AS carType,
+				ma.goodsType,
+				nob.ownerName,
+				nob.ownerMobile,
+				nob.id nobId,
+				nob.orderType,
+				nob.orderTime,
+				nob.confirmMemberId,
+				nob.f_address_detail,
+				nob.s_address_detail,
+				nob.shipperName,
+				nob.shipperMobile,
+				nob.orderStatus AS orderStatusInt,
+				1 AS source
+			FROM nst_same_city_address ma		
+			LEFT JOIN nst_order_baseinfo nob ON nob.same_memberAddressId = ma.id
+			LEFT JOIN cars car ON nob.carId = car.id	
+			WHERE 1=1 
+				AND (ma.isDeleted IS NULL OR ma.isDeleted='0') AND (nob.isDeleted IS NULL OR nob.isDeleted='0')		
+				<#if memberId?exists && memberId!="" >
+					AND ma.memberId = :memberId 
+				</#if>
+				<#if userId?exists && userId!="" >
+					AND ma.memberId = :userId
+				</#if>	
+				<#if id?exists && id!="" >
+					AND nob.id = :id 
+				</#if>
+				<#if orderType?exists && orderType!="" >
+					AND nob.orderType = :orderType 
+				</#if>			
+				<#if s_provinceId?exists && s_provinceId!="" >
+					AND  ma.s_provinceId=:s_provinceId
+				</#if>
+				<#if s_cityId?exists && s_cityId!="" >
+					AND  ma.s_cityId=:s_cityId
+				</#if>
+				<#if s_areaId?exists && s_areaId!="" >
+					AND  ma.s_areaId=:s_areaId
+				</#if>
+				<#if f_provinceId?exists && f_provinceId!="" >
+					AND  ma.f_provinceId=:f_provinceId
+				</#if>
+				<#if f_cityId?exists && f_cityId!="" >
+					AND  ma.f_cityId=:f_cityId
+				</#if>
+				<#if f_areaId?exists && f_areaId!="" >
+					AND  ma.f_areaId=:f_areaId
+				</#if>
+				<#if shipperName?exists && shipperName!="" >
+					AND  nob.shipperName like "%":shipperName"%"
+				</#if>
+				<#if shipperMobile?exists && shipperMobile!="" >
+					AND  nob.shipperMobile=:shipperMobile
+				</#if>
+				<#if ownerName?exists && ownerName!="" >
+					AND  nob.ownerName=:ownerName
+				</#if>
+				<#if ownerMobile?exists && ownerMobile!="" >
+					AND  nob.ownerMobile like "%":ownerMobile"%"
+				</#if>
+				<#if beginTime?exists && beginTime!="" >
+					AND  ma.sendDate >=:beginTime
+				</#if>
+				<#if endTime?exists && endTime!="" >
+					AND  ma.sendDate <=:endTime
+				</#if>
+				<#if orderStatusInt?exists && orderStatusInt!="" >
+					AND  nob.orderStatus =:orderStatusInt
+				</#if>
+				<#if canDelete?exists && canDelete!="" >
+					AND  nob.orderStatus in (3,4,5)
+				</#if>
+				<#if showRejectAndCal?exists && showRejectAndCal >
+					AND  nob.orderStatus in (4,5)
+				</#if>
+				<#if sendData?exists && sendData>
+	       			AND nob.id is null
+	       		</#if>
+	       		<#if orderNo?exists && orderNo!="">
+	       			AND ma.id IN (SELECT pdd1.same_memberAddressId FROM product_delivery_detail pdd1 WHERE pdd1.orderNo = :orderNo)
+	       		</#if>										
+		) ma
+			       		
+		]]>
+	</sql>
+	<sql id="getListForOrder">
+	 <![CDATA[	 		
+	 	SELECT 
+	 		ma.*			
+		FROM (	
+			SELECT
+				ma.id,				
+				ma.goodsName,
+				ma.totalSize,
+				ma.userId,
+				ma.totalWeight,
+				ma.hundredweight,
+				ma.contactName,
+				ma.s_detailed_address,
+				ma.f_detailed_address,
+				ma.nstRule,
+				ma.id AS memberAddressId,
+				ma.s_provinceId   		,
+				ma.s_cityId       		,
+				ma.s_areaId       		,
+				ma.f_provinceId   		,
+				ma.f_cityId       		,
+				ma.f_areaId       		,
+				ma.createTime,
+				ma.carType,
+				ma.goodsType,
+				nob.ownerName,
+				nob.ownerMobile,
+				nob.id nobId,
+				nob.orderType,
+				nob.orderTime,
+				nob.confirmMemberId,
+				nob.f_address_detail,
+				nob.s_address_detail,
+				nob.shipperName,
+				nob.shipperMobile,
+				nob.orderStatus AS orderStatusInt,
+				0 AS source
+		FROM member_address ma		
+		LEFT JOIN nst_order_baseinfo nob ON nob.memberAddressId = ma.id 
+		LEFT JOIN cars car ON nob.carId = car.id	
+		WHERE 1=1 
+				AND (ma.isDeleted IS NULL OR ma.isDeleted='0') AND (nob.isDeleted IS NULL OR nob.isDeleted='0')					
+				<#if memberId?exists && memberId!="" >
+					AND ma.userId = :memberId
+				</#if>
+				<#if userId?exists && userId!="" >
+					AND ma.userId = :userId
+				</#if>
+				<#if id?exists && id!="" >
+					AND nob.id = :id 
+				</#if>
+				<#if orderType?exists && orderType!="" >
+					AND nob.orderType = :orderType 
+				</#if>			
+				<#if s_provinceId?exists && s_provinceId!="" >
+					AND  ma.s_provinceId=:s_provinceId
+				</#if>
+				<#if s_cityId?exists && s_cityId!="" >
+					AND  ma.s_cityId=:s_cityId
+				</#if>
+				<#if s_areaId?exists && s_areaId!="" >
+					AND  ma.s_areaId=:s_areaId
+				</#if>
+				<#if f_provinceId?exists && f_provinceId!="" >
+					AND  ma.f_provinceId=:f_provinceId
+				</#if>
+				<#if f_cityId?exists && f_cityId!="" >
+					AND  ma.f_cityId=:f_cityId
+				</#if>
+				<#if f_areaId?exists && f_areaId!="" >
+					AND  ma.f_areaId=:f_areaId
+				</#if>
+				<#if shipperName?exists && shipperName!="" >
+					AND  nob.shipperName like "%":shipperName"%"
+				</#if>
+				<#if shipperMobile?exists && shipperMobile!="" >
+					AND  nob.shipperMobile=:shipperMobile
+				</#if>
+				<#if ownerName?exists && ownerName!="" >
+					AND  nob.ownerName=:ownerName
+				</#if>
+				<#if ownerMobile?exists && ownerMobile!="" >
+					AND  nob.ownerMobile like "%":ownerMobile"%"
+				</#if>
+				<#if beginTime?exists && beginTime!="" >
+					AND  ma.sendDate >=:beginTime
+				</#if>
+				<#if endTime?exists && endTime!="" >
+					AND  ma.sendDate <=:endTime
+				</#if>
+				<#if orderStatusInt?exists && orderStatusInt!="" >
+					AND  nob.orderStatus =:orderStatusInt
+				</#if>
+				<#if canDelete?exists && canDelete!="" >
+					AND  nob.orderStatus in (3,4,5)
+				</#if>
+				<#if showRejectAndCal?exists && showRejectAndCal >
+					AND  nob.orderStatus in (4,5)
+				</#if>
+				<#if sendData?exists && sendData>
+	       			AND nob.id is null
+	       		</#if>
+	       		<#if orderNo?exists && orderNo!="">
+	       			AND ma.id IN (SELECT pdd1.memberAddressId FROM product_delivery_detail pdd1 WHERE pdd1.orderNo = :orderNo)
+	       		</#if>								
+		UNION ALL
+		SELECT
+				ma.id,			
+				NULL AS goodsName,
+				ma.totalSize,
+				ma.memberId,
+				ma.totalWeight,
+				ma.hundredweight,
+				ma.contactName,
+				ma.s_detailed_address,
+				ma.f_detailed_address,
+				ma.nstRule,
+				ma.id AS memberAddressId,
+				ma.s_provinceId   		,
+				ma.s_cityId       		,
+				ma.s_areaId       		,
+				ma.f_provinceId   		,
+				ma.f_cityId       		,
+				ma.f_areaId       		,
+				ma.createTime,
+				ma.needCarType AS carType,
+				ma.goodsType,
+				nob.ownerName,
+				nob.ownerMobile,
+				nob.id nobId,
+				nob.orderType,
+				nob.orderTime,
+				nob.confirmMemberId,
+				nob.f_address_detail,
+				nob.s_address_detail,
+				nob.shipperName,
+				nob.shipperMobile,
+				nob.orderStatus AS orderStatusInt,
+				1 AS source
+			FROM nst_same_city_address ma		
+			LEFT JOIN nst_order_baseinfo nob ON nob.same_memberAddressId = ma.id
+			LEFT JOIN cars car ON nob.carId = car.id	
+			WHERE 1=1 
+				AND (ma.isDeleted IS NULL OR ma.isDeleted='0') AND (nob.isDeleted IS NULL OR nob.isDeleted='0')		
+				<#if memberId?exists && memberId!="" >
+					AND ma.memberId = :memberId 
+				</#if>
+				<#if userId?exists && userId!="" >
+					AND ma.memberId = :userId
+				</#if>	
+				<#if id?exists && id!="" >
+					AND nob.id = :id 
+				</#if>
+				<#if orderType?exists && orderType!="" >
+					AND nob.orderType = :orderType 
+				</#if>			
+				<#if s_provinceId?exists && s_provinceId!="" >
+					AND  ma.s_provinceId=:s_provinceId
+				</#if>
+				<#if s_cityId?exists && s_cityId!="" >
+					AND  ma.s_cityId=:s_cityId
+				</#if>
+				<#if s_areaId?exists && s_areaId!="" >
+					AND  ma.s_areaId=:s_areaId
+				</#if>
+				<#if f_provinceId?exists && f_provinceId!="" >
+					AND  ma.f_provinceId=:f_provinceId
+				</#if>
+				<#if f_cityId?exists && f_cityId!="" >
+					AND  ma.f_cityId=:f_cityId
+				</#if>
+				<#if f_areaId?exists && f_areaId!="" >
+					AND  ma.f_areaId=:f_areaId
+				</#if>
+				<#if shipperName?exists && shipperName!="" >
+					AND  nob.shipperName like "%":shipperName"%"
+				</#if>
+				<#if shipperMobile?exists && shipperMobile!="" >
+					AND  nob.shipperMobile=:shipperMobile
+				</#if>
+				<#if ownerName?exists && ownerName!="" >
+					AND  nob.ownerName=:ownerName
+				</#if>
+				<#if ownerMobile?exists && ownerMobile!="" >
+					AND  nob.ownerMobile like "%":ownerMobile"%"
+				</#if>
+				<#if beginTime?exists && beginTime!="" >
+					AND  ma.sendDate >=:beginTime
+				</#if>
+				<#if endTime?exists && endTime!="" >
+					AND  ma.sendDate <=:endTime
+				</#if>
+				<#if orderStatusInt?exists && orderStatusInt!="" >
+					AND  nob.orderStatus =:orderStatusInt
+				</#if>
+				<#if canDelete?exists && canDelete!="" >
+					AND  nob.orderStatus in (3,4,5)
+				</#if>
+				<#if showRejectAndCal?exists && showRejectAndCal >
+					AND  nob.orderStatus in (4,5)
+				</#if>
+				<#if sendData?exists && sendData>
+	       			AND nob.id is null
+	       		</#if>
+	       		<#if orderNo?exists && orderNo!="">
+	       			AND ma.id IN (SELECT pdd1.same_memberAddressId FROM product_delivery_detail pdd1 WHERE pdd1.orderNo = :orderNo)
+	       		</#if>										
+		) ma
+		<#if orderStatusInt?exists && orderStatusInt!="">
+   			order by ma.orderTime desc
+   		<#else>
+   			order by ma.createTime desc
+   		</#if>		
+		<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+			LIMIT :startRow,:endRow
+		</#if>			
+		]]>
+	</sql>
+	
+	
+	<sql id="getMemberAddressForOrder">
+	<![CDATA[	
+		<#if source?? && source=="1" >	
+			SELECT 
+				ma.id,
+				1 AS source,	
+				ma.useCarTime as sendDate,	
+				ma.price,
+				ma.remark,
+				ma.s_detail,
+				ma.f_detail,		
+				nob.id nobId,
+				nob.orderNo,
+				nob.orderType,
+				nob.orderTime,
+				nob.confirmMemberId,
+				nob.f_address_detail,
+				nob.s_address_detail,
+				nob.shipperName,
+				nob.shipperMobile,
+				nob.orderStatus AS orderStatusInt,
+				nob.ownerName ownerName,
+				nob.ownerMobile ownerMobile,
+				ma.memberId AS userId,
+				ma.contactName,
+				NULL AS goodsName,
+				ma.totalSize,
+				ma.totalWeight,
+				ma.hundredweight,
+				ma.contactName,
+				ma.s_detailed_address,
+				ma.f_detailed_address,
+				ma.nstRule,
+				ma.s_provinceId   		,
+				ma.s_cityId       		,
+				ma.s_areaId       		,
+				ma.f_provinceId   		,
+				ma.f_cityId       		,
+				ma.f_areaId       		,
+				NULL AS s_mobile,
+				NULL AS s_receiver,
+				NULL AS f_mobile,
+				NULL AS f_receiver,			
+				ma.createTime,
+				ma.needCarType AS carType,
+				ma.goodsType,
+				mb.mobile contactMobile,
+				count(pdd.id) PDDNum,
+				ma.id AS memberAddressId,
+				ma.isDeleted,
+				pdd.type AS supplySourceType,
+				NULL AS sendGoodsTypeString,
+				nob.ownerName,
+				nob.ownerMobile,
+				car.carNumber,
+				IF (
+				mc.nst_idCard IS NOT NULL && mc.nstStatus = '1',
+				mc.nst_idCard,
+				''
+				) AS nst_idCard,
+				IF (
+				mc.nst_cardPhotoUrl IS NOT NULL && mc.nstStatus = '1',
+				mc.nst_cardPhotoUrl,
+				''
+				) AS nst_cardPhotoUrl,
+				IF (
+				car.nst_vehiclePhotoUrl IS NOT NULL && mc.nstStatus = '1',
+				car.nst_vehiclePhotoUrl,
+				''
+				) AS nst_vehiclePhotoUrl,
+				IF (
+				car.nst_driverPhotoUrl IS NOT NULL && mc.nstStatus = '1',
+				car.nst_driverPhotoUrl,
+				''
+				) AS nst_driverPhotoUrl
+			FROM nst_same_city_address ma			
+				LEFT JOIN member_baseinfo mb ON mb.memberId = ma.memberId
+				LEFT JOIN nst_order_baseinfo nob ON nob.same_memberAddressId = ma.id
+				LEFT JOIN product_delivery_detail pdd ON ma.id=pdd.same_memberAddressId
+				LEFT JOIN cars car ON nob.carId = car.id
+				LEFT JOIN member_certifi mc ON car.userId = mc.memberId				
+			WHERE 1=1 AND (nob.isDeleted IS NULL OR nob.isDeleted='0')
+			<#if id?exists && id!="" >
+				AND ma.id = :id 
+			</#if>
+			<#if nobId?exists && nobId!="" >
+				AND nob.id = :nobId 
+			</#if>			
+		<#else>		
+			SELECT
+				ma.id,				
+				0 AS source,	
+				ma.sendDate,
+				ma.price,
+				ma.remark,
+				ma.s_detail,
+				ma.f_detail,			
+				nob.id nobId,
+				nob.orderNo,
+				nob.orderType,
+				nob.orderTime,
+				nob.confirmMemberId,
+				nob.f_address_detail,
+				nob.s_address_detail,
+				nob.shipperName,
+				nob.shipperMobile,
+				nob.orderStatus AS orderStatusInt,
+				nob.ownerName ownerName,
+				nob.ownerMobile ownerMobile,
+				ma.userId,
+				ma.contactName,
+				ma.goodsName,
+				ma.totalSize,
+				ma.totalWeight,
+				ma.hundredweight,
+				ma.contactName,
+				ma.s_detailed_address,
+				ma.f_detailed_address,
+				ma.nstRule,
+				ma.s_provinceId   		,
+	            ma.s_cityId       		,
+	            ma.s_areaId       		,
+	            ma.f_provinceId   		,
+	            ma.f_cityId       		,
+	            ma.f_areaId       		,
+	            ma.s_mobile,
+	            ma.s_receiver,
+	            ma.f_mobile,
+	            ma.f_receiver,
+	            ma.userId,
+	            ma.createTime,
+	            ma.carType,
+	            ma.goodsType,
+	            mb.mobile contactMobile,
+	            count(pdd.id) PDDNum,
+				ma.id AS memberAddressId,
+				ma.isDeleted,
+				pdd.type AS supplySourceType,
+				CASE ma.sendGoodsType
+				WHEN 0 THEN '零担'
+				WHEN 1 THEN '整车'
+				WHEN 2 THEN '不限'
+				ELSE '不限' END AS sendGoodsTypeString,
+				nob.ownerName,
+				nob.ownerMobile,
+				car.carNumber,
+				IF (
+				mc.nst_idCard IS NOT NULL && mc.nstStatus = '1',
+				mc.nst_idCard,
+				''
+				) AS nst_idCard,
+				IF (
+				mc.nst_cardPhotoUrl IS NOT NULL && mc.nstStatus = '1',
+				mc.nst_cardPhotoUrl,
+				''
+				) AS nst_cardPhotoUrl,
+				IF (
+				car.nst_vehiclePhotoUrl IS NOT NULL && mc.nstStatus = '1',
+				car.nst_vehiclePhotoUrl,
+				''
+				) AS nst_vehiclePhotoUrl,
+				IF (
+				car.nst_driverPhotoUrl IS NOT NULL && mc.nstStatus = '1',
+				car.nst_driverPhotoUrl,
+				''
+				) AS nst_driverPhotoUrl
+			FROM member_address ma			
+				LEFT JOIN member_baseinfo mb ON mb.memberId = ma.userId
+				LEFT JOIN nst_order_baseinfo nob ON nob.memberAddressId = ma.id
+				LEFT JOIN product_delivery_detail pdd ON ma.id=pdd.memberAddressId
+				LEFT JOIN cars car ON nob.carId = car.id
+				LEFT JOIN member_certifi mc ON car.userId = mc.memberId				
+			WHERE 1=1 AND (nob.isDeleted IS NULL OR nob.isDeleted='0')
+			<#if id?exists && id!="" >
+				AND ma.id = :id 
+			</#if>
+			<#if nobId?exists && nobId!="" >
+				AND nob.id = :nobId 
+			</#if>			
+		</#if>
+	]]>
+	</sql>
+	
+	
+	<sql id="getByCondition">
+	<![CDATA[
+	select a.*  from (
+          SELECT 
+		        id          		,
+                userId      		,
+                goodsName      		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,
+                isDefault      		,
+                isDeleted      		,
+                sendDate            ,      
+                sendDateType        ,
+                endDate             ,      
+                endDateType         ,      
+                goodsType           ,      
+                totalWeight         ,       
+                totalSize           , 
+                hundredweight       ,             
+                carType             ,        
+                sendGoodsType       ,        
+                price               ,        
+                priceUnitType       ,
+                t.createTime        ,  
+                t.createUserId      ,   
+                t.userType  AS userType ,
+                t.userMobile  AS  userMobile,           
+                m.realName   AS nickName,
+                m.cCityId    AS ccityId
+		FROM   
+		        member_address t , member_baseinfo m
+		WHERE   t.userId=m.memberId
+		        AND t.userType=1 AND (t.isDeleted=0 or t.isDeleted is null)
+		        
+			<#if userId?exists && userId!="" >
+			      AND t.userId =:userId
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND t.s_provinceId =:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND t.s_cityId =:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND t.f_provinceId =:e_provinceId
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND t.f_cityId =:e_cityId
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND t.f_areaId =:e_areaId
+			</#if>
+		
+		UNION ALL
+		
+		SELECT 
+		        id          		,
+                userId      		,
+                goodsName      		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,
+                isDefault      		,
+                isDeleted      		,
+                sendDate            ,      
+                sendDateType        ,
+                endDate             ,      
+                endDateType         ,      
+                goodsType           ,      
+                totalWeight         ,       
+                totalSize           , 
+                hundredweight       ,             
+                carType             ,        
+                sendGoodsType       ,        
+                price               ,        
+                priceUnitType       ,  
+                t2.createTime       ,
+                t2.createUserId     ,  
+                t2.userType  AS userType ,
+                c.mobile  AS  userMobile,           
+                c.linkMan   AS nickName ,
+                mb.cCityId  AS ccityId
+		FROM   
+		        member_address t2 , member_certifi c , member_baseinfo mb
+		WHERE   t2.userId=c.memberId
+		AND     t2.userId=mb.memberId
+		        AND ( t2.userType=2  or  t2.userType is null)
+				AND (t2.isDeleted=0 or t2.isDeleted is null)
+			<#if userId?exists && userId!="" >
+			      AND t2.userId =:userId
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t2.createUserId =:createUserId
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t2.userType =:userType
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND t2.s_provinceId =:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND t2.s_cityId =:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND t2.s_areaId =:s_areaId
+			</#if>
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND t2.f_provinceId =:e_provinceId
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND t2.f_cityId =:e_cityId
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND t2.f_areaId =:e_areaId
+			</#if>
+		        
+		) a order  by a.createTime  DESC
+		  LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	
+	<sql id="getGoodsListCompanyMobile">
+	<![CDATA[
+		SELECT 
+		        id          		,
+                userId      		,
+                goodsName      		,
+                type        		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,
+                userMobile          ,
+                isDefault      		,
+                isDeleted      		,
+                sendDate            ,      
+                sendDateType        ,
+                endDate             ,      
+                endDateType         ,      
+                goodsType           ,      
+                totalWeight         ,       
+                totalSize           , 
+                hundredweight       ,             
+                carType             ,        
+                sendGoodsType       ,        
+                price               ,        
+                priceUnitType       ,  
+                (select d.mobile from member_certifi d   where  t.createUserId=d.memberId LIMIT 1  )  AS  companyMobile,
+                m.realName   AS nickName
+		FROM   
+		        member_address t , member_baseinfo m
+		WHERE   t.createUserId=m.memberId AND (t.isDeleted=0 or t.isDeleted is null)
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+			<#if userId?exists && userId!="" >
+			      AND t.userId =:userId
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND t.s_provinceId =:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND t.s_cityId =:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND t.f_provinceId =:e_provinceId
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND t.f_cityId =:e_cityId
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND t.f_areaId =:e_areaId
+			</#if>
+		ORDER BY t.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="addMemberAddressDTO">
+	<![CDATA[
+	    INSERT INTO  member_address
+	          (
+                userId      		,
+                goodsName           ,
+                type        		,
+                personalLine   		,
+                s_provinceId   		,
+                s_cityId       		,
+                s_areaId       		,
+                s_detail       		,
+                s_detailed_address  ,
+                s_receiver     		,
+                s_zipCode      		,
+                s_mobile       		,
+                s_telPhone     		,
+                f_provinceId   		,
+                f_cityId       		,
+                f_areaId       		,
+                f_detail       		,
+                f_detailed_address  ,
+                f_receiver     		,
+                f_zipCode      		,
+                f_mobile       		,
+                f_telPhone     		,
+                isDefault      		,
+                isDeleted      		,
+                sendDate            ,
+                endDate,      
+                sendDateType        ,
+                endDateType,      
+                goodsType           ,      
+                totalWeight         ,
+                hundredweight       ,     
+                totalSize           ,      
+                carType             ,  
+                carLength           ,      
+                sendGoodsType       ,        
+                price               ,        
+                priceUnitType       ,         
+                userMobile          ,
+                remark              ,
+                createUserId   		,
+                createTime     		,
+                updateUserId   		,
+                userType   			,
+                updateTime     		,
+                <#if clients?exists && clients!="" >
+			      clients,
+				</#if>
+				contactName,
+              	nstRule,           
+               	mileage
+              )
+	        values
+	         ( 
+               :userId          ,   
+               :goodsName       ,
+               :type          	,    
+               :personalLine  	,    
+               :s_provinceId  	,    
+               :s_cityId      	,    
+               :s_areaId      	,    
+               :s_detail      	,
+               :s_detailed_address ,    
+               :s_receiver    	,    
+               :s_zipCode     	,    
+               :s_mobile      	,    
+               :s_telPhone    	,    
+               :f_provinceId  	,    
+               :f_cityId      	,    
+               :f_areaId      	,    
+               :f_detail      	,
+               :f_detailed_address ,    
+               :f_receiver    	,    
+               :f_zipCode     	,    
+               :f_mobile      	,    
+               :f_telPhone    	,    
+               :isDefault     	,    
+               :isDeleted     	, 
+               :sendDateString      ,
+               :endDateString       ,
+               :sendDateType        ,
+               :endDateType         ,       
+               :goodsType           ,      
+               :totalWeight         ,
+               :hundredweight       ,        
+               :totalSize           ,      
+               :carType             ,
+               :carLength            ,        
+               :sendGoodsType       ,        
+               :price               ,        
+               :priceUnitType       ,         
+               :userMobile          , 
+               :remark              ,
+               :createUserId  	    ,    
+                sysdate()           ,    
+               :updateUserId  	    ,    
+               :userType  	        ,    
+               :updateTime          ,
+               <#if clients?exists && clients!="" >
+			      :clients,
+			   </#if>
+			   :contactName,
+				0,
+               :mileage
+              )
+	        
+	]]>
+	</sql>
+	 
+	<sql id="deleteMemberAddressDTO">
+	<![CDATA[
+	DELETE FROM member_address WHERE id=:id
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="updateMemberAddressDTO">
+	<![CDATA[
+	    UPDATE member_address 
+	    SET  
+	    	<#if goodsName?exists && goodsName!="">
+	           goodsName = :goodsName,
+	        </#if>
+	       	<#if goodsType?exists && goodsType!="">
+	           goodsType = :goodsType,
+	        </#if>
+	        <#if updateUserId?exists && updateUserId!="">
+               updateUserId = :updateUserId,
+            </#if>
+            <#if createUserId?exists && createUserId!="">
+               createUserId = :createUserId,
+            </#if>
+            <#if s_provinceId?exists && s_provinceId!="">
+               s_provinceId=:s_provinceId,
+            </#if>
+            <#if s_cityId?exists && s_cityId!="">
+    		   s_cityId = :s_cityId,
+    		</#if>
+    		<#if s_areaId?exists && s_areaId!="">
+    		   s_areaId = :s_areaId,
+    		</#if>
+    		<#if f_provinceId?exists && f_provinceId!="">
+    		   f_provinceId = :f_provinceId,
+    		</#if>
+    		<#if f_cityId?exists && f_cityId!="">
+    		   f_cityId = :f_cityId,
+    		</#if>
+    		<#if f_areaId?exists && f_areaId!="">
+    		   f_areaId = :f_areaId,
+    		</#if>
+    		<#if carType?exists && carType!=""> 
+    		   carType = :carType,
+    		</#if>
+    		<#if carLength?exists && carLength!="">
+    		   carLength = :carLength,
+    		</#if>
+    		   
+    		<#if endDate?exists && endDate!="">
+    		   endDate = :endDateString,
+    		</#if>
+    		<#if sendDateType?exists && sendDateType!="">
+    		   sendDateType = :sendDateType,
+    		</#if>
+    		<#if endDateType?exists && endDateType!="">
+    		   endDateType = :endDateType,
+    		</#if>
+    		<#if totalWeight?exists && totalWeight!="">
+    		   totalWeight = :totalWeight,
+    		</#if>
+    		<#if hundredweight?exists && hundredweight!="">
+               hundredweight = :hundredweight,
+            </#if>
+            <#if sendGoodsType?exists && sendGoodsType!="">
+               sendGoodsType = :sendGoodsType,
+            </#if>
+            <#if price?exists && price!="">      
+               price = :price,
+            </#if>       
+            <#if priceUnitType?exists && priceUnitType!="">       
+               priceUnitType = :priceUnitType,
+            </#if>
+            <#if userMobile?exists && userMobile!="" && userMobile!=0>
+               userMobile = :userMobile,
+            </#if>
+            <#if mileage?exists && mileage!="">
+               mileage = :mileage,
+           	</#if>
+               
+            <#if userId?exists && userId!="">
+               userId = :userId,
+            </#if>
+            <#if createUserId?exists && createUserId!="">
+               createUserId = :createUserId,
+            </#if>
+            <#if contactName?exists && contactName!="">
+               contactName = :contactName,
+            </#if>
+               s_detailed_address = :s_detailed_address,
+               f_detailed_address = :f_detailed_address,
+           	   remark = :remark,
+               sendDate = :sendDateString,
+               totalSize = :totalSize,
+               updateTime = SYSDATE()
+	    WHERE  
+	    	id=:id
+	]]>
+	</sql>
+	
+	
+	 
+		<sql id="listMemberAddressByUserId">
+	<![CDATA[
+		SELECT 
+    id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    createTime,
+    
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+        (SELECT AREA  FROM  AREA  c WHERE c.areaID= s_provinceId limit 1)AS s_provinceIdString ,
+    (SELECT AREA  FROM  AREA   c WHERE c.areaID= s_cityId limit 1)AS s_cityIdString  ,
+    (SELECT AREA  FROM  AREA   c WHERE c.areaID= s_areaId limit 1)AS s_areaIdString  ,
+ 	(SELECT AREA  FROM  AREA   c WHERE c.areaID= f_provinceId limit 1)AS f_provinceIdString  ,
+ 	(SELECT AREA  FROM  AREA  c WHERE c.areaID= f_cityId limit 1)AS f_cityIdString  ,
+ 	(SELECT AREA  FROM  AREA   c WHERE c.areaID= f_areaId limit 1)AS f_areaIdString  ,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,
+        endDate,
+    DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+            CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS sendDateTypeString,
+    endDateType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    goodsType,
+    totalWeight,
+        hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE goodsType
+WHEN 0 THEN '普货'
+WHEN 1 THEN '冷藏'
+WHEN 2 THEN '鲜活水产'
+WHEN 3 THEN '其他'
+WHEN 4 THEN '重货'
+WHEN 5 THEN '抛货'
+WHEN 6 THEN '蔬菜'
+WHEN 7 THEN '水果'
+WHEN 8 THEN '农副产品'
+WHEN 9 THEN '日用品'
+WHEN 10 THEN '纺织'
+WHEN 11 THEN '木材'
+	ELSE '' END   AS goodsTypeString,
+    CASE carType
+	WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+	carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+	WHEN 0 THEN '零担'
+	WHEN 1 THEN '整车'
+	WHEN 2 THEN '不限'
+	ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+	WHEN 0 THEN '元/吨'
+	WHEN 1 THEN '元/公斤'
+	WHEN 2 THEN '元/立方' 
+	WHEN 3 THEN '元/车'
+	END   AS priceUnitTypeString,
+    userMobile,
+    remark
+	FROM member_address
+	where
+		1=1 AND (isDeleted=0 or isDeleted is null)
+	<#if createUserId?exists && createUserId!="" >
+	   AND t.createUserId =:createUserId
+	</#if>
+	<#if userId?exists && userId!="" && userId!=0>
+	   AND t.userId =:userId
+	</#if>
+	ORDER BY createTime DESC
+	]]>
+	</sql>
+	
+	<sql id="replayMemberAddressById">
+	<![CDATA[
+	    UPDATE member_address 
+	    SET    createTime=sysdate(),
+               updateUserId=:updateUserId ,
+               updateTime=sysdate()
+	    WHERE  id=:id
+	]]>
+	</sql>	 
+	
+	
+	<sql id="listMemberAddressByCondition">
+	<![CDATA[
+	select * from (
+SELECT 
+    id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    (SELECT AREA  FROM  AREA  c WHERE c.areaID= t.s_provinceId limit 1)AS s_provinceIdString ,
+    (SELECT AREA  FROM  AREA   c WHERE c.areaID= t.s_cityId limit 1)AS s_cityIdString  ,
+    (SELECT AREA  FROM  AREA   c WHERE c.areaID= t.s_areaId limit 1)AS s_areaIdString  ,
+ 	(SELECT AREA  FROM  AREA   c WHERE c.areaID= t.f_provinceId limit 1)AS f_provinceIdString  ,
+ 	(SELECT AREA  FROM  AREA  c WHERE c.areaID= t.f_cityId limit 1)AS f_cityIdString  ,
+ 	(SELECT AREA  FROM  AREA   c WHERE c.areaID= t.f_areaId limit 1)AS f_areaIdString  ,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE goodsType
+WHEN 0 THEN '普货'
+WHEN 1 THEN '冷藏'
+WHEN 2 THEN '鲜活水产'
+WHEN 3 THEN '其他'
+WHEN 4 THEN '重货'
+WHEN 5 THEN '抛货'
+WHEN 6 THEN '蔬菜'
+WHEN 7 THEN '水果'
+WHEN 8 THEN '农副产品'
+WHEN 9 THEN '日用品'
+WHEN 10 THEN '纺织'
+WHEN 11 THEN '木材'
+ELSE '' END   AS goodsTypeString,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+    (select d.linkMan from   member_certifi d  where  t.createUserId=d.memberId LIMIT 1) as companyContact,
+    (select d.mobile from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyMobile,
+    (select d.companyName from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyName
+FROM member_address t,member_baseinfo c
+WHERE t.userId=c.memberId AND (t.isDeleted=0 or t.isDeleted is null)
+			<#if totalSize?exists && totalSize!="" >
+			      AND t.totalSize <=:totalSize
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND t.s_provinceId =:s_provinceId
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND t.s_cityId =:s_cityId
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 >
+			      AND t.userId =:userId
+			</#if>
+            
+
+           	<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+           
+			     ORDER BY totalWeightString DESC  
+			    <#if totalSize?exists && totalSize!="" >
+			      	,t.totalSize DESC
+				</#if>
+					,t.createTime DESC
+			</#if>	
+			<#if totalWeight == null || totalWeight=='' || totalWeight==0> 
+			     <#if totalSize?exists && totalSize!="" >
+			     		
+			      		ORDER BY t.totalSize DESC ,t.createTime DESC
+				 </#if>
+				 <#if totalSize == null || totalSize=='' || totalSize==0> 
+						ORDER BY t.createTime DESC
+			     </#if>
+			</#if>  ) tem
+			where 1=1
+			<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+			      AND tem.totalWeightString  <=:totalWeight
+			</#if>			
+	]]>
+	</sql>
+	
+		<sql id="getCountByCondition">
+	<![CDATA[
+	
+		select count(id) from (
+SELECT 
+    t.id,
+   
+    CASE
+      hundredweight 
+      WHEN 0 
+      THEN totalWeight 
+      ELSE totalWeight / 1000 
+    END AS totalWeightString,
+    t.createTime ,
+             CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance
+  FROM
+    member_address t 
+    inner JOIN AREA a 
+      ON t.s_cityId = a.areaID 
+  WHERE t.s_cityId > 1 
+    AND t.s_cityId IS NOT NULL
+    AND (t.isDeleted=0 or t.isDeleted is null) 
+			<#if totalSize?exists && totalSize!="" >
+			      AND t.totalSize <=:totalSize
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND t.s_provinceId =:s_provinceId
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND t.s_cityId =:s_cityId
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 >
+			      AND t.userId =:userId
+			</#if>
+								 	 	         <#if userType==null || userType==""|| userType==0 >
+			      and  t.createtime >= date_sub(current_date(),interval 7 day)
+			</#if>
+			union all
+			SELECT 
+    t.id,
+   
+    CASE
+      hundredweight 
+      WHEN 0 
+      THEN totalWeight 
+      ELSE totalWeight / 1000 
+    END AS totalWeightString,
+    t.createTime ,
+                CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE 0  END   AS distance
+FROM member_address t
+WHERE	1=1
+and (t.s_cityId<2 OR t.s_cityId IS NULL)
+and (t.isDeleted=0 or t.isDeleted is null)     
+			<#if totalSize?exists && totalSize!="" >
+			      AND t.totalSize <=:totalSize
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+	<#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>		
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 >
+			      AND t.userId =:userId
+			</#if>
+            					 	 	         <#if userType==null || userType==""|| userType==0 >
+			      and  t.createtime >= date_sub(current_date(),interval 7 day)
+			</#if>
+			
+			 ) tem
+			where 1=1
+
+			<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+			      AND tem.totalWeightString  <=:totalWeight
+			</#if>	
+						<#if distance?exists && distance!=""&& distance!=0>
+			      AND tem.distance  <=:distance
+			</#if>	
+				]]>
+	</sql>
+	
+		<sql id="listMemberAddressByConditionNew">
+	<![CDATA[
+	select * from (
+SELECT 
+    t.id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE goodsType
+WHEN 0 THEN '普货'
+WHEN 1 THEN '冷藏'
+WHEN 2 THEN '鲜活水产'
+WHEN 3 THEN '其他'
+WHEN 4 THEN '重货'
+WHEN 5 THEN '抛货'
+WHEN 6 THEN '蔬菜'
+WHEN 7 THEN '水果'
+WHEN 8 THEN '农副产品'
+WHEN 9 THEN '日用品'
+WHEN 10 THEN '纺织'
+WHEN 11 THEN '木材'
+ELSE '' END   AS goodsTypeString,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+    (select d.linkMan from   member_certifi d  where  t.createUserId=d.memberId LIMIT 1) as companyContact,
+    (select d.mobile from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyMobile,
+    (select d.companyName from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyName,
+    
+         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance
+FROM member_address t LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+
+inner JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	t.s_cityId>1
+AND t.s_cityId IS NOT NULL
+AND (t.isDeleted=0 or t.isDeleted is null)
+			<#if totalSize?exists && totalSize!="" >
+			      AND t.totalSize <=:totalSize
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND t.s_provinceId =:s_provinceId
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND t.s_cityId =:s_cityId
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 >
+			      AND t.userId =:userId
+			</#if>
+          		 	 	         <#if userType==null || userType==""|| userType==0 >
+			      and  t.createtime >= date_sub(current_date(),interval 7 day)
+			</#if>
+          UNION ALL
+SELECT 
+    t.id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE goodsType
+WHEN 0 THEN '普货'
+WHEN 1 THEN '冷藏'
+WHEN 2 THEN '鲜活水产'
+WHEN 3 THEN '其他'
+WHEN 4 THEN '重货'
+WHEN 5 THEN '抛货'
+WHEN 6 THEN '蔬菜'
+WHEN 7 THEN '水果'
+WHEN 8 THEN '农副产品'
+WHEN 9 THEN '日用品'
+WHEN 10 THEN '纺织'
+WHEN 11 THEN '木材'
+ELSE '' END   AS goodsTypeString,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+    (select d.linkMan from   member_certifi d  where  t.createUserId=d.memberId LIMIT 1) as companyContact,
+    (select d.mobile from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyMobile,
+    (select d.companyName from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyName,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1 END   AS distance
+FROM member_address t LEFT JOIN member_baseinfo c 
+
+
+ON t.userId=c.memberId
+WHERE	1=1
+and (t.s_cityId<2 OR t.s_cityId IS NULL) 
+and (t.isDeleted=0 or t.isDeleted is null)    
+			<#if totalSize?exists && totalSize!="" >
+			      AND t.totalSize <=:totalSize
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if userType?exists && userType!="" >
+			      AND t.userType =:userType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 >
+			      AND t.userId =:userId
+			</#if>
+					 	 	         <#if userType==null || userType==""|| userType==0 >
+			      and  t.createtime >= date_sub(current_date(),interval 7 day)
+			</#if>
+           ) tem
+			where 1=1
+
+
+			<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+			      AND tem.totalWeightString  <=:totalWeight
+			</#if>	
+			<#if distance?exists && distance!=""&& distance!=0>
+			      AND tem.distance  <=:distance
+			</#if>	
+			<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+			     ORDER BY totalWeightString DESC  
+			    <#if totalSize?exists && totalSize!="" >
+			      	,tem.totalSize DESC
+				</#if>
+					,(CASE tem.distance WHEN -1 THEN 0 ELSE -1 END),tem.distance,tem.createTime DESC	
+			</#if>	
+			<#if totalWeight == null || totalWeight=='' || totalWeight==0> 
+			     <#if totalSize?exists && totalSize!="" >
+			      		ORDER BY tem.totalSize DESC ,(CASE tem.distance WHEN -1 THEN 0 ELSE -1 END),tem.distance ,tem.createTime DESC	
+				 </#if>
+				 <#if totalSize == null || totalSize=='' || totalSize==0> 
+						ORDER BY (CASE tem.distance WHEN -1 THEN 0 ELSE -1 END),tem.distance , tem.createTime DESC	
+			     </#if>
+			</#if>
+			
+			 LIMIT :startRow,:endRow			
+	]]>
+	</sql>
+	
+			<sql id="getMebApiMessage">
+	<![CDATA[
+	select * from (
+SELECT 
+    t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    c.realName AS contact,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance
+    
+FROM member_address t LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+inner JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	t.s_cityId>1
+AND t.s_cityId IS NOT NULL
+AND (t.isDeleted=0 or t.isDeleted is null)
+           	<#if totalSize?exists && totalSize!="" >
+			      AND IFNULL(t.carlength,0) <=:totalSize
+			</#if> 
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3) 
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND (t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	
+
+          
+          UNION ALL
+SELECT 
+        t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    c.realName AS contact,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE 0 END   AS distance
+FROM member_address t LEFT JOIN member_baseinfo c 
+
+
+ON t.userId=c.memberId
+WHERE	1=1
+and (t.s_cityId<2 OR t.s_cityId IS NULL)
+and (t.isDeleted=0 or t.isDeleted is null)   
+           	<#if totalSize?exists && totalSize!="" >
+			      AND IFNULL(t.carlength,0) <=:totalSize
+			</#if>  
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3 )
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND ( t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	
+
+           ) tem
+			where 1=1
+		    and  TO_DAYS( NOW( ) ) - TO_DAYS( tem.createTime) <= 3			
+			ORDER BY tem.createTime DESC	
+			limit 0,5			
+	]]>
+	</sql>
+	<!-- 去掉区域匹配    
+				<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =:s_areaId2 or t.s_areaId =:s_areaId3)
+			</#if>
+						<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND ( t.f_areaId =:f_areaId or t.f_areaId =:f_areaId2 or t.f_areaId =:f_areaId3 or t.f_areaId =:f_areaId4 or t.f_areaId =:f_areaId5)
+			</#if>	
+						<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =:s_areaId2 or t.s_areaId =:s_areaId3)
+			</#if>
+						<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND ( t.f_areaId =:f_areaId or t.f_areaId =:f_areaId2 or t.f_areaId =:f_areaId3 or t.f_areaId =:f_areaId4 or t.f_areaId =:f_areaId5)
+			</#if>	
+			-->
+	
+	<sql id="getmemberAddressId">
+	<![CDATA[
+	select id
+	from member_address
+	where 
+	userId=:userId
+	and userId is not null
+	and (isDeleted=0 or isDeleted is null)
+	order by createTime desc
+	limit 1
+		]]>
+	</sql>
+	
+	
+		<sql id="getCarlineApiMessage">
+	<![CDATA[
+		 SELECT 
+	    * FROM(
+	    SELECT a.id,
+	    
+	    b.carType,
+	       CASE b.carType
+	WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+	    b.carLength,
+	    a.createTime,
+	    
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( c.lng -:mlng), 2) + POW( ABS( c.lat-   :mlat), 2 ))*111  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m ,
+  AREA c
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND c.areaId=a.s_cityId
+  AND a.s_cityId>1
+  AND (a.isDeleted=0 or a.isDeleted is null)
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength >=:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+				UNION ALL
+			SELECT     a.id,
+	    b.carType,
+	        CASE b.carType
+	WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+	    b.carLength,
+	    a.createTime,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE 0  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND (a.s_cityId<  2  OR a.s_cityId IS NULL)
+  AND (a.isDeleted=0 or a.isDeleted is null)
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength >=:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId or a.s_provinceId =0  OR  a.s_provinceId2 =0 OR  a.s_provinceId3 =0 )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId or a.s_cityId =0 OR a.s_cityId2 =0 OR a.s_cityId3 =0)
+ 			</#if>
+
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId or  a.e_provinceId =0 OR a.e_provinceId2 =0 OR a.e_provinceId3 =0 OR a.e_provinceId4 =0  OR a.e_provinceId5 =0  )
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId or   a.e_cityId =0 OR a.e_cityId2 =0 OR a.e_cityId3 =0 OR a.e_cityId4 =0 OR a.e_cityId5 =0 )
+			</#if>) t
+			where  t.createtime >= DATE_SUB(CURRENT_DATE(),INTERVAL 3 DAY)		
+			     
+			<#if carLineIds?exists && carLineIds?size gt 0 >
+			      AND t.id NOT IN
+		  			<#assign n = carLineIds?size />
+					<#if n gt 0>
+							(
+						<#list carLineIds as carLineId>
+							<#if carLineId_index != n-1>
+									${carLineId} ,
+								<#else>
+									${carLineId}
+							</#if>
+						</#list>
+							) 
+					</#if>
+			</#if>
+		    order by t.createTime desc
+			limit 0,5
+			]]>
+	</sql>
+	<!-- 去掉区域的条件 	2016-1-5
+				<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>	
+				<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId or a.s_areaId =0 OR a.s_areaId2 =0 OR a.s_areaId3 =0)
+			</#if>
+		<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if> -->
+	
+	 <sql id="addnstpushmessage">
+	<![CDATA[
+	    INSERT INTO  nstpush_message
+	          (
+              memberId ,              
+              type ,           
+              mbId ,
+              cityId,
+              createUserId,
+              createTime,
+              updateUserId,          
+              updateTime,
+              readed,
+              source_type
+                     
+              )
+	        values
+	         (
+	          :memberId ,              
+              1,           
+              :mbId ,
+              :cityId,
+              :createUserId,
+              sysdate(),          
+              :updateUserId, 
+              sysdate() ,
+              0,
+              :source_type           
+              )
+	        
+	]]>
+	</sql>
+	
+	<sql id="addnstpushlinemessage">
+	<![CDATA[
+	    INSERT INTO  nstpush_message
+	          (
+              memberId ,              
+              type ,           
+              clId ,
+              cityId,
+              createUserId,
+              createTime,
+              updateUserId,          
+              updateTime,
+              readed,
+              source_type
+                     
+              )
+	        values
+	         (
+	          :memberId ,              
+              2,           
+              :clId ,
+              :cityId,
+              :createUserId,
+              sysdate(),          
+              :updateUserId, 
+              sysdate() ,
+              0,
+              :source_type           
+              )
+	        
+	]]>
+	</sql>
+	
+     <sql id="getnstpushmessage">
+	<![CDATA[
+	
+	SELECT id FROM nstpush_message WHERE memberId= :memberId   AND TYPE=1 AND mbId=:mbId ORDER BY createTime DESC LIMIT 1
+	
+	]]>
+	</sql>
+	
+	<sql id="getnstpushlinemessage">
+	<![CDATA[
+	
+	SELECT id FROM nstpush_message WHERE memberId= :memberId   AND TYPE=2 AND clId=:clId ORDER BY createTime DESC LIMIT 1
+	
+	]]>
+	</sql>
+	
+	<sql id="getNstpushMessageById">
+	<![CDATA[
+		SELECT memberId as userId,mbId,cityId,clId FROM nstpush_message WHERE id= :id 
+		 AND IFNULL(source_type,0) = :source_type
+	]]>
+	</sql>
+	
+	<sql id="addnstpushmessageinfo">
+	<![CDATA[
+	    INSERT INTO  nstpush_message_info
+	          (
+              messageId ,                        
+              cl_Id ,
+              carType,
+              carLength,
+              createTime,
+              mCity,
+              distance 
+                     
+              )
+	        values
+	         (
+	          :messageId ,                 
+              :cl_Id ,
+              :carType,
+             :carLength,
+              sysdate(),
+              :mCity,
+              :distance        
+              )
+	        
+	]]>
+	</sql>
+	
+	
+	<sql id="addnstpushlinemessageinfo">
+	<![CDATA[
+	    INSERT INTO  nstpush_message_info
+	          (
+              messageId ,                        
+              mb_Id ,
+              carType,
+              carLength,
+              createTime,
+              mCity,
+              distance 
+                     
+              )
+	        values
+	         (
+	          :messageId ,                 
+              :mb_Id ,
+              :carType,
+             :carLength,
+              sysdate(),
+              :mCity,
+              :distance        
+              )
+	        
+	]]>
+	</sql>
+	
+	 <sql id="updateMemberAdressStatusByid">
+		<![CDATA[
+		  	UPDATE member_address SET isDeleted=1 
+		  	WHERE id IN
+		  	<#assign n = memberAdressIds?size />
+			<#if n gt 0>
+				(
+				<#list memberAdressIds as memberAdressId>
+					<#if memberAdressId_index != n-1>
+							${memberAdressId} ,
+						<#else>
+							${memberAdressId}
+					</#if>
+				</#list>
+				) 
+			</#if>
+	  	]]>
+	</sql>
+
+			<sql id="getMebApiMessageCount">
+	<![CDATA[
+	select count(*) from (
+SELECT 
+    t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance
+    
+FROM member_address t 
+inner JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	t.s_cityId>1
+AND t.s_cityId IS NOT NULL
+			<#if totalSize?exists && totalSize!="" >
+			      AND t.totalSize >=:totalSize
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3) 
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND (t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	
+
+          
+          UNION ALL
+SELECT 
+        t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE 0 END   AS distance
+FROM member_address t 
+WHERE	1=1
+and (t.s_cityId<2 OR t.s_cityId IS NULL)   
+           	<#if totalSize?exists && totalSize!="" >
+			      AND t.totalSize >=:totalSize
+			</#if>  
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3 )
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND ( t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	
+
+           ) tem
+			where 1=1
+		     and  TO_DAYS( NOW( ) ) - TO_DAYS( tem.createTime) <= 3
+			    AND tem.distance <100		
+	]]>
+	</sql>
+	
+	
+	<sql id="getMebApiMessage2">
+	<![CDATA[
+	select * from (
+SELECT 
+    t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    c.realName AS contact,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance
+    
+FROM member_address t LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+inner JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	t.s_cityId>1
+AND t.s_cityId IS NOT NULL
+AND (t.isDeleted=0 or t.isDeleted is null)
+and  t.createtime >= date_sub(current_date(),interval 3 day)
+
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3) 
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND (t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	          
+          UNION ALL
+SELECT 
+        t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    c.realName AS contact,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE 0 END   AS distance
+FROM member_address t LEFT JOIN member_baseinfo c 
+
+
+ON t.userId=c.memberId
+WHERE	1=1
+and (t.s_cityId<2 OR t.s_cityId IS NULL)
+and (t.isDeleted=0 or t.isDeleted is null) 
+and  t.createtime >= date_sub(current_date(),interval 3 day)
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3 )
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND ( t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	
+
+           ) tem
+			where 1=1
+			AND tem.distance <100  
+			<#if size?exists && size!=""&& size==1>
+			     and tem.id!=:id0
+			</#if>
+						<#if size?exists && size!=""&& size==2>
+			  and tem.id not in (:id0,:id1)
+			</#if>
+						<#if size?exists && size!=""&& size==3>
+			and tem.id not in (:id0,:id1,:id2)
+			</#if>
+						<#if size?exists && size!=""&& size==4>
+			and tem.id not in (:id0,:id1,:id2,:id3)
+			</#if>
+			ORDER BY tem.createTime DESC	
+			limit :startRow,:endRow			
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="getMebApiMessageAagin">
+	<![CDATA[
+	select * from (
+SELECT 
+    t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    c.realName AS contact,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance
+    
+FROM member_address t LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+inner JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	t.s_cityId>1
+AND t.s_cityId IS NOT NULL
+AND (t.isDeleted=0 or t.isDeleted is null)
+           	<#if totalSize?exists && totalSize!="" >
+			      AND IFNULL(t.carlength,0) <=:totalSize
+			</#if> 
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3) 
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND (t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	
+
+          
+          UNION ALL
+SELECT 
+        t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    hundredweight,
+    goodsName,
+    userMobile,
+    c.realName AS contact,
+    t.userType,
+    t.createTime,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE 0 END   AS distance
+FROM member_address t LEFT JOIN member_baseinfo c 
+
+
+ON t.userId=c.memberId
+WHERE	1=1
+and (t.s_cityId<2 OR t.s_cityId IS NULL)
+and (t.isDeleted=0 or t.isDeleted is null)   
+           	<#if totalSize?exists && totalSize!="" >
+			      AND IFNULL(t.carlength,0) <=:totalSize
+			</#if>  
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId or t.s_provinceId =:s_provinceId2 or t.s_provinceId =:s_provinceId3 )
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =:s_cityId2 or t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND ( t.f_provinceId =:f_provinceId or t.f_provinceId =:f_provinceId2 or t.f_provinceId =:f_provinceId3 or t.f_provinceId =:f_provinceId4 or t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId or t.f_cityId =:f_cityId2 or t.f_cityId =:f_cityId3 or t.f_cityId =:f_cityId4 or t.f_cityId =:f_cityId5 )
+			</#if>	
+
+           ) tem
+			where 1=1
+		     and  TO_DAYS( NOW( ) ) - TO_DAYS( tem.createTime) <= 3
+			    AND tem.distance <100
+			    and tem.id not in (SELECT mb_Id FROM nstpush_message  a ,nstpush_message_info b WHERE  a.id=b.messageId  AND a.clId=:carLindId)
+			ORDER BY tem.createTime DESC	
+			limit 0,5			
+	]]>
+	</sql>
+
+	
+	<sql id="getCarLinesBymessageId">
+		<![CDATA[
+			SELECT cl_Id FROM nstpush_message_info 
+			   WHERE messageId in (SELECT id FROM nstpush_message t WHERE t.mbId=:id)
+	  	]]>
+	</sql>
+	
+	<sql id="getCarLinesByClId">
+		<![CDATA[
+			SELECT mb_Id FROM nstpush_message_info 
+			 WHERE messageId in (SELECT id FROM nstpush_message t WHERE t.clId=:id)
+	  	]]>
+	</sql>
+	
+	<sql id="getNotOverdueMinMemberAddressId">
+		<![CDATA[
+			SELECT id FROM member_address WHERE createTime>=date_sub(CURRENT_DATE (),INTERVAL 7 DAY)  LIMIT 1
+		]]>
+	</sql>
+
+	<sql id="listMemberAddressByConditionNewNst2">
+	<![CDATA[
+	select * from (
+SELECT 
+    t.id,
+    IFNULL(mileage,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+    (select d.linkMan from   member_certifi d  where  t.createUserId=d.memberId LIMIT 1) as companyContact,
+    (select d.mobile from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyMobile,
+    (select d.companyName from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyName,
+     (SELECT d.andupurl FROM member_baseinfo d   WHERE  t.createUserId=d.memberId LIMIT 1)  AS andupurl,
+         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance,
+	IFNULL(nob.orderStatus ,0) orderStatus
+    
+FROM member_address t LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+LEFT JOIN  nst_order_baseinfo  nob ON t.id =nob.memberAddressId  AND  nob.orderStatus not in (5,4)
+inner JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	t.s_cityId>1
+AND t.s_cityId IS NOT NULL
+
+AND (t.isDeleted=0 or t.isDeleted is null)
+			<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			       			       <#if weightCondition2==0 >
+			          AND t.totalWeight =:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+			<#if sizeCondition1?exists && sizeCondition1!="" >
+			    <#if sizeCondition1==0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			    </#if>
+			    <#if sizeCondition1!=0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			       <#if sizeCondition2==0 >
+			          AND t.totalSize =:sizeCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+									<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  (carLength < 4.2 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (carLength >= :carLengthCondition1 and carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and carLength = :carLengthCondition1 
+				</#if>
+			</#if>
+				<#if totalSize?exists && totalSize!="" && totalSize!=0 >
+			      AND t.totalSize <=:totalSize
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0 >
+			      			      				<#if  carLength==-1>
+					and (carLength < 4.2 or carLength=0)
+				</#if>
+				<#if  carLength==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+								<#if  carLength!=-1 && carLength!=-2>
+					and carLength =:carLength
+				</#if>
+			</#if>
+			<#if goodsType?exists && goodsType!=""  >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 && userId!=-1 >
+			      AND t.userId =:userId
+			</#if>
+          		 	 	         <#if (userType==null || userType==""|| userType==0) && minMemberAddressId?exists && minMemberAddressId!=""   >
+			      and  t.id > :minMemberAddressId
+			</#if>
+          UNION ALL
+SELECT 
+    t.id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+    (select d.linkMan from   member_certifi d  where  t.createUserId=d.memberId LIMIT 1) as companyContact,
+    (select d.mobile from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyMobile,
+    (select d.companyName from member_certifi d   where  t.createUserId=d.memberId LIMIT 1)  as companyName,
+     (SELECT d.andupurl FROM member_baseinfo d   WHERE  t.createUserId=d.memberId LIMIT 1)  AS andupurl,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1 END   AS distance,
+	IFNULL(nob.orderStatus ,0) orderStatus
+FROM member_address t LEFT JOIN member_baseinfo c ON t.userId=c.memberId
+LEFT JOIN  nst_order_baseinfo  nob ON t.id =nob.memberAddressId AND  nob.orderStatus not in (5,4)
+
+
+WHERE	1=1
+
+and (t.s_cityId<2 OR t.s_cityId IS NULL) 
+and (t.isDeleted=0 or t.isDeleted is null)    
+				<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			       			       <#if weightCondition2==0 >
+			          AND t.totalWeight =:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+			<#if sizeCondition1?exists && sizeCondition1!="" >
+			    <#if sizeCondition1==0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			    </#if>
+			    <#if sizeCondition1!=0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			       <#if sizeCondition2==0 >
+			          AND t.totalSize =:sizeCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+									<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  (carLength < 4.2 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (carLength >= :carLengthCondition1 and carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and carLength = :carLengthCondition1 
+				</#if>
+			</#if>
+			<#if totalSize?exists && totalSize!="" && totalSize!=0 >
+			      AND t.totalSize =:totalSize
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0 >
+			      			      				<#if  carLength==-1>
+					and (carLength < 4.2 or carLength=0)
+				</#if>
+				<#if  carLength==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+								<#if  carLength!=-1 && carLength!=-2>
+					and carLength =:carLength
+				</#if>
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 && userId!=-1>
+			      AND t.userId =:userId
+			</#if>
+					 	 	         <#if (userType==null || userType==""|| userType==0) && minMemberAddressId?exists && minMemberAddressId!=""  >
+			      and  t.id > :minMemberAddressId
+			</#if>
+           ) tem
+			where 1=1
+            and tem.orderStatus=0
+
+			<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+			      AND tem.totalWeightString  <=:totalWeight
+			</#if>	
+			<#if distance?exists && distance!=""&& distance!=0>
+			      AND tem.distance  <=:distance
+			</#if>	
+			<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+			     ORDER BY tem.createTime DESC	,totalWeightString DESC  
+			    <#if totalSize?exists && totalSize!="" >
+			      	,tem.totalSize DESC
+				</#if>
+					,(CASE tem.distance WHEN -1 THEN 0 ELSE -1 END),tem.distance
+			</#if>	
+			<#if totalWeight == null || totalWeight=='' || totalWeight==0> 
+			     <#if totalSize?exists && totalSize!="" >
+			      		ORDER BY tem.createTime DESC, tem.totalSize DESC ,(CASE tem.distance WHEN -1 THEN 0 ELSE -1 END),tem.distance
+				 </#if>
+				 <#if totalSize == null || totalSize=='' || totalSize==0> 
+						ORDER BY tem.createTime DESC,(CASE tem.distance WHEN -1 THEN 0 ELSE -1 END),tem.distance 	
+			     </#if>
+			</#if>
+			
+			 LIMIT :startRow,:endRow			
+	]]>
+	</sql>
+	
+		<sql id="getMemberAddressByCarLine">
+	<![CDATA[
+	select * from (
+	SELECT 
+    t.id,
+    userId,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    totalWeight,
+    goodsName,
+    userMobile,
+    c.realName AS contact,
+    t.userType,
+     totalSize,
+            CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,
+    t.createTime,
+     t.createUserId,
+    IFNULL(nob.orderStatus ,0) orderStatus
+FROM member_address t  LEFT JOIN    nst_order_baseinfo  nob ON t.id =nob.memberAddressId AND  nob.orderStatus not in (5,4)
+LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+WHERE	1=1
+ AND (t.isDeleted=0 OR t.isDeleted IS NULL)
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND (t.s_provinceId =:s_provinceId OR t.s_provinceId =:s_provinceId2 OR t.s_provinceId =:s_provinceId3) 
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId OR t.s_cityId =:s_cityId2 OR t.s_cityId =:s_cityId3)
+			</#if>		
+
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND (t.f_provinceId =:f_provinceId OR t.f_provinceId =:f_provinceId2 OR t.f_provinceId =:f_provinceId3 OR t.f_provinceId =:f_provinceId4 OR t.f_provinceId =:f_provinceId5)
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND (t.f_cityId =:f_cityId OR t.f_cityId =:f_cityId2 OR t.f_cityId =:f_cityId3 OR t.f_cityId =:f_cityId4 OR t.f_cityId =:f_cityId5 )
+			</#if>	
+						<#if userId?exists && userId!=""&& userId!=0>
+					and 	t.createUserId=:userId
+			</#if>
+			 and  t.createtime >= date_sub(current_date(),INTERVAL 7 DAY)) ta
+			 where ta.orderStatus=0
+			ORDER BY  ta.createTime DESC 
+				]]>
+	</sql>
+			<sql id="getMemberAddressByIdNst2">
+	<![CDATA[
+	SELECT 
+    t.id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+    (SELECT d.linkMan FROM   member_certifi d  WHERE  t.createUserId=d.memberId LIMIT 1) AS companyContact,
+    (SELECT d.mobile FROM member_certifi d   WHERE  t.createUserId=d.memberId LIMIT 1)  AS companyMobile,
+    (SELECT d.companyName FROM member_certifi d   WHERE  t.createUserId=d.memberId LIMIT 1)  AS companyName,
+     (SELECT d.andupurl FROM member_baseinfo d   WHERE  t.createUserId=d.memberId LIMIT 1)  AS andupurl,
+         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance,
+	IFNULL(nob.orderStatus ,0) orderStatus,
+	nob.id as idss
+    
+FROM member_address t LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+LEFT JOIN  nst_order_baseinfo  nob ON t.id =nob.memberAddressId AND nob.orderStatus NOT IN  (5,4)  
+LEFT JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	1=1
+
+AND (t.isDeleted=0 OR t.isDeleted IS NULL)
+AND t.id=:id
+ ORDER BY nob.id DESC
+  LIMIT 1
+					]]>
+	</sql>
+	<sql id="getCountByConditionNst2">
+	<![CDATA[
+	select count(*) from (
+SELECT 
+    t.id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE goodsType
+WHEN 0 THEN '普货'
+WHEN 1 THEN '冷藏'
+WHEN 2 THEN '鲜活水产'
+WHEN 3 THEN '其他'
+WHEN 4 THEN '重货'
+WHEN 5 THEN '抛货'
+WHEN 6 THEN '蔬菜'
+WHEN 7 THEN '水果'
+WHEN 8 THEN '农副产品'
+WHEN 9 THEN '日用品'
+WHEN 10 THEN '纺织'
+WHEN 11 THEN '木材'
+ELSE '' END   AS goodsTypeString,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( a.lng -:mlng), 2) + POW( ABS( a.lat-   :mlat), 2 ))*111  END   AS distance
+FROM member_address t LEFT JOIN member_baseinfo c 
+ON t.userId=c.memberId
+inner JOIN AREA a
+ON t.s_cityId=a.areaID
+WHERE	t.s_cityId>1
+AND t.s_cityId IS NOT NULL
+
+AND (t.isDeleted=0 or t.isDeleted is null)
+			<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			       			       <#if weightCondition2==0 >
+			          AND t.totalWeight =:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+					<#if sizeCondition1?exists && sizeCondition1!="" >
+			    <#if sizeCondition1==0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			    </#if>
+			    <#if sizeCondition1!=0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			       <#if sizeCondition2==0 >
+			          AND t.totalSize =:sizeCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+							<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  (carLength < 4.2 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (carLength >= :carLengthCondition1 and carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and carLength = :carLengthCondition1 
+				</#if>
+			</#if>
+			<#if totalSize?exists && totalSize!="" && totalSize!=0 >
+			      AND t.totalSize =:totalSize
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0 >
+			      			      				<#if  carLength==-1>
+					and (carLength < 4.2 or carLength=0)
+				</#if>
+				<#if  carLength==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+												<#if  carLength!=-1 && carLength!=-2>
+					and carLength =:carLength
+				</#if>
+			</#if>
+			<#if goodsType?exists && goodsType!=""  >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>			
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 && userId!=-1 >
+			      AND t.userId =:userId
+			</#if>
+          		 	 	         <#if (userType==null || userType==""|| userType==0) && minMemberAddressId?exists && minMemberAddressId!=""   >
+			      and t.id > :minMemberAddressId
+			</#if>
+          UNION ALL
+SELECT 
+    t.id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE goodsType
+WHEN 0 THEN '普货'
+WHEN 1 THEN '冷藏'
+WHEN 2 THEN '鲜活水产'
+WHEN 3 THEN '其他'
+WHEN 4 THEN '重货'
+WHEN 5 THEN '抛货'
+WHEN 6 THEN '蔬菜'
+WHEN 7 THEN '水果'
+WHEN 8 THEN '农副产品'
+WHEN 9 THEN '日用品'
+WHEN 10 THEN '纺织'
+WHEN 11 THEN '木材'
+ELSE '' END   AS goodsTypeString,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+        endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    t.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    remark,
+     CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1 END   AS distance
+FROM member_address t LEFT JOIN member_baseinfo c  ON t.userId=c.memberId
+
+
+WHERE	1=1
+
+and (t.s_cityId<2 OR t.s_cityId IS NULL) 
+and (t.isDeleted=0 or t.isDeleted is null)    
+			<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+			       </#if>
+			       			       <#if weightCondition2==0 >
+			          AND t.totalWeight =:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+				<#if sizeCondition1?exists && sizeCondition1!="" >
+			    <#if sizeCondition1==0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			    </#if>
+			    <#if sizeCondition1!=0 >
+			       <#if sizeCondition2!=0 >
+			          AND (t.totalSize >=:sizeCondition1 and  t.totalSize <=:sizeCondition2)
+			       </#if>
+			       <#if sizeCondition2==0 >
+			          AND t.totalSize =:sizeCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+						<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  (carLength < 4.2 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (carLength >= :carLengthCondition1 and carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and carLength = :carLengthCondition1 
+				</#if>
+			</#if>
+			<#if totalSize?exists && totalSize!="" && totalSize!=0 >
+			      AND t.totalSize =:totalSize
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0 >
+			      			      				<#if  carLength==-1>
+					and (carLength < 4.2  or carLength=0)
+				</#if>
+				<#if  carLength==-2>
+					and (carLength >18 or carLength=0)
+				</#if>
+								<#if  carLength!=-1 && carLength!=-2>
+					and carLength =:carLength
+				</#if>
+			</#if>
+			<#if goodsType?exists && goodsType!="" >
+			      AND t.goodsType =:goodsType
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND t.carType =:carType
+			</#if>	
+			<#if id?exists && id!=""&& id!=0 >
+			      AND t.id =:id
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			<#if sendDate?exists && sendDate!="" >
+			      AND t.sendDate =:sendDate
+			</#if>	
+			<#if sendDateType?exists && sendDateType!="" >
+			      AND t.sendDateType =:sendDateType
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId =:createUserId
+			</#if>
+				<#if userId?exists && userId!=""&& userId!=0 && userId!=-1 >
+			      AND t.userId =:userId
+			</#if>
+			<#if (userType==null || userType==""|| userType==0) && minMemberAddressId?exists && minMemberAddressId!="" >
+			      and  t.id > :minMemberAddressId
+			</#if>
+           ) tem
+			where 1=1
+
+
+			<#if totalWeight?exists && totalWeight!=""&& totalWeight!=0>
+			      AND tem.totalWeightString  <=:totalWeight
+			</#if>	
+			<#if distance?exists && distance!=""&& distance!=0>
+			      AND tem.distance  <=:distance
+			</#if>		
+	]]>
+	</sql>
+	
+		<sql id="checkCity">
+	<![CDATA[
+	SELECT COUNT(*)  FROM AREA a ,area_config b WHERE a.areaID=b.areaID AND a.area=:mcity AND b.status=0
+	]]>
+	</sql>
+			<sql id="getMemberAddressByUserCondition">
+	<![CDATA[
+	SELECT 
+    t.id,
+    IFNULL(mileage ,-1) mileage,
+    userId,
+    t.TYPE,
+    personalLine,
+    s_provinceId,
+    s_cityId,
+    s_areaId,
+    s_detail,
+    s_receiver,
+    s_zipCode,
+    s_mobile,
+    s_telPhone,
+    f_provinceId,
+    f_cityId,
+    f_areaId,
+    f_detail,
+    f_receiver,
+    f_zipCode,
+    f_mobile,
+    f_telPhone,
+    sendDate,
+    DATE_FORMAT(sendDate,'%Y-%c-%d')    AS sendDateString  ,    
+        CASE sendDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sendDateType,
+        CASE sendDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上'
+ELSE '不限' END   AS sendDateTypeString,
+    totalWeight,
+    hundredweight,
+    CASE
+    hundredweight 
+    WHEN 0 THEN '吨'
+    WHEN 1 THEN '公斤'
+    END AS hundredweightString,
+    totalSize,
+    carType,
+    goodsType,
+    CASE carType
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' END   AS carTypeString,
+carLength,
+    sendGoodsType,
+        CASE sendGoodsType
+WHEN 0 THEN '零担'
+WHEN 1 THEN '整车'
+WHEN 2 THEN '不限'
+ELSE '不限' END   AS sendGoodsTypeString,
+    goodsName,
+    price,
+    priceUnitType,
+            CASE priceUnitType
+WHEN 0 THEN '元/吨'
+WHEN 1 THEN '元/公斤'
+WHEN 2 THEN '元/立方'
+WHEN 3 THEN '元/车'
+ELSE '' END   AS priceUnitTypeString,
+    userMobile,
+    c.realName AS contact,
+    nstRule,
+    endDate,
+        DATE_FORMAT(endDate,'%Y-%c-%d')    AS endDateString  ,
+    endDateType,
+    c.userType,
+        CASE endDateType
+WHEN 0 THEN '上午'
+WHEN 1 THEN '中午'
+WHEN 2 THEN '下午'
+WHEN 3 THEN '晚上' 
+ELSE '不限' END   AS endDateTypeString,
+    c.sex,
+    t.createTime ,
+    DATE_FORMAT( t.createTime,'%Y-%c-%d')    AS createTimeString ,
+    t.createUserId,
+    t.createUserId oldCreatUserId	,
+        CASE
+    hundredweight 
+    WHEN 0 THEN totalWeight
+    ELSE  totalWeight/1000
+    END AS totalWeightString	,
+    (SELECT d.companyName FROM member_certifi d   WHERE  t.createUserId=d.memberId LIMIT 1)  AS companyName,
+    remark,
+    mc.linkMan as companyContact,
+    mc.mobile as companyMobile
+FROM member_address t 
+INNER JOIN member_baseinfo c  ON t.userId=c.memberId
+LEFT JOIN member_certifi mc ON mc.memberId=t.createUserId
+WHERE	1=1
+AND (t.isDeleted=0 or t.isDeleted is null)
+				<#if weightCondition1?exists && weightCondition1!="" >
+				    <#if weightCondition1==0 >
+				       <#if weightCondition2!=0 >
+				          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+				       </#if>
+				    </#if>
+				    <#if weightCondition1!=0 >
+				       <#if weightCondition2!=0 >
+				          AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+				       </#if>
+				       	<#if weightCondition2==0 >
+				          AND t.totalWeight =:weightCondition1 
+				       </#if>
+				    </#if>
+				 </#if>
+			 <#if goodsName?exists && goodsName!="">
+			      AND t.goodsName like "%":goodsName"%"
+			</#if>	
+			<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+			      AND t.s_provinceId =:s_provinceId
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND t.s_cityId =:s_cityId
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND t.s_areaId =:s_areaId
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+     		<#if userType?exists && userType!=""&& userType==2  >
+			      AND (t.createUserId =:userId  or t.userId =:userId) AND t.createTime >= date_sub(current_date(),INTERVAL 3 DAY)
+			</#if>
+			<#if userType?exists && userType!=""&& userType==1 >
+			      AND t.userId =:userId
+			</#if>
+			
+			<#if beginTime?exists && beginTime!="" >
+			 	<#if endTime?exists && endTime!="" >
+			     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <=DATE_FORMAT(:endTime, '%Y-%c-%d')
+			     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') >=DATE_FORMAT(:beginTime, '%Y-%c-%d')
+				</#if> 
+				<#if endTime==null || endTime=="" >
+			     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') =DATE_FORMAT(:beginTime, '%Y-%c-%d')
+				</#if> 
+			</#if> 
+			<#if beginTime==null || beginTime=="" >
+			     				 	<#if endTime?exists && endTime!="" >
+			     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') =DATE_FORMAT(:endTime, '%Y-%c-%d')
+			     	
+				</#if> 
+			</#if> 
+            order by t.createTime DESC
+            <#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+				]]>
+	</sql>
+	
+	
+	<sql id="getMemberAddressByUserConditionCount">
+		<![CDATA[
+				SELECT 
+				   count(*)
+				FROM member_address t INNER JOIN member_baseinfo c  ON t.userId=c.memberId
+				WHERE	1=1
+				AND (t.isDeleted=0 or t.isDeleted is null)
+				<#if weightCondition1?exists && weightCondition1!="" >
+					<#if weightCondition1==0 >
+						<#if weightCondition2!=0 >
+							AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+						</#if>
+					</#if>
+					<#if weightCondition1!=0 >
+						<#if weightCondition2!=0 >
+							AND (t.totalWeight >=:weightCondition1 and  t.totalWeight <=:weightCondition2)
+						</#if>
+						<#if weightCondition2==0 >
+						    AND t.totalWeight =:weightCondition1 
+						</#if>
+					</#if>
+				 </#if>
+				<#if goodsName?exists && goodsName!="">
+				 	AND t.goodsName like "%":goodsName"%"
+				</#if>	
+				<#if s_provinceId?exists && s_provinceId!=""&& s_provinceId!=0>
+					AND t.s_provinceId =:s_provinceId
+				</#if>		
+				<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+					AND t.s_cityId =:s_cityId
+				</#if>		
+				<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+					AND t.s_areaId =:s_areaId
+				</#if>
+				<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+				 	AND t.f_provinceId =:f_provinceId
+				</#if>		
+				<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+				 	AND t.f_cityId =:f_cityId
+				</#if>	
+				<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+				 	AND t.f_areaId =:f_areaId
+				</#if>	
+				  		<#if userType?exists && userType!=""&& userType==2  >
+				 	AND (t.createUserId =:userId  or t.userId =:userId) AND t.createTime >= date_sub(current_date(),INTERVAL 3 DAY)
+				</#if>
+				<#if userType?exists && userType!=""&& userType==1 >
+				  	AND t.userId =:userId
+				</#if>
+				<#if beginTime?exists && beginTime!="" >
+				 	<#if endTime?exists && endTime!="" >
+				     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <=DATE_FORMAT(:endTime, '%Y-%c-%d')
+				     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') >=DATE_FORMAT(:beginTime, '%Y-%c-%d')
+					</#if> 
+					<#if endTime==null || endTime=="" >
+				     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') =DATE_FORMAT(:beginTime, '%Y-%c-%d')
+					</#if> 
+				</#if> 
+				<#if beginTime==null || beginTime=="" >
+				    <#if endTime?exists && endTime!="" >
+				     	AND DATE_FORMAT(t.createTime,'%Y-%c-%d') =DATE_FORMAT(:endTime, '%Y-%c-%d')	
+					</#if> 
+				</#if> 
+			]]>
+		</sql>
+	
+		<!--通过货源发布时间查询被推荐会员列表  -->
+	<sql id="getListByAddress">
+		<![CDATA[
+			SELECT
+				mb1.mobile AS mobile,
+				mb1.realname AS userName,
+				mb.mobile AS recommendedMobile,
+				mb.realname AS recommendedUserName,
+				mb.createtime AS createUserTime,
+				mc.companyName AS companyName,
+				mc.linkMan AS linkMan,
+				CASE
+				WHEN mb. LEVEL = '1' THEN
+					'谷登农批'
+				WHEN mb. LEVEL = '2' THEN
+					'农速通'
+				WHEN mb. LEVEL = '3' THEN
+					'农商友'
+				WHEN mb. LEVEL = '4' THEN
+					'产地供应商'
+				END levelType,
+				CASE
+				WHEN mb.usertype = '1' THEN
+					'个人'
+				WHEN mb.usertype = '2' THEN
+					'公司'
+				END userType,
+				mc.nstStatus,
+			 	e.areaName,
+				ma.userId,
+				ma.isDeleted AS isAddressDeleted,
+				ma.createTime AS createAddressTime,
+				ma.s_provinceId,
+				ma.s_cityId,
+				ma.s_areaId,
+				ma.f_provinceId,
+				ma.f_cityId,
+				ma.f_areaId,
+				0 as xianlu,
+				i.memberId AS isReferees
+			FROM
+				member_address ma
+			INNER JOIN member_baseinfo mb ON mb.memberId = ma.userId AND mb.userType IS NOT NULL
+			LEFT JOIN member_certifi mc ON mc.memberId = ma.userId
+			LEFT JOIN integral i ON i.memberId_ed = ma.userId AND i.type = 3 AND i.memberId <> i.memberid_ed
+			
+			LEFT JOIN member_baseinfo mb1 ON mb1.memberId = i.memberId AND mb1.userType IS NOT NULL
+			LEFT JOIN member_certifi mc1 ON mc1.memberId= i.memberId
+			LEFT JOIN area_setting e ON i.memberid = e.memberId
+			WHERE 1=1
+			<#if mobile?exists && mobile!="" >
+				 and  mb1.mobile =:mobile 
+			</#if>
+			<#if recommendedMobile?exists && recommendedMobile!="" >
+				 and  mb.mobile =:recommendedMobile 
+			</#if>
+			<#if areaName?exists && areaName!="" >
+				 and  e.areaName =:areaName 
+			</#if>
+			 <#if startDate?exists && startDate!="" >
+			       AND mb.createtime >= :startDate
+			 </#if>
+			  <#if endDate?exists && endDate!="" >
+				   AND DATE_FORMAT(mb.createtime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			  </#if>
+			  
+		      <#if addressStartDate?exists && addressStartDate!="" >
+			       AND ma.createTime >= :addressStartDate
+			  </#if>
+			  <#if addressEndDate?exists && addressEndDate!="" >
+				   AND DATE_FORMAT(ma.createTime,'%Y-%c-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%c-%d')
+			  </#if>
+			  <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+				   AND ( ma.s_provinceId =:s_provinceId or  ma.s_provinceId=0)
+			  </#if>		
+			  <#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+				   AND (ma.s_cityId =:s_cityId or ma.s_cityId =0)
+			  </#if>		
+			  <#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (ma.s_areaId =:s_areaId or ma.s_areaId =0)
+			  </#if>
+			  <#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND ma.f_provinceId =:f_provinceId
+			  </#if>		
+			  <#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND ma.f_cityId =:f_cityId
+			  </#if>	
+			  <#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND ma.f_areaId =:f_areaId
+			  </#if>
+			  <#if isReferees?exists && isReferees=="1" >
+			      AND i.memberId is not null
+			  </#if>
+			  <#if isReferees?exists && isReferees=="0" >
+			      AND (i.memberId is null or i.memberId = '')
+			  </#if>
+			GROUP BY ma.id	
+			order by ma.id DESC
+			LIMIT :startRow,:endRow			
+		]]>
+	    </sql>
+	    
+	    
+  <sql id="getTotalByAddress">
+		<![CDATA[
+		SELECT
+			COUNT(*)
+		FROM(
+			SELECT
+			ma.id
+		FROM
+			member_address ma
+		INNER JOIN member_baseinfo mb ON mb.memberId = ma.userId
+		LEFT JOIN integral i ON i.memberId_ed = ma.userId AND i.type = 3  AND i.memberId <> i.memberid_ed
+		LEFT JOIN member_baseinfo mb1 ON i.memberId = mb1.memberId AND mb1.userType IS NOT NULL
+		LEFT JOIN area_setting e ON e.memberId = i.memberId
+		WHERE mb.userType IS NOT NULL
+		<#if mobile?exists && mobile!="" >
+			 and  mb1.mobile =:mobile 
+		</#if>
+		<#if recommendedMobile?exists && recommendedMobile!="" >
+			 and  mb.mobile =:recommendedMobile 
+		</#if>
+		<#if areaName?exists && areaName!="" >
+			 and  e.areaName =:areaName 
+		</#if>
+	    <#if startDate?exists && startDate!="" >
+	    	 AND mb.createtime >= :startDate
+	    </#if>
+	    <#if endDate?exists && endDate!="" >
+		     AND DATE_FORMAT(mb.createtime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+	    </#if>
+	    <#if addressStartDate?exists && addressStartDate!="" >
+		    AND ma.createTime >= :addressStartDate
+		</#if>
+		<#if addressEndDate?exists && addressEndDate!="" >
+			AND DATE_FORMAT(ma.createTime,'%Y-%c-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%c-%d')
+		</#if>
+	    <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			AND ( ma.s_provinceId =:s_provinceId or  ma.s_provinceId=0)
+		</#if>		
+	    <#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			AND (ma.s_cityId =:s_cityId or ma.s_cityId =0)
+		</#if>		
+		<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+		      AND (ma.s_areaId =:s_areaId or ma.s_areaId =0)
+		</#if>
+		<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+		      AND ma.f_provinceId =:f_provinceId
+		</#if>		
+		<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+		      AND ma.f_cityId =:f_cityId
+		</#if>	
+		<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+		      AND ma.f_areaId =:f_areaId
+		</#if>
+		<#if isReferees?exists && isReferees=="1" >
+			  AND i.memberId is not null
+		</#if>
+		<#if isReferees?exists && isReferees=="0" >
+			  AND (i.memberId is null or i.memberId = '')
+		</#if>	
+		GROUP BY ma.id
+	) t;	
+		]]>
+	  </sql>
+	  
+  <sql id="getCompanyToMb">
+		<![CDATA[	  
+	  SELECT 
+  t.memberId as createUserId,
+  t.createTime,
+  t.dayAssignMax  as  dayLimit,
+  t.monthAssignMax  as monthLimit
+FROM
+  (SELECT 
+    ngar.companyName,
+    ngar.memberId,
+    (SELECT 
+      createTime 
+    FROM
+      member_address mad 
+    WHERE mad.createUserId = ngar.memberId 
+     AND mad.nstRule=1
+    ORDER BY createTime DESC 
+    LIMIT 1) AS createTime,
+    ngar.dayAssignMax,
+    ngar.monthAssignMax 
+  FROM
+    nst_good_assign_rule ngar 
+  WHERE ngar.isEffective = 0
+  AND DATE_FORMAT(ngar.assignStartTime,'%Y-%c-%d') <=DATE_FORMAT(SYSDATE(), '%Y-%c-%d') 
+AND DATE_FORMAT(ngar.assignEndTime,'%Y-%c-%d') >=DATE_FORMAT(SYSDATE(), '%Y-%c-%d') 
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0 >
+			      AND ngar.cityId =:s_cityId
+			</#if>	
+			) t 
+WHERE 1 = 1 
+ORDER BY t.createTime  
+
+
+			]]>
+	  </sql>
+	  
+	  	  <sql id="getCompanyToMbgetL">
+		<![CDATA[	  
+	  SELECT 
+  createUserId,
+  (SELECT
+    COUNT(createUserId) 
+  FROM
+    member_address mad 
+  WHERE mad.createUserId = ma.createUserId 
+  AND DATE_FORMAT(mad.createTime,'%Y-%c-%d') =DATE_FORMAT(SYSDATE(), '%Y-%c-%d')
+  AND nstRule=1)  AS dayCount ,
+  (SELECT 
+    COUNT(createUserId)
+  FROM
+    member_address mad 
+  WHERE mad.createUserId = ma.createUserId 
+  AND DATE_FORMAT(mad.createTime,'%Y-%m') =DATE_FORMAT(SYSDATE(), '%Y-%m')
+  AND nstRule=1 ) AS monthCount
+FROM
+  member_address ma 
+WHERE ma.createUserId=:createUserId
+limit 1
+	  	]]>
+	  </sql>
+	  
+	  
+	  	  <sql id="updateCreateUserId">
+		<![CDATA[	  
+	    UPDATE member_address 
+	    SET  
+               createUserId=:createUserId ,
+
+    		   clients=:clients,
+    		    nstRule=1
+    		   where id=:id
+	  	]]>
+	  </sql>
+	  
+	  
+	  <sql id="getRule">
+		<![CDATA[	  
+	  SELECT VALUE  as  id   FROM nst_rule_switch WHERE CODE=1  ORDER BY createTime DESC LIMIT 1
+	  	]]>
+	  </sql>
+	  
+	  
+	  	  	  <sql id="updatenstRule">
+		<![CDATA[	  
+	    UPDATE member_address 
+	    SET  
+               nstRule=0
+    		   where id=:id
+	  	]]>
+	  </sql>
+	  
+	  
+	  <sql id="getPublishMemberAddressList">
+	<![CDATA[
+         SELECT
+				t.id,
+				userId,
+				goodsName,
+				s_provinceId,
+				s_cityId,
+				s_areaId,
+				s_detail,
+				f_provinceId,
+				f_cityId,
+				f_areaId,
+				t.isDeleted,
+				sendDate,
+				sendDateType,
+				endDate,
+				endDateType,
+				goodsType,
+				totalWeight,
+				totalSize,
+				hundredweight,
+				carType,
+				sendGoodsType,
+				price,
+				priceUnitType,
+				t.createTime,
+				t.createUserId,
+				t.userType AS userType,	
+				t.nstRule  AS distributeType,
+				mb.cCityId ,
+                mb.account ,
+             	CASE
+				WHEN t.userType = '1' THEN mb.realName
+				WHEN t.userType = '2' THEN c1.linkMan
+				END username,
+                emb.account AS publishAccount ,
+                c.linkMan AS publishUserName ,
+                c.companyName,
+		        nob.orderStatus,
+		        t.clients  
+			FROM
+				member_address t
+			INNER JOIN member_baseinfo mb ON t.userId = mb.memberId  AND (t.isDeleted = 0 OR t.isDeleted IS NULL)
+			LEFT JOIN member_certifi c1 ON mb.memberId = c1.memberId
+            LEFT JOIN  member_baseinfo emb ON t.createUserId = emb.memberId 
+			LEFT JOIN member_certifi c ON t.createUserId = c.memberId
+			LEFT JOIN (
+				SELECT
+					n.orderStatus,
+					n.isDeleted,
+					n.memberAddressId
+				FROM
+					(
+						SELECT
+							nob1.*
+						FROM
+							nst_order_baseinfo nob1
+						ORDER BY
+							id DESC
+					) n
+				GROUP BY
+					n.memberAddressId
+			)nob ON nob.memberAddressId = t.id
+			WHERE	1 = 1
+	<#if account?exists && account!="" >
+	  AND mb.account like "%":account"%"
+	</#if>
+	<#if publishAccount?exists && publishAccount!="" >
+	  AND emb.account like "%":publishAccount"%"
+	</#if>
+	 <#if clients?exists && clients!=""  && clients!="2" && clients!="5">
+	  and  t.clients =:clients 
+	 </#if>
+	  <#if clients?exists && clients =="2" >
+	  and  (t.clients =2 OR t.clients is NULL) 
+	  </#if>
+	  <#if clients?exists && clients =="5" >
+	  and  (t.clients =5 OR t.clients = 6) 
+	  </#if>
+	 <#if companyName?exists && companyName!="" >
+		 and  c.companyName =:companyName 
+	 </#if>
+	 <#if orderStatus?exists && orderStatus!="" && orderStatus!="0" >
+	   AND  nob.orderStatus =:orderStatus
+	 </#if>	
+	  <#if orderStatus?exists && orderStatus!="" && orderStatus =="0" >
+	   AND  nob.orderStatus  is null
+	 </#if>	
+	 <#if distributeType?exists && distributeType!="" >
+		 and  t.nstRule =:distributeType 
+	 </#if>
+      <#if addressStartDate?exists && addressStartDate!="" >
+	    AND t.createTime >= :addressStartDate
+	   </#if>
+	  <#if addressEndDate?exists && addressEndDate!="" >
+		   AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%c-%d')
+	  </#if>
+	   <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			 <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			 </#if> 
+			
+  GROUP BY t.id
+  ORDER BY t.createTime DESC
+     limit :startRow,:endRow			
+	]]>
+	</sql>
+	
+	 <sql id="getPublishMemberAddressTotal">
+		<![CDATA[
+		SELECT COUNT(1) FROM (
+	    SELECT
+				t.id
+			FROM
+				member_address t
+			INNER JOIN member_baseinfo mb ON t.userId = mb.memberId  AND (t.isDeleted = 0 OR t.isDeleted IS NULL)
+            LEFT JOIN  member_baseinfo emb ON t.createUserId = emb.memberId 
+			LEFT JOIN member_certifi c ON t.createUserId = c.memberId
+						LEFT JOIN (
+				SELECT
+					n.orderStatus,
+					n.isDeleted,
+					n.memberAddressId
+				FROM
+					(
+						SELECT
+							nob1.*
+						FROM
+							nst_order_baseinfo nob1
+						ORDER BY
+							id DESC
+					) n
+				GROUP BY
+					n.memberAddressId
+			)nob ON nob.memberAddressId = t.id
+			
+		    WHERE	1 = 1
+    <#if account?exists && account!="" >
+	  AND mb.account like "%":account"%"
+	</#if>
+	<#if publishAccount?exists && publishAccount!="" >
+	  AND emb.account like "%":publishAccount"%"
+	</#if>
+     <#if clients?exists && clients!=""  && clients!="2" && clients!="5">
+	  and  t.clients =:clients 
+	 </#if>
+	  <#if clients?exists && clients =="2" >
+	  and  (t.clients =2 OR t.clients is NULL) 
+	  </#if>
+	  <#if clients?exists && clients =="5" >
+	  and  (t.clients =5 OR t.clients =6) 
+	  </#if>
+	 <#if companyName?exists && companyName!="" >
+		 and  c.companyName =:companyName 
+	 </#if>
+     <#if orderStatus?exists && orderStatus!="" && orderStatus!="0" >
+	   AND  nob.orderStatus =:orderStatus
+	 </#if>	
+	  <#if orderStatus?exists && orderStatus!="" && orderStatus =="0" >
+	   AND  nob.orderStatus  is null
+	 </#if>	
+	 <#if distributeType?exists && distributeType!="" >
+		 and  t.nstRule =:distributeType 
+	 </#if>
+      <#if addressStartDate?exists && addressStartDate!="" >
+	    AND t.createTime >= :addressStartDate
+	   </#if>
+	  <#if addressEndDate?exists && addressEndDate!="" >
+		   AND DATE_FORMAT(t.createTime,'%Y-%c-%d') <= DATE_FORMAT(:addressEndDate, '%Y-%c-%d')
+	  </#if>
+	   <#if s_provinceId?exists && s_provinceId!=""&&s_provinceId!=0>
+			      AND ( t.s_provinceId =:s_provinceId or  t.s_provinceId=0)
+			</#if>		
+			<#if s_cityId?exists && s_cityId!=""&& s_cityId!=0>
+			      AND (t.s_cityId =:s_cityId or t.s_cityId =0)
+			</#if>		
+			<#if s_areaId?exists && s_areaId!=""&& s_areaId!=0 >
+			      AND (t.s_areaId =:s_areaId or t.s_areaId =0)
+			</#if>
+			<#if f_provinceId?exists && f_provinceId!=""&& f_provinceId!=0>
+			      AND t.f_provinceId =:f_provinceId
+			</#if>		
+			<#if f_cityId?exists && f_cityId!=""&& f_cityId!=0>
+			      AND t.f_cityId =:f_cityId
+			</#if>	
+			<#if f_areaId?exists && f_areaId!=""&& f_areaId!=0 >
+			      AND t.f_areaId =:f_areaId
+			</#if>	
+			 <#if cCityId?exists && cCityId!="" >
+			      AND mb.cCityId  =:cCityId
+			 </#if> 
+           GROUP BY t.id
+		   ) z 
+		]]>
+	  </sql>
+	
+</sqlMap>

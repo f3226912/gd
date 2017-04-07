@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ActivityUserintegral">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO
+	activity_userintegral
+	(memberId,status,createTime,totalIntegral,activityType,doIntegral) 
+	VALUES 
+	(:memberId,:status,sysdate(),:totalIntegral,:activityType,:doIntegral)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE activity_userintegral SET 
+	<#if doIntegral?exists && doIntegral!="" >
+		doIntegral=:doIntegral,
+	</#if>	
+	<#if activityType?exists && activityType!="" >
+		activityType=:activityType,
+	</#if>	
+	<#if totalIntegral?exists && totalIntegral!="" >
+		totalIntegral=:totalIntegral,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+		createTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	createTime,doIntegral,id,activityType,totalIntegral,memberId,status
+	FROM activity_userintegral WHERE id=:id 
+	
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	createTime,doIntegral,id,activityType,totalIntegral,memberId,status
+	FROM activity_userintegral WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if doIntegral?exists && doIntegral!="" >
+		AND doIntegral=:doIntegral
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activityType?exists && activityType!="" >
+		AND activityType=:activityType
+	</#if>
+	<#if totalIntegral?exists && totalIntegral!="" >
+		AND totalIntegral=:totalIntegral
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	createTime,doIntegral,id,activityType,totalIntegral,memberId,status
+	
+	FROM activity_userintegral WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if doIntegral?exists && doIntegral!="" >
+		AND doIntegral=:doIntegral
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activityType?exists && activityType!="" >
+		AND activityType=:activityType
+	</#if>
+	<#if totalIntegral?exists && totalIntegral!="" >
+		AND totalIntegral=:totalIntegral
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM activity_userintegral WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if doIntegral?exists && doIntegral!="" >
+		AND doIntegral=:doIntegral
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if activityType?exists && activityType!="" >
+		AND activityType=:activityType
+	</#if>
+	<#if totalIntegral?exists && totalIntegral!="" >
+		AND totalIntegral=:totalIntegral
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	]]>
+</sql>
+<sql id="queryByCondition">
+	<![CDATA[
+		SELECT 
+			id,memberId,status,createTime,totalIntegral,activityType,doIntegral
+		FROM activity_userIntegral 
+		WHERE 1=1
+		<#if id?exists && id!="" >
+		AND id=:id
+		</#if>
+		<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+		</#if>
+		<#if status?exists && status!="" >
+		AND status=:status
+		</#if>
+		<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+		</#if>
+		<#if totalIntegral?exists && totalIntegral!="" >
+		AND totalIntegral=:totalIntegral
+		</#if>
+		<#if activityType?exists && activityType!="" >
+		AND activityType=:activityType
+		</#if>
+		<#if doIntegral?exists && doIntegral!="" >
+		AND doIntegral=:doIntegral
+		</#if>
+	]]>
+</sql>
+<sql id="queryByConditionPage">
+	<![CDATA[
+		SELECT 
+			id,memberId,status,createTime,totalIntegral,activityType,doIntegral
+		FROM activity_userIntegral 
+		WHERE 1=1
+		<#if id?exists && id!="" >
+		AND id=:id
+		</#if>
+		<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+		</#if>
+		<#if status?exists && status!="" >
+		AND status=:status
+		</#if>
+		<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+		</#if>
+		<#if totalIntegral?exists && totalIntegral!="" >
+		AND totalIntegral=:totalIntegral
+		</#if>
+		<#if activityType?exists && activityType!="" >
+		AND activityType=:activityType
+		</#if>
+		<#if doIntegral?exists && doIntegral!="" >
+		AND doIntegral=:doIntegral
+		</#if>
+		LIMIT :startRow :endRow
+	]]>
+</sql>
+<sql id="deleteById">
+	<![CDATA[
+		DELETE activity_userIntegral
+	 	WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

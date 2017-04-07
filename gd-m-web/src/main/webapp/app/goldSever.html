@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>金牌服务</title>
+		<link rel="stylesheet" href="css/basic.css" />
+		<link rel="stylesheet" href="css/global.css" />
+	</head>
+	<body>
+		<!-- <section class="head-top"></section> -->
+		<section class="main-cont">
+			<header class="header-banner">
+				<img src="images/banner.png" width="100%">
+				<div class="cont-text">
+				<i class="text-icon"></i>
+				<div class="cont-text-small">
+				<ul class="text-list">
+					<li>在中国农产品交易有80%以上是经过农批市场的。在中国农批市场的商户采购量巨大，交易效率高!</li>
+					<li>在中国，超过80%的农产品会经过农批市场，我选择谷登平台，有市场，有保障！</li>
+					<li>没有中间商的卖货，价更高，在农批市场卖货，量更大！</li>
+					<li>每天经过一级农批市场流通的农产品高达80%，市场流通需要大量农产品供应，交易效率快、价钱高！</li>
+					<li>农产品最大的销路集中地是一级农批市场，谷登电商借助线下20家合作的一级农批市场打通销售直通渠道，销路广、渠道多不再是难题！</li>
+				</ul>
+				</div>
+				</div>
+			</header>
+			<div class="cont-img">
+				<img src="images/cont-top.png" width="100%">
+			</div>
+			<div class="cont-img">
+				<img src="images/cont.png" width="100%">
+			</div>
+			<div class="cont-img">
+				<a class="foot-btn" onclick="clickBtn()">获取金牌特权</a>
+				<img src="images/contText.png" width="100%">
+			</div>
+			
+			<a class="go-top">
+				<i></i>
+			</a>
+		</section>
+		<script type="text/javascript" src="lib/jquery-2.1.4.min.js" ></script>
+		<script type="text/javascript" src="js/goldSever.js" ></script>
+		<script type="text/javascript">
+		 	function clickBtn(){
+		 		try{
+		 			window.webkit.messageHandlers.NativeMethod.postMessage("click");
+		 		}catch (e) {
+		 			
+		 		}
+	 			JsBridge.getGoldServer();
+		 	}
+		</script>
+	</body>
+</html>

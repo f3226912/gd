@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromActProdInfo">
+
+	<sql id="getPromProdInfo">
+	<![CDATA[
+		SELECT
+			p.id,
+			p.actId,
+			p.auditId,
+			p.supplierId,
+			p.supplierName,
+			p.prodId,
+			p.prodName,
+			p.unit,
+			p.supplyQty,
+			p.actPrice
+		FROM
+			prom_prod_info p
+		LEFT JOIN prom_baseinfo pb
+		ON pb.actId=p.actId
+		LEFT JOIN prom_req_audit pr
+		ON pr.auditId = p.auditId
+		WHERE
+			p.prodId = :prodId
+		AND pb.isLastest=1 AND pb.status = 1
+		AND pr.auditStatus = 1 
+		AND pb.startTime <= SYSDATE() AND pb.endTime >= SYSDATE()
+	]]>
+	</sql>
+
+
+	<sql id="getProdBaseinfo">
+	<![CDATA[
+		SELECT
+			p.actId,
+			p.name,
+			p.introduction,
+			p.type,
+			p.status,
+			p.startTime,
+			p.endTime,
+			p.version,
+			p.createTime,
+			p.createUserId,
+			p.updateTime,
+			p.updateUserId,
+			pr.maxProdNum,
+			pr.prepayAmt,
+			p.isLastest
+		FROM
+			prom_baseinfo p
+		LEFT JOIN
+			`prom_rule` pr
+		ON
+			pr.actId = p.actId
+		WHERE
+			p.actId = :actId
+	]]>
+	</sql>
+
+	<sql id="getPromFees">
+	<![CDATA[
+		SELECT 
+		  p.`id`,
+		  p.`actId`,
+		  p.`feeSource`,
+		  p.`feeType`,
+		  p.`fee`,
+		  p.`orderPayAmt`,
+		  p.`feeScale`,
+		  p.`createTime`,
+		  p.`createUserId`,
+		  p.`updateTime`,
+		  p.`updateUserId` 
+		FROM
+  			`prom_fee` p
+		WHERE
+			p.actId = :actId
+	]]>
+	</sql>
+	
+	<sql id="getPromOrderInfoByOrderNo">
+	<![CDATA[
+		SELECT
+			op.orderPromId, op.orderNo, op.prepayAmt, op.restAmt, op.buyerPoundage,
+			op.sellerPoundage, op.totalAmt, op.prepayTime, op.stateComment,
+			op.marketName, op.createTime, b.actId, b.type AS actType, b.`name` AS actName
+		FROM
+			prom_order_prominfo op
+		LEFT JOIN prom_order_prod_prominfo opp 
+			ON op.orderNo = opp.orderNo
+		LEFT JOIN prom_baseinfo b 
+			ON opp.actId = b.actId
+		WHERE 
+			op.orderNo = :orderNo
+	]]>
+	</sql>
+</sqlMap>

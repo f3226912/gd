@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="callstatistics">	
+
+<sql id="getTotalCount">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 callstatistics
+		WHERE  1=1
+		<#if e_Mobile?exists && e_Mobile!="" >
+			     AND e_Mobile like "%":e_Mobile"%"
+			</#if>	
+			<#if shopName?exists && shopName!="" >
+			     AND shopName like "%":shopName"%"
+			</#if>     
+			<#if endDate?exists && endDate!="" >
+				AND   createTime < :endDate 
+			</#if>		
+			<#if startDate?exists && startDate!="" >
+				AND   createTime > :startDate 
+			</#if>
+			<#if sysCode?exists && sysCode!="" >
+				AND   sysCode =:sysCode 
+			</#if>		
+	]]>
+	</sql>
+	<sql id="getList" >
+    	<![CDATA[
+	 	SELECT 
+			    id,
+				source,
+				s_Mobile,
+				s_Name,
+				shopName,
+				e_Mobile,
+				e_Name,
+				createTime,
+				sysCode
+		FROM 
+			 callstatistics
+		WHERE   
+			1=1
+			<#if e_Mobile?exists && e_Mobile!="" >
+			     AND e_Mobile like "%":e_Mobile"%"
+			</#if>	
+			<#if shopName?exists && shopName!="" >
+			     AND shopName like "%":shopName"%"
+			</#if>   
+			<#if startDate?exists && startDate!="" >
+				AND   createTime > :startDate 
+			</#if>	  
+			<#if endDate?exists && endDate!="" >
+				AND   createTime < :endDate 
+			</#if>
+			<#if sysCode?exists && sysCode!="" >
+				AND   sysCode =:sysCode 
+			</#if>	
+		 ORDER BY createTime desc 
+		 LIMIT :startRow,:endRow
+		]]>
+    </sql>
+
+	<!-- 统计总共记录数  -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 callstatistics
+		WHERE  1=1
+		and sysCode='1' 
+		<#if e_Mobile?exists && e_Mobile!="" >
+			     AND e_Mobile like "%":e_Mobile"%"
+			</#if>	
+			<#if shopName?exists && shopName!="" >
+			     AND shopName like "%":shopName"%"
+			</#if>     
+			<#if endDate?exists && endDate!="" >
+				AND   createTime < :endDate 
+			</#if>		
+			<#if startDate?exists && startDate!="" >
+				AND   createTime > :startDate 
+			</#if>	
+	]]>
+	</sql>
+	
+	<!-- 统计总共记录数  -->
+	<sql id="getTotal2">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 callstatistics
+		WHERE  1=1
+		and sysCode='2'
+		<#if e_Mobile?exists && e_Mobile!="" >
+			     AND e_Mobile like "%":e_Mobile"%"
+			</#if>	
+			<#if shopName?exists && shopName!="" >
+			     AND shopName like "%":shopName"%"
+			</#if>     
+			<#if endDate?exists && endDate!="" >
+				AND   createTime < :endDate 
+			</#if>		
+			<#if startDate?exists && startDate!="" >
+				AND   createTime > :startDate 
+			</#if>		
+	]]>
+	</sql>
+	
+	<!-- 增加记录，注意date类型的，使用  _string 字段的值，代替date类型的值  -->
+	<sql id="add">
+	<![CDATA[
+	    INSERT INTO  
+	    	callstatistics
+	    	(
+				sysCode,
+				source,
+				s_Mobile,
+				s_Name,
+				shopName,
+				e_Mobile,
+				e_Name,
+				fromCode,
+				b_memberId,
+				memberId,
+				createTime
+			)
+	    VALUES
+	    	(
+				:sysCode,
+				:source,
+				:s_Mobile,
+				:s_Name,
+				:shopName,
+				:e_Mobile,
+				:e_Name,
+				:fromCode,
+				:b_memberId,
+				:memberId,
+				NOW()
+			)
+	]]>
+	</sql>
+		 
+    <sql id="getBySearch" >
+    	<![CDATA[
+	 	SELECT 
+			    id,
+				source,
+				s_Mobile,
+				s_Name,
+				shopName,
+				e_Mobile,
+				e_Name,
+				createTime
+		FROM 
+			 callstatistics
+		WHERE   
+			1=1
+			and sysCode='1'
+			<#if e_Mobile?exists && e_Mobile!="" >
+			     AND e_Mobile like "%":e_Mobile"%"
+			</#if>	
+			<#if shopName?exists && shopName!="" >
+			     AND shopName like "%":shopName"%"
+			</#if>   
+			<#if startDate?exists && startDate!="" >
+				AND   createTime > :startDate 
+			</#if>	  
+			<#if endDate?exists && endDate!="" >
+				AND   createTime < :endDate 
+			</#if>	
+		 ORDER BY createTime desc 
+		 LIMIT :startRow,:endRow
+		]]>
+    </sql>	
+    
+    <sql id="getBySearch2" >
+    	<![CDATA[
+	 	SELECT 
+			    id,
+				source,
+				s_Mobile,
+				s_Name,
+				shopName,
+				e_Mobile,
+				e_Name,
+				createTime
+		FROM 
+			 callstatistics
+		WHERE   
+			1=1
+			and sysCode='2'
+		<#if e_Mobile?exists && e_Mobile!="" >
+		     AND e_Mobile like "%":e_Mobile"%"
+		</#if>	
+		<#if shopName?exists && shopName!="" >
+		     AND shopName like "%":shopName"%"
+		</#if>   
+		<#if startDate?exists && startDate!="" >
+			AND   createTime > :startDate 
+		</#if>	  
+		<#if endDate?exists && endDate!="" >
+			AND   createTime < :endDate 
+		</#if>
+		ORDER BY createTime desc 
+		LIMIT :startRow,:endRow
+		]]>
+    </sql>	
+    
+    <sql id="getBySearchForSupplier" >
+    	<![CDATA[
+	 	SELECT 
+			    c.id,
+				source,
+				s_Mobile,
+				s_Name,
+				shopName,
+				e_Mobile,
+				e_Name,
+				c.createTime,
+				mb1.level level,
+				mb2.level b_level
+		FROM 
+			 callstatistics c
+		LEFT JOIN
+			member_baseinfo mb1
+		ON
+			(mb1.memberId = c.memberId)
+		LEFT JOIN
+			member_baseinfo mb2
+		ON
+			(mb2.memberId = c.b_memberId)
+		WHERE   
+			1=1
+		AND sysCode='4'
+		<#if e_Mobile?exists && e_Mobile!="" >
+		     AND e_Mobile like "%":e_Mobile"%"
+		</#if>	
+		<#if shopName?exists && shopName!="" >
+		     AND shopName like "%":shopName"%"
+		</#if>   
+		<#if startDate?exists && startDate!="" >
+			AND   c.createTime > :startDate 
+		</#if>	  
+		<#if endDate?exists && endDate!="" >
+			AND   c.createTime < :endDate 
+		</#if>			
+		ORDER BY createTime desc 
+		LIMIT :startRow,:endRow
+		]]>
+    </sql>
+    <!-- 统计供应商电话总共记录数  -->
+	<sql id="getTotal3">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 callstatistics
+		WHERE  1=1
+		and sysCode='4'
+		<#if e_Mobile?exists && e_Mobile!="" >
+		     AND e_Mobile like "%":e_Mobile"%"
+		</#if>	
+		<#if shopName?exists && shopName!="" >
+		     AND shopName like "%":shopName"%"
+		</#if>     
+		<#if endDate?exists && endDate!="" >
+			AND   createTime < :endDate 
+		</#if>		
+		<#if startDate?exists && startDate!="" >
+			AND   createTime > :startDate 
+		</#if>
+	]]>
+	</sql>
+	<sql id="getCust">
+		<![CDATA[
+		SELECT bb.businessId,mb.memberId,(CASE WHEN mb.realName IS NULL  THEN (CASE WHEN rfcs.type='1' THEN mb.mobile ELSE '农商友用户' END) ELSE mb.realName  END)AS realName,mb.mobile,bb.shopsName,bb.mainProduct,CONCAT(ar1.`area`,ar2.`area`,ar3.`area`) AS AREA,bb.address,rfcs.datatime
+ FROM (SELECT  rfc.busiMemberId, rfc.custMemberId,rfc.name,rfc.type,(CASE WHEN rfc.updateTime IS NULL THEN rfc.createTime ELSE updateTime END) AS datatime FROM `re_mem_for_cust`  AS rfc
+		WHERE  rfc.type=:type  AND rfc.busiMemberId=:userId
+		) AS rfcs
+		LEFT JOIN member_baseinfo AS mb ON mb.memberId=rfcs.custMemberId
+		LEFT JOIN business_baseinfo AS bb ON bb.userId=mb.memberId
+		LEFT JOIN `area`  AS ar1 ON ar1.areaID=bb.provinceId
+		LEFT JOIN `area`  AS ar2 ON ar2.areaID=bb.cityId
+		LEFT JOIN `area`  AS ar3 ON ar3.areaID=bb.areaId
+		ORDER BY rfcs.datatime DESC
+		LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	
+	<sql id="getCustTotal">
+		<![CDATA[
+	SELECT  COUNT(1) FROM `re_mem_for_cust`  AS rfc
+		WHERE  rfc.type=:type  AND rfc.busiMemberId=:userId
+		]]>
+	</sql>
+		
+		<sql id="getLinkman">
+		<![CDATA[
+			SELECT bb.businessId,mb.memberId,mb.realName,mb.mobile,bb.shopsName,bb.mainProduct,CONCAT(ar1.`area`,ar2.`area`,ar3.`area`) AS AREA,bb.address,rfcs.datatime,m.`marketName`
+	FROM (SELECT  rfc.busiMemberId, rfc.custMemberId,rfc.name,rfc.type,(CASE WHEN rfc.updateTime IS NULL THEN rfc.createTime ELSE updateTime END) AS datatime FROM `re_mem_for_cust` AS rfc
+		WHERE  rfc.type=2  AND rfc.custMemberId =:userId
+		 )AS rfcs
+		INNER JOIN business_baseinfo AS bb ON bb.userId=rfcs.busiMemberId
+		LEFT JOIN member_baseinfo AS mb ON mb.memberId=bb.userId
+		LEFT JOIN `area`  AS ar1 ON ar1.areaID=bb.provinceId
+		LEFT JOIN `area`  AS ar2 ON ar2.areaID=bb.cityId
+		LEFT JOIN `area`  AS ar3 ON ar3.areaID=bb.areaId
+		LEFT JOIN `re_business_market` AS rbm ON rbm.`businessId`=bb.`businessId`
+		LEFT JOIN `market` AS m ON m.`id`=rbm.`marketId`
+		ORDER BY rfcs.datatime DESC
+		LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	
+	<sql id="getLinkmanTotal">
+		<![CDATA[
+		SELECT   COUNT(1) FROM `re_mem_for_cust` AS rfc
+		INNER JOIN business_baseinfo AS bb ON bb.businessId=rfc.busiMemberId
+		WHERE  rfc.type=2  AND rfc.custMemberId =:userId
+		]]>
+	</sql>
+</sqlMap>

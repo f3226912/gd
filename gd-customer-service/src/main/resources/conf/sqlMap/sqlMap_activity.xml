@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="activity">
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT id, name, limitIntegral,description,startTime, endTime
+		FROM activity
+		WHERE 1 = 1
+		<#if name?exists && name!="">
+			AND name like "%":name"%"
+		</#if>
+		<#if queryStartDate?exists && queryStartDate!="" && queryEndDate?exists && queryEndDate!="">
+			AND (
+				(DATE_FORMAT(startTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d') AND DATE_FORMAT(startTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d'))
+				OR
+				(DATE_FORMAT(endTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d') AND DATE_FORMAT(endTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d'))
+				OR
+				(DATE_FORMAT(startTime,'%Y-%c-%d') <=DATE_FORMAT(:queryStartDate, '%Y-%c-%d') AND DATE_FORMAT(endTime,'%Y-%c-%d') >=DATE_FORMAT(:queryEndDate, '%Y-%c-%d'))
+			)
+		<#elseif queryStartDate?exists && queryStartDate!="">
+			AND DATE_FORMAT(startTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d')
+		<#elseif queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(endTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d')
+		</#if>
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT count(1)
+		FROM activity
+		WHERE 1 = 1
+		<#if name?exists && name!="">
+			AND name like "%":name"%"
+		</#if>
+		<#if queryStartDate?exists && queryStartDate!="" && queryEndDate?exists && queryEndDate!="">
+			AND (
+				(DATE_FORMAT(startTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d') AND DATE_FORMAT(startTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d'))
+				OR
+				(DATE_FORMAT(endTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d') AND DATE_FORMAT(endTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d')) 
+				OR
+				(DATE_FORMAT(startTime,'%Y-%c-%d') <=DATE_FORMAT(:queryStartDate, '%Y-%c-%d') AND DATE_FORMAT(endTime,'%Y-%c-%d') >=DATE_FORMAT(:queryEndDate, '%Y-%c-%d'))
+			)
+		<#elseif queryStartDate?exists && queryStartDate!="">
+			AND DATE_FORMAT(startTime,'%Y-%c-%d') >=DATE_FORMAT(:queryStartDate, '%Y-%c-%d')
+		<#elseif queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(endTime,'%Y-%c-%d') <=DATE_FORMAT(:queryEndDate, '%Y-%c-%d')
+		</#if>
+	]]>
+	</sql>
+	
+	<!-- 根据 id 更新记录 -->
+	<sql id="updateActivity">
+	<![CDATA[
+	    UPDATE  
+	    	activity
+	    SET 
+						 name=:name,
+					     limitIntegral=:limitIntegral,
+					     description=:description,
+					     startTime=:strStartTime,
+					     endTime=:strEndTime
+		WHERE 
+		    id=:id
+	]]>
+	</sql>
+	
+	<!-- 增加记录  -->
+	<sql id="addActivity">
+	<![CDATA[
+	    INSERT INTO  
+	    	activity
+	    	(
+	    	name,limitIntegral,description,startTime,endTime
+			)
+	    VALUES
+	    	(
+	    	:name,:limitIntegral,:description,:strStartTime,:strEndTime
+			)
+	]]>
+	</sql>
+	
+	<!-- 根据ID 精确查找 -->
+	<sql id="getByActivityId">
+	<![CDATA[
+		SELECT 
+			id,name,limitIntegral,description,startTime,endTime		
+		FROM 
+			activity
+		WHERE
+			id  =:id 
+	]]>
+	</sql>
+	
+	<!-- 根据ACTIVITYID 精确查找 -->
+	<sql id="getActivityId">
+	<![CDATA[
+		SELECT 
+			g.name,g.integral,g.type
+		FROM 
+			activity a,gift g
+		WHERE
+			a.id=g.activityId
+			and g.activityId=:id 
+	]]>
+	</sql>
+	
+	<sql id="getLastEndTimeByStartTime">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 activity
+		WHERE   
+			1=1
+		<#if startTimeStr?exists && startTimeStr!="" >
+			and (DATE_FORMAT(:startTimeStr,'%Y-%m-%d %H:%i:%S'))<=(select max(DATE_FORMAT(endTime,'%Y-%m-%d %H:%i:%S')) from activity)
+		</#if>    
+	]]>
+	</sql>
+</sqlMap>

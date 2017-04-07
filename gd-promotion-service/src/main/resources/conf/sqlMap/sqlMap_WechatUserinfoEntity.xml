@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="WechatUserinfoEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO wechat_userinfo(
+	createTime,sex,appId,updateTime,remark,nickname,unionid,
+	subscribe_time,city,country,id,subscribe,province,
+	openid,groupid,language,headimgurl
+	) VALUES (
+	:createTime,:sex,:appId,:updateTime,:remark,:nickname,:unionid,
+	:subscribeTime,:city,:country,:id,:subscribe,:province,
+	:openid,:groupid,:language,:headimgurl
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE wechat_userinfo SET 
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if sex?exists && sex!="" >
+		sex=:sex,
+	</#if>	
+	<#if appId?exists && appId!="" >
+		appId=:appId,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if remark?exists && remark!="" >
+		remark=:remark,
+	</#if>	
+	<#if nickname?exists && nickname!="" >
+		nickname=:nickname,
+	</#if>	
+	<#if unionid?exists && unionid!="" >
+		unionid=:unionid,
+	</#if>	
+	<#if subscribeTime?exists && subscribeTime!="" >
+		subscribe_time=:subscribeTime,
+	</#if>	
+	<#if city?exists && city!="" >
+		city=:city,
+	</#if>	
+	<#if country?exists && country!="" >
+		country=:country,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if subscribe?exists && subscribe!="" >
+		subscribe=:subscribe,
+	</#if>	
+	<#if province?exists && province!="" >
+		province=:province,
+	</#if>	
+	<#if openid?exists && openid!="" >
+		openid=:openid,
+	</#if>	
+	<#if groupid?exists && groupid!="" >
+		groupid=:groupid,
+	</#if>	
+	<#if language?exists && language!="" >
+		language=:language,
+	</#if>	
+	<#if headimgurl?exists && headimgurl!="" >
+		headimgurl=:headimgurl,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	createTime,sex,appId,updateTime,remark,nickname,unionid,
+	subscribe_time AS subscribeTime,city,country,id,subscribe,province,
+	openid,groupid,language,headimgurl
+	FROM wechat_userinfo WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	createTime,sex,appId,updateTime,remark,nickname,unionid,
+	subscribe_time AS subscribeTime,city,country,id,subscribe,province,
+	openid,groupid,language,headimgurl
+	FROM wechat_userinfo WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if sex?exists && sex!="" >
+		AND sex=:sex
+	</#if>
+	<#if appId?exists && appId!="" >
+		AND appId=:appId
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if remark?exists && remark!="" >
+		AND remark=:remark
+	</#if>
+	<#if nickname?exists && nickname!="" >
+		AND nickname=:nickname
+	</#if>
+	<#if unionid?exists && unionid!="" >
+		AND unionid=:unionid
+	</#if>
+	<#if subscribeTime?exists && subscribeTime!="" >
+		AND subscribe_time=:subscribeTime
+	</#if>
+	<#if city?exists && city!="" >
+		AND city=:city
+	</#if>
+	<#if country?exists && country!="" >
+		AND country=:country
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if subscribe?exists && subscribe!="" >
+		AND subscribe=:subscribe
+	</#if>
+	<#if province?exists && province!="" >
+		AND province=:province
+	</#if>
+	<#if openid?exists && openid!="" >
+		AND openid=:openid
+	</#if>
+	<#if groupid?exists && groupid!="" >
+		AND groupid=:groupid
+	</#if>
+	<#if language?exists && language!="" >
+		AND language=:language
+	</#if>
+	<#if headimgurl?exists && headimgurl!="" >
+		AND headimgurl=:headimgurl
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	createTime,sex,appId,updateTime,remark,nickname,unionid,
+	subscribe_time AS subscribeTime,city,country,id,subscribe,province,
+	openid,groupid,language,headimgurl
+	FROM wechat_userinfo WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if sex?exists && sex!="" >
+		AND sex=:sex
+	</#if>
+	<#if appId?exists && appId!="" >
+		AND appId=:appId
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if remark?exists && remark!="" >
+		AND remark=:remark
+	</#if>
+	<#if nickname?exists && nickname!="" >
+		AND nickname=:nickname
+	</#if>
+	<#if unionid?exists && unionid!="" >
+		AND unionid=:unionid
+	</#if>
+	<#if subscribeTime?exists && subscribeTime!="" >
+		AND subscribe_time=:subscribeTime
+	</#if>
+	<#if city?exists && city!="" >
+		AND city=:city
+	</#if>
+	<#if country?exists && country!="" >
+		AND country=:country
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if subscribe?exists && subscribe!="" >
+		AND subscribe=:subscribe
+	</#if>
+	<#if province?exists && province!="" >
+		AND province=:province
+	</#if>
+	<#if openid?exists && openid!="" >
+		AND openid=:openid
+	</#if>
+	<#if groupid?exists && groupid!="" >
+		AND groupid=:groupid
+	</#if>
+	<#if language?exists && language!="" >
+		AND language=:language
+	</#if>
+	<#if headimgurl?exists && headimgurl!="" >
+		AND headimgurl=:headimgurl
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM wechat_userinfo WHERE 1=1
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if sex?exists && sex!="" >
+		AND sex=:sex
+	</#if>
+	<#if appId?exists && appId!="" >
+		AND appId=:appId
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if remark?exists && remark!="" >
+		AND remark=:remark
+	</#if>
+	<#if nickname?exists && nickname!="" >
+		AND nickname=:nickname
+	</#if>
+	<#if unionid?exists && unionid!="" >
+		AND unionid=:unionid
+	</#if>
+	<#if subscribeTime?exists && subscribeTime!="" >
+		AND subscribe_time=:subscribeTime
+	</#if>
+	<#if city?exists && city!="" >
+		AND city=:city
+	</#if>
+	<#if country?exists && country!="" >
+		AND country=:country
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if subscribe?exists && subscribe!="" >
+		AND subscribe=:subscribe
+	</#if>
+	<#if province?exists && province!="" >
+		AND province=:province
+	</#if>
+	<#if openid?exists && openid!="" >
+		AND openid=:openid
+	</#if>
+	<#if groupid?exists && groupid!="" >
+		AND groupid=:groupid
+	</#if>
+	<#if language?exists && language!="" >
+		AND language=:language
+	</#if>
+	<#if headimgurl?exists && headimgurl!="" >
+		AND headimgurl=:headimgurl
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM wechat_userinfo WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

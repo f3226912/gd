@@ -1,0 +1,34 @@
+@charset "utf-8";
+/*活动专题页面*/
+.head-wrap{ width: 100%; background: #303d8e; color: #fff;}
+.header{background:#303d8e;}
+.head-link{color:#f0ff00;}
+.head-r a{color:#fff;}
+.main-tl-100{ background: #3f4da4; width: 100%;}
+.img01-100{background:  url(../../images/act/cat-img/zt_02.png) no-repeat center top; width:100%; height: 512px; }
+.img02-100{ width: 1170px; background: #232c63; margin: 0 auto; position: relative; left: -1px; padding: 33px 0; }
+.img02-cnt{ width: 922px; height: 64px; line-height: 64px; text-align: center; background: #3f4da4;  border-radius: 10px;margin-left:134px; color: #fff; font-size: 26px;font-family: "Microsoft YaHei"; border: solid 1px #448aca;}
+.img03-100{background: url(../../images/act/cat-img/zt-2_05.png) no-repeat center top;width:100%; height: 364px;}
+.content-cts{ width: 690px; margin: 0 auto; line-height:38px; color: #fff; font-size: 22px; font-family: "Microsoft YaHei"; }
+
+.font-bottom-tl{ width: 100%; background: #303d8e; border-top: #3b4894 solid 1px; margin: 0 auto;}
+.font-bg-wrap{background: #303d8e;  color: #fff;}
+.blue-s .footer-link-list a{ color: #fff;}
+
+/*网站导航*/
+.head-left-pot{ border: solid 1px #303d8e;}
+.head-block-xz{  border: solid 1px #448aca;}
+.head-link2-tp:hover .head-left-pot{ background-color:#3f4da4; border: solid 1px #448aca;  border-bottom: solid 1px #3f4da4;}
+.head-block-xz ul{ background: #3f4da4; }
+
+.loginout-btn{color:#fff;}
+.loginout-btn:hover{color:#fff;}
+.foot-link{ background:#303D8E; margin:0;}
+.foot-link-wrap{background:#303D8E;}
+.footer-link-list dd a ,.footer-link-list dt a{ color:#fefefe;}
+.foot-ewm-list dt{ color:#fefefe;}
+.foot-ser ,.f-ser-tel{color:#ccc;}
+.footer-bottom{width:100%; background:#303D8E; float:left;}
+.f-copyright p{color:#fff;}
+.footer-link-list dt a{color:#fff;}
+.footer-link-list dd a:hover{color:#fff;}

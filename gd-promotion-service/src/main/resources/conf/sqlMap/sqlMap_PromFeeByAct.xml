@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromFeeByAct">
+
+	<sql id="getByMemberIdListAndActId">
+    <![CDATA[
+    	SELECT 
+    		t.id, t.actId, t.orderNo, t.feeType, t.memberId, t.feeAmt, t.createTime, t.createUserId  
+    	FROM 
+    		prom_fee_by_act t
+    	WHERE 1=1
+    	<#if actId?exists && actId!="">
+       		AND t.actId = :actId
+     	</#if>
+		<#if memberIdList?exists>
+			<#assign n = memberIdList?size />
+			<#if n gt 0>
+				AND (
+				<#list memberIdList as memberId>
+					<#if memberId_index != n-1>
+							t.memberId = '${memberId}' OR
+						<#else>
+							t.memberId = '${memberId}'  
+					</#if>
+				</#list>
+				) 
+			</#if>
+		</#if>
+		ORDER BY t.createTime DESC
+    ]]>
+	</sql>
+</sqlMap>

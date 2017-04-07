@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>@{maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="demoToolService" class ="com.gudeng.commerce.gd.m.service.impl.DemoToolServiceImpl"></bean>
+
+	<bean id="adToolService" class="com.gudeng.commerce.gd.m.service.impl.AdToolServiceImpl"></bean>
+	<bean id="pushNoticeToolService" class ="com.gudeng.commerce.gd.m.service.message.impl.PushNoticeToolServiceImpl"></bean>
+
+	<bean id="businessBaseinfoToolService" class ="com.gudeng.commerce.gd.m.service.impl.BusinessBaseinfoToolServiceImpl"></bean>
+	<bean id="memberBaseinfoToolService" class ="com.gudeng.commerce.gd.m.service.impl.MemberBaseinfoToolServiceImpl"></bean>
+	<bean id="reBusinessMarketToolService" class ="com.gudeng.commerce.gd.m.service.impl.ReBusinessMarketToolServiceImpl"></bean>
+	<bean id="reBusinessCategoryToolService" class ="com.gudeng.commerce.gd.m.service.impl.ReBusinessCategoryToolServiceImpl"></bean>
+	<bean id="proCategoryService" class ="com.gudeng.commerce.gd.m.service.impl.ProCategoryServiceImpl"></bean>
+	<bean id="systemCodeService" class ="com.gudeng.commerce.gd.m.service.impl.SystemCodeServiceImpl"></bean>
+	<bean id="queryAreaToolService" class ="com.gudeng.commerce.gd.m.service.impl.QueryAreaToolServiceImpl"></bean>
+	<bean id="productToolService" class ="com.gudeng.commerce.gd.m.service.impl.ProductToolServiceImpl"></bean>
+
+	<bean id="nstOrderBaseinfoToolService" class ="com.gudeng.commerce.gd.m.service.impl.NstOrderBaseinfoToolServiceImpl"></bean>
+	<bean id="memberAddressToolServiceImpl" class ="com.gudeng.commerce.gd.m.service.impl.MemberAddressToolServiceImpl"></bean>
+	<bean id="productDeliveryDetailToolService" class ="com.gudeng.commerce.gd.m.service.impl.ProductDeliveryDetailToolServiceImpl"></bean>
+	<bean id="callstatiSticsToolService" class ="com.gudeng.commerce.gd.m.service.impl.CallstatiSticsToolServiceImpl"></bean>
+	<bean id="billDetailToolService" class ="com.gudeng.commerce.gd.m.service.impl.BillDetailToolServiceImpl"></bean>
+	<bean id="creditToolService" class ="com.gudeng.commerce.gd.m.service.impl.CreditToolServiceImpl"></bean>
+	<bean id="marketToolService" class ="com.gudeng.commerce.gd.m.service.impl.MarketToolServiceImpl"></bean>
+	
+	<bean id="dataToolService" class ="com.gudeng.commerce.gd.m.service.impl.DataToolServiceImpl"></bean> 
+	<bean id="usercollectProductToolService" class ="com.gudeng.commerce.gd.m.service.impl.UsercollectProductToolServiceImpl"></bean>
+	<bean id="activityToolService" class ="com.gudeng.commerce.gd.m.service.impl.ActivityToolServiceImpl"></bean>
+	<bean id="reActivityGiftToolService" class ="com.gudeng.commerce.gd.m.service.impl.ReActivityGiftToolServiceImpl"></bean>
+	<bean id="actActivityGiftExchangToolService" class ="com.gudeng.commerce.gd.m.service.impl.ActActivityGiftExchangToolServiceImpl"></bean>
+	<bean class ="com.gudeng.commerce.gd.m.service.impl.ActWechatInviteServiceImpl"></bean>
+	<bean class ="com.gudeng.commerce.gd.m.service.impl.ActWechatShareServiceImpl"></bean>
+	<bean id="nstSameCityAddressToolServiceImpl" class ="com.gudeng.commerce.gd.m.service.impl.NstSameCityAddressToolServiceImpl"></bean> 
+	<bean id="promChainToolService" class ="com.gudeng.commerce.gd.m.service.impl.PromChainToolServiceImpl"></bean>
+	<bean id="orderNoToolService" class ="com.gudeng.commerce.gd.m.service.impl.OrderNoToolServiceImpl"></bean>
+	<bean id="promInfoToolService" class ="com.gudeng.commerce.gd.m.service.impl.PromInfoToolServiceImpl"></bean>
+	<bean id="purchaseOrderToolService" class ="com.gudeng.commerce.gd.m.service.impl.PurchaseOrderToolServiceImpl"></bean>
+	
+	<!--促销活动 -->
+	<bean id="activityPromotionToolService" class="com.gudeng.commerce.gd.m.service.impl.act.ActivityPromotionToolServiceImpl"></bean>
+	
+	<bean id="appshareToolService" class="com.gudeng.commerce.gd.m.service.impl.AppshareToolServiceImpl"></bean>
+	
+	<bean id="nstApiCommonService" class="com.gudeng.commerce.gd.m.service.impl.NstApiCommonServiceImpl"></bean>
+	
+	<bean id="orderProductDetailToolService" class="com.gudeng.commerce.gd.m.service.impl.OrderProductDetailToolServiceImpl"></bean>
+	
+	<bean id="orderTool2Service" class="com.gudeng.commerce.gd.m.service.impl.OrderTool2ServiceImpl"></bean>
+	
+	<bean id="pvStatisticToolService" class ="com.gudeng.commerce.gd.m.service.impl.statistic.PvStatisticToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.m.service.impl.WechatLoginToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.m.service.impl.WechatMemberToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.m.service.impl.WechatStarsToolServiceImpl"/>
+	<bean class ="com.gudeng.commerce.gd.m.service.impl.WechatUserinfoToolServiceImpl"/>
+	<bean id="quickMakeSheetService" class ="com.gudeng.commerce.gd.m.service.impl.QuickMakeSheetServiceImpl"/>
+	
+</beans>

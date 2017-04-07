@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdProPertenEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_pro_perten(
+	id,count,status,realname,code,type,mobile,memberId
+	
+	) VALUES (
+	:id,:count,:status,:realname,:code,:type,:mobile,:memberId 
+	
+	)
+	]]>
+</sql>
+<sql id="updateStatus">
+	<![CDATA[
+	UPDATE 
+		grd_pro_perten 
+	SET 		
+		status=:status 
+	WHERE 
+		code=:code 
+	and type=:type 
+	and memberId=:memberId
+	]]>
+</sql>
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_pro_perten SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if count?exists && count!="" >
+		count=:count,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if realname?exists && realname!="" >
+		realname=:realname,
+	</#if>	
+	<#if code?exists && code!="" >
+		code=:code,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>	
+	<#if mobile?exists && mobile!="" >
+		mobile=:mobile,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,count,status,realname,code,type,mobile,memberId
+	
+	FROM grd_pro_perten WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,count,status,realname,code,type,mobile,memberId
+	
+	FROM grd_pro_perten WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if count?exists && count!="" >
+		AND count=:count
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if realname?exists && realname!="" >
+		AND realname=:realname
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if startCode?exists && startCode!="" >
+		AND code >= :startCode
+	</#if>
+	<#if endCode?exists && endCode!="" >
+		AND code <= :endCode
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	order by type asc,code asc
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,count,status,realname,code,type,mobile,memberId
+	
+	FROM grd_pro_perten WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if count?exists && count!="" >
+		AND count=:count
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if realname?exists && realname!="" >
+		AND realname=:realname
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if startCode?exists && startCode!="" >
+		AND code >= :startCode
+	</#if>
+	<#if endCode?exists && endCode!="" >
+		AND code <= :endCode
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	order by type asc,code asc 
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_pro_perten WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if count?exists && count!="" >
+		AND count=:count
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if realname?exists && realname!="" >
+		AND realname=:realname
+	</#if>
+	<#if code?exists && code!="" >
+		AND code=:code
+	</#if>
+	<#if startCode?exists && startCode!="" >
+		AND code >= :startCode
+	</#if>
+	<#if endCode?exists && endCode!="" >
+		AND code <= :endCode
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND mobile=:mobile
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND memberId=:memberId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_pro_perten WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

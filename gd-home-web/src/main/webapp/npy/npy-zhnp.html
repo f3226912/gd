@@ -1,0 +1,151 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="Content-Type" content="text/html; charset=UTF-8">
+	<title>智慧农批运营系统下载</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="x-rim-auto-match" content="none">
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<style>
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+		input,button,select,textarea{outline:none}
+		img{vertical-align:top;border:none;}
+		textarea{overflow: auto;vertical-align: top;resize:none;}
+		button,input,select,textarea {font-size:100%;}
+		h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+		table {border-collapse:collapse;border-spacing:0}
+		em,i,b{ font-style:normal; font-weight:normal;}
+		body {
+			overflow-x:hidden;
+			font: normal 100% "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;  /*为了让电脑上和手机一样字体效果。手机是没有"Microsoft YaHei",'Helvetica Neue'*/
+			/***min-width: 300px;设置最小宽HTCG7***/
+			-webkit-text-size-adjust:none;/**避免重力感应时文字随分辨率增大而增大**/ 
+			/** display:-webkit-box;/**流布局**/
+			color:#404040;
+			background: #fff;
+		}
+		article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}
+		ul, li, ol, dl, dd, dt{list-style:none;list-style-position:outside;}
+		img	{ border:none;max-width: 100%;height: auto;}
+		a{color:#565656;}
+		a:link, a:hover{text-decoration:none;color:#666}
+		a:link *, a:hover *{text-decoration:none;}
+		@-ms-viewport {width: device-width;}
+		.clear{clear:both}
+		.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+		.clearfix{zoom:1}
+
+		@media screen and (min-width:1200px){
+			.main-wrap{
+				font-size:20px;
+			}
+		}
+
+		@media screen and (min-width: 768px) and (max-width: 1199px) {
+			.main-wrap{
+				font-size:16px;
+			}
+		}
+
+		@media screen and (max-width: 767px){
+			.main-wrap{
+				font-size:12px;
+			}
+		}
+		@media screen and (max-width: 479px) {
+			.main-wrap{
+				font-size:12px;
+			}
+		}
+		.main-wrap{text-align: center; background:#136cbf; }
+		.down-wrap{position: relative;display: inline-block;margin: 0 auto;}
+		.weChat-tips{background:  url(../v1.0/images/mobile/down-pic.png) no-repeat;width: 17.4em; height: 9.15em;-webkit-background-size:  17.4em 9.15em;background-size: 17.4em 9.15em;vertical-align: middle;position: absolute;top:0;right: 25px;display: none;}
+		.down-btn{width:100%; height:auto; vertical-align: middle;position: absolute;}
+		.down-btn-android{height:30%; bottom:0;}
+		.down-btn-ios{ bottom: 6.4em;background-position: 0 -5.25em}
+		.down-disabled{background-position: 0 -10.5em}
+	</style>
+	
+</head>
+
+<body>	
+	
+	<div class="main-wrap">
+		<div class="down-wrap">
+			<img src="../v1.0/images/mobile/weix.png" alt="农批友-智慧农批下载">
+			<p class="weChat-tips" id="weChat-tips"></p>
+			<a href="#" class="down-btn down-btn-android" target="_blank"></a>
+			<!-- <a href="https://itunes.apple.com/us/app/nong-shang-you/id1057048929" class="down-btn down-btn-ios"></a> -->
+		</div>
+	</div>
+	<script src="../v1.0/js/touch/zepto.min.js"></script>
+	<script type="text/javascript">
+        // 获取终端的相关信息通用方法
+        var Terminal = {
+            // 辨别移动终端类型
+            platform : function(){
+                var u = window.navigator.userAgent.toLowerCase(), app = navigator.appVersion;
+                return {
+                    // android终端或者uc浏览器
+                    android: (u.indexOf('android') > -1 || u.indexOf('linux') > -1) && u.indexOf('micromessenger')<0,
+                    // 是否为iPhone或者QQHD浏览器
+                    iPhone: u.indexOf('iphone') > -1 ,
+                    // 是否iPad
+                    iPad: u.indexOf('ipad') > -1,
+					// 是否是通过微信的扫一扫打开的
+//                    weChat: u.indexOf('MicroMessenger') > 0
+					weChat: (function (){
+					    //var ua = window.navigator.userAgent.toLowerCase();
+					    if(u.indexOf('micromessenger')>-1){
+					        return true;
+					    }else{
+					        return false;
+					    }
+					})()
+                };
+            }(),
+            // 辨别移动终端的语言：zh-cn、en-us、ko-kr、ja-jp...
+            language : (navigator.browserLanguage || navigator.language).toLowerCase()
+        };
+        
+        if(Terminal.platform.weChat){
+        	//alert(1);        	
+        	/* if(Terminal.platform.iPhone || Terminal.platform.iPad){
+        		$(".down-btn-android").attr("href","https://itunes.apple.com/us/app/nong-shang-you/id1057048929");
+        		//location.href = "https://itunes.apple.com/us/app/nong-shang-you/id1057048929";//微信不支持跳转；
+        		//$(".down-btn-android").trigger('click');
+        		window.open('https://itunes.apple.com/us/app/nong-shang-you/id1057048929' );
+        	}else if(Terminal.platform.android){ */
+        		$(".down-btn").each(function(){
+            		var self = $(this);
+            		self.attr("href","javascript:;")
+            		self.click(function(){
+            			$('body').scrollTop(0)
+            			$('#weChat-tips').show();
+            		});
+            	});
+        	/* } */
+			//document.getElementById('weChat-tips').style.display="block";
+			//alert("微信不支持下载哦，请选择右上角，在浏览器中打开！");
+        }else{
+        	//alert(2);  
+        	$(".down-btn-android").attr("href","http://www.gdeng.cn/npy/npy-zhnp.apk");
+        	/* if(Terminal.platform.iPhone || Terminal.platform.iPad){
+        		$(".down-btn-android").attr("href","javascript:;").addClass("down-disabled");
+        	}else if(Terminal.platform.android){
+        		$(".down-btn-android").attr("href","#");
+        	} */
+        }
+        $(window).bind("load",function(){
+        	$(".down-btn").css({"left":0+"px"})
+        })
+        
+	</script>
+</body>
+</html>

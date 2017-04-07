@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CashRequest">
+	<sql id="getListByCondition">
+    	<![CDATA[
+    		SELECT
+				cash.cashReqId,
+				cash.cashAmount,
+				cash.reqTime,
+				cash.depositBankName,
+				cash.bankCardNo,
+				baseinfo.realName,
+				baseinfo.account,
+				baseinfo.mobile,
+				cash.`status`,
+				cash.payingTime
+			FROM
+				cash_request cash
+			INNER JOIN member_baseinfo baseinfo ON cash.memberId = baseinfo.memberId
+			where 1=1
+			<#if account?exists && account!="" >
+		 		AND	baseinfo.account =:account
+			</#if>
+			<#if realName?exists && realName!="" >
+		 		AND	baseinfo.realName =:realName
+			</#if>
+			<#if bankCardNo?exists && bankCardNo!="" >
+		 		AND	cash.bankCardNo =:bankCardNo
+			</#if>
+			<#if status?exists && status!="" >
+		 		AND	cash.`status` =:status
+			</#if>
+			<#if applyBeginTime?exists && applyBeginTime!="" >
+		 		AND	cash.reqTime >= :applyBeginTime 
+			</#if>
+			<#if applyEndTime?exists && applyEndTime!="" >
+		 		AND	cash.reqTime <=:applyEndTime
+			</#if>
+			<#if payBeginTime?exists && payBeginTime!="">
+		 		AND	cash.payingTime >=:payBeginTime 
+			</#if>
+			<#if  payEndTime?exists && payEndTime!=""  >
+		 		AND	cash.payingTime <=:payEndTime
+			</#if>
+			<#if  isABC?exists && isABC!="" && isABC=='0'  >
+		 		AND	(cash.depositBankName like '%农业银行%' OR cash.depositBankName like '%农行%')
+			</#if>
+			<#if  isABC?exists && isABC!="" && isABC=='1'  >
+		 		AND	(cash.depositBankName not like '%农业银行%' AND cash.depositBankName not like '%农行%')
+			</#if>
+			ORDER BY cash.reqTime DESC
+			LIMIT :startRow,:endRow
+		]]>
+	</sql>
+
+	<sql id="getTatal">
+    	<![CDATA[
+    		SELECT
+				count(1)
+			FROM
+				cash_request cash
+			INNER JOIN member_baseinfo baseinfo ON cash.memberId = baseinfo.memberId
+			where 1=1
+			<#if account?exists && account!="" >
+		 		AND	baseinfo.account =:account
+			</#if>
+			<#if realName?exists && realName!="" >
+		 		AND	baseinfo.realName =:realName
+			</#if>
+			<#if bankCardNo?exists && bankCardNo!="" >
+		 		AND	cash.bankCardNo =:bankCardNo
+			</#if>
+			<#if status?exists && status!="" >
+		 		AND	cash.`status` =:status
+			</#if>
+			<#if applyBeginTime?exists && applyBeginTime!="" >
+		 		AND	cash.reqTime >= :applyBeginTime 
+			</#if>
+			<#if applyEndTime?exists && applyEndTime!="" >
+		 		AND	cash.reqTime <=:applyEndTime
+			</#if>
+			<#if payBeginTime?exists && payBeginTime!="">
+		 		AND	cash.payingTime >=:payBeginTime 
+			</#if>
+			<#if  payEndTime?exists && payEndTime!=""  >
+		 		AND	cash.payingTime <=:payEndTime
+			</#if>
+			<#if  isABC?exists && isABC!="" && isABC=='0'  >
+		 		AND	(cash.depositBankName like '%农业银行%' OR cash.depositBankName like '%农行%')
+			</#if>
+			<#if  isABC?exists && isABC!="" && isABC=='1'  >
+		 		AND	(cash.depositBankName not like '%农业银行%' AND cash.depositBankName not like '%农行%')
+			</#if>
+		]]>
+	</sql>
+
+	<sql id="getAccountFlowListByCondition">
+    	<![CDATA[
+    		SELECT
+				(
+					CASE trans.peType
+					WHEN '1' THEN
+						trans.tradeAmount
+					ELSE
+						''
+					END
+				) AS income,
+				trans.statementId as flowId,
+				(
+					CASE trans.peType
+					WHEN '2' THEN
+						trans.tradeAmount
+					ELSE
+						''
+					END
+				) AS expense,
+				trans.balTotal,
+				trans.createTime AS createFlowTime
+			FROM
+				acc_trans_info trans
+			where 1=1
+			<#if reqUid?exists && reqUid!="" >
+		 		AND	trans.accId =:reqUid
+			</#if>
+			ORDER BY trans.createTime DESC
+			LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	<!-- 查询所有流水 -->
+	<sql id="getStatementIdList">
+    	<![CDATA[
+    		SELECT statementId from acc_trans_info
+		]]>
+	</sql>
+	<sql id="getStatementId">
+    	<![CDATA[
+    		SELECT statementId from acc_trans_info where statementId=:accountflowId
+		]]>
+	</sql>
+	<sql id="getAccountFlowTatal">
+    	<![CDATA[
+    		SELECT
+				count(1)
+			FROM
+				acc_trans_info trans
+			INNER JOIN acc_info acc ON trans.accId = acc.accId 
+			where 1=1
+			<#if reqUid?exists && reqUid!="" >
+		 		AND	trans.accId =:reqUid
+			</#if>
+		]]>
+	</sql>
+
+	<sql id="getCashRequestByCashReqId">
+    	<![CDATA[
+    		SELECT
+				cashReqId,
+				reqUid,
+				memberId,
+				bankCardNo,
+				cashAmount
+			FROM
+				cash_request
+			WHERE cashReqId =:cashReqId
+		]]>
+	</sql>
+
+	<sql id="insertAccTransinfo">
+    	<![CDATA[
+    		INSERT INTO acc_trans_info (
+								accId,
+								memberId,
+								statementId,
+								tradeType,
+								peType,
+								tradeAmount,
+								balTotal,
+								recipientAcc,
+								createUserId
+									)
+								VALUES
+								(
+								:accId,
+								:memberId,
+								:accountflowId,
+								:tradeType,
+								:peType,
+								:cashAmount,
+								:accountTotal,
+								:recipientAcc,
+								:createUserId
+								)
+		]]>
+	</sql>
+
+	<sql id="getAccountAmtInfo">
+    	<![CDATA[
+    		SELECT acc.balTotal as accountTotal,acc.balBlock as accountBlock FROM acc_info acc WHERE accId = :accId
+		]]>
+	</sql>
+
+	<sql id="updateAccountAmtInfo">
+    	<![CDATA[
+    		UPDATE  acc_info
+				SET balTotal = :accountTotal,balBlock = :accountBlock
+			WHERE
+				accId =:accId
+		]]>
+	</sql>
+
+	<sql id="updateCashRequestStatus">
+    	<![CDATA[
+    		UPDATE  cash_request SET `status`=1,transNo=:accountflowId,payingTime=SYSDATE(),updateTime=SYSDATE(),updateUserId=:updateUserId WHERE cashReqId=:cashReqId
+		]]>
+	</sql>
+
+
+
+	<sql id="getByMemberId">
+		SELECT
+		cashReqId ,
+		cashAmount ,
+		reqUid ,
+		idCard,
+		depositBankName ,
+		bankCardNo ,
+		memberId ,
+		reqTime ,
+		payingTime ,
+		transNo ,
+		status ,
+		createTime ,
+		createUserId ,
+		updateTime ,
+		updateUserId
+		FROM
+		cash_request
+		WHERE
+		memberId=:memberId
+		ORDER BY createTime DESC
+		LIMIT
+		:startRow,:endRow
+	</sql>
+
+
+
+	<sql id="add">
+ 	<![CDATA[
+	    INSERT INTO  cash_request
+	          (
+			  		cashAmount , 
+			  		reqUid ,
+			  		idCard,
+			  	 	depositBankName ,
+			  		bankCardNo  ,
+			  		memberId  ,
+			   		reqTime ,
+			   		payingTime  ,
+			    	transNo ,
+			     	status ,
+			      	createTime  ,
+			  		createUserId  ,
+			   		updateTime  ,
+			  		updateUserId  
+              )
+	        values
+	         (
+	       		:cashAmount , 
+		  		:reqUid ,
+		  		:idCard,
+		  	 	:depositBankName ,
+		  		:bankCardNo  ,
+		  		:memberId  ,
+		   		 SYSDATE(), 
+		   		:payingTime  ,
+		    	:transNo ,
+		     	:status ,
+		      	SYSDATE(), 
+		  		:createUserId  ,
+		   		SYSDATE(), 
+		  		:updateUserId  
+              )
+	        
+		]]>
+	</sql>
+
+
+
+</sqlMap>

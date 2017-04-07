@@ -1,0 +1,119 @@
+body{font-family:"Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;background-color:#f11147;}
+.head-wrap {
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+    background-color: #f4f4f4;}
+.nsy-hd-warp{width:100%; padding-top: 40px;}
+.nsy-hd-warp .header{width:100%;margin:0 auto;position: relative;height:auto;}
+.nsy-hd-warp .header .bg-img{width:100%;}
+.nsy-hd-warp .header .bg-img2{width:247px;position: absolute;margin-left:-245px;top:0;left:0;}
+.nsy-hd-warp .header .bg-img3{width:151px;position: absolute;margin-right:-151px;top:0;right:0;}
+.nsy-hd-warp .header .daojishi{color:#000;font-weight:700;}
+.nsy-hd-warp .header .daojishi .red-font{color:#FF0000;font-size:30px;margin-right:5px;}
+.nsy-hd-warp .header .guize{position: absolute;top:576px;left:1000px;cursor:pointer;}
+.nsy-hd-warp .share{width:1188px;margin:0 auto;position: relative;}
+.nsy-hd-warp .share .bottom{width:239px;position: absolute;top:42px;right:109px;}
+.nsy-hd-warp .explain{display: block;width:1170px;margin:0 auto;}
+.nsy-hd-warp .con{width:1170px;margin:40px auto 0 auto;position: relative;background: url(../images/tuiguang0811/hd_con_bg.jpg) repeat;}
+.nsy-hd-warp .con .content{width:100%;overflow: hidden;}
+.nsy-hd-warp .con .content .title{width:55%;margin:20px auto;position:relative;}
+.nsy-hd-warp .con .content .title .title-font{font-weight:600;font-family:"Microsoft YaHei";letter-spacing:13px;color:#dd141d;font-size:24px;position: absolute;top:30px;left:50%;margin-left:-111px;}
+.nsy-hd-warp .con .content .title .title-font02{font-weight:600;font-family:"Microsoft YaHei";letter-spacing:1px;color:#dd141d;font-size:24px;width:630px;position: absolute;top:30px;left:50%;margin-left:-315px;text-align: center;}
+.nsy-hd-warp .con .content>ul{overflow: hidden;width:96%;margin:0 auto;}
+.nsy-hd-warp .con .content>ul li{overflow: hidden;font-family:"Microsoft YaHei";margin-right:18.5px;margin-left: 18.5px;margin-bottom:25px;width:30%;float:left; position:relative;}
+.nsy-hd-warp .con .content>ul li .onesImg{width:90%;margin:0 auto;padding:11px;overflow: hidden;background-color:#fff; position:relatve;}
+.nsy-hd-warp .con .content>ul li .onesFont{width:60%;margin: 0 auto;overflow:hidden;position: relative;margin-top:10px;}
+.nsy-hd-warp .con .content>ul li .onesFont p{width: 100%;position: absolute;left:0;top:0;line-height:57.6px;text-align: center;color:#ce0026;font-weight:600;font-size:23px;}
+.nsy-hd-warp .con .content .addressDetail{width:80%;margin:45px auto 0;overflow: hidden;}
+.nsy-hd-warp .con .content .addressDetail ul{width: 100%;overflow: hidden;}
+.nsy-hd-warp .con .content .addressDetail ul li{width:100%;float: left;margin-bottom: 30px; font-family:"Microsoft YaHei";}
+.nsy-hd-warp .con .content .addressDetail ul li .red-doc{width:3%;float: left;height: 100%;margin-top:9px;}
+.nsy-hd-warp .con .content .addressDetail ul li .right{width:95%;float: left;color:#666666;font-size:20px;line-height:34px;}
+.nsy-hd-warp .con .content .addressDetail ul li .right .red-font{color:#de151d;}
+.nsy-hd-warp .footerFont{width:970px;display: block;margin:40px auto;}
+.nsy-hd-warp .footerFont>ul{width:100%;margin:45px auto;}
+.nsy-hd-warp .footerFont>ul>li{margin-bottom:30px;color:#FFFFFF;line-height:30px; font-size:20px; font-family:"Microsoft YaHei";}
+.nsy-hd-warp .footerFont>ul>li .title{position: relative;}
+.nsy-hd-warp .footerFont>ul>li .title img{position: absolute;top:6px;left:-22px;}
+.nsy-hd-warp .footerEnd{width: 1000px;position: relative; left:100px; color:#FFFFFF;margin: 20px auto;border:1px solid #FFFFFF;padding:40px;line-height:30px; }
+.footerEnd li{padding-left:160px; font-size:20px; line-height:30px; font-family:"Microsoft YaHei";}
+.sou-sou{position: absolute;padding-left:0px !important; top:0; left:-100px; margin-top:-10px;}
+.markAll{width: 100%;display: none;position: relative;}
+.markAll .mark{position: fixed;z-index: 998;left: 0;top: 0;width: 100%;height: 100%;background: #000;opacity: .6;}
+.markAll .markKuang{width: 1170px;z-index: 999;border-radius:5px;position: fixed;top:50%;left:50%;margin-left:-585px;margin-top:-296px;background-color:#fff;}
+.markAll .markKuang .guizeClose{position: absolute;top:10px;right:10px;cursor:pointer;}
+.markAll .markKuang>ul{width:83%;margin:45px auto;}
+.markAll .markKuang>ul>li{margin-bottom:30px;color:#999999;line-height:26px;}
+.markAll .markKuang>ul>li .title{color:#666666;position: relative;}
+.markAll .markKuang>ul>li .title img{position: absolute;top:4px;left:-22px;}
+.bg-img-time{}
+
+.bg-01{
+	background:#f11147 url(../images/tuiguang0811/bg-img_02.jpg) no-repeat center center;
+	width:100%;
+	height:571px;
+	position:relative;
+	z-index:-1;
+}
+.bg-02{
+	width:100%;
+	height:230px;
+	margin-top: 40px;
+}
+.bg-02 .box{
+	background:url(../images/tuiguang0811/bg_time_03.jpg) no-repeat center center;
+	background-size:100% 100%;
+	height:230px;
+	width: 1180px;
+    margin: 0 auto;
+    position:relative;
+}
+.bg-02 .box .bottom{
+	position:absolute;
+	right:35px;
+	top:35px;
+	
+}
+.bg-01 .daojishi img{
+	position:absolute;
+	top:0;
+	left:0;
+	display:none;
+}
+.bg-01 .daojishi .time{
+	position:absolute;
+	right: 150px; 
+    top: 30px;
+	color:#000;
+	font-weight:700;
+	letter-spacing: 8px;
+	display:none;
+}
+.bg-01 .daojishi .red-font{color:#FF0000;font-size:30px;}
+.bg-01 .daojishi{
+	height:97px;
+	width: 750px;
+	position:absolute;
+	bottom:0;
+	left:50%;
+	margin-left:-380px;
+	z-index:999;
+	
+}
+
+.grey{
+	background: rgba(0,0,0,0.5);
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    height: 50px;
+    left: 0px;
+    color: white;
+    font-size: 20px;
+    line-height: 50px;
+    margin-left: 11px;
+    padding-left: 10px;
+    width: 90%;
+}
+

@@ -1,0 +1,11 @@
+.mleft{
+	font-size:16px;
+	text-align: right;
+	valign:middle;
+}
+
+.mright{
+	font-size:16px;
+    align:left;
+    valign:middle;
+}

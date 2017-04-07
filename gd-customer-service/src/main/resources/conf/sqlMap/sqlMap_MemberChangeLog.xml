@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberChangeLog">
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)
+		FROM 
+			member_change_log  t 
+		WHERE 
+			t.memberId = :memberId
+	]]>
+	</sql>
+	
+	<!-- 增加记录，注意date类型的，使用  _string 字段的值，代替date类型的值  -->
+	<sql id="addMemberChangeLog">
+	<![CDATA[
+	    INSERT INTO  
+	    	member_change_log
+	    	(
+	    		memberId,type,description,createUserId,createTime,updateUserId,updateTime
+			)
+	    VALUES
+	    	(
+	    	:memberId,:type,:description,:createUserId,sysdate(),:updateUserId,sysdate()
+			)
+	]]>
+	</sql>
+	
+    <sql id="getBySearch" >
+	 	<![CDATA[
+		SELECT 
+			t.memberId, t.type, t.description,u.userName createUserName,t.createTime  
+		FROM 
+			member_change_log  t 
+		left join 
+			gudeng_auth.sysregisteruser u on u.userid = t.createUserId
+		WHERE 
+			t.memberId = :memberId
+	 	ORDER BY 
+	 		t.createTime desc 
+		LIMIT :startRow,:endRow
+		]]>
+    </sql>
+</sqlMap>

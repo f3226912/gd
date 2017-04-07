@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderBillImportLog">
+	<sql id="addBillLogDTO">
+ 	<![CDATA[
+	    INSERT INTO order_bill_import_log
+	    (fileName, fileUrl ,remoteServer,createTime,createUserId)
+		VALUES
+	    (:fileName, :fileUrl ,:remoteServer,SYSDATE(),:createUserId)
+	]]>
+	</sql>
+	
+	<sql id="getOrderBillLogByFileName">
+ 	<![CDATA[
+	    SELECT id,fileName, fileUrl ,remoteServer,createTime,createUserId,updateUserId,updateTime
+		FROM order_bill_import_log t WHERE t.fileName = :fileName
+		LIMIT 1
+	]]>
+	</sql>
+	
+	<sql id="getOrderBillByCondition">
+	<![CDATA[
+		SELECT businessNo, businessName ,tradeType,tradeDay,cardNo,
+	    clientNo,tradeMoney,sysRefeNo,fee,createUserId,createTime,updateUserId,updateTime
+		FROM Order_Bill t
+		WHERE 1 = 1
+		<#if businessNo?exists && businessNo!="" >
+			AND t.businessNo =:businessNo
+		</#if>
+		<#if businessName?exists && businessName!="" >
+			AND t.businessName = :businessName
+		</#if>
+		<#if sysRefeNo?exists && sysRefeNo!="" >
+			AND t.sysRefeNo = :sysRefeNo
+		</#if>
+		<#if startRow?exists && startRow!="" && endRow?exists && endRow!="">
+			LIMIT :startRow,:endRow 
+		</#if>
+	]]>
+	</sql>
+</sqlMap>

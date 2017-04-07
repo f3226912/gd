@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberMessageFlag">
+	
+	<sql id="updateFlag">
+	<![CDATA[
+	    UPDATE  
+	    	member_message_flag
+	    SET 
+			<#if sendFlag?exists && sendFlag!="" >
+				sendFlag=:sendFlag,
+			</#if>	 
+			<#if updateUserId?exists && updateUserId!="" >
+				updateUserId=:updateUserId,
+			</#if>	   
+				updateTime = SYSDATE()
+		WHERE 
+		    memberId=:memberId
+	]]>
+	</sql>
+	
+		<sql id="insert">
+	<![CDATA[
+	    INSERT INTO  
+	    	member_message_flag
+	    	(
+	    	memberId,sendFlag,createUserId,createTime,updateUserId,updateTime
+			)
+	    VALUES
+	    	(
+	    	:memberId,:sendFlag,:createUserId,SYSDATE(),:updateUserId,SYSDATE()
+			)
+	]]>
+	</sql>
+</sqlMap>

@@ -1,0 +1,156 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>${maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- spring上下文 -->
+	<bean class="com.gudeng.commerce.gd.task.util.SpringContextUtil" />
+	
+	<!-- 任务执行代理 -->
+	<bean id="executeProxy" class="com.gudeng.commerce.gd.task.common.job.ExecuteProxy" />
+	
+	<!-- 任务队列实现类 -->
+	<bean id="taskCallService" class="com.gudeng.commerce.gd.task.common.job.TaskCallServiceImpl" />
+	
+	<!-- 定时任务队列实现类 -->
+	<bean id="timeTaskCallService" class="com.gudeng.commerce.gd.task.common.job.TimeTaskCallServiceImpl" />
+	
+	<!-- 计算补贴金额任务，注意：此处必须使用原型模式 -->
+	<bean id="calcSubAmtTask" class="com.gudeng.commerce.gd.task.service.impl.CalcSubAmtTask" scope="prototype" />
+
+	<!-- 计算补贴金额任务执行器 -->
+	<bean id="calcSubAmtExecuteService" class="com.gudeng.commerce.gd.task.service.impl.CalcSubAmtExecuteServiceImpl" />
+	
+	<!-- 补贴限制规则任务，注意：此处必须使用原型模式 -->
+	<bean id="subLimitRuleTask" class="com.gudeng.commerce.gd.task.service.impl.SubLimitRuleTask" scope="prototype" />
+	
+	<!-- 发送邮件任务，注意：此处必须使用原型模式 -->
+	<bean id="sendEmailTask" class="com.gudeng.commerce.gd.task.service.impl.SendEmailTask" scope="prototype" />
+	
+	<!-- 补贴限制规则任务执行器 -->
+	<bean id="subLimitRuleExecuteService" class="com.gudeng.commerce.gd.task.service.impl.SubLimitRuleExecuteServiceImpl" />
+	
+	<!-- 发送邮件任务执行器 -->
+	<bean id="sendEmailExecuteService" class="com.gudeng.commerce.gd.task.service.impl.SendEmailExecuteServiceImpl" />
+	
+	<!-- 商品同步任务执行器 -->
+	<bean id="productSyncExecuteService" class="com.gudeng.commerce.gd.task.service.impl.ProductSyncExecuteServiceImpl" />
+	
+	<bean id="taskToolService" class="com.gudeng.commerce.gd.task.service.impl.TaskToolServiceImpl" />
+	
+	<bean id="demoService" class="com.gudeng.commerce.gd.task.service.impl.DemoServiceImpl"/>
+
+ 	<bean id="pushMessageTaskService" class="com.gudeng.commerce.gd.task.service.impl.PushMessageTaskServiceImpl"/>
+	
+	<bean id="staticHtmlService" class="com.gudeng.commerce.gd.task.service.impl.StaticHtmlServiceImpl"/>	 
+	
+ 	<bean id="expireProductTask" class="com.gudeng.commerce.gd.task.service.impl.ExpireProductTaskImpl"/> 	
+ 	
+ 	<bean id="adTaskService" class="com.gudeng.commerce.gd.task.service.impl.AdTaskServiceImpl"/>
+ 	
+ 	<bean id="orderAdvanceTaskService" class="com.gudeng.commerce.gd.task.service.impl.OrderAdvanceTaskServiceImpl"/>
+ 
+  	<bean id="timeStartRuleTaskService" class="com.gudeng.commerce.gd.task.service.impl.TimeStartRuleTaskServiceImpl"/>	
+ 	<!-- 订单补贴服务 -->
+ 	<bean id="orderSubToolService" class="com.gudeng.commerce.gd.task.service.impl.OrderSubToolServiceImpl"/>
+ 	
+ 	<!-- 订单服务 -->
+ 	<bean id="orderBaseToolService" class="com.gudeng.commerce.gd.task.service.impl.OrderBaseToolServiceImpl"/>
+	
+	<!-- 增加48小时自动撤单定时任务 -->
+	<bean id="autoOrderRevokeCallTask" class="com.gudeng.commerce.gd.task.service.impl.AutoOrderRevokeCallTask"></bean>
+	
+	<!-- 增加2小时后已付款，自动完成订单 -->
+	<bean id="twoAlreadyPayOrderCallTask" class="com.gudeng.commerce.gd.task.service.impl.TwoAlreadyPayOrderCallTask"></bean>
+	<!-- 增加72小时后自动取消未付款订单 -->
+	<bean id="cancelUnpaidOrderTaskImpl" class="com.gudeng.commerce.gd.task.service.impl.CancelUnpaidOrderTaskImpl"></bean>
+	
+	<!-- 交易订单导入 -->
+	<bean id="orderBillTaskService" class="com.gudeng.commerce.gd.task.service.impl.OrderBillTaskServiceImpl"></bean>
+	
+	<!-- 预销售表服务 -->
+	<bean id="preSaleToolService" class="com.gudeng.commerce.gd.task.service.impl.PreSaleToolServiceImpl"></bean>
+	<!--产品管理 -->
+	<bean id="productToolService" class="com.gudeng.commerce.gd.task.service.impl.ProductToolServiceImpl"></bean>
+	<!-- 用户账户服务 -->
+	<bean id="walletToolService" class="com.gudeng.commerce.gd.task.service.impl.WalletToolServiceImpl"></bean>
+
+	<!-- 补贴规则审核定时任务 -->
+	<bean id="subLimitRuleTimeService" class="com.gudeng.commerce.gd.task.service.impl.SubLimitRuleTimeServiceImpl"></bean>
+	
+	<bean id="orderAopUtil" class="com.gudeng.commerce.gd.task.util.systemlog.OrderAopUtil"></bean>
+	<bean id="orderBillAopUtil" class="com.gudeng.commerce.gd.task.util.systemlog.OrderBillAopUtil"></bean>
+	<bean id="nstComfirmOrderTaskService" class="com.gudeng.commerce.gd.task.service.impl.NstComfirmOrderTaskServiceImpl"></bean>
+	<bean id="nstOrderToolService" class="com.gudeng.commerce.gd.task.service.impl.NstOrderToolServiceImpl"></bean><bean id="sinxinAdapter" class="com.gudeng.commerce.gd.task.agent.impl.SinxinAdapterImpl"></bean>
+	
+	<bean id="productSyncTask" class="com.gudeng.commerce.gd.task.service.impl.ProductSyncTask" scope="prototype"></bean>
+	
+	<!-- 自动取消定时任务 -->
+	<bean id="nstAutoCancleOrderTaskService" class="com.gudeng.commerce.gd.task.service.impl.NstAutoCancleOrderTaskServiceImpl"></bean>
+	<!-- 处理e农异常账单 -->
+	<bean id="eNongBillTaskService" class="com.gudeng.commerce.gd.task.service.impl.ENongBillTaskServiceImpl"></bean>
+	
+	<bean id="mqAsyncErrorToolService" class ="com.gudeng.commerce.gd.task.service.impl.MqAsyncErrorToolServiceImpl"/>	
+
+	<bean id="sendMQTask" class ="com.gudeng.commerce.gd.task.service.impl.SendMQTask"/>
+	
+	<!-- 给支付中心发送订单 -->
+	<bean id="orderSyncExecuteService" class ="com.gudeng.commerce.gd.task.service.impl.OrderSyncExecuteServiceImpl"/>
+	<bean id="orderSyncTask" class="com.gudeng.commerce.gd.task.service.impl.OrderSyncTask" scope="prototype" />
+	
+	<!-- 支付流水服务 -->
+	<bean id="paySerialnumberToolService" class="com.gudeng.commerce.gd.task.service.impl.PaySerialnumberToolServiceImpl"/>
+	
+	<bean id="producer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+          <property name="properties" >
+            <props>
+                <prop key="ProducerId">${gd.MQ.member.ProducerID}</prop>
+                <prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+                <prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+            </props>
+        </property>
+    </bean>
+   	<bean id="accBankProducer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+          <property name="properties" >
+            <props>
+                <prop key="ProducerId">${gd.MQ.accBank.ProducerID}</prop>
+                <prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+                <prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <bean id="orderSyncProducer" class="com.aliyun.openservices.ons.api.bean.ProducerBean" init-method="start" destroy-method="shutdown">
+          <property name="properties" >
+            <props>
+                <prop key="ProducerId">${gd.MQ.orderSync.ProducerID}</prop>
+                <prop key="AccessKey">${gd.MQ.AccessKey}</prop>
+                <prop key="SecretKey">${gd.MQ.SecretKey}</prop>
+            </props>
+        </property>
+    </bean> 
+    
+    <!--报价信息通知-->
+	<bean id="npsOfferPriceTaskService" class="com.gudeng.commerce.gd.task.service.impl.NpsOfferPriceTaskServiceImpl"></bean>
+       
+    </beans>

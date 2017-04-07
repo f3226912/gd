@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="userProduct">
+
+	<sql id="getList">
+	<![CDATA[
+		SELECT
+			pb.updateTime AS startTime, pb.productId AS productId,
+			pb.cateId, pb.businessId, rbm.marketId, b.marketName,
+			CASE WHEN pb.priceType = "1" THEN pp.minPrice else pb.price end price,
+			c.codeValue AS unitName, d.`url170` AS imageUrl ,e.`mobile` ,pb.name AS productName,
+			bb.shopsName AS shopsName  ,pb.`stockCount` AS stockCount
+		FROM product_baseinfo AS pb
+		LEFT JOIN  product_picture AS d
+			ON pb.`productId` = d.`productId`
+		LEFT JOIN system_code AS c
+			ON pb.unit = c.codeKey AND c.type = "ProductUnit"
+		LEFT JOIN business_baseinfo AS bb
+			ON pb.`businessId`= bb.`businessId`
+		LEFT JOIN re_business_market rbm
+			ON pb.businessId = rbm.businessId
+		LEFT JOIN market AS b
+			ON rbm.marketId = b.id
+		LEFT JOIN member_baseinfo AS e
+			ON bb.`userId`= e.`memberId`
+		LEFT JOIN (SELECT b.productId, MIN(b.price) AS minPrice FROM product_price b GROUP BY b.productId) pp
+			ON  pb.productId = pp.productId
+		WHERE
+			pb.state = '3' and pb.productType = '1'
+		AND d.pictureType = 4
+		AND e.`status` = "1"
+		AND e.`level` != 4
+			<#if businessId?exists && businessId!="" >
+			      AND pb.businessId = :businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND rbm.marketId = :marketId
+			</#if>
+			<#if cateId?exists && cateId!="" >
+			      AND pb.cateId = :cateId
+			</#if>
+		ORDER BY pb.cateId, price
+		LIMIT
+			:startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM product_baseinfo AS pb
+		LEFT JOIN  product_picture AS d
+			ON pb.`productId` = d.`productId`
+		LEFT JOIN system_code AS c
+			ON pb.unit = c.codeKey AND c.type = "ProductUnit"
+		LEFT JOIN business_baseinfo AS bb
+			ON pb.`businessId`= bb.`businessId`
+		LEFT JOIN re_business_market rbm
+			ON pb.businessId = rbm.businessId
+		LEFT JOIN market AS b
+			ON rbm.marketId = b.id
+		LEFT JOIN member_baseinfo AS e
+			ON bb.`userId`= e.`memberId`
+		LEFT JOIN (SELECT b.productId, MIN(b.price) AS minPrice FROM product_price b GROUP BY b.productId) pp
+			ON  pb.productId = pp.productId
+		WHERE
+			pb.state = '3' and pb.productType = '1'
+		AND d.pictureType = 4
+		AND e.`status` = "1"
+		AND e.`level` != 4
+			<#if businessId?exists && businessId!="" >
+			      AND pb.businessId = :businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND rbm.marketId = :marketId
+			</#if>
+			<#if cateId?exists && cateId!="" >
+			      AND pb.cateId = :cateId
+			</#if>
+	]]>
+	</sql>
+
+	<sql id="getCollectList">
+	<![CDATA[
+		SELECT a.id,a.userId,a.createTime, a.productId AS productId,
+			a.cateId,a.businessId,a.marketId, m.marketName,	pb.price as price, pb.unit as unit,
+			d.`url60` AS imageUrl ,e.`mobile` ,pb.name AS productName,
+			bb.shopsName AS shopsName  ,pb.`stockCount` AS stockCount ,pb.expirationDate expirationDate,pb.state state, mb.status
+		FROM usercollect_product AS a
+		LEFT JOIN product_baseinfo AS pb
+			ON pb.`productId`= a.`productId`
+		LEFT JOIN business_baseinfo AS bb
+			ON bb.`businessId`= pb.`businessId`
+		LEFT JOIN re_business_market AS rbm
+			ON rbm.businessId = bb.businessId
+		LEFT JOIN member_baseinfo AS mb
+			ON bb.`userId`= mb.`memberId`
+		LEFT JOIN market m
+			ON rbm.marketId=m.id
+		LEFT JOIN  product_picture AS d
+			ON a.`productId` = d.`productId` AND d.`pictureType` = 1
+		LEFT JOIN member_baseinfo AS e
+			ON a.`userId`= e.`memberId`
+		WHERE
+			a.userId=:userId and pb.productType = '1'
+			<#if businessId?exists && businessId!="" >
+			      AND a.businessId = :businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND a.marketId = :marketId
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND a.productId = :productId
+			</#if>
+
+		ORDER BY a.createTime desc
+		LIMIT
+			:startRow,:endRow
+
+	]]>
+	</sql>
+
+	<sql id="getCount">
+	<![CDATA[
+		SELECT count(a.id)
+		FROM usercollect_product AS a
+			LEFT JOIN market AS b
+			ON a.marketId=b.id
+		LEFT JOIN product_baseinfo AS pb
+			ON pb.`productId`= a.`productId`
+		WHERE
+			a.userId=:userId and pb.productType = '1'
+			<#if businessId?exists && businessId!="" >
+			      AND a.businessId = :businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			      AND a.marketId = :marketId
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND a.productId = :productId
+			</#if>
+
+	]]>
+	</sql>
+
+	<sql id="getProductList">
+	<![CDATA[
+		SELECT
+			a.userId, a.productCategoryId AS cateId, b.marketId, d.marketName, b.cateName AS productName
+		FROM usercollect_product_category a
+			LEFT JOIN product_category b ON a.productCategoryId = b.categoryId
+			LEFT JOIN market d ON b.marketId = d.id
+		WHERE
+			a.userId = :userId
+		<#if marketId?exists && marketId!="" >
+			AND b.marketId = :marketId
+		</#if>
+	]]>
+	</sql>
+
+
+	<!-- 取消關注單品 -->
+	<sql id="cancelFocus">
+	<![CDATA[
+	DELETE FROM
+		usercollect_product
+    WHERE
+    	userId=:userId
+   		AND productId=:productId
+	]]>
+	</sql>
+
+	<!-- 取消多个關注單品 -->
+	<sql id="cancelMoreFocus">
+	<![CDATA[
+	DELETE FROM
+		usercollect_product
+    WHERE
+    	userId=:userId
+    	AND productId in
+
+		<#assign n = productIds?size />
+		<#if n gt 0>
+			(
+			<#list productIds as productId>
+				<#if productId_index != n-1>
+						${productId} ,
+					<#else>
+						${productId}
+				</#if>
+			</#list>
+			)
+		</#if>
+
+	]]>
+	</sql>
+
+	<!-- 查询收藏产品数据 根据UserId and productId -->
+	<sql id="getCollect">
+	<![CDATA[
+	SELECT
+		id ,
+		userId ,
+		createTime ,
+		productId ,
+		cateId ,
+		businessId ,
+		marketId
+	FROM
+		usercollect_product
+    WHERE
+    	userId=:userId
+   		AND productId=:productId
+	]]>
+	</sql>
+
+	<sql id="getProductsCountOfConcerned">
+	<![CDATA[
+		SELECT
+			count(1) as count
+		FROM
+			usercollect_product up, product_baseinfo p, product_picture pp,
+			business_baseinfo b, member_baseinfo m1, member_baseinfo m2
+		WHERE p.productType = '1' and 
+			up.userId = m1.memberId AND up.productId = p.productId AND up.productId = pp.productId  AND pp.pictureType = :pictureType
+			AND p.businessId = b.businessId	 AND b.userId = m2.memberId
+			<#if userId?exists && userId!="" >
+			      AND up.userId = :userId
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND up.productId = :productId
+			</#if>
+		ORDER BY up.createTime DESC
+	]]>
+	</sql>
+
+	<sql id="getProductsOfConcerned">
+	<![CDATA[
+		SELECT
+			up.userId, up.productId, b.businessId, b.shopsName, m2.mobile, DATE_FORMAT(up.createTime,'%Y-%m-%d-%T') as concernTime,
+			pp.url170 as appListImg, p.price, p.`name` as productName, DATE_FORMAT(p.updateTime,'%Y-%m-%d-%T') as productUpdateTime, b.userId as merchantId, p.unit, code.codeValue as showedUnit
+		FROM
+			usercollect_product up, product_baseinfo p, product_picture pp,
+			business_baseinfo b, member_baseinfo m1, member_baseinfo m2, system_code code
+		WHERE p.productType = '1' and 
+			up.userId = m1.memberId AND up.productId = p.productId AND up.productId = pp.productId  AND pp.pictureType = :pictureType
+			AND p.businessId = b.businessId	 AND b.userId = m2.memberId AND p.unit = code.codeKey AND code.type = 'ProductUnit'
+			<#if userId?exists && userId!="" >
+			      AND up.userId = :userId
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND up.productId = :productId
+			</#if>
+		ORDER BY up.createTime DESC
+		LIMIT :startRow, :endRow
+	]]>
+	</sql>
+</sqlMap>

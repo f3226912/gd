@@ -1,0 +1,20 @@
+@charset "utf-8";
+body{background-color: #eee;}
+.wrap-item{margin-top: 11px;background-color: #fff;}
+.com-pad{padding: 0 1rem;}
+.date-r{float: right;}
+.p-item-tit{font-size: 1.5rem;line-height: 2rem;padding-top: 10px;padding-bottom: 10px;border-bottom: 1px solid #eee;}
+.p-item-det{border-bottom: 1px solid #eee;padding: 1.5rem 0;}
+.p-pic-box{float: left;width: 8rem;height: 8rem; border: 1px solid #eee;}
+.p-pic-txt{margin-left: 8.7rem;font-size: 1.5rem;}
+.p-pic-tit{font-size: 15px;line-height: 2.15rem; height: 4rem;margin-bottom: 0.7rem;overflow : hidden;
+text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;}
+.p-det-other{color: #999;font-size: 13px;}
+.p-det-other span{font-size: 13px;}
+.p-det-other:nth-child(2){margin-bottom: 0.7rem;}
+.total-p{padding-top: 1.1rem;padding-bottom: 1.1rem;line-height: 2rem;font-size: 1.55rem;}
+
+.p-item-shop{font-size: 1.5rem;line-height: 2rem;padding-top: 10px;padding-bottom: 10px;border-bottom: 1px solid #eee;}
+.shop-t-ico{ width: 1.8rem; height: 2rem; background: url(../images/p-det-ico.png) no-repeat;background-size: 5.5rem 5.5rem;vertical-align: middle;display: inline-block;}
+.shop-t-ico1{background-position: 0.2rem 0.2rem}
+.shop-t-ico2{background-position: .5rem -3.65rem}

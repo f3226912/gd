@@ -1,0 +1,108 @@
+{
+  "datajson": {
+    "goodsTradeResultLists": [
+      {
+        "orderNum": 1,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 311127,
+        "unit": 7,
+        "unitString": "箱"
+      },
+        {
+        "orderNum": 2,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 3111211,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 3,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 1311111,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 4,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 4311111,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 5,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 311111,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 6,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 311111,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 7,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 311111,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 8,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 311111,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 9,
+        "productId": 38981,
+        "productName": "黄瓜",
+        "pv": 69,
+        "sales": 2,
+        "tradeAmt": 311111,
+        "unit": 7,
+        "unitString": "箱"
+      },
+      {
+        "orderNum": 10,
+        "productId": 38979,
+        "productName": "小白菜",
+        "pv": 194,
+        "sales": 2,
+        "tradeAmt": 21,
+        "unit": 3,
+        "unitString": "公斤"
+      }
+    ]
+  },
+  "resultcode": "0000",
+  "resultmsg": "操作成功"
+}

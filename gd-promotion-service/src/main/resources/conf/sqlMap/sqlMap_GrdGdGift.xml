@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdGdGiftEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_gd_gift(
+	updateUserName,spec,createTime,newPrice,updateTime,supplyCycle,riseCount,
+	remarks,id,unit,createUser,createUserName,giftNo,
+	giftImage,name,rePrice,updateUser
+	) VALUES (
+	:updateUserName,:spec,:createTime,:newPrice,:updateTime,:supplyCycle,:riseCount,
+	:remarks,:id,:unit,:createUser,:createUserName,:giftNo,
+	:giftImage,:name,:rePrice,:updateUser
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_gd_gift SET 
+	<#if updateUserName?exists && updateUserName!="" >
+		updateUserName=:updateUserName,
+	</#if>	
+	<#if spec?exists && spec!="" >
+		spec=:spec,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if newPrice?exists && newPrice!="" >
+		newPrice=:newPrice,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if supplyCycle?exists && supplyCycle!="" >
+		supplyCycle=:supplyCycle,
+	</#if>	
+	<#if riseCount?exists && riseCount!="" >
+		riseCount=:riseCount,
+	</#if>	
+	<#if remarks?exists && remarks!="" >
+		remarks=:remarks,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if unit?exists && unit!="" >
+		unit=:unit,
+	</#if>	
+	<#if createUser?exists && createUser!="" >
+		createUser=:createUser,
+	</#if>	
+	<#if createUserName?exists && createUserName!="" >
+		createUserName=:createUserName,
+	</#if>	
+	<#if giftNo?exists && giftNo!="" >
+		giftNo=:giftNo,
+	</#if>	
+	<#if giftImage?exists && giftImage!="" >
+		giftImage=:giftImage,
+	</#if>	
+	<#if name?exists && name!="" >
+		name=:name,
+	</#if>	
+	<#if rePrice?exists && rePrice!="" >
+		rePrice=:rePrice,
+	</#if>	
+	<#if updateUser?exists && updateUser!="" >
+		updateUser=:updateUser,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	updateUserName,spec,createTime,newPrice,updateTime,supplyCycle,riseCount,
+	remarks,id,unit,createUser,createUserName,giftNo,
+	giftImage,name,rePrice,updateUser
+	FROM grd_gd_gift WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	updateUserName,spec,createTime,newPrice,updateTime,supplyCycle,riseCount,
+	remarks,id,unit,createUser,createUserName,giftNo,
+	giftImage,name,rePrice,updateUser
+	FROM grd_gd_gift WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if spec?exists && spec!="" >
+		AND spec=:spec
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if newPrice?exists && newPrice!="" >
+		AND newPrice=:newPrice
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if supplyCycle?exists && supplyCycle!="" >
+		AND supplyCycle=:supplyCycle
+	</#if>
+	<#if riseCount?exists && riseCount!="" >
+		AND riseCount=:riseCount
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if unit?exists && unit!="" >
+		AND unit=:unit
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND giftNo=:giftNo
+	</#if>
+	<#if giftImage?exists && giftImage!="" >
+		AND giftImage=:giftImage
+	</#if>
+	<#if name?exists && name!="" >
+		AND name=:name
+	</#if>
+	<#if rePrice?exists && rePrice!="" >
+		AND rePrice=:rePrice
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	ORDER BY id Desc
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	updateUserName,spec,createTime,newPrice,updateTime,supplyCycle,riseCount,
+	remarks,id,unit,createUser,createUserName,giftNo,
+	giftImage,name,rePrice,updateUser
+	FROM grd_gd_gift WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if spec?exists && spec!="" >
+		AND spec=:spec
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if newPrice?exists && newPrice!="" >
+		AND newPrice=:newPrice
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if supplyCycle?exists && supplyCycle!="" >
+		AND supplyCycle=:supplyCycle
+	</#if>
+	<#if riseCount?exists && riseCount!="" >
+		AND riseCount=:riseCount
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if unit?exists && unit!="" >
+		AND unit=:unit
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND giftNo like "%":giftNo"%"
+	</#if>
+	<#if giftImage?exists && giftImage!="" >
+		AND giftImage=:giftImage
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if rePrice?exists && rePrice!="" >
+		AND rePrice=:rePrice
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	ORDER BY id Desc
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM grd_gd_gift WHERE 1=1
+	<#if updateUserName?exists && updateUserName!="" >
+		AND updateUserName=:updateUserName
+	</#if>
+	<#if spec?exists && spec!="" >
+		AND spec=:spec
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if newPrice?exists && newPrice!="" >
+		AND newPrice=:newPrice
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if supplyCycle?exists && supplyCycle!="" >
+		AND supplyCycle=:supplyCycle
+	</#if>
+	<#if riseCount?exists && riseCount!="" >
+		AND riseCount=:riseCount
+	</#if>
+	<#if remarks?exists && remarks!="" >
+		AND remarks=:remarks
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if unit?exists && unit!="" >
+		AND unit=:unit
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if createUserName?exists && createUserName!="" >
+		AND createUserName=:createUserName
+	</#if>
+	<#if giftNo?exists && giftNo!="" >
+		AND giftNo like "%":giftNo"%"
+	</#if>
+	<#if giftImage?exists && giftImage!="" >
+		AND giftImage=:giftImage
+	</#if>
+	<#if name?exists && name!="" >
+		AND name like "%":name"%"
+	</#if>
+	<#if rePrice?exists && rePrice!="" >
+		AND rePrice=:rePrice
+	</#if>
+	<#if updateUser?exists && updateUser!="" >
+		AND updateUser=:updateUser
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_gd_gift WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getMaxId">
+	<![CDATA[
+	select max(id) from grd_gd_gift
+	]]>
+</sql>
+
+
+<sql id="getListPageByPurchase">
+	<![CDATA[
+	SELECT 
+	updateUserName,spec,createTime,newPrice,updateTime,supplyCycle,riseCount,
+	remarks,id,unit,createUser,createUserName,giftNo,
+	giftImage,name,rePrice,updateUser
+	FROM grd_gd_gift WHERE 1=1
+	<#if ids?exists &&ids!="" >
+	 and giftNo in(${ids})
+	<#else>
+		<#if giftNo?exists && giftNo!="" >
+			AND giftNo LIKE '%${giftNo}%'
+		</#if>	 
+		<#if giftname?exists && giftname!="" >
+			AND name LIKE '%${giftname}%'
+		</#if>	 
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotalByPurchase">
+	<![CDATA[
+	SELECT count(*) FROM grd_gd_gift WHERE 1=1
+	<#if ids?exists &&ids!="" >
+	 and giftNo in(${ids})
+	<#else>
+		<#if giftNo?exists && giftNo!="" >
+			AND giftNo LIKE '%${giftNo}%'
+		</#if>	 
+		<#if giftname?exists && giftname!="" >
+			AND name LIKE '%${giftname}%'
+		</#if>	 
+	</#if>
+	]]>
+</sql>
+
+
+
+
+
+</sqlMap>

@@ -1,0 +1,10 @@
+#
+# robots.txt for gdeng
+#
+
+User-agent: *
+
+Disallow: /product/
+Disallow: /baishazhou.html
+Disallow: /news/
+Disallow: /service/index/

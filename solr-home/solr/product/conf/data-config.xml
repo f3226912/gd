@@ -1,0 +1,152 @@
+<dataConfig>  
+   <dataSource type="JdbcDataSource" driver="com.mysql.jdbc.Driver"               
+         url="jdbc:mysql://gudeng3306.mysql.rds.aliyuncs.com:3306/gudeng?useUnicode=true&amp;characterEncoding=UTF-8" user="gd_gudeng" password="g05DuengW26" />   
+    <document>  
+        <entity name="baseInfo" pk="ID"
+		
+		query="
+		SELECT
+			 p.productId AS ID,
+			 tmp.sp AS sales,
+			 p.cateId AS cateId2,
+			 p.businessId,
+			 p. NAME,
+			 p.price,
+
+			 IF (p.price = 0, NULL, p.price) pricesOrder,
+			 p.createTime,
+			 p.updatePriceTime,
+			 p.updateTime,
+			 p.priceType,
+			 p.unit,
+			 g.codeValue AS unitName,
+			 p.originCityId AS cityId,
+			 p.originAreaId AS areaId,
+			 p.originProvinceId AS provinceId,
+			 p.roleType,
+			 pc.cateName,
+			 b.shopsName,
+			 b.businessModel businessModel,
+			 b.managementtype,
+			 m.id marketId,
+			 m.marketName,
+			 pp.urlOrg,
+			 pp2.url170 url170,
+			 mb.mobile,
+			 IFNULL(mb.memberGrade,0) memberGrade,
+			 sp.status certifstatus,
+			 cc.status ccstatus,
+			 cb.status cbstatus,
+			 com.status comstatus
+			FROM
+				product_baseinfo p
+			LEFT JOIN product_category pc ON p.cateId = pc.categoryId
+			LEFT JOIN business_baseinfo b ON p.businessId = b.businessId
+			LEFT JOIN re_business_market rbm ON rbm.businessId = b.businessId
+			LEFT JOIN market m ON rbm.marketId = m.id
+			LEFT JOIN product_picture pp ON p.productId = pp.productId
+			LEFT JOIN product_picture pp2 ON p.productId = pp2.productId
+			LEFT JOIN member_baseinfo mb ON mb.memberId = b.userId
+			LEFT JOIN system_code g ON p.unit = g.codeKey AND g.type = 'ProductUnit'
+			LEFT JOIN (
+				SELECT
+					productId,
+					sum(purQuantity) AS sp
+				FROM
+					order_product_detail opd
+				GROUP BY
+					productId
+			) tmp ON p.productId = tmp.productid
+			LEFT JOIN certif_sp_product sp on sp.productId=p.productId
+			LEFT JOIN certif_company com on com.memberId=b.userId 
+			LEFT JOIN certif_base cb on cb.businessId = p.businessId
+			LEFT JOIN certif_corp cc on cc.businessId=p.businessId
+
+			WHERE
+				p.state = 3
+			AND p.productType = '1'
+			AND mb. STATUS = 1
+			AND pp.pictureType = 1
+			AND pp2.pictureType = 4
+			ORDER BY
+				p.updatetime DESC
+ "
+		
+		deltaQuery="      select productId as  ID  from product_baseinfo  where state =3 and productType = '1' and ( createTime > '${dataimporter.last_index_time}'  or updateTime >  '${dataimporter.last_index_time}'  ) "   
+        deletedPkQuery="  select productId as  ID  from product_baseinfo  where  state !=3 and productType = '1'   "             
+        deltaImportQuery=" select p.productId as ID,p.cateId as cateId2,p.businessId,p.name,p.price,p.createTime,p.priceType,p.unit ,p.roleType,pc.cateName, b.shopsName,b.businessModel businessModel ,m.id marketId,m.marketName , pp.urlOrg  ,mb.mobile from product_baseinfo p  left join product_category pc  on  p.cateId = pc.categoryId  left join business_baseinfo b on p.businessId = b.businessId LEFT JOIN re_business_market rbm ON rbm.businessId=b.businessId LEFT JOIN market m on rbm.marketId = m.id left JOIN product_picture pp on p.productId=   pp.productId   left join member_baseinfo mb on mb.memberId=b.userId  where  state= 3 and productType = '1' and pp.pictureType=1  and  p.productId='${dataimporter.delta.ID}'"
+		
+		
+		>  
+        
+		    <field column="ID" name="id"/>  
+            <field column="cateId" name="cateId"/>  
+			<field column="cateId2" name="cateId2"/>  
+            <field column="businessId" name="businessId"/>  
+            <field column="name" name="name"/>  
+            <field column="price" name="price"/>  
+            <field column="pricesOrder" name="pricesOrder"/>  
+            <field column="priceType" name="priceType"/>  
+            <field column="unit" name="unit"/> 
+
+            <field column="roleType" name="roleType"/>  
+            <field column="mobile" name="mobile"/>  
+			<field column="memberGrade" name="memberGrade"/> 
+			
+			<field column="cateName" name="cateName"/>  
+            <field column="shopsName" name="shopsName"/>  
+            <field column="createTime" name="createTime"/>  
+            <field column="updatePriceTime" name="updatePriceTime"/>  
+            <field column="updateTime" name="updateTime"/>  
+			<field column="urlOrg" name="urlOrg"/>  
+			
+            <field column="businessModel" name="businessModel"/>  
+            <field column="marketId" name="marketId"/>  
+            <field column="marketName" name="marketName"/>  
+			
+			<field column="unitName" name="unitName"/> 
+			<!-- 
+            <field column="addCount" name="addCount"/> 
+            <field column="addPicUrl" name="addPicUrl"/> 
+			-->
+            <field column="url170" name="url170"/> 
+			
+            <field column="provinceId" name="provinceId"/> 
+            <field column="cityId" name="cityId"/> 
+            <field column="areaId" name="areaId"/> 
+            <field column="managementType" name="managementType"/> 
+			
+			<entity name="productSigns"  transformer="RegexTransformer"  query="select productSign as productSigns from product_baseinfo where productId='${baseInfo.ID}'  ">
+				<field column="productSign" splitBy=","  sourceColName="productSigns"/> 
+            </entity>
+		    <!--一级分类ID -->
+			<entity name="cateId0"  query=" SELECT pc.parentId as cateId0 from product_category pc ,(SELECT categoryId,parentId from product_category pc where pc.categoryId='${baseInfo.cateId2}') result where pc.categoryId= result.parentId ">
+				<field name="cateId0" column="cateId0" />
+            </entity>
+			<!--二级分类ID -->
+			<entity name="cateId1"  query=" SELECT  parentId as cateId1 from product_category pc where pc.categoryId='${baseInfo.cateId2}' ">
+				<field name="cateId1" column="cateId1" />
+            </entity>
+			
+			<!-- 联合查询区间价格，用于展示资料 -->
+			<entity name="rangePrices" query="select buyCountStart,buyCountEnd,  price rangePrice from product_price  where productId='${baseInfo.ID}' order by buyCountStart asc ">
+				<field name="buyCountStart" column="buyCountStart" />
+				<field name="buyCountEnd" column="buyCountEnd" />
+				<field name="rangePrice" column="rangePrice" />
+            </entity>
+			
+			<field name="sales" column="sales" />
+			
+			<field column="certifstatus" name="certifstatus"/>  <!-- 产地标识认证 -->
+			<field column="comstatus" name="comstatus"/>   <!-- 企业认证 -->
+			<field column="ccstatus" name="ccstatus"/>  <!-- 合作社认证 -->
+			<field column="cbstatus" name="cbstatus"/>  <!-- 基地认证 -->
+
+			
+			<!-- 联合查询区间价格，用于展示资料 -->
+			<!-- <entity name="sales" query=" select SUM(purQuantity) sales,productId  from order_product_detail where productId='${baseInfo.ID}' GROUP BY productId  ">
+				<field name="sales" column="sales" />
+            </entity>-->
+        </entity>  
+    </document>  
+</dataConfig>  

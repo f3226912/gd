@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Detection">
+<!-- 检测信息管理操作SQL -->
+	<!-- 根据ID查找数据 -->
+	<sql id="getDetectionById">
+	<![CDATA[
+		SELECT t.id, productName, maketId, m.`marketName`, detail, t.status, origin,  unitName,
+		inspection,  rate,  pass,  detectTime,  t.description,  t.createUserId,  t.createTime, 
+		t.updateUserId,  t.updateTime,  publishTime 
+		FROM
+	  	detection t 
+	  	LEFT JOIN `market` m 
+	    ON t.`maketId` = m.`id` 
+	    AND m.`status` = '0' 
+	    AND m.`marketType` = '2' 
+		WHERE t.id =:id
+	]]>
+	</sql>
+	
+	<!-- 分页获取集合列表 -->
+	<sql id="getDetectionList">
+	<![CDATA[
+		SELECT t.id, productName, maketId, m.`marketName`, detail, t.status, origin,  unitName,
+		inspection,  rate,  pass,  detectTime,  t.description,  t.createUserId,  t.createTime, 
+		t.updateUserId,  t.updateTime,  publishTime 
+		FROM
+	  	detection t 
+	  	LEFT JOIN `market` m 
+	    ON t.`maketId` = m.`id` 
+	    AND m.`status` = '0' 
+	    AND m.`marketType` = '2' 
+		WHERE 1 = 1 
+		<#if productName?exists && productName!="" >
+		      AND productName like "%":productName"%"
+		</#if>
+		<#if origin?exists && origin!="" >
+		      AND origin like "%":origin"%"
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		      AND publishTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		      AND publishTime <= :endDate
+		</#if>
+		<#if maketId?exists && maketId!="" >
+		      AND t.maketId = :maketId
+		</#if>
+		ORDER BY 
+		
+		<#if sortName?exists && sortName=="createTime" && sortOrder=="d" >
+		      t.createTime DESC
+		</#if>
+		
+		<#if sortName?exists && sortName=="createTime" && sortOrder=="a" >
+		      t.createTime ASC
+		</#if>
+		
+		<#if sortName==null >
+		      t.id DESC
+		</#if>
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<!-- 获取数据总记录条数 -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			detection  t 
+		WHERE  1=1
+		<#if productName?exists && productName!="" >
+		      AND productName like "%":productName"%"
+		</#if>
+		<#if origin?exists && origin!="" >
+		      AND origin like "%":origin"%"
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		      AND publishTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		      AND publishTime <= :endDate
+		</#if>
+		<#if maketId?exists && maketId!="" >
+		      AND maketId = :maketId
+		</#if>
+	]]>
+	</sql>
+	
+	<!-- 判断该记录是否存在 -->
+	<sql id="checkExsit">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			detection  t 
+		WHERE id =:id
+	]]>
+	</sql>
+	
+	<!-- 新增 检测信息记录-->
+	<sql id="addDetectionDTO">
+	<![CDATA[
+	    INSERT INTO detection(productName,maketId,detail,status,
+	    origin,unitName,inspection,rate,pass,detectTime,
+	    description,createUserId,createTime,publishTime)
+		VALUES(:productName,:maketId,:detail,:status,
+		:origin,:unitName,:inspection,:rate,:pass,:detectTime_str,
+		:description,:createUserId,SYSDATE(),:publishTime_str)
+	]]>
+	</sql>
+	 <!-- 删除检测信息 -->
+	<sql id="deleteDetectionDTO">
+	<![CDATA[
+		DELETE FROM detection WHERE id =:id
+	]]>
+	</sql>
+	<!-- 更新检测信息 -->
+	<sql id="updateDetectionDTO">
+	<![CDATA[
+	    UPDATE detection SET 
+	    	productName=:productName,maketId=:maketId,detail=:detail,status=:status,
+	    	origin=:origin,unitName=:unitName,inspection=:inspection,rate=:rate,pass=:pass,
+	    	description=:description,updateUserId=:updateUserId,updateTime=SYSDATE(),detectTime=:detectTime_str,publishTime=:publishTime_str
+	    WHERE id=:id
+	]]>
+	</sql>
+</sqlMap>

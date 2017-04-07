@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AuditLog">
+	<sql id="addAuditLog">
+	<![CDATA[
+		INSERT INTO audit_log
+			(
+				type,orderNo,auditUserId,auditUserName,description,
+				auditTime,createTime,createUserId,updateTime,updateUserId
+			)
+		VALUES
+			(
+				:type,:orderNo,:auditUserId,:auditUserName,:description,
+				NOW(),NOW(),:createUserId,NOW(),:updateUserId
+			)
+	]]>
+	</sql>
+	
+	<sql id="getListByOrderNo">
+	<![CDATA[
+		SELECT
+			logId,
+			type,orderNo,auditUserId,auditUserName,description,
+			auditTime,createTime,createUserId,updateTime,updateUserId
+		FROM
+			audit_log
+		WHERE 1=1
+			<#if type?exists && type!="">
+				AND type=:type
+			</#if>
+			AND orderNo=:orderNo
+			ORDER BY createTime ASC
+	]]>
+	</sql>
+
+	<sql id="getSYSAuditLogByOrderNo">
+ 	<![CDATA[
+	    SELECT
+			orderNo, auditUserName, description, auditTime
+		FROM audit_log
+		WHERE orderNo=:orderNo AND type='1' AND auditUserName='SYS'
+		ORDER BY auditTime DESC
+	]]>
+	</sql>
+	
+
+</sqlMap>

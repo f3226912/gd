@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.gudeng.commerce.gd</groupId>
+		<artifactId>gd-report-pom</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../gd-report-pom/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>gd-report-web</artifactId>
+	<packaging>war</packaging>
+	<version>${gd.report.version}</version>
+	<name>gd-report-web Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-report-intf</artifactId>
+			<version>${gd.report.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-report-service</artifactId>
+			<version>${gd.report.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>gd-report</finalName>
+	</build>
+</project>

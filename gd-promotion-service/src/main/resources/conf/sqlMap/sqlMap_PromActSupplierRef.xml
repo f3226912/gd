@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromActSupplierRef">
+
+	<sql id="updateStatus">
+	<![CDATA[
+		UPDATE prom_act_supplier_ref
+		SET STATUS = :refStatus,
+		 updateTime = SYSDATE()
+		WHERE id=:id
+			
+	]]>
+	</sql>
+	
+	<sql id="cancelActivityStatus">
+	<![CDATA[
+		UPDATE prom_act_supplier_ref
+		SET STATUS = :refStatus,
+		 updateTime = SYSDATE()
+		WHERE actId=:actId
+		  AND supplierId=:supplierId
+			
+	]]>
+	</sql>
+	
+	<sql id="queryRefRecord">
+	<![CDATA[
+	SELECT id,`STATUS`
+	FROM
+		prom_act_supplier_ref
+	WHERE
+		supplierId =:supplierId
+	AND actId =:actId
+	]]>
+	</sql>
+
+</sqlMap>

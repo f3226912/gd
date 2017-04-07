@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MarketSale">
+<!-- 市场价格管理操作SQL -->
+	<!-- 根据ID查找数据 -->
+	<sql id="getById">
+	<![CDATA[
+		SELECT t.id, t.`marketId`, m.`marketName`, recordDate, yestodaySale, todaySale,
+		 t.createUserId, t.createTime, t.updateUserId, t.updateTime 
+		FROM
+		  market_sale t 
+		  LEFT JOIN market m 
+		    ON t.`marketId` = m.`id` 
+		    AND m.`status` = '0' 
+		    AND m.`marketType` = '2' 
+		WHERE t.id =:id
+	]]>
+	</sql>
+	
+	<!-- 分页获取集合列表 -->
+	<sql id="getMarketSaleList">
+	<![CDATA[
+		SELECT t.id, t.`marketId`, m.`marketName`, recordDate, yestodaySale, todaySale,
+		 t.createUserId, t.createTime, t.updateUserId, t.updateTime 
+		FROM
+		  market_sale t 
+		  LEFT JOIN market m 
+		    ON t.`marketId` = m.`id` 
+		    AND m.`status` = '0' 
+		    AND m.`marketType` = '2' 
+		WHERE 1 = 1
+			<#if marketId?exists && marketId!="" >
+		      AND t.marketId =:marketId
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND recordDate >= :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND recordDate <= :endDate
+			</#if>
+			ORDER BY t.id DESC 
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<!-- 获取数据总记录条数 -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			market_sale  t 
+		WHERE  1=1
+		<#if marketId?exists && marketId!="" >
+		      AND marketId =:marketId
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		      AND recordDate >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		      AND recordDate <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+	<!-- 判断该记录是否存在 -->
+	<sql id="checkExsit">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			market_sale  t 
+		WHERE 1=1
+		AND id =:id
+	]]>
+	</sql>
+	
+	<!-- 新增 市场价格记录-->
+	<sql id="addMarketSaleDTO">
+	<![CDATA[
+	    INSERT INTO market_sale (
+			marketId,recordDate,yestodaySale,todaySale,
+			createUserId,createTime
+		)
+		VALUES(
+			:marketId,SYSDATE(),:yestodaySale,:todaySale,
+			:createUserId,SYSDATE()
+		)
+	]]>
+	</sql>
+	 <!-- 删除市场价格信息 -->
+	<sql id="deleteMarketSaleDTO">
+	<![CDATA[
+		DELETE FROM market_sale WHERE id =:id
+	]]>
+	</sql>
+	<!-- 更新市场价格信息 -->
+	<sql id="updateMarketSaleDTO">
+	<![CDATA[
+	    UPDATE market_sale SET 
+	    	marketId=:marketId,yestodaySale=:yestodaySale,todaySale=:todaySale,
+			updateUserId=:updateUserId,updateTime=SYSDATE() WHERE id=:id
+	]]>
+	</sql>
+</sqlMap>

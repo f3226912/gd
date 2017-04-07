@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderOutmarketinfo">
+	
+	<sql id="insert">
+		<![CDATA[
+			INSERT INTO 
+			order_outmarketinfo
+			(
+				controllerId,carNumber,carNumberImage,
+				carWeightStatus,type,createTime,createUserId,
+				updateTime,updateUserId,carId,weighCarId
+			)
+			VALUES 
+			(
+				:controllerId,:carNumber,:carNumberImage,
+				:carWeightStatus,:type,SYSDATE(),:createUserId,
+				SYSDATE(),:updateUserId,:carId,:weighCarId
+			)
+		]]>
+	</sql>
+	
+	<sql id="delete">
+		<![CDATA[
+			DELETE FROM order_outmarketinfo
+			WHERE
+			omId = :omId
+		]]>
+	</sql>
+	
+	<sql id="batchDeleteById">
+		<![CDATA[
+			DELETE FROM order_outmarketinfo
+			WHERE
+			omId IN 
+			<#assign n = omIds?size />
+			<#if n gt 0>
+				(
+				<#list omIds as omId>
+					<#if omId_index != n-1>
+							${omId} ,
+						<#else>
+							${omId}
+					</#if>
+				</#list>
+				) 
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="updateDTO">
+		<![CDATA[
+			UPDATE TABLE
+			order_outmarketinfo
+			SET
+			<#if controllerId?exists && controllerId!="" >
+					     controllerId=:controllerId,
+			</#if>	
+			<#if carNumber?exists && carNumber!="" >
+					     carNumber=:carNumber,
+			</#if>	
+			<#if carNumberImage?exists && carNumberImage!="" >
+					     carNumberImage=:carNumberImage,
+			</#if>	
+			<#if carWeightStatus?exists && carWeightStatus!="" >
+					     carWeightStatus=:carWeightStatus,
+			</#if>	
+			<#if type?exists && type!="" >
+					     type=:type,
+			</#if>	
+			<#if carId?exists && carId!="" >
+					     carId=:carId,
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+					     updateUserId=:updateUserId,
+			</#if>
+			<#if weighCarId?exists && weighCarId!="" >
+					     weighCarId=:weighCarId,
+			</#if>
+			updateTime = SYSDATE()
+			WHERE
+				omId = :omId
+		]]>
+	</sql>
+	
+	<sql id="getTotal">
+		<![CDATA[
+			SELECT 
+				count(omId)
+			FROM
+			order_outmarketinfo
+			WHERE
+			1=1  
+			<#if controllerId?exists && controllerId!="" >
+					    AND controllerId=:controllerId
+			</#if>	
+			<#if carNumber?exists && carNumber!="" >
+					    AND carNumber=:carNumber
+			</#if>	
+			<#if carNumberImage?exists && carNumberImage!="" >
+					    AND carNumberImage=:carNumberImage
+			</#if>	
+			<#if carWeightStatus?exists && carWeightStatus!="" >
+					    AND carWeightStatus=:carWeightStatus
+			</#if>	
+			<#if type?exists && type!="" >
+					    AND type=:type
+			</#if>	
+			<#if carId?exists && carId!="" >
+					   	AND carId=:carId
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+					    AND updateUserId=:updateUserId
+			</#if>
+			<#if omId?exists && omId!="" >
+					    AND omId=:omId
+			</#if>
+			<#if weighCarId?exists && weighCarId!="" >
+					    AND weighCarId=:weighCarId
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+		<![CDATA[
+			SELECT 
+				status,controllerId,carNumber,carNumberImage,
+				carWeightStatus,type,createTime,createUserId,
+				updateTime,updateUserId 
+			FROM
+			order_outmarketinfo
+			WHERE
+			1=1  
+			<#if controllerId?exists && controllerId!="" >
+					    AND controllerId=:controllerId
+			</#if>	
+			<#if carNumber?exists && carNumber!="" >
+					    AND carNumber=:carNumber
+			</#if>	
+			<#if carNumberImage?exists && carNumberImage!="" >
+					    AND carNumberImage=:carNumberImage
+			</#if>	
+			<#if carWeightStatus?exists && carWeightStatus!="" >
+					    AND carWeightStatus=:carWeightStatus
+			</#if>	
+			<#if type?exists && type!="" >
+					    AND type=:type
+			</#if>	
+			<#if carId?exists && carId!="" >
+					   	AND carId=:carId
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+					    AND updateUserId=:updateUserId
+			</#if>
+			<#if omId?exists && omId!="" >
+					    AND omId=:omId
+			</#if>
+			<#if weighCarId?exists && weighCarId!="" >
+					    AND weighCarId=:weighCarId
+			</#if>
+			ORDER BY createTime DESC
+			LIMIT 
+			:startRow,:endRow 
+		]]>
+	</sql>
+	
+	<sql id="getById">
+		<![CDATA[
+			SELECT 
+				controllerId,carNumber,carNumberImage,
+				carWeightStatus,type,createTime,createUserId,
+				updateTime,updateUserId,weighCarId
+			FROM
+			order_outmarketinfo
+			WHERE 
+			omId=:omId
+		]]>
+	</sql>
+	
+	<sql id="getOrdersByOmId">
+		<![CDATA[
+			SELECT * from re_order_outmark roo
+			LEFT JOIN 
+			order_baseinfo ob
+			ON
+			ob.OrderNo = roo.OrderNo
+			WHERE 
+			roo.omId = :omId
+		]]>
+	</sql>
+	
+	<sql id="insertOrderOutmark">
+		<![CDATA[
+			INSERT INTO re_order_outmark (
+				OrderNo,
+				omId,
+				createTime,
+				updateTime
+			)
+			VALUES(
+				:orderNo,
+				:omId,
+				SYSDATE(),
+				SYSDATE()
+			)
+		]]>
+	</sql>
+	
+	<sql id="updateOrderOutmarkStatus">
+	<![CDATA[
+		UPDATE 
+			order_baseinfo
+		SET
+			outmarkStatus = :outmarketStatus
+		WHERE
+			orderNo = :orderNo
+	]]>
+	</sql>
+	
+	<sql id="queryOrderOutmarkCarInfoByOrderNo">
+	<![CDATA[
+		SELECT 
+		  oo.`orderNo`,
+		  b.`cwpid`,
+		  c.`weighType`,
+		  b.`carNumber`
+		FROM
+		  (SELECT 
+		    * 
+		  FROM
+		    re_order_outmark t 
+		  WHERE t.`orderNo` = :orderNo) oo 
+		  LEFT JOIN order_outmarketinfo ot 
+		    ON oo.`omId` = ot.`omId` 
+		  LEFT JOIN weigh_car c 
+		    ON ot.`weighCarId` = c.`weighCarId` 
+		  LEFT JOIN car_baseinfo b 
+		    ON c.`carId` = b.`carId`
+	]]>
+	</sql>
+	
+	<sql id="queryOrderOutmarkCarInfoByCarNumber">
+	<![CDATA[
+		SELECT oo.`orderNo`,
+		       b.`carNumber`
+		FROM
+		  (SELECT *
+		   FROM car_baseinfo a
+		   WHERE a.`carNumber` = :carNumber) b
+		LEFT JOIN
+		  (SELECT *
+		   FROM weigh_car a
+		   WHERE a.`totalCreateTime` >= DATE_FORMAT(NOW(), '%Y-%m-%d')
+		     AND a.`totalCreateTime` < DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d'), INTERVAL 1 DAY)) c ON c.`carId` = b.`carId`
+		LEFT JOIN order_outmarketinfo ot ON ot.`weighCarId` = c.`weighCarId`
+		LEFT JOIN re_order_outmark oo ON oo.`omId` = ot.`omId`
+		LEFT JOIN sub_audit a ON oo.`orderNo` = a.`orderNo`
+		LEFT JOIN order_product_detail pd ON oo.`orderNo` = pd.`orderNo`
+		WHERE a.`subStatus` IN ('1', '3') AND oo.`orderNo` IS NOT NULL 
+			AND (pd.subType='5' AND pd.subUnit='51' AND pd.subAmount > 0
+			OR pd.sellSubType='5' AND pd.sellSubUnit='51' AND pd.sellSubAmount > 0)
+	]]>
+	</sql>
+	
+	<sql id="updateCarNumberImage"> 
+	<![CDATA[
+		UPDATE 
+			order_outmarketinfo
+		SET
+			carNumberImage = :carNumberImage
+		WHERE
+			omId = :omId
+	]]>
+	</sql>
+	<sql id="getListByMap">
+		<![CDATA[
+			SELECT 
+			  oo.`orderNo`,
+			  o.`omId`,
+			  o.`carNumberImage`,
+			  o.`carWeightStatus`,
+			  o.`weighCarId`,
+			  o.`orderWeigh`,
+			  b.`carId`,
+			  b.`carNumber`,
+			  b.`cwpid`,
+			  o.`createTime`,
+			  o.`createUserId`,
+			  o.`updateTime`,
+			  o.`updateUserId` 
+			FROM
+			  (SELECT 
+			    t.`orderNo`,
+			    t.`omId` 
+			  FROM
+			    re_order_outmark t 
+			  WHERE t.`orderNo` = :orderNo) oo 
+			  LEFT JOIN order_outmarketinfo o 
+			    ON oo.`omId` = o.`omId` 
+			  LEFT JOIN weigh_car wc 
+			    ON o.`weighCarId` = wc.`weighCarId` 
+			  LEFT JOIN car_baseinfo b 
+			    ON wc.`carId` = b.`carId`
+		]]>
+	</sql>
+	
+	<sql id="getPageByCreateUserId">
+		<![CDATA[
+			SELECT 
+				m.account, m.mobile, oo.createTime, oo.omId
+			FROM 
+				order_outmarketinfo oo
+			LEFT JOIN
+				weigh_car wc ON oo.weighCarId = wc.weighCarId
+			LEFT JOIN
+				member_baseinfo m ON m.memberId = wc.memberId
+			WHERE
+				oo.createUserId = :createUserId
+			ORDER BY oo.createTime DESC
+			LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	
+	<sql id="getTotalCountByCreateUserId">
+		<![CDATA[
+			SELECT 
+				count(1)
+			FROM 
+				order_outmarketinfo oo
+			LEFT JOIN
+				weigh_car wc ON oo.weighCarId = wc.weighCarId
+			LEFT JOIN
+				member_baseinfo m ON m.memberId = wc.memberId
+			WHERE
+				oo.createUserId = :createUserId
+		]]>
+	</sql>
+	
+	<sql id="getOrderNoListByOutmarketId">
+		<![CDATA[
+			SELECT orderNo FROM re_order_outmark WHERE omId = :outmarketId
+		]]>
+	</sql>
+	
+	
+	<sql id="countByOrderNo">
+		<![CDATA[
+			SELECT count(1) FROM re_order_outmark WHERE orderNo = :orderNo
+		]]>
+	</sql>
+</sqlMap>

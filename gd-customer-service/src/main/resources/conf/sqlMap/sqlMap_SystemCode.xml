@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SystemCode">
+<!-- 数据字典操作SQL -->
+	<!-- 根据编码类型以及key值查找数据 -->
+	<sql id="getValueByCodeAndType">
+	<![CDATA[
+		SELECT
+			id,codeKey,codeValue,type,sort,
+			state
+		FROM
+			system_code t
+		WHERE t.codeKey =:codeKey
+		AND t.type =:type
+		AND t.state=1
+		ORDER BY t.sort
+	]]>
+	</sql>
+	
+	<!-- 根据类型查找List -->
+	<sql id="getListViaType">
+	<![CDATA[
+		SELECT
+			s.ID, s.codeKey, s.codeValue, s.type, s.sort, s.state 
+		FROM
+			system_code s
+		WHERE 
+			s.type =:type
+		AND s.state=1
+		ORDER BY s.sort
+	]]>
+	</sql>
+	
+</sqlMap>

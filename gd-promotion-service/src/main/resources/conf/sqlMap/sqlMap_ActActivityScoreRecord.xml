@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ActActivityScore">
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT
+			sr.id,
+			sr.activity_id as activityId,
+			a.NAME as activityName,
+			sr.userid as userId,
+			ua.account,
+			ua.mobile,
+			sr.mobile as srMobile,
+			sr.score,
+			sr.receive_time as receiveTime,
+			sr.createTime,
+			sr.createUserId,
+			ua.score as userScore,
+			ua.join_times_left as joinTimesLeft,
+			sr.type
+		FROM
+			act_activity_score_record sr
+		LEFT JOIN 
+			act_activity_baseinfo a ON a.id = sr.activity_id
+		LEFT JOIN
+			act_re_user_activity ua ON sr.activity_id = ua.activity_id AND sr.userid = ua.userid
+		WHERE
+			1 = 1
+			and sr.score>0
+		<#if account?exists && account != "">
+			AND ua.account = :account
+		</#if> 
+		<#if mobile?exists && mobile != "">
+			AND ua.mobile = :mobile
+		</#if>
+		<#if activityName?exists && activityName != "">
+			AND a.NAME = :activityName
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND sr.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND sr.createTime <= :endDate
+		</#if>
+			<#if type?exists && (type!="" && flag=="-1")>
+			AND sr.type =:type
+		</#if>
+		<#if type?exists && (type!="" && flag=="0")>
+			AND (sr.type =4 or sr.type=7)
+		</#if>
+		<#if type?exists && (type!="" && flag=="1")>
+			AND (sr.type =5 or sr.type=6)
+		</#if>
+		ORDER BY sr.createTime DESC
+		LIMIT :startRow,:endRow
+		]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_activity_score_record sr
+		LEFT JOIN 
+			act_activity_baseinfo a ON a.id = sr.activity_id
+		LEFT JOIN
+			act_re_user_activity ua ON sr.activity_id = ua.activity_id AND sr.userid = ua.userid
+		WHERE
+			1 = 1
+			and sr.score>0
+		<#if account?exists && account != "">
+			AND ua.account = :account
+		</#if> 
+		<#if mobile?exists && mobile != "">
+			AND sr.mobile = :mobile
+		</#if>
+		<#if activityName?exists && activityName != "">
+			AND a.NAME = :activityName
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND sr.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND sr.createTime <= :endDate
+		</#if>
+		<#if activityId?exists && activityId!="">
+			AND sr.activity_id = :activityId
+		</#if>
+		<#if userid?exists && userid!="">
+			AND sr.userid = :userid
+		</#if>
+			<#if type?exists && (type!="" && flag=="-1")>
+			AND sr.type =:type
+		</#if>
+		<#if type?exists && (type!="" && flag=="0")>
+			AND (sr.type =4 or sr.type=7)
+		</#if>
+		<#if type?exists && (type!="" && flag=="1")>
+			AND (sr.type =5 or sr.type=6)
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="getTotal2">
+		<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_activity_score_record sr
+		WHERE
+			1 = 1
+		<#if activityId?exists && activityId!="">
+			AND sr.activity_id = :activityId
+		</#if>
+		<#if openId?exists && openId!="">
+			AND sr.openId = :openId
+		</#if>
+		<#if mobile?exists && mobile!="">
+			AND sr.mobile = :mobile
+		</#if>
+		<#if userid?exists && userid!="">
+			AND sr.userid = :userid
+		</#if>
+		<#if type?exists && type!="" >
+			AND sr.type =:type
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="update">
+	<![CDATA[
+		UPDATE
+			act_activity_score_record
+		SET
+			activity_id = :activityId,
+			score =:score,
+			updateUserId=:updateUserId,
+			type=:type,
+			updateTime = SYSDATE()
+		WHERE
+			id = :id
+	]]>
+	</sql>
+	
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			sr.id,
+			sr.activity_id as activityId,
+			(select NAME from act_activity_baseinfo where id = sr.activity_id) as activityName,
+			sr.userid,
+			sr.score,
+			ua.mobile,
+			sr.mobile as srMobile,
+			ua.account,
+			ua.join_times_left as joinTimesLeft,
+			sr.createUserId,
+			sr.createTime,
+			sr.updateUserId,
+			sr.updateTime,
+			sr.type
+		FROM
+			act_activity_score_record sr
+		LEFT JOIN
+			act_re_user_activity ua ON sr.activity_id = ua.activity_id AND ua.userid = sr.userid
+		WHERE
+			sr.id = :id
+	]]>
+	</sql>
+	
+	<sql id="queryListByCondition">
+	<![CDATA[
+		SELECT
+			sr.id,
+			sr.activity_id as activityId,
+			a.NAME as activityName,
+			sr.userid as userId,
+			ua.account,
+			ua.mobile,
+			sr.mobile as srMobile,
+			sr.score,
+			sr.receive_time as receiveTime,
+			sr.createTime,
+			sr.createUserId,
+			sr.type,
+			ua.score as userScore,
+			ua.join_times_left as joinTimesLeft
+		FROM
+			act_activity_score_record sr
+		LEFT JOIN 
+			act_activity_baseinfo a ON a.id = sr.activity_id
+		LEFT JOIN
+			act_re_user_activity ua ON sr.activity_id = ua.activity_id AND sr.userid = ua.userid
+		WHERE
+			1 = 1
+			and sr.score>0
+		<#if account?exists && account != "">
+			AND ua.account = :account
+		</#if> 
+		<#if mobile?exists && mobile != "">
+			AND ua.mobile = :mobile
+		</#if>
+		<#if activityName?exists && activityName != "">
+			AND a.NAME = :activityName
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND sr.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND sr.createTime <= :endDate
+		</#if>
+		<#if type?exists && (type!="" && flag=="-1")>
+			AND sr.type =:type
+		</#if>
+		<#if type?exists && (type!="" && flag=="0")>
+			AND (sr.type =4 or sr.type=7)
+		</#if>
+		<#if type?exists && (type!="" && flag=="1")>
+			AND (sr.type =5 or sr.type=6)
+		</#if>
+		ORDER BY sr.createTime DESC
+		]]>
+	</sql>
+</sqlMap>

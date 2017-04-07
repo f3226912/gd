@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="IpAddressLog">
+
+    <sql id="countTotal">
+		<![CDATA[
+		   SELECT COUNT(1) FROM ipaddress_log WHERE to_days(createTime)=to_days(now()) AND ipAddress=:ipAddress
+		]]>
+	</sql>
+	
+    <sql id="insert">
+      <![CDATA[
+	    INSERT INTO gudeng.ipaddress_log
+            (id,type,ipAddress,mobile,chennel,createTime)
+        VALUES 
+            (:id,:type,:ipAddress,:mobile,:chennel,now());
+      ]]>
+	</sql>
+	
+</sqlMap>

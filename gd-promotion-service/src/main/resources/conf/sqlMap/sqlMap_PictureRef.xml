@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PictureRef">
+
+	<sql id="getPictures">
+    <![CDATA[
+    select t.id,t.type,t.urlOrg,t.url120 
+      from gudeng.picture_ref t  
+     where t.refId=:refId;
+    ]]>
+	</sql>
+
+
+
+</sqlMap>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="QuickMakeSheet">
+	<sql id="getQuickMakeSheetList">
+	<![CDATA[
+ 		SELECT pc.cateName AS categoryName,pc.categoryId FROM `market` AS m 
+LEFT JOIN product_category AS pc ON pc.marketId=m.id
+WHERE pc.curLevel=0 AND m.marketType =4   AND pc.status=1
+ORDER BY pc.createTime ASC
+		 ]]>
+	</sql>
+	
+	
+<sql id="getQuickMakeSheetProductList">
+	<![CDATA[
+SELECT t1.productId,t1.productName,t1.createTime,t3.`parentId` AS categoryId  FROM (
+SELECT pb.`productId`,pb.`name` AS productName,pb.cateId AS categoryId,pb.createTime FROM product_baseinfo AS pb WHERE   pb.productType=2 AND state=3 AND pb.cateId  IN (
+SELECT pc1.categoryId FROM product_category pc1  WHERE
+pc1.curLevel=2 AND pc1.parentId IN (
+SELECT pc1.categoryId FROM product_category pc1 WHERE 
+pc1.curLevel=1 AND pc1.parentId IN (
+SELECT pc.`categoryId` FROM product_category pc WHERE 
+pc.curLevel=0 AND pc.marketId  IN ( 
+SELECT id FROM market AS m WHERE m.marketType=4 AND m.status=0)))
+)) 
+AS t1
+INNER JOIN `product_category` AS t2 ON t2.categoryId=t1.categoryId AND t2.`curLevel`=2
+INNER JOIN `product_category` AS t3 ON t3.categoryId=t2.parentId AND t3.`curLevel`=1
+ORDER BY createTime DESC
+		 ]]>
+	</sql>
+	
+	<sql id="getStandardLibraryProductList">
+	<![CDATA[
+	SELECT au.id,au.productId,pb.name AS productName,au.categoryId,pp.`url170` AS imgUrl FROM `activity_userproduct` AS au 
+	LEFT JOIN `product_baseinfo` AS pb ON pb.productId=au.productId 
+	LEFT JOIN product_category AS pc ON pc.`categoryId`=pb.cateId 
+	LEFT JOIN `product_picture` AS pp ON pp.`productId`=pb.`productId` AND  pp.`pictureType`=4
+	WHERE    au.status=1   AND au.`memberId`=:memberId  AND pc.status=1    AND pb.`state`=3  
+	ORDER BY au.createTime DESC,productName ASC 
+	]]>
+	</sql>
+	
+	<sql id="addProduct">
+	<![CDATA[
+	INSERT INTO `activity_userproduct`(memberId,categoryId,productId,createTime,createUserId)
+	 VALUES(:memberId,:categoryId,:productId,CURRENT_TIME(),:memberId)
+		 ]]>
+	</sql>
+	
+	<sql id="delProduct">
+	<![CDATA[
+	UPDATE `activity_userproduct` SET STATUS=0,updateUserId=:memberId,updateTime=CURRENT_TIME() WHERE id=:id
+		 ]]>
+	</sql>
+	<sql id="getQuickMakeSheetCount">
+	<![CDATA[
+	SELECT COUNT(1) FROM activity_userproduct AS au 
+	WHERE memberId=:memberId
+		 ]]>
+	</sql>
+	
+	
+	<sql id="productCount">
+	<![CDATA[
+	SELECT COUNT(*) FROM `activity_userproduct` au 
+	WHERE au.`memberId`=:memberId AND au.`categoryId`=:categoryId AND au.`productId`=:productId AND au.status=1
+		 ]]>
+	</sql>
+
+</sqlMap>

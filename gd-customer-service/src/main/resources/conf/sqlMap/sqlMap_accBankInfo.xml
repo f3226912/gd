@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="accBankInfo">
+	<sql id="getBankCards">
+	<![CDATA[
+ 		SELECT 
+			infoId,
+		 	accountId,
+		 	memberId,
+		  	realName,
+		    idCard,
+		  	bankId,
+		   	depositBankName,
+		   	bankCardNo,
+		  	status,
+		    createTime,
+		    createUserId,
+		    updateTime,
+		    updateUserId,
+		    subBankName,
+		    accCardType,
+		    provinceId,
+		    cityId,
+		    areaId,
+		    mobile,
+		    regtype,
+		    auditStatus,
+			(SELECT area FROM area WHERE areaId = t.provinceId) as provinceName,
+			(SELECT area FROM area WHERE areaId = t.cityId) as cityName,
+			(SELECT area FROM area WHERE areaId = t.areaId) as areaName		    
+		FROM 
+			 acc_bank_card_info t
+		WHERE 
+		 	 t.memberId=:memberId
+		 	 AND t.status=1
+			<#if regtype?exists && regtype!="" >
+				AND regtype = :regtype
+			</#if>
+					 	 
+		 ORDER BY t.updateTime DESC
+		 ]]>
+	</sql>
+	
+	
+	
+	<sql id="addBankCard">
+ 	<![CDATA[
+	    INSERT INTO  acc_bank_card_info
+	          (
+			 	accountId,
+			 	memberId,
+			  	realName,
+			    idCard,
+			  	bankId,
+			   	depositBankName,
+			   	bankCardNo,
+			  	status,
+			    createTime,
+			    createUserId,
+			    updateTime,
+			    updateUserId,
+			    provinceId,
+			    cityId
+              )
+	        values
+	         (
+	       		:accountId,
+			 	:memberId,
+			  	:realName,
+			    :idCard,
+			  	:bankId,
+			   	:depositBankName,
+			   	:bankCardNo,
+			  	:status,
+			    SYSDATE(),
+			    :createUserId,
+			   	SYSDATE(),
+			    :updateUserId,
+			    :provinceId,
+			    :cityId
+              )
+	        
+		]]>
+	</sql>
+	
+	<sql id="updateBankCard">
+ 	 <![CDATA[
+	     UPDATE 
+	   		acc_bank_card_info
+	  	 SET
+			<#if accountId?exists && accountId!="" >
+				accountId = :accountId,
+			</#if>		
+			<#if memberId?exists && memberId!="" >
+				memberId = :memberId,
+			</#if>	
+			<#if realName?exists && realName!="" >
+				realName = :realName,
+			</#if>	
+			<#if idCard?exists && idCard!="" >
+				idCard = :idCard,
+			</#if>	
+			 <#if depositBankName?exists && depositBankName!="" >
+				depositBankName = :depositBankName,
+			</#if>	
+			 <#if bankId?exists && bankId!="" >
+				bankId = :bankId,
+			</#if>	
+			 <#if bankCardNo?exists && bankCardNo!="" >
+				bankCardNo = :bankCardNo,
+			</#if>	
+			 <#if status?exists && status!="" >
+				status = :status,
+			</#if>	
+			<#if updateUserId?exists && updateUserId!="" >
+				updateUserId = :updateUserId,
+			</#if>
+			<#if provinceId?exists && provinceId!="" >
+				provinceId = :provinceId,
+			</#if>
+			<#if cityId?exists && cityId!="" >
+				cityId = :cityId,
+			</#if>
+			<#if subBankName?exists && subBankName!="" >
+				subBankName = :subBankName,
+			</#if>
+			<#if accCardType?exists && accCardType!="" >
+				accCardType = :accCardType,
+			</#if>
+			<#if areaId?exists && areaId!="" >
+				areaId = :areaId,
+			</#if>		
+			<#if regtype?exists && regtype!="" >
+				regtype = :regtype,
+			</#if>
+			<#if mobile?exists && mobile!="" >
+				mobile = :mobile,
+			</#if>
+			<#if auditStatus?exists && auditStatus!="" >
+				auditStatus = :auditStatus,
+			</#if>											
+			 updateTime=SYSDATE() 
+			 WHERE infoId=:infoId
+		]]>
+	</sql>
+	
+	
+	<sql id="getBankCardBySearch">
+ 	 <![CDATA[
+	   	SELECT 
+			infoId,
+		 	accountId,
+		 	memberId,
+		  	realName,
+		    idCard,
+		  	bankId,
+		   	depositBankName,
+		   	bankCardNo,
+		  	status,
+		    createTime,
+		    createUserId,
+		    updateTime,
+		    updateUserId,
+		    subBankName,
+		    accCardType,
+		    provinceId,
+		    cityId,
+		    areaId,
+		    mobile,
+		    regtype,
+		    auditStatus		    
+		FROM 
+			 acc_bank_card_info 
+		WHERE 
+			1 = 1
+			<#if regtype?exists && regtype!="" >
+				AND regtype=:regtype
+			</#if>
+			<#if memberId?exists && memberId!="" >
+				AND  memberId = :memberId
+			</#if>
+			<#if infoId?exists && infoId!="" >
+					AND     infoId=:infoId
+			</#if>				
+			<#if accountId?exists && accountId!="" >
+					 AND    accountId=:accountId
+			</#if>		
+			<#if realName?exists && realName!="" >
+					AND     realName=:realName
+			</#if>	
+			<#if idCard?exists && idCard!="" >
+					AND     idCard=:idCard
+			</#if>	
+			 <#if depositBankName?exists && depositBankName!="" >
+				AND	     depositBankName=:depositBankName
+			</#if>	
+			 <#if bankId?exists && bankId!="" >
+					AND     bankId=:bankId
+			</#if>	
+			 <#if bankCardNo?exists && bankCardNo!="" >
+				AND	     bankCardNo=:bankCardNo
+			</#if>	
+			 <#if status?exists && status!="" >
+				AND	     status=:status
+			</#if>	
+			 <#if updateUserId?exists && updateUserId!="" >
+				AND	     updateUserId=:updateUserId
+			</#if>	
+			 <#if subBankName?exists && subBankName!="" >
+				AND	subBankName = :subBankName
+			</#if>	
+			 <#if accCardType?exists && accCardType!="" >
+				AND	accCardType = :accCardType
+			</#if>	
+			 <#if areaId?exists && areaId!="" >
+				AND	areaId = :areaId
+			</#if>			
+			<#if mobile?exists && mobile!="" >
+				AND mobile = :mobile
+			</#if>					
+		]]>
+	</sql>
+	
+	<sql id="getByCondition">
+ 	 <![CDATA[
+	   	SELECT 
+			infoId,
+		 	accountId,
+		 	memberId,
+		  	realName,
+		    idCard,
+		  	bankId,
+		   	depositBankName,
+		   	bankCardNo,
+		  	status,
+		    createTime,
+		    createUserId,
+		    updateTime,
+		    updateUserId,
+		    subBankName,
+		    accCardType,
+		    provinceId,
+		    cityId,
+		    areaId,
+		    mobile,
+		    regtype,
+		    auditStatus		    
+		FROM 
+			 acc_bank_card_info 
+		WHERE 
+			1=1 
+			<#if infoId?exists && infoId!="" >
+					AND     infoId=:infoId
+			</#if>	
+			<#if accountId?exists && accountId!="" >
+					 AND    accountId=:accountId
+			</#if>		
+			<#if memberId?exists && memberId!="" >
+				AND	     memberId=:memberId
+			</#if>	
+			<#if realName?exists && realName!="" >
+					AND     realName=:realName
+			</#if>	
+			<#if idCard?exists && idCard!="" >
+					AND     idCard=:idCard
+			</#if>	
+			 <#if depositBankName?exists && depositBankName!="" >
+				AND	     depositBankName=:depositBankName
+			</#if>	
+			 <#if bankId?exists && bankId!="" >
+					AND     bankId=:bankId
+			</#if>	
+			 <#if bankCardNo?exists && bankCardNo!="" >
+				AND	     bankCardNo=:bankCardNo
+			</#if>	
+			 <#if status?exists && status!="" >
+				AND	     status=:status
+			</#if>	
+			 <#if updateUserId?exists && updateUserId!="" >
+				AND	     updateUserId=:updateUserId
+			</#if>	
+			 <#if subBankName?exists && subBankName!="" >
+				AND	subBankName = :subBankName
+			</#if>	
+			 <#if accCardType?exists && accCardType!="" >
+				AND	accCardType = :accCardType
+			</#if>	
+			 <#if areaId?exists && areaId!="" >
+				AND	areaId = :areaId
+			</#if>			
+			<#if mobile?exists && mobile!="" >
+				AND mobile = :mobile
+			</#if>											
+		]]>
+	</sql>
+	
+	
+	
+	
+	
+	
+	
+	
+</sqlMap>

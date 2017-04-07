@@ -1,0 +1,58 @@
+{
+    "datajson": {
+        "channelPhoneResultList": [
+            {
+                "count": 1, 
+                "pageName": "农商友首页", 
+                "pageType": "INDEX"
+            }, 
+            {
+                "count": 2, 
+                "pageName": "商铺详情页面", 
+                "pageType": "DPXQ"
+            }, 
+            {
+                "count": 3, 
+                "pageName": "农商友首页", 
+                "pageType": "INDEX"
+            }, 
+            {
+                "count": 4, 
+                "pageName": "商铺详情页面", 
+                "pageType": "DPXQ"
+            }, 
+            {
+                "count": 5, 
+                "pageName": "农商友首页", 
+                "pageType": "INDEX"
+            }, 
+            {
+                "count": 6, 
+                "pageName": "商铺详情页面", 
+                "pageType": "DPXQ"
+            }, 
+            {
+                "count": 7, 
+                "pageName": "农商友首页", 
+                "pageType": "INDEX"
+            }, 
+            {
+                "count": 8, 
+                "pageName": "商铺详情页面", 
+                "pageType": "DPXQ"
+            }, 
+            {
+                "count": 9, 
+                "pageName": "农商友首页", 
+                "pageType": "INDEX"
+            },  
+            {
+                "count": 10, 
+                "pageName": "订单详情页面", 
+                "pageType": "DDXQ"
+            }
+        ]
+    }, 
+    "resultcode": "0000", 
+    "resultmsg": "操作成功"
+}

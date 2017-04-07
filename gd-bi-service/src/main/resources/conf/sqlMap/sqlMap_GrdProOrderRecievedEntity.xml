@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdProOrderRecievedEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_pro_order_recieved(
+	marketId,teamName,createTime,goodsId,recieveTime,updateTime,grdMobile,
+	grdUserName,teamId,grdId,publisher,id,updateUserId,
+	confirmTime,confirmStatus,marketName,publisherTime,driverName,createUserId
+	
+	) VALUES (
+	:marketId,:teamName,:createTime,:goodsId,:recieveTime,:updateTime,:grdMobile,
+	:grdUserName,:teamId,:grdId,:publisher,:id,:updateUserId,
+	:confirmTime,:confirmStatus,:marketName,:publisherTime,:driverName,:createUserId
+	
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_pro_order_recieved SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if teamName?exists && teamName!="" >
+		teamName=:teamName,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if goodsId?exists && goodsId!="" >
+		goodsId=:goodsId,
+	</#if>	
+	<#if recieveTime?exists && recieveTime!="" >
+		recieveTime=:recieveTime,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if grdMobile?exists && grdMobile!="" >
+		grdMobile=:grdMobile,
+	</#if>	
+	<#if grdUserName?exists && grdUserName!="" >
+		grdUserName=:grdUserName,
+	</#if>	
+	<#if teamId?exists && teamId!="" >
+		teamId=:teamId,
+	</#if>	
+	<#if grdId?exists && grdId!="" >
+		grdId=:grdId,
+	</#if>	
+	<#if publisher?exists && publisher!="" >
+		publisher=:publisher,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if confirmTime?exists && confirmTime!="" >
+		confirmTime=:confirmTime,
+	</#if>	
+	<#if confirmStatus?exists && confirmStatus!="" >
+		confirmStatus=:confirmStatus,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if publisherTime?exists && publisherTime!="" >
+		publisherTime=:publisherTime,
+	</#if>	
+	<#if driverName?exists && driverName!="" >
+		driverName=:driverName,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,teamName,createTime,goodsId,recieveTime,updateTime,grdMobile,
+	grdUserName,teamId,grdId,publisher,id,updateUserId,
+	confirmTime,confirmStatus,marketName,publisherTime,driverName,createUserId
+	
+	FROM grd_pro_order_recieved WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT t.marketId,t.teamName,t.createTime,t.goodsId,t.recieveTime,t.updateTime,t.grdMobile,t.grdUserName,t.teamId,
+	t.grdId,t.publisher,t.id,t.updateUserId,t.confirmTime,t.confirmStatus,t.sourceType,t.sourceTypeStr,
+	t.s_detail,t.e_detail,t.totalWeight,t.totalWeightStr,t.confirmStatusStr,t.marketName,t.publisherTime,t.driverName,t.createUserId,
+	t.recieveTimeString,t.confirmTimeString,t.publisherTimeString,t.s_provinceId,t.s_cityId,t.s_areaId,
+	t.e_provinceId,t.e_cityId,t.e_areaId FROM(
+		SELECT 
+		marketId,teamName,createTime,goodsId,recieveTime,updateTime,grdMobile,
+		grdUserName,teamId,grdId,publisher,id,updateUserId,
+		IFNULL(`confirmTime`,logisticTime) AS confirmTime,confirmStatus,sourceType,
+		(CASE sourceType WHEN 1 THEN '干线'
+	         			 WHEN 2 THEN '同城' 
+	        			 ELSE '未知' END ) AS sourceTypeStr,
+	    REPLACE(`s_detail`,'/',' ') AS s_detail,
+		REPLACE(`e_detail`,'/',' ') AS e_detail,totalWeight,
+		(CASE WHEN totalWeight IS NULL THEN ''
+			ELSE CONCAT(totalWeight,'吨') END) AS totalWeightStr,			 
+		(CASE confirmStatus
+						  WHEN '2' THEN '接受'
+						  WHEN '3' THEN '接受'
+						  WHEN '4' THEN '拒绝'
+						  WHEN '5' THEN '超时'
+						  WHEN '6' THEN '取消'
+						  ELSE '未知'
+						  END) AS confirmStatusStr,
+		marketName,publisherTime,driverName,createUserId,
+		s_provinceId,s_cityId,s_areaId,e_provinceId,e_cityId,e_areaId,
+		DATE_FORMAT(recieveTime,'%Y-%m-%d %H:%i:%S') AS recieveTimeString,	DATE_FORMAT(IFNULL(`confirmTime`,logisticTime),'%Y-%m-%d %H:%i:%S') AS confirmTimeString,
+		DATE_FORMAT(publisherTime,'%Y-%m-%d %H:%i:%S') AS publisherTimeString
+		FROM grd_pro_order_recieved WHERE confirmStatus != '1'
+	)t WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND t.marketId=:marketId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND t.teamId=:teamId
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND t.grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND t.grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	
+	<#if confirmStatus?exists && confirmStatus!="" >
+		<#if confirmStatus != '2'>
+		AND t.confirmStatus=:confirmStatus
+		<#else>
+		AND t.confirmStatus IN ('2','3')
+		</#if>
+	</#if>
+	
+	<#if startPublisherTime?exists && startPublisherTime!="" >
+		AND  DATE_FORMAT(t.publisherTime,'%Y-%c-%d') >= DATE_FORMAT(:startPublisherTime,'%Y-%c-%d')	
+	</#if>
+    <#if endPublisherTime?exists && endPublisherTime!="" >
+	     AND DATE_FORMAT(t.publisherTime,'%Y-%c-%d') <= DATE_FORMAT(:endPublisherTime,'%Y-%c-%d')
+	</#if>
+			
+	<#if startRecieveTime?exists && startRecieveTime!="" >
+		AND  DATE_FORMAT(t.recieveTime,'%Y-%c-%d') >= DATE_FORMAT(:startRecieveTime,'%Y-%c-%d')	
+	</#if>
+    <#if endRecieveTime?exists && endRecieveTime!="" >
+	     AND DATE_FORMAT(t.recieveTime,'%Y-%c-%d') <= DATE_FORMAT(:endRecieveTime,'%Y-%c-%d')
+	</#if>
+	<#if startConfirmTime?exists && startConfirmTime!="" >
+		AND  DATE_FORMAT(t.confirmTime,'%Y-%c-%d') >= DATE_FORMAT(:startConfirmTime,'%Y-%c-%d')	
+	</#if>
+    <#if endConfirmTime?exists && endConfirmTime!="" >
+	     AND DATE_FORMAT(t.confirmTime,'%Y-%c-%d') <= DATE_FORMAT(:endConfirmTime,'%Y-%c-%d')
+	</#if>
+	<#if s_provinceId?exists && s_provinceId!="" >
+		AND t.s_provinceId=:s_provinceId
+	</#if>
+	<#if s_cityId?exists && s_cityId!="" >
+		AND t.s_cityId=:s_cityId
+	</#if>
+	<#if s_areaId?exists && s_areaId!="" >
+		AND t.s_areaId=:s_areaId
+	</#if>
+	<#if e_provinceId?exists && e_provinceId!="" >
+		AND t.e_provinceId=:e_provinceId
+	</#if>
+	<#if e_cityId?exists && e_cityId!="" >
+		AND t.e_cityId=:e_cityId
+	</#if>
+	<#if e_areaId?exists && e_areaId!="" >
+		AND t.e_areaId=:e_areaId
+	</#if>
+	<#if sourceType?exists && sourceType!="" >
+		AND t.sourceType=:sourceType
+	</#if>
+	ORDER BY t.recieveTime DESC
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT t.marketId,t.teamName,t.createTime,t.goodsId,t.recieveTime,t.updateTime,t.grdMobile,
+	t.grdUserName,t.teamId,t.grdId,t.publisher,t.id,t.updateUserId,t.sourceType,
+	t.s_detail,t.e_detail,t.totalWeight,t.confirmTime,t.confirmStatus,t.marketName,t.publisherTime,t.driverName,t.createUserId,
+	t.s_provinceId,t.s_cityId,t.s_areaId,
+	t.e_provinceId,t.e_cityId,t.e_areaId
+	FROM(
+		SELECT 
+		marketId,teamName,createTime,goodsId,recieveTime,updateTime,grdMobile,
+		grdUserName,teamId,grdId,publisher,id,updateUserId,sourceType,confirmStatus,
+		REPLACE(`s_detail`,'/',' ') AS s_detail,
+		REPLACE(`e_detail`,'/',' ') AS e_detail,totalWeight,
+		s_provinceId,s_cityId,s_areaId,e_provinceId,e_cityId,e_areaId,
+		IFNULL(`confirmTime`,logisticTime)AS confirmTime,marketName,publisherTime,driverName,createUserId
+		FROM grd_pro_order_recieved WHERE confirmStatus != '1'
+	)t WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND t.marketId=:marketId
+	</#if>
+	<#if teamId?exists && teamId!="" >
+		AND t.teamId=:teamId
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND t.grdUserName LIKE "%":grdUserName"%"
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND t.grdMobile LIKE "%":grdMobile"%"
+	</#if>
+	
+	<#if confirmStatus?exists && confirmStatus!="" >
+		<#if confirmStatus != '2'>
+		AND t.confirmStatus=:confirmStatus
+		<#else>
+		AND t.confirmStatus IN ('2','3')
+		</#if>
+	</#if>
+	
+	<#if startPublisherTime?exists && startPublisherTime!="" >
+		AND  DATE_FORMAT(t.publisherTime,'%Y-%c-%d') >= DATE_FORMAT(:startPublisherTime,'%Y-%c-%d')	
+	</#if>
+    <#if endPublisherTime?exists && endPublisherTime!="" >
+	     AND DATE_FORMAT(t.publisherTime,'%Y-%c-%d') <= DATE_FORMAT(:endPublisherTime,'%Y-%c-%d')
+	</#if>
+			
+	<#if startRecieveTime?exists && startRecieveTime!="" >
+		AND  DATE_FORMAT(t.recieveTime,'%Y-%c-%d') >= DATE_FORMAT(:startRecieveTime,'%Y-%c-%d')	
+	</#if>
+    <#if endRecieveTime?exists && endRecieveTime!="" >
+	     AND DATE_FORMAT(t.recieveTime,'%Y-%c-%d') <= DATE_FORMAT(:endRecieveTime,'%Y-%c-%d')
+	</#if>
+	<#if startConfirmTime?exists && startConfirmTime!="" >
+		AND  DATE_FORMAT(t.confirmTime,'%Y-%c-%d') >= DATE_FORMAT(:startConfirmTime,'%Y-%c-%d')	
+	</#if>
+    <#if endConfirmTime?exists && endConfirmTime!="" >
+	     AND DATE_FORMAT(t.confirmTime,'%Y-%c-%d') <= DATE_FORMAT(:endConfirmTime,'%Y-%c-%d')
+	</#if>
+	<#if s_provinceId?exists && s_provinceId!="" >
+		AND t.s_provinceId=:s_provinceId
+	</#if>
+	<#if s_cityId?exists && s_cityId!="" >
+		AND t.s_cityId=:s_cityId
+	</#if>
+	<#if s_areaId?exists && s_areaId!="" >
+		AND t.s_areaId=:s_areaId
+	</#if>
+	<#if e_provinceId?exists && e_provinceId!="" >
+		AND t.e_provinceId=:e_provinceId
+	</#if>
+	<#if e_cityId?exists && e_cityId!="" >
+		AND t.e_cityId=:e_cityId
+	</#if>
+	<#if e_areaId?exists && e_areaId!="" >
+		AND t.e_areaId=:e_areaId
+	</#if>
+	<#if sourceType?exists && sourceType!="" >
+		AND t.sourceType=:sourceType
+	</#if>
+	ORDER BY t.recieveTime DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM(
+		SELECT t.* FROM(
+			SELECT 
+			marketId,teamName,createTime,goodsId,recieveTime,updateTime,grdMobile,
+			grdUserName,teamId,grdId,publisher,id,updateUserId,sourceType,
+			REPLACE(`s_detail`,'/',' ') AS s_detail,
+			REPLACE(`e_detail`,'/',' ') AS e_detail,totalWeight,
+			s_provinceId,s_cityId,s_areaId,e_provinceId,e_cityId,e_areaId,
+			IFNULL(`confirmTime`,logisticTime)AS confirmTime,confirmStatus,marketName,publisherTime,driverName,createUserId
+			FROM grd_pro_order_recieved WHERE confirmStatus != '1'
+		)t WHERE 1=1
+		<#if marketId?exists && marketId!="" >
+			AND t.marketId=:marketId
+		</#if>
+		<#if teamId?exists && teamId!="" >
+			AND t.teamId=:teamId
+		</#if>
+		<#if grdUserName?exists && grdUserName!="" >
+			AND t.grdUserName LIKE "%":grdUserName"%"
+		</#if>
+		<#if grdMobile?exists && grdMobile!="" >
+			AND t.grdMobile LIKE "%":grdMobile"%"
+		</#if>
+		
+		<#if confirmStatus?exists && confirmStatus!="" >
+			<#if confirmStatus != '2'>
+			AND t.confirmStatus=:confirmStatus
+			<#else>
+			AND t.confirmStatus IN ('2','3')
+			</#if>
+		</#if>
+		
+		<#if startPublisherTime?exists && startPublisherTime!="" >
+			AND  DATE_FORMAT(t.publisherTime,'%Y-%c-%d') >= DATE_FORMAT(:startPublisherTime,'%Y-%c-%d')	
+		</#if>
+	    <#if endPublisherTime?exists && endPublisherTime!="" >
+		     AND DATE_FORMAT(t.publisherTime,'%Y-%c-%d') <= DATE_FORMAT(:endPublisherTime,'%Y-%c-%d')
+		</#if>
+				
+		<#if startRecieveTime?exists && startRecieveTime!="" >
+			AND  DATE_FORMAT(t.recieveTime,'%Y-%c-%d') >= DATE_FORMAT(:startRecieveTime,'%Y-%c-%d')	
+		</#if>
+	    <#if endRecieveTime?exists && endRecieveTime!="" >
+		     AND DATE_FORMAT(t.recieveTime,'%Y-%c-%d') <= DATE_FORMAT(:endRecieveTime,'%Y-%c-%d')
+		</#if>
+		<#if startConfirmTime?exists && startConfirmTime!="" >
+			AND  DATE_FORMAT(t.confirmTime,'%Y-%c-%d') >= DATE_FORMAT(:startConfirmTime,'%Y-%c-%d')	
+		</#if>
+	    <#if endConfirmTime?exists && endConfirmTime!="" >
+		     AND DATE_FORMAT(t.confirmTime,'%Y-%c-%d') <= DATE_FORMAT(:endConfirmTime,'%Y-%c-%d')
+		</#if>
+			<#if s_provinceId?exists && s_provinceId!="" >
+			AND t.s_provinceId=:s_provinceId
+		</#if>
+		<#if s_cityId?exists && s_cityId!="" >
+			AND t.s_cityId=:s_cityId
+		</#if>
+		<#if s_areaId?exists && s_areaId!="" >
+			AND t.s_areaId=:s_areaId
+		</#if>
+		<#if e_provinceId?exists && e_provinceId!="" >
+			AND t.e_provinceId=:e_provinceId
+		</#if>
+		<#if e_cityId?exists && e_cityId!="" >
+			AND t.e_cityId=:e_cityId
+		</#if>
+		<#if e_areaId?exists && e_areaId!="" >
+			AND t.e_areaId=:e_areaId
+		</#if>
+		<#if sourceType?exists && sourceType!="" >
+			AND t.sourceType=:sourceType
+		</#if>
+	)s
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_pro_order_recieved WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

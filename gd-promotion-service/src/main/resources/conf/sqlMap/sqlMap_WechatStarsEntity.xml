@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="WechatStarsEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO wechat_stars(
+	openId2,id,createTime,actId,openId1
+	) VALUES (
+	:openId2,:id,:createTime,:actId,:openId1
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE wechat_stars SET 
+	<#if openId2?exists && openId2!="" >
+		openId2=:openId2,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if actId?exists && actId!="" >
+		actId=:actId,
+	</#if>	
+	<#if openId1?exists && openId1!="" >
+		openId1=:openId1,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	openId2,id,createTime,actId,openId1
+	FROM wechat_stars WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	openId2,id,createTime,actId,openId1
+	FROM wechat_stars WHERE 1=1
+	<#if openId2?exists && openId2!="" >
+		AND openId2=:openId2
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if openId1?exists && openId1!="" >
+		AND openId1=:openId1
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	openId2,id,createTime,actId,openId1
+	FROM wechat_stars WHERE 1=1
+	<#if openId2?exists && openId2!="" >
+		AND openId2=:openId2
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if openId1?exists && openId1!="" >
+		AND openId1=:openId1
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM wechat_stars WHERE 1=1
+	<#if openId2?exists && openId2!="" >
+		AND openId2=:openId2
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if actId?exists && actId!="" >
+		AND actId=:actId
+	</#if>
+	<#if openId1?exists && openId1!="" >
+		AND openId1=:openId1
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM wechat_stars WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

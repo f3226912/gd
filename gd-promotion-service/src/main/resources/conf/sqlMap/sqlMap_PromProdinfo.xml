@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromProdinfo">
+
+
+	<sql id="querySupplerPageByCondition">
+	<![CDATA[
+		SELECT
+			p.id,
+			p.actId,
+			p.supplierId,
+			p.supplierName,
+			p.createTime,
+			m.level as supplierType,
+			m.mobile
+		FROM
+			prom_act_supplier_ref p 
+			left join gudeng.member_baseinfo m
+			on p.supplierId=m.memberId
+		WHERE
+			1=1
+		<#if actId?exists && actId!="">
+			AND p.actId=:actId
+		</#if>
+		ORDER BY p.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getSupplerTotalCountByCondition">
+	<![CDATA[
+		SELECT count(*)
+		FROM
+			prom_act_supplier_ref p 
+		WHERE
+			1=1 
+		<#if actId?exists && actId!="">
+			AND p.actId=:actId
+		</#if>
+	]]>
+	</sql>
+	<sql id="queryProductPageByCondition">
+	<![CDATA[
+		SELECT
+			p.id,
+			p.actId,
+			p.auditId,
+			p.supplierId,
+			p.supplierName,
+			p.prodId,
+			p.prodName,
+			p.unit,
+			s.codeValue as unitName,
+			p2.price,
+			p.actPrice,
+			p2.stockCount,
+			p3.memberId,
+			p3.auditStatus
+		FROM
+			prom_prod_info p left join gudeng.system_code s
+			on p.unit=s.codeKey and s.type='ProductUnit'
+			left join gudeng.product_baseinfo p2
+			on p.prodId=p2.productId
+			left join prom_req_audit p3
+			on p.auditId=p3.auditId
+		WHERE
+			1=1 and p2.productType = '1'
+		<#if actId?exists && actId!="">
+			AND p.actId=:actId
+		</#if>
+		<#if prodName?exists && prodName!="">
+			AND p.prodName like "%":prodName"%"
+		</#if>
+		<#if supplierName?exists && supplierName!="">
+			AND p.supplierName like "%":supplierName"%"
+		</#if>
+		ORDER BY p.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getProductTotalCountByCondition">
+	<![CDATA[
+		SELECT count(*)
+		FROM
+			prom_prod_info p 
+		WHERE
+			1=1 
+		<#if actId?exists && actId!="">
+			AND p.actId=:actId
+		</#if>
+		<#if prodName?exists && prodName!="">
+			AND p.prodName like "%":prodName"%"
+		</#if>
+		<#if supplierName?exists && supplierName!="">
+			AND p.supplierName like "%":supplierName"%"
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="updatePromProdInfo">
+		<![CDATA[
+		update 
+		prom_prod_info set actPrice=:actPrice,updateUserId=:updateUserId,updateTime=:updateTime
+		where auditId=:auditId
+	]]>
+	</sql>
+	
+	<sql id="updatePromReqAudit">
+		<![CDATA[
+		update 
+		prom_req_audit set auditStatus=:audtiStatus,updateUserId=:updateUserId,updateTime=:updateTime,
+							memberId=:memberId
+		where auditId=:auditId
+	]]>
+	</sql>
+	
+	<sql id="queryGoddsApplyActivityRecord">
+		<![CDATA[
+		SELECT
+			count(0)
+		FROM
+			prom_prod_info t0
+		WHERE
+			t0.actId <>:actId
+		AND t0.supplierId =:supplierId
+		AND t0.prodId = :prodId
+		AND NOT EXISTS (
+			SELECT
+				1
+			FROM
+				prom_req_audit t1
+			WHERE
+				t1.auditId = t0.auditId
+			AND t1.auditStatus = '3'
+		)
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="updateCancelPromReqAudit">
+		<![CDATA[
+		update 
+		prom_req_audit set auditStatus=:audtiStatus,updateTime=sysdate()
+		where auditId=:auditId
+	]]>
+	</sql>
+	
+	<sql id="addActivityProduct">
+		<![CDATA[
+    INSERT INTO prom_prod_info 
+      (actId,auditId,supplierId,supplierName,prodId,prodName,supplyQty,actPrice,createTime,createUserId,updateTime,updateUserId)
+    VALUES
+      (:actId,:auditId,:supplierId,:supplierName,:prodId,:prodName,:supplyQty,:actPrice,SYSDATE(),:createUserId,SYSDATE(),:updateUserId)
+    ]]>
+	</sql>
+	
+	<sql id="queryProdInfo">
+	<![CDATA[
+	SELECT
+		t0.* ,t1.auditStatus
+	FROM
+		prom_prod_info t0
+    LEFT JOIN prom_req_audit t1 ON t0.auditId = t1.auditId
+	WHERE
+		t0.supplierId =:supplierId
+	AND t0.prodId = :prodId 
+	AND t0.actId=:actId
+	 ]]>
+	</sql>
+	
+</sqlMap>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE urlrewrite
+    PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN"
+    "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+
+<urlrewrite use-query-string ="true">
+
+	<rule>
+		<from>/shop([0-9]+).html</from>
+		<to>/shop/shop$1</to>
+	</rule>
+</urlrewrite>

@@ -1,0 +1,3674 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CarLine">
+	<sql id="getCarLine">                 
+ 	<![CDATA[                            
+ 		SELECT                             
+ 	           id ,                       
+               carId ,                 
+               memberId ,              
+               startCity ,             
+               endCity ,               
+               name ,                  
+               phone ,                 
+               sentDate ,              
+               sentDateType ,          
+               onLineHours ,           
+               endDate , 
+               endDateType ,              
+               sendGoodsType ,         
+               price ,                 
+               unitType ,              
+               s_areaId   ,            
+               s_cityId   ,            
+               s_provinceId ,          
+               e_areaId    ,           
+               e_cityId    ,           
+               e_provinceId ,
+			  s_provinceId2   ,                    
+			  s_cityId2       ,                    
+			  s_areaId2       ,                    
+			  s_provinceId3    ,                   
+			  s_cityId3        ,                   
+			  s_areaId3        ,                   
+			  e_provinceId2    ,                   
+			  e_cityId2        ,                   
+			  e_areaId2        ,                   
+			  e_provinceId3    ,                   
+			  e_cityId3        ,                   
+			  e_areaId3        ,                   
+			  e_provinceId4    ,                   
+			  e_cityId4        ,                   
+			  e_areaId4        ,                   
+			  e_provinceId5    ,                   
+			  e_cityId5        ,                   
+			  e_areaId5        ,                   
+			  source           ,
+			  remark                     
+                                      
+ 		FROM                               
+ 			carline t                        
+ 		WHERE (isDeleted=0 or isDeleted is null)  AND id=:id                    
+ 	]]>                                  
+ 	</sql>         
+ 	
+	
+	
+	<sql id="getCarLineList">
+	<![CDATA[
+		SELECT 
+	          id ,                 
+              carId ,              
+              memberId ,           
+              startCity ,          
+              endCity ,            
+              name ,               
+              phone ,              
+              sentDate ,           
+              sentDateType ,       
+              onLineHours ,         
+              endDate ,            
+              sendGoodsType ,      
+              price ,
+              unitType                
+
+		FROM 
+			carline t
+		WHERE  1=1  AND (isDeleted=0 or isDeleted is null)
+			<#if id?exists && id!="" >
+			      AND id like "%":id"%"
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="queryByParameters">
+	<![CDATA[
+	SELECT * FROM (	
+				SELECT  
+                       a.id , a.price , a.sendGoodsType ,a.sentDate , a.sentDateType, a.unitType,
+                       a.onLineHours, a.createTime , a.endDate , 
+                       a.s_areaId ,a.s_cityId ,a.s_provinceId ,          
+                       a.e_areaId ,a.e_cityId ,a.e_provinceId , 
+                      s_provinceId2 ,           
+					  s_cityId2     ,           
+					  s_areaId2     ,           
+					  s_provinceId3  ,          
+					  s_cityId3      ,          
+					  s_areaId3      ,          
+					  e_provinceId2  ,          
+					  e_cityId2      ,          
+					  e_areaId2      ,          
+					  e_provinceId3  ,          
+					  e_cityId3      ,          
+					  e_areaId3      ,          
+					  e_provinceId4  ,          
+					  e_cityId4      ,          
+					  e_areaId4      ,          
+					  e_provinceId5  ,          
+					  e_cityId5      ,          
+					  e_areaId5      ,         
+					  source         ,           
+                       b.carLength ,b.maxLoad, b.phone, b.carType , b.carNumber, 
+                       m.userType AS userType,
+                       m.realName  AS nickName ,
+                       e.areaName,  a.isDeleted ,
+                      (SELECT  c.companyName FROM member_certifi c WHERE c.memberId=b.userId LIMIT 1)  AS  companyName                       
+                   FROM   carline a 
+                 LEFT JOIN cars b on   a.carId =b.id 
+                 LEFT JOIN member_baseinfo m  on  b.userId=m.memberId
+                 LEFT JOIN integral i   on  b.userId= i.memberId_ed
+                 LEFT JOIN area_setting e on   e.memberId  = i.memberId  
+                 GROUP BY  a.id
+                  ) z
+                         WHERE 1=1
+                          <#if isDel?exists && isDel!="" >
+			      			AND z.isDeleted=1
+			     			<#else>
+			      			AND (z.isDeleted=0 or z.isDeleted is null)
+			             </#if> 
+			            <#if carType?exists && carType!="" >
+			              AND z.carType =:carType
+			            </#if>
+			            <#if mobile?exists && mobile!="" >
+			              AND z.phone =:mobile
+			           </#if>
+			            <#if startDate?exists && startDate!="" >
+			              AND z.createTime >=:startDate
+			           </#if>
+			            <#if endDate?exists && endDate!="" >
+			              AND DATE_FORMAT(z.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			           </#if>
+			           	<#if userType?exists && userType!="" >
+			               AND z.userType =:userType
+			            </#if>
+			            <#if areaName?exists && areaName!="" >
+		                  and  z.areaName =:areaName 
+	                    </#if>
+	              ORDER BY z.createTime DESC
+		         LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+
+	
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		 FROM   carline a ,cars b, member_baseinfo m
+         WHERE  a.carId =b.id 
+         AND    b.userId=m.memberId AND  (a.isDeleted=0 or a.isDeleted is null)
+			 <#if carType?exists && carType!="" >
+			    AND b.carType =:carType
+			  </#if>
+			  <#if mobile?exists && mobile!="" >
+			    AND b.phone =:mobile
+			   </#if>
+			   <#if startDate?exists && startDate!="" >
+			       AND DATE_FORMAT(a.createTime,'%Y-%c-%d') >= DATE_FORMAT(:startDate, '%Y-%c-%d')
+			    </#if>
+			   <#if endDate?exists && endDate!="" >
+			       AND DATE_FORMAT(a.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			   </#if>
+	          <#if s_provinceId?exists && s_provinceId!="" >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+	         
+			<#if userType?exists && userType!="" >
+			      AND m.userType =:userType
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT  
+  a.id , a.price , a.sendGoodsType ,a.sentDate , a.sentDateType, a.unitType,
+  a.onLineHours, a.createTime , a.endDate , 
+  a.s_areaId ,a.s_cityId ,a.s_provinceId ,          
+  a.e_areaId ,a.e_cityId ,a.e_provinceId ,
+  s_provinceId2 ,           
+  s_cityId2     ,           
+  s_areaId2     ,           
+  s_provinceId3  ,          
+  s_cityId3      ,          
+  s_areaId3      ,          
+  e_provinceId2  ,          
+  e_cityId2      ,          
+  e_areaId2      ,          
+  e_provinceId3  ,          
+  e_cityId3      ,          
+  e_areaId3      ,          
+  e_provinceId4  ,          
+  e_cityId4      ,          
+  e_areaId4      ,          
+  e_provinceId5  ,          
+  e_cityId5      ,          
+  e_areaId5      ,         
+  source         ,          
+  b.carLength ,b.maxLoad, b.phone, b.carType , b.carNumber, 
+  m.userType AS userType,
+  m.realName  AS nickName,
+ (SELECT  c.companyName FROM member_certifi c WHERE c.memberId=b.userId LIMIT 1)  AS  companyName
+
+       FROM carline a ,cars b, member_baseinfo m
+       WHERE       a.carId =b.id 
+       AND         b.userId=m.memberId  
+       AND  (a.isDeleted=0 or a.isDeleted is null)
+			
+		
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+			
+	    ORDER BY a.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>	
+  	
+  	<sql id="queryCarLineList">
+	<![CDATA[
+				SELECT  
+                       a.id , a.price , a.sendGoodsType ,a.sentDate , a.sentDateType, a.unitType,
+                       a.onLineHours, a.createTime , a.endDate , 
+                       a.s_areaId ,a.s_cityId ,a.s_provinceId ,          
+                       a.e_areaId ,a.e_cityId ,a.e_provinceId ,   
+                       s_provinceId2 ,           
+                       s_cityId2     ,           
+                       s_areaId2     ,           
+                       s_provinceId3  ,          
+                       s_cityId3      ,          
+                       s_areaId3      ,          
+                       e_provinceId2  ,          
+                       e_cityId2      ,          
+                       e_areaId2      ,          
+                       e_provinceId3  ,          
+                       e_cityId3      ,          
+                       e_areaId3      ,          
+                       e_provinceId4  ,          
+                       e_cityId4      ,          
+                       e_areaId4      ,          
+                       e_provinceId5  ,          
+                       e_cityId5      ,          
+                       e_areaId5      ,      
+                       b.carLength ,b.maxLoad, b.phone, b.carType , b.carNumber, 
+                       m.realName  AS nickName ,
+                       e.areaName,
+                      (SELECT  c.companyName FROM member_certifi c WHERE c.memberId=b.userId LIMIT 1)  AS  companyName
+                 FROM   carline a 
+                 LEFT JOIN cars b on   a.carId =b.id 
+                 LEFT JOIN member_baseinfo m  on  b.userId=m.memberId
+                 LEFT JOIN integral i   on  b.userId= i.memberId_ed
+                 LEFT JOIN area_setting e on   e.memberId  = i.memberId
+                 WHERE  i.type =3
+                 		<#if isDel?exists && isDel!="" >
+			      			AND a.isDeleted=1
+			     			<#else>
+			      			AND (a.isDeleted=0 or a.isDeleted is null)
+			 			</#if> 
+			            <#if carType?exists && carType!="" >
+			              AND b.carType =:carType
+			           </#if>
+			            <#if mobile?exists && mobile!="" >
+			              AND b.phone =:mobile
+			           </#if>
+			            <#if startDate?exists && startDate!="" >
+			              AND DATE_FORMAT(a.createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+			           </#if>
+			            <#if endDate?exists && endDate!="" >
+			              AND DATE_FORMAT(a.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			           </#if>
+			           <#if userType?exists && userType!="" >
+			            AND m.userType =:userType
+			            </#if>
+			            <#if areaName?exists && areaName!="" >
+		                  and  e.areaName =:areaName 
+	                    </#if>
+	]]>
+	</sql>
+  	
+	
+	<sql id="addCarLineDTO">
+	<![CDATA[
+	    INSERT INTO  carline
+	          (
+              carId ,              
+              memberId ,           
+              startCity ,
+              s_provinceId,
+              s_cityId,
+              s_areaId,          
+              endCity ,
+              e_provinceId,
+              e_cityId,
+              e_areaId,            
+              name ,               
+              phone ,              
+              sentDate ,           
+              sentDateType ,       
+              onLineHours , 
+              <#if endDateString?exists && endDateString!="" >        
+              endDate ,
+              </#if>
+              endDateType,            
+              sendGoodsType ,      
+              price      ,
+              unitType   ,
+              createUserId,
+              createTime ,
+              
+              s_provinceId2 ,                  
+              s_cityId2     ,                 
+              s_areaId2     ,                  
+              s_provinceId3  ,                 
+              s_cityId3      ,                
+              s_areaId3      ,                 
+              e_provinceId2  ,                
+              e_cityId2      ,                 
+              e_areaId2      ,                 
+              e_provinceId3  ,                 
+              e_cityId3      ,                 
+              e_areaId3      ,                 
+              e_provinceId4  ,                 
+              e_cityId4      ,                 
+              e_areaId4      ,                
+              e_provinceId5  ,                 
+              e_cityId5      ,                 
+              e_areaId5      ,
+              mileage        , 
+              source         ,
+              remark                   
+
+              
+                     
+              )
+	        values
+	         (
+	          :carId ,              
+              :memberId ,           
+              :startCity ,
+              :s_provinceId,
+              :s_cityId,
+              :s_areaId,          
+              :endCity ,
+              :e_provinceId,
+              :e_cityId,
+              :e_areaId,             
+              :name ,               
+              :phone ,              
+              :sendDateString ,           
+              :sentDateType ,       
+              :onLineHours , 
+              <#if endDateString?exists && endDateString!="" >            
+              :endDateString ,
+              </#if>
+              :endDateType,             
+              :sendGoodsType ,      
+              :price      ,
+              :unitType   ,
+              :createUserId,
+              sysdate()    ,
+              
+              :s_provinceId2 ,                  
+              :s_cityId2     ,                 
+              :s_areaId2     ,                  
+              :s_provinceId3  ,                 
+              :s_cityId3      ,                
+              :s_areaId3      ,                 
+              :e_provinceId2  ,                
+              :e_cityId2      ,                 
+              :e_areaId2      ,                 
+              :e_provinceId3  ,                 
+              :e_cityId3      ,                 
+              :e_areaId3      ,                 
+              :e_provinceId4  ,                 
+              :e_cityId4      ,                 
+              :e_areaId4      ,                
+              :e_provinceId5  ,                 
+              :e_cityId5      ,                 
+              :e_areaId5      ,
+              :mileage        ,
+              :source         ,
+              :remark                
+              )
+	        
+	]]>
+	</sql>
+	 
+		<sql id="deleteCarLineDTO">
+	<![CDATA[
+	DELETE FROM carline WHERE id=:id
+	]]>
+	</sql>
+	
+	
+	
+ 	<sql id="updateCarLineDTO">                                           
+  	<![CDATA[                                     
+  	    UPDATE carline                            
+  	    SET                                       
+  	             sentDate      =:sendDateString,          
+                 sentDateType  =:sentDateType, 
+                 <#if endDateString?exists && endDateString!="" >            
+               	endDate       =:endDateString,
+              	</#if>
+                <#if  endDateString=="" >            
+               	endDate       =null,
+              	</#if>
+                 endDateType   =:endDateType,    
+                 onLineHours   =:onLineHours,   
+                 price         =:price, 
+                 unitType      =:unitType,    
+                 sendGoodsType =:sendGoodsType ,  
+                 s_areaId      =:s_areaId,        
+                 s_cityId      =:s_cityId ,       
+                 s_provinceId  =:s_provinceId,    
+                 e_areaId      =:e_areaId,        
+                 e_cityId      =:e_cityId,        
+                 e_provinceId  =:e_provinceId,    
+                 updateUserId  =:updateUserId ,   
+                 updateTime    =sysdate(),
+                 carId         =:carId,
+	             s_provinceId2     =:s_provinceId2 ,     
+	             s_cityId2         =:s_cityId2     ,     
+	             s_areaId2         =:s_areaId2     ,     
+	             s_provinceId3     =:s_provinceId3  ,    
+	             s_cityId3         =:s_cityId3      ,    
+	             s_areaId3         =:s_areaId3      ,    
+	             e_provinceId2     =:e_provinceId2  ,    
+	             e_cityId2         =:e_cityId2      ,    
+	             e_areaId2         =:e_areaId2      ,    
+	             e_provinceId3     =:e_provinceId3  ,    
+	             e_cityId3         =:e_cityId3      ,    
+	             e_areaId3         =:e_areaId3      ,    
+	             e_provinceId4     =:e_provinceId4  ,    
+	             e_cityId4         =:e_cityId4      ,    
+	             e_areaId4         =:e_areaId4      ,    
+	             e_provinceId5     =:e_provinceId5  ,    
+	             e_cityId5         =:e_cityId5      ,    
+	             e_areaId5         =:e_areaId5      ,
+	            <#if memberId?exists && memberId !=null && memberId !="" >            
+               	  memberId          =:memberId      ,
+              	</#if>
+	             remark            =:remark      
+	                 
+                 
+  	    WHERE  id=:id                             
+  	]]>                                           
+  	</sql>  
+	 
+	<sql id="getCarlineApiByCondition">
+	<![CDATA[ 
+	select * from (
+	 SELECT 
+	    a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,				
+
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId as b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( c.lng -:mlng), 2) + POW( ABS( c.lat-   :mlat), 2 ))*111  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m ,
+  area c
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  and c.areaId=a.s_cityId
+  and a.s_cityId>1
+  AND a.s_cityId IS NOT NULL
+  AND (a.isDeleted=0 or a.isDeleted is null)
+			<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength =:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>
+			union all
+			SELECT     a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		
+  		  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		
+  		
+  		  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		
+  		  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,
+ 		
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限'
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId AS b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND (a.s_cityId<  2  OR a.s_cityId IS NULL)
+  AND (a.isDeleted=0 or a.isDeleted is null)
+  				<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength =:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if> ) t
+			<#if userId?exists && userId!="" &&userId!=0 >
+			 ORDER BY t.createTime DESC	
+			 </#if>
+		]]>
+</sql>
+	<sql id="repalyCarLine">
+	<![CDATA[
+	    UPDATE carline 
+	    SET    createTime=sysdate(),
+               updateUserId=:updateUserId ,
+               updateTime=sysdate()
+	    WHERE  id=:id
+	]]>
+</sql>
+
+	<sql id="getCarlineApiByConditionNew">
+	<![CDATA[ 
+	
+	select * from (
+	 SELECT 
+	    a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,				
+
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId as b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( c.lng -:mlng), 2) + POW( ABS( c.lat-   :mlat), 2 ))*111  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m ,
+  area c
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  and c.areaId=a.s_cityId
+  and a.s_cityId>1
+  AND a.s_cityId IS NOT NULL
+  AND (a.isDeleted=0 or a.isDeleted is null)
+			<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength =:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>
+			union all
+			SELECT     a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		
+  		  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		
+  		
+  		  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		
+  		  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,
+ 		
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS carTypeString,
+        m.realName AS contact,
+  		a.memberId AS b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND (a.s_cityId<  2  OR a.s_cityId IS NULL)
+  AND (a.isDeleted=0 or a.isDeleted is null)
+  				<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength =:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if> ) t
+			where 1=1
+			<#if distance?exists && distance!=""&& distance!=0>
+			      AND t.distance <=:distance
+			</#if>
+              <#if userId==null || userId=="" || userId==0 >
+			      and  t.createtime >= date_sub(current_date(),INTERVAL 9 DAY)
+			      </#if>
+			     order by  (CASE t.distance WHEN -1 THEN 0 ELSE -1 END),t.distance,t.createTime DESC	
+			  LIMIT :startRow,:endRow
+		]]>
+</sql>
+
+
+	<sql id="getCountCarlineApiByCondition">
+	<![CDATA[ 
+	 SELECT 
+	    count(t.id) from(
+	    select a.id,a.createTime,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( c.lng -:mlng), 2) + POW( ABS( c.lat-   :mlat), 2 ))*111  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m ,
+  area c
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  and c.areaId=a.s_cityId
+  and a.s_cityId>1
+  AND a.s_cityId IS NOT NULL
+  AND (a.isDeleted=0 or a.isDeleted is null)
+			<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad >=:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength >=:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0>
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>	
+	
+				union all
+			SELECT     a.id,a.createTime,
+	  
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1  END   AS distance
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND (a.s_cityId<  2  OR a.s_cityId IS NULL)
+  AND (a.isDeleted=0 or a.isDeleted is null)
+  				<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad >=:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      AND b.carLength >=:carLength
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+			<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if> ) t
+			where 1=1
+			
+			<#if distance?exists && distance!=""&& distance!=0>
+			      AND t.distance <=:distance
+			</#if>
+		    <#if userId==null || userId=="" || userId==0 >
+			     
+			      and  t.createtime >= date_sub(current_date(),interval 7 day)
+			      
+			</#if>
+			
+		]]>
+</sql>
+
+<sql id="addnstpushmessage">
+	<![CDATA[
+	    INSERT INTO  nstpush_message
+	          (
+              memberId ,              
+              type ,           
+              clId ,
+              createUserId,
+              createTime,
+              updateUserId,          
+              updateTime,
+              cityId,
+              readed,
+              source_type
+                     
+              )
+	        values
+	         (
+	                 :memberId ,              
+              2,           
+              :clId ,
+              :createUserId,
+              sysdate(),          
+              :updateUserId, 
+              sysdate(),
+              :cityId,
+              0,
+              :source_type           
+              )
+	        
+	]]>
+	</sql>
+	 
+
+	
+		 <sql id="getnstpushmessage">
+	<![CDATA[
+	
+	SELECT id FROM nstpush_message WHERE memberId= :memberId   AND TYPE=2 AND clId=:clId ORDER BY createTime DESC LIMIT 1
+	
+	]]>
+	</sql>
+	
+	
+		 <sql id="addnstpushmessageinfo">
+	<![CDATA[
+	    INSERT INTO  nstpush_message_info
+	          (
+              messageId ,                        
+              mb_Id ,
+              s_provinceId,
+              s_cityId,
+              s_areaId,          
+              f_provinceId,
+              f_cityId,
+              f_areaId,
+              goodsName,
+              totalWeight,
+              hundredweight,
+              createTime,
+              mCity,
+              distance
+                     
+              )
+	        values
+	         (
+	          :messageId ,                 
+              :mb_Id ,
+              :s_provinceId,
+              :s_cityId,
+              :s_areaId,          
+              :f_provinceId,
+              :f_cityId,
+              :f_areaId,
+              :goodsName,
+              :totalWeight,
+              :hundredweight,
+              sysdate()  ,
+                           :mCity,
+              :distance         
+              )
+	        
+	]]>
+	</sql>
+	
+		 <sql id="getCarLineId">
+	<![CDATA[
+	  select id
+	  from carline
+	  where memberId=:memberId
+	  and createTime is not null
+	  AND (isDeleted=0 or isDeleted is null)
+	  order by createTime desc
+	  limit 1
+	]]>
+	</sql>
+	
+	<sql id="getListByAreaId">
+	<![CDATA[
+	SELECT   t.*  
+	FROM 
+	(
+		SELECT  
+  a.id , a.price , a.sendGoodsType ,a.sentDate , a.sentDateType, a.unitType,
+  a.onLineHours, a.createTime , a.endDate , 
+  a.s_areaId ,a.s_cityId ,a.s_provinceId ,          
+  a.e_areaId ,a.e_cityId ,a.e_provinceId ,
+  s_provinceId2 ,           
+  s_cityId2     ,           
+  s_areaId2     ,           
+  s_provinceId3  ,          
+  s_cityId3      ,          
+  s_areaId3      ,          
+  e_provinceId2  ,          
+  e_cityId2      ,          
+  e_areaId2      ,          
+  e_provinceId3  ,          
+  e_cityId3      ,          
+  e_areaId3      ,          
+  e_provinceId4  ,          
+  e_cityId4      ,          
+  e_areaId4      ,          
+  e_provinceId5  ,          
+  e_cityId5      ,          
+  e_areaId5      ,         
+  source         ,          
+  b.carLength ,b.maxLoad, b.phone, b.carType , b.carNumber, 
+  m.userType AS userType,
+  m.realName  AS nickName,
+ (SELECT  c.nstStatus FROM member_certifi c WHERE c.memberId=b.userId LIMIT 1)  AS  isCertify
+  
+       FROM carline a ,cars b, member_baseinfo m
+       WHERE       a.carId =b.id 
+       AND         b.userId=m.memberId
+	   AND  (a.isDeleted=0 or a.isDeleted is null)
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			
+		UNION 
+		
+				SELECT  
+  a.id , a.price , a.sendGoodsType ,a.sentDate , a.sentDateType, a.unitType,
+  a.onLineHours, a.createTime , a.endDate , 
+  a.s_areaId ,a.s_cityId ,a.s_provinceId ,          
+  a.e_areaId ,a.e_cityId ,a.e_provinceId ,
+  s_provinceId2 ,           
+  s_cityId2     ,           
+  s_areaId2     ,           
+  s_provinceId3  ,          
+  s_cityId3      ,          
+  s_areaId3      ,          
+  e_provinceId2  ,          
+  e_cityId2      ,          
+  e_areaId2      ,          
+  e_provinceId3  ,          
+  e_cityId3      ,          
+  e_areaId3      ,          
+  e_provinceId4  ,          
+  e_cityId4      ,          
+  e_areaId4      ,          
+  e_provinceId5  ,          
+  e_cityId5      ,          
+  e_areaId5      ,         
+  source         ,          
+  b.carLength ,b.maxLoad, b.phone, b.carType , b.carNumber, 
+  m.userType AS userType,
+  m.realName  AS nickName,
+ (SELECT  c.nstStatus FROM member_certifi c WHERE c.memberId=b.userId LIMIT 1)  AS  isCertify
+  
+       FROM carline a ,cars b, member_baseinfo m
+       WHERE       a.carId =b.id 
+       AND         b.userId=m.memberId
+	   AND (a.isDeleted=0 or a.isDeleted is null)
+	 <#if e_cityId?exists && e_cityId!="" >
+			       AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+	 </#if>
+	   ) t
+	    ORDER BY t.createTime DESC
+		LIMIT :startRow,:endRow
+		
+		
+	]]>
+	</sql>
+	
+	 <sql id="updateCarLineByid">
+		<![CDATA[
+		  	UPDATE carline SET isDeleted=1 
+		  	WHERE id IN
+		  	<#assign n = carLineIds?size />
+			<#if n gt 0>
+				(
+				<#list carLineIds as carLineId>
+					<#if carLineId_index != n-1>
+							${carLineId} ,
+						<#else>
+							${carLineId}
+					</#if>
+				</#list>
+				) 
+			</#if>
+	  	]]>
+	</sql>
+	
+	
+		<sql id="getCarLIneById">                 
+ 	<![CDATA[                            
+  		SELECT                             
+ 	           t.id ,                       
+               carId ,                 
+               memberId ,                          
+               s_areaId   ,            
+               s_cityId   ,            
+               s_provinceId ,          
+               e_areaId    ,           
+               e_cityId    ,           
+               e_provinceId ,
+			  s_provinceId2   ,                    
+			  s_cityId2       ,                    
+			  s_areaId2       ,                    
+			  s_provinceId3    ,                   
+			  s_cityId3        ,                   
+			  s_areaId3        ,                   
+			  e_provinceId2    ,                   
+			  e_cityId2        ,                   
+			  e_areaId2        ,                   
+			  e_provinceId3    ,                   
+			  e_cityId3        ,                   
+			  e_areaId3        ,                   
+			  e_provinceId4    ,                   
+			  e_cityId4        ,                   
+			  e_areaId4        ,                   
+			  e_provinceId5    ,                   
+			  e_cityId5        ,                   
+			  e_areaId5        ,                   
+			  b.carType,
+			  IFNULL(b.carLength,0) carLength        
+                                      
+ 		FROM                               
+ 			carline t ,cars b                      
+ 		WHERE  t.carId=b.id
+ 		and t.id=:id                    
+ 	]]>                                  
+ 	</sql> 
+ 	
+ 	
+ 		<sql id="getCarlineApiByConditionNewNst2">
+	<![CDATA[ 
+	
+	select * from (
+	 SELECT 
+	    a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,				
+		IFNULL(a.mileage,-1) AS mileage,
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId as b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( c.lng -:mlng), 2) + POW( ABS( c.lat-   :mlat), 2 ))*111  END   AS distance,
+	IFNULL(nob.orderStatus ,0) orderStatus,
+	m.andupurl
+FROM
+  carline a LEFT JOIN  nst_order_baseinfo  nob ON a.id =nob.carLineId AND  nob.orderStatus NOT IN (5,4),
+  cars b,
+  member_baseinfo m ,
+  area c
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  and c.areaId=a.s_cityId
+  and a.s_cityId>1
+  AND a.s_cityId IS NOT NULL
+  AND (a.isDeleted=0 or a.isDeleted is null)
+			<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      				<#if  carLength==-1>
+					and b.carLength < 4.2 or  b.carLength=0
+				</#if>
+				<#if  carLength==-2>
+					and b.carLength >18 or  b.carLength=0
+				</#if>
+												<#if  carLength!=-1 && carLength!=-2>
+					and b.carLength =:carLength
+				</#if>
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>
+					<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  b.carLength < 4.2 
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and  b.carLength >18 
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (b.carLength >= :carLengthCondition1 and b.carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and (b.carLength = :carLengthCondition1 or b.carLength=0)
+				</#if>
+			</#if>
+		
+						<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and  b.maxLoad <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and b.maxLoad <=:weightCondition2)
+			       </#if>
+			       <#if weightCondition2==0 >
+			          AND b.maxLoad =:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+			union all
+			SELECT     a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		
+  		  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		
+  		
+  		  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		
+  		  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,
+ 		IFNULL(a.mileage,-1) AS mileage,
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS carTypeString,
+        m.realName AS contact,
+  		a.memberId AS b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1  END   AS distance,
+	IFNULL(nob.orderStatus ,0) orderStatus,
+	m.andupurl
+FROM
+  carline a LEFT JOIN  nst_order_baseinfo  nob ON a.id =nob.carLineId AND  nob.orderStatus NOT IN (5,4) ,
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND (a.s_cityId<  2  OR a.s_cityId IS NULL)
+  AND (a.isDeleted=0 or a.isDeleted is null)
+  				<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      				<#if  carLength==-1>
+					and b.carLength < 4.2 or  b.carLength=0
+				</#if>
+				<#if  carLength==-2>
+					and b.carLength >18 or  b.carLength=0
+				</#if>
+												<#if  carLength!=-1 && carLength!=-2>
+					and b.carLength =:carLength or  b.carLength=0
+				</#if>
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>
+					<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  b.carLength < 4.2 
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and  b.carLength >18 
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (b.carLength >= :carLengthCondition1 and b.carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and (b.carLength = :carLengthCondition1 or b.carLength=0)
+				</#if>
+			</#if>
+						<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and  b.maxLoad <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and b.maxLoad <=:weightCondition2)
+			       </#if>
+			       <#if weightCondition2==0 >
+			          AND b.maxLoad =:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+			 ) t
+			where 1=1
+			and t.orderStatus =0
+			<#if distance?exists && distance!=""&& distance!=0>
+			      AND t.distance <=:distance
+			</#if>
+              <#if userId==null || userId=="" || userId==0 >
+			      and  t.createtime >= date_sub(current_date(),INTERVAL 9 DAY)
+			  </#if>
+			  <#if closest=="" && closest==null >
+			     order by t.createTime DESC	
+			  </#if>
+			   <#if closest?exists && closest!="" && closest!=null >
+			     order by  (CASE t.distance WHEN -1 THEN 0 ELSE -1 END),t.distance
+			  </#if>
+			  LIMIT :startRow,:endRow
+		]]>
+</sql>
+ 	<sql id="getCountByConditionNst2">
+	<![CDATA[ 
+	
+	select count(*) from (
+	 SELECT 
+	    a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,				
+
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId as b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( c.lng -:mlng), 2) + POW( ABS( c.lat-   :mlat), 2 ))*111  END   AS distance,
+	m.andupurl
+FROM
+  carline a,
+  cars b,
+  member_baseinfo m ,
+  area c
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  and c.areaId=a.s_cityId
+  and a.s_cityId>1
+  AND a.s_cityId IS NOT NULL
+  AND (a.isDeleted=0 or a.isDeleted is null)
+			<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      				<#if  carLength==-1>
+					and b.carLength < 4.2 or  b.carLength=0
+				</#if>
+				<#if  carLength==-2>
+					and b.carLength >18 or  b.carLength=0
+				</#if>
+												<#if  carLength!=-1 && carLength!=-2>
+					and b.carLength =:carLength 
+				</#if>
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>
+				<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  b.carLength < 4.2 
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and  b.carLength >18 
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (b.carLength >= :carLengthCondition1 and b.carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and (b.carLength = :carLengthCondition1 or b.carLength=0)
+				</#if>
+			</#if>
+						<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and  b.maxLoad <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and b.maxLoad <=:weightCondition2)
+			       </#if>
+			       <#if weightCondition2==0 >
+			          AND b.maxLoad =:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+						              <#if userId==null || userId=="" || userId==0 >
+			      and  a.createtime >= date_sub(current_date(),INTERVAL 9 DAY)
+			      </#if>
+			union all
+			SELECT     a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		
+  		  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		
+  		
+  		  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		
+  		  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,
+ 		
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS carTypeString,
+        m.realName AS contact,
+  		a.memberId AS b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1  END   AS distance,
+	m.andupurl
+FROM
+  carline a, 
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND (a.s_cityId<  2  OR a.s_cityId IS NULL)
+  AND (a.isDeleted=0 or a.isDeleted is null)
+  				<#if maxLoad?exists && maxLoad!="" >
+			      AND b.maxLoad =:maxLoad
+			</#if>
+			<#if carLength?exists && carLength!="" && carLength!=0>
+			      				<#if  carLength==-1>
+					and b.carLength < 4.2 or  b.carLength=0
+				</#if>
+				<#if  carLength==-2>
+					and b.carLength >18 or  b.carLength=0
+				</#if>
+												<#if  carLength!=-1 && carLength!=-2>
+					and b.carLength =:carLength
+				</#if>
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND b.carType =:carType
+			</#if>	
+			<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>
+						<#if carLengthCondition1?exists && carLengthCondition1!="" && carLengthCondition1!=0>
+				<#if  carLengthCondition1==-1>
+					and  b.carLength < 4.2 
+				</#if>
+				<#if  carLengthCondition1==-2>
+					and  b.carLength >18 
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2?exists && carLengthCondition2!="" && carLengthCondition2!=0>
+					and  (b.carLength >= :carLengthCondition1 and b.carLength <= :carLengthCondition2)
+				</#if>
+				<#if  carLengthCondition1!=-1 && carLengthCondition1!=-2 && carLengthCondition2==0>
+					and (b.carLength = :carLengthCondition1 or b.carLength=0)
+				</#if>
+			</#if>
+					<#if weightCondition1?exists && weightCondition1!="" >
+			    <#if weightCondition1==0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and  b.maxLoad <=:weightCondition2)
+			       </#if>
+			    </#if>
+			    <#if weightCondition1!=0 >
+			       <#if weightCondition2!=0 >
+			          AND (b.maxLoad >=:weightCondition1 and b.maxLoad <=:weightCondition2)
+			       </#if>
+			       <#if weightCondition2==0 >
+			          AND b.maxLoad >=:weightCondition1 
+			       </#if>
+			    </#if>
+			</#if>
+			              <#if userId==null || userId=="" || userId==0 >
+			      and  a.createtime >= date_sub(current_date(),INTERVAL 9 DAY)
+			      </#if>
+			 ) t
+			where 1=1
+			<#if distance?exists && distance!=""&& distance!=0>
+			      AND t.distance <=:distance
+			</#if>
+
+		]]>
+</sql>
+
+	<sql id="getCarlineApiByCondition1">
+	<![CDATA[ 
+	select * from (
+	 SELECT 
+	    a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,				
+		IFNULL(a.mileage,-1) AS mileage,
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId as b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE SQRT(POW( ABS( c.lng -:mlng), 2) + POW( ABS( c.lat-   :mlat), 2 ))*111  END   AS distance,
+	m.andupurl,
+	(SELECT nob.orderStatus FROM nst_order_baseinfo  nob  WHERE  nob.carLineId=a.id ORDER BY  nob.createTime DESC LIMIT 1 ) AS orderStatus
+FROM
+  carline a  ,
+  cars b,
+  member_baseinfo m ,
+  area c
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  and c.areaId=a.s_cityId
+  and a.s_cityId>1
+  AND a.s_cityId IS NOT NULL
+  AND (a.isDeleted=0 or a.isDeleted is null)
+						<#if id?exists && id!=""&& id!=0>
+			      AND a.id =:id
+			</#if>
+			union all
+			SELECT     a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		
+  		  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		
+  		
+  		  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		
+  		  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,
+ 		IFNULL(a.mileage,-1) AS mileage,
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限'
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId AS b_memberId,
+  		a.remark,
+  		         CASE s_provinceId
+	WHEN 110000 THEN  SQRT(POW( ABS( :bjlng -:mlng), 2) + POW( ABS( :bjlat-  :mlat), 2 ))*111
+	WHEN 120000 THEN  SQRT(POW( ABS( :tjlng -:mlng), 2) + POW( ABS( :tjlat -   :mlat), 2 ))*111
+	WHEN 500000 THEN  SQRT(POW( ABS( :cqlng -:mlng), 2) + POW( ABS( :cqlat-   :mlat), 2 ))*111
+	WHEN 310000 THEN  SQRT(POW( ABS( :shlng -:mlng), 2) + POW( ABS( :shlat-   :mlat), 2 ))*111 
+	ELSE -1  END   AS distance,
+	m.andupurl,
+	(SELECT nob.orderStatus FROM nst_order_baseinfo  nob  WHERE  nob.carLineId=a.id ORDER BY  nob.createTime DESC LIMIT 1 ) AS orderStatus
+FROM
+  carline a  ,
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+  AND (a.s_cityId<  2  OR a.s_cityId IS NULL)
+  AND (a.isDeleted=0 or a.isDeleted is null)
+  <#if id?exists && id!=""&& id!=0>
+  AND a.id =:id
+
+  </#if> ) t
+  LIMIT 1
+]]>
+</sql>
+
+	<sql id="getCarlineApiByConditionUser">                 
+ 	<![CDATA[     
+	 SELECT 
+	    a.id,
+	    a.carId,
+  		a.price,
+  		a.unitType ,
+  		CASE
+    		a.unitType 
+    	WHEN 0 
+    	THEN '元/吨' 
+    	WHEN 1 
+    	THEN '元/公斤' 
+    	WHEN 2 
+    	THEN '元/立方' 
+    	ELSE '' 
+  		END AS unitTypeString,
+  		a.sendGoodsType,
+  		CASE
+  		 a.sendGoodsType 
+    	WHEN 0 
+    	THEN '零担' 
+    	WHEN 1 
+    	THEN '整车'
+    	WHEN 2
+    	THEN '不限' 
+    	ELSE '不限'
+  		END AS sendGoodsTypeString,
+  		a.sentDate,
+  		
+  		        CASE a.sentDateType
+WHEN 0 THEN 0
+WHEN 1 THEN 1
+WHEN 2 THEN 2
+WHEN 3 THEN 3
+ELSE 4 END   AS sentDateType,
+  		CASE
+    	a.sentDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS sentDateTypeString,
+  		  		a.endDate,
+  		  		DATE_FORMAT(a.endDate,'%c-%d')    AS endDateString  ,
+  		  		a.endDateType,
+  		CASE
+    	a.endDateType 
+    	WHEN 0 
+    	THEN '上午' 
+    	WHEN 1 
+    	THEN '中午' 
+    	WHEN 2 
+    	THEN '下午' 
+    	WHEN 3 
+    	THEN '晚上' 
+    	ELSE '不限'
+  		END AS endDateTypeString,
+  		
+  		a.onLineHours,
+  		a.createTime,
+  		a.startCity AS startPlace,
+  		a.endCity AS endPlace,
+  		a.s_provinceId,
+  		a.s_cityId,
+  		a.s_areaId,
+  		a.e_provinceId,
+  		a.e_cityId,
+  		a.e_areaId,
+  		a.s_provinceId2,
+  		a.s_cityId2,
+  		a.s_areaId2,
+  		a.e_provinceId2,
+  		a.e_cityId2,
+  		a.e_areaId2,
+  		a.s_provinceId3,
+  		a.s_cityId3,
+  		a.s_areaId3,
+  		a.e_provinceId3,
+  		a.e_cityId3,
+  		a.e_areaId3,
+  		a.e_provinceId4,
+  		a.e_cityId4,
+  		a.e_areaId4,
+  		a.e_provinceId5,
+  		a.e_cityId5,
+  		a.e_areaId5,				
+
+  		b.carLength,
+  		b.maxLoad,
+  		b.phone,
+  		b.carNumber,
+  		b.carType,
+  		CASE
+    	b.carType 
+WHEN 0 THEN '厢式货车'
+WHEN 1 THEN '敞车'
+WHEN 2 THEN '冷藏车'
+WHEN 3 THEN '保温车'
+WHEN 4 THEN '其他'
+WHEN 5 THEN '高栏车'
+WHEN 6 THEN '平板车'
+WHEN 7 THEN '活鲜水车'
+WHEN 8 THEN '集装箱'
+WHEN 9 THEN '不限'
+ELSE '不限' 
+  		END AS  carTypeString,
+        m.realName AS contact,
+  		a.memberId as b_memberId,
+  		a.remark,
+  		       
+	m.andupurl
+FROM
+  carline a  ,
+  cars b,
+  member_baseinfo m
+WHERE a.carId = b.id 
+  AND b.userId = m.memberId
+   AND  (a.isDeleted=0 or a.isDeleted is null)
+    		<#if carId?exists && carId!=""  >
+			      AND a.carId =:carId
+			</#if>
+  		<#if userId?exists && userId!="" &&userId!=0 >
+			      AND b.userId =:userId
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="" &&  s_provinceId!=0 >
+			      AND
+			      ( a.s_provinceId =:s_provinceId  OR  a.s_provinceId2 =:s_provinceId  OR  a.s_provinceId3 =:s_provinceId )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" && s_cityId!=0>
+			      AND 
+			      (a.s_cityId =:s_cityId OR a.s_cityId2 =:s_cityId OR a.s_cityId3 =:s_cityId )
+ 			</#if>
+			<#if s_areaId?exists && s_areaId!="" && s_areaId!=0>
+			      AND 
+			      (a.s_areaId =:s_areaId OR a.s_areaId2 =:s_areaId OR a.s_areaId3 =:s_areaId)
+			</#if>
+			
+			<#if e_provinceId?exists && e_provinceId!="" && e_provinceId!=0 >
+			      AND 
+			  ( a.e_provinceId =:e_provinceId OR a.e_provinceId2 =:e_provinceId OR a.e_provinceId3 =:e_provinceId OR a.e_provinceId4 =:e_provinceId  OR a.e_provinceId5 =:e_provinceId)
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" && e_cityId!=0  >
+			      AND 
+			  (a.e_cityId =:e_cityId OR a.e_cityId2 =:e_cityId OR a.e_cityId3 =:e_cityId OR a.e_cityId4 =:e_cityId OR a.e_cityId5 =:e_cityId )
+			</#if>
+			<#if e_areaId?exists && e_areaId!=""  && e_areaId!=0 >
+			      AND 
+			  (a.e_areaId =:e_areaId OR a.e_areaId2 =:e_areaId OR a.e_areaId3 =:e_areaId OR a.e_areaId4 =:e_areaId  OR a.e_areaId5 =:e_areaId)
+			</#if>
+						<#if beginTime?exists && beginTime!="" >
+			 	<#if endTime?exists && endTime!="" >
+			     	AND DATE_FORMAT(a.createTime,'%Y-%c-%d') <=DATE_FORMAT(:endTime, '%Y-%c-%d')
+			     	AND DATE_FORMAT(a.createTime,'%Y-%c-%d') >=DATE_FORMAT(:beginTime, '%Y-%c-%d')
+				</#if> 
+				<#if endTime==null || endTime=="" >
+			     	AND DATE_FORMAT(a.createTime,'%Y-%c-%d') =DATE_FORMAT(:beginTime, '%Y-%c-%d')
+				</#if> 
+			</#if> 
+			<#if beginTime==null || beginTime=="" >
+			     				 	<#if endTime?exists && endTime!="" >
+			     	AND DATE_FORMAT(a.createTime,'%Y-%c-%d') =DATE_FORMAT(:endTime, '%Y-%c-%d')
+			     	
+				</#if> 
+			</#if>
+			GROUP BY a.createTime  desc
+  ]]>
+</sql>
+
+
+<sql id="memberPublishCarLine">
+	<![CDATA[
+		SELECT
+			line.id,
+			IF(mb2.userType=1,mb2.realName,mc2.linkMan) AS `name`,
+			IF(mb2.userType=1,mb2.mobile,mc2.mobile) AS `mobile`,
+			IF(mb.userType=1,mb.realName,mc.linkMan) AS name_ed,
+			IF(mb.userType=1,mb.mobile,mc.mobile) AS mobile_ed,
+			IF(mb.userType=1,'个人','企业') AS userType,
+			mb.`level`,
+			a.areaName,
+			mc.companyName,
+			line.createTime AS lineCreateTime,
+			CASE mc.nstStatus
+			WHEN '0' THEN '未认证'
+			WHEN '1' THEN '已全部认证'
+			WHEN '2' THEN '认证未通过'
+			ELSE '未认证' END  AS nstStatus,
+			mb.createTime AS memberCreateTime,
+			line.s_provinceId,
+			line.s_cityId,
+			line.s_areaId,
+			line.e_provinceId,
+			line.e_cityId,
+			line.e_areaId,
+			IF(line.isDeleted='1','是','否') AS isDeleted
+		FROM
+			integral i 
+			LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+			LEFT JOIN member_certifi mc ON mc.memberId=i.memberId_ed
+			LEFT JOIN member_baseinfo mb2 ON i.memberId=mb2.memberId
+			LEFT JOIN member_certifi mc2 ON i.memberId=mc2.memberId
+			LEFT JOIN area_setting a ON a.memberId=i.memberId
+			INNER JOIN carline line ON mb.memberId = line.memberId
+			WHERE i.type=3
+			<#if areaName?exists && areaName!="" >
+			      AND a.areaName like "%":areaName"%"
+			</#if>
+			<#if mobile?exists && mobile!="">
+			      AND mb2.mobile = :mobile
+			</#if>
+			<#if mobile_ed?exists && mobile_ed!="">
+			      AND mb.mobile = :mobile_ed
+			</#if>
+			<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+			      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+			</#if>
+			<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+			      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+			</#if>
+			<#if lineCreateBeginTime?exists && lineCreateBeginTime!="">
+			      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')>=:lineCreateBeginTime
+			</#if>
+			<#if lineCreateEndTime?exists && lineCreateEndTime!="">
+			      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')<=:lineCreateEndTime
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="">
+			      AND line.s_provinceId=:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="">
+			      AND line.s_cityId=:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="">
+			      AND line.s_areaId=:s_areaId
+			</#if>
+			<#if e_provinceId?exists && e_provinceId!="">
+			      AND line.e_provinceId=:e_provinceId
+			</#if>
+			<#if e_cityId?exists && e_cityId!="">
+			      AND line.e_cityId=:e_cityId
+			</#if>
+			<#if e_areaId?exists && e_areaId!="">
+			      AND line.e_areaId=:e_areaId
+			</#if>			
+			GROUP BY line.id  order by line.id desc
+			LIMIT :startRow,:endRow;
+	]]>
+</sql>
+
+<sql id="memberPublishCarLineSameCity">
+	<![CDATA[
+		SELECT
+			line.id,
+			IF(mb2.userType=1,mb2.realName,mc2.linkMan) AS `name`,
+			IF(mb2.userType=1,mb2.mobile,mc2.mobile) AS `mobile`,
+			IF(mb.userType=1,mb.realName,mc.linkMan) AS name_ed,
+			IF(mb.userType=1,mb.mobile,mc.mobile) AS mobile_ed,
+			IF(mb.userType=1,'个人','企业') AS userType,
+			mb.`level`,
+			a.areaName,
+			mc.companyName,
+			line.createTime AS lineCreateTime,
+			CASE mc.nstStatus
+			WHEN '0' THEN '未认证'
+			WHEN '1' THEN '已全部认证'
+			WHEN '2' THEN '认证未通过'
+			ELSE '未认证' END  AS nstStatus,
+			mb.createTime AS memberCreateTime,
+			line.s_provinceId,
+			line.s_cityId,
+			line.s_areaId,
+			line.e_provinceId,
+			line.e_cityId,
+			line.e_areaId,
+			IF(line.isDeleted='1','是','否') AS isDeleted
+		FROM
+			integral i 
+			LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+			LEFT JOIN member_certifi mc ON mc.memberId=i.memberId_ed
+			LEFT JOIN member_baseinfo mb2 ON i.memberId=mb2.memberId
+			LEFT JOIN member_certifi mc2 ON i.memberId=mc2.memberId
+			LEFT JOIN area_setting a ON a.memberId=i.memberId
+			INNER JOIN nst_same_city_carline line ON mb.memberId = line.memberId
+			WHERE i.type=3
+			<#if areaName?exists && areaName!="" >
+			      AND a.areaName like "%":areaName"%"
+			</#if>
+			<#if mobile?exists && mobile!="">
+			      AND mb2.mobile = :mobile
+			</#if>
+			<#if mobile_ed?exists && mobile_ed!="">
+			      AND mb.mobile = :mobile_ed
+			</#if>
+			<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+			      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+			</#if>
+			<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+			      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+			</#if>
+			<#if lineCreateBeginTime?exists && lineCreateBeginTime!="">
+			      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')>=:lineCreateBeginTime
+			</#if>
+			<#if lineCreateEndTime?exists && lineCreateEndTime!="">
+			      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')<=:lineCreateEndTime
+			</#if>
+			<#if s_provinceId?exists && s_provinceId!="">
+			      AND line.s_provinceId=:s_provinceId
+			</#if>
+			<#if s_cityId?exists && s_cityId!="">
+			      AND line.s_cityId=:s_cityId
+			</#if>
+			<#if s_areaId?exists && s_areaId!="">
+			      AND line.s_areaId=:s_areaId
+			</#if>
+			<#if e_provinceId?exists && e_provinceId!="">
+			      AND line.e_provinceId=:e_provinceId
+			</#if>
+			<#if e_cityId?exists && e_cityId!="">
+			      AND line.e_cityId=:e_cityId
+			</#if>
+			<#if e_areaId?exists && e_areaId!="">
+			      AND line.e_areaId=:e_areaId
+			</#if>			
+			GROUP BY line.id order by line.id desc
+			LIMIT :startRow,:endRow;
+	]]>
+</sql>
+
+<sql id="getMemberPublishCarLineCount">
+	<![CDATA[
+		SELECT
+			COUNT(a.id)
+		FROM
+			(
+				SELECT
+					line.id
+				FROM
+				integral i
+				LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+				LEFT JOIN member_certifi mc ON mc.memberId = i.memberId_ed
+				LEFT JOIN member_baseinfo mb2 ON i.memberId = mb2.memberId
+				LEFT JOIN member_certifi mc2 ON i.memberId = mc2.memberId
+				LEFT JOIN area_setting a ON a.memberId = i.memberId
+				INNER JOIN carline line ON mb.memberId = line.memberId
+				WHERE i.type = 3
+				<#if areaName?exists && areaName!="" >
+			      AND a.areaName like "%":areaName"%"
+				</#if>
+				<#if mobile?exists && mobile!="">
+				      AND mb2.mobile = :mobile
+				</#if>
+				<#if mobile_ed?exists && mobile_ed!="">
+				      AND mb.mobile = :mobile_ed
+				</#if>
+				<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+				</#if>
+				<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+				</#if>
+				<#if lineCreateBeginTime?exists && lineCreateBeginTime!="">
+				      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')>=:lineCreateBeginTime
+				</#if>
+				<#if lineCreateEndTime?exists && lineCreateEndTime!="">
+				      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')<=:lineCreateEndTime
+				</#if>
+				<#if s_provinceId?exists && s_provinceId!="">
+			      AND line.s_provinceId =:s_provinceId
+				</#if>
+				<#if s_cityId?exists && s_cityId!="">
+				      AND line.s_cityId =:s_cityId
+				</#if>
+				<#if s_areaId?exists && s_areaId!="">
+				      AND line.s_areaId =:s_areaId
+				</#if>
+				<#if e_provinceId?exists && e_provinceId!="">
+				      AND line.e_provinceId =:e_provinceId
+				</#if>
+				<#if e_cityId?exists && e_cityId!="">
+				      AND line.e_cityId =:e_cityId
+				</#if>
+				<#if e_areaId?exists && e_areaId!="">
+				      AND line.e_areaId =:e_areaId
+				</#if>
+				GROUP BY line.id
+			) a
+	]]>
+</sql>
+
+<sql id="getMemberPublishCarLineCountSameCity">
+	<![CDATA[
+		SELECT
+			COUNT(a.id)
+		FROM
+			(
+				SELECT
+					line.id
+				FROM
+				integral i
+				LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+				LEFT JOIN member_certifi mc ON mc.memberId = i.memberId_ed
+				LEFT JOIN member_baseinfo mb2 ON i.memberId = mb2.memberId
+				LEFT JOIN member_certifi mc2 ON i.memberId = mc2.memberId
+				LEFT JOIN area_setting a ON a.memberId = i.memberId
+				INNER JOIN nst_same_city_carline line ON mb.memberId = line.memberId
+				WHERE i.type = 3
+				<#if areaName?exists && areaName!="" >
+			      AND a.areaName like "%":areaName"%"
+				</#if>
+				<#if mobile?exists && mobile!="">
+				      AND mb2.mobile = :mobile
+				</#if>
+				<#if mobile_ed?exists && mobile_ed!="">
+				      AND mb.mobile = :mobile_ed
+				</#if>
+				<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+				</#if>
+				<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+				</#if>
+				<#if lineCreateBeginTime?exists && lineCreateBeginTime!="">
+				      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')>=:lineCreateBeginTime
+				</#if>
+				<#if lineCreateEndTime?exists && lineCreateEndTime!="">
+				      AND DATE_FORMAT(line.createTime,'%Y-%m-%d')<=:lineCreateEndTime
+				</#if>
+				<#if s_provinceId?exists && s_provinceId!="">
+			      AND line.s_provinceId =:s_provinceId
+				</#if>
+				<#if s_cityId?exists && s_cityId!="">
+				      AND line.s_cityId =:s_cityId
+				</#if>
+				<#if s_areaId?exists && s_areaId!="">
+				      AND line.s_areaId =:s_areaId
+				</#if>
+				<#if e_provinceId?exists && e_provinceId!="">
+				      AND line.e_provinceId =:e_provinceId
+				</#if>
+				<#if e_cityId?exists && e_cityId!="">
+				      AND line.e_cityId =:e_cityId
+				</#if>
+				<#if e_areaId?exists && e_areaId!="">
+				      AND line.e_areaId =:e_areaId
+				</#if>
+				GROUP BY line.id
+			) a
+	]]>
+</sql>
+
+<sql id="memberPublishCar">
+	<![CDATA[
+			SELECT
+				car.id,
+				IF(mb2.userType=1,mb2.realName,mc2.linkMan) AS `name`,
+				IF(mb2.userType=1,mb2.mobile,mc2.mobile) AS `mobile`,
+				IF(mb.userType=1,mb.realName,mc.linkMan) AS name_ed,
+				IF(mb.userType=1,mb.mobile,mc.mobile) AS mobile_ed,
+				IF(mb.userType=1,'个人','企业') AS userType,
+				mb.`level`,
+				a.areaName,
+				mc.companyName,
+				car.createTime AS carCreateTime,
+				CASE mc.nstStatus
+				WHEN '0' THEN '未认证'
+				WHEN '1' THEN '已全部认证'
+				WHEN '2' THEN '认证未通过'
+				ELSE '未认证' END  AS nstStatus,
+				mb.createTime AS memberCreateTime
+			FROM
+				integral i 
+				LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+				LEFT JOIN member_certifi mc ON mc.memberId=i.memberId_ed
+				LEFT JOIN member_baseinfo mb2 ON i.memberId=mb2.memberId
+				LEFT JOIN member_certifi mc2 ON i.memberId=mc2.memberId
+				LEFT JOIN area_setting a ON a.memberId=i.memberId
+				INNER JOIN cars car ON car.userId = mb.memberId
+				WHERE i.type=3 and (transportType=0 or transportType is null)
+				<#if areaName?exists && areaName!="" >
+			      AND a.areaName like "%":areaName"%"
+				</#if>
+				<#if mobile?exists && mobile!="">
+				      AND mb2.mobile = :mobile
+				</#if>
+				<#if mobile_ed?exists && mobile_ed!="">
+				      AND mb.mobile = :mobile_ed
+				</#if>
+				<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+				</#if>
+				<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+				</#if>
+				<#if carCreateBeginTime?exists && carCreateBeginTime!="">
+				      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')>=:carCreateBeginTime
+				</#if>
+				<#if carCreateEndTime?exists && carCreateEndTime!="">
+				      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')<=:carCreateEndTime
+				</#if>
+				GROUP BY car.id order by car.id desc
+				LIMIT :startRow,:endRow;
+	]]>
+</sql>
+
+<sql id="memberPublishCarSameCity">
+	<![CDATA[
+			SELECT
+				car.id,
+				IF(mb2.userType=1,mb2.realName,mc2.linkMan) AS `name`,
+				IF(mb2.userType=1,mb2.mobile,mc2.mobile) AS `mobile`,
+				IF(mb.userType=1,mb.realName,mc.linkMan) AS name_ed,
+				IF(mb.userType=1,mb.mobile,mc.mobile) AS mobile_ed,
+				IF(mb.userType=1,'个人','企业') AS userType,
+				mb.`level`,
+				a.areaName,
+				mc.companyName,
+				car.createTime AS carCreateTime,
+				CASE mc.nstStatus
+				WHEN '0' THEN '未认证'
+				WHEN '1' THEN '已全部认证'
+				WHEN '2' THEN '认证未通过'
+				ELSE '未认证' END  AS nstStatus,
+				mb.createTime AS memberCreateTime
+			FROM
+				integral i 
+				LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+				LEFT JOIN member_certifi mc ON mc.memberId=i.memberId_ed
+				LEFT JOIN member_baseinfo mb2 ON i.memberId=mb2.memberId
+				LEFT JOIN member_certifi mc2 ON i.memberId=mc2.memberId
+				LEFT JOIN area_setting a ON a.memberId=i.memberId
+				INNER JOIN cars car ON car.userId = mb.memberId
+				WHERE i.type=3 and transportType=1
+				<#if areaName?exists && areaName!="" >
+			      AND a.areaName like "%":areaName"%"
+				</#if>
+				<#if mobile?exists && mobile!="">
+				      AND mb2.mobile = :mobile
+				</#if>
+				<#if mobile_ed?exists && mobile_ed!="">
+				      AND mb.mobile = :mobile_ed
+				</#if>
+				<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+				</#if>
+				<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+				      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+				</#if>
+				<#if carCreateBeginTime?exists && carCreateBeginTime!="">
+				      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')>=:carCreateBeginTime
+				</#if>
+				<#if carCreateEndTime?exists && carCreateEndTime!="">
+				      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')<=:carCreateEndTime
+				</#if>
+				GROUP BY car.id order by car.id desc
+				LIMIT :startRow,:endRow;
+	]]>
+</sql>
+
+<sql id="getMemberPublishCarCount">
+	<![CDATA[
+			SELECT COUNT(a.id) FROM
+			(
+				SELECT
+					car.id,
+					IF(mb2.userType=1,mb2.realName,mc2.linkMan) AS `name`,
+					IF(mb2.userType=1,mb2.mobile,mc2.mobile) AS `mobile`,
+					IF(mb.userType=1,mb.realName,mc.linkMan) AS name_ed,
+					IF(mb.userType=1,mb.mobile,mc.mobile) AS mobile_ed,
+					IF(mb.userType=1,'个人','企业') AS userType,
+					mb.`level`,
+					a.areaName,
+					mc.companyName,
+					car.createTime AS carCreateTime,
+					CASE mc.nstStatus
+					WHEN '0' THEN '未认证'
+					WHEN '1' THEN '已全部认证'
+					WHEN '2' THEN '认证未通过'
+					ELSE '未认证' END  AS nstStatus,
+					mb.createTime AS memberCreateTime
+				FROM
+					integral i 
+					LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+					LEFT JOIN member_certifi mc ON mc.memberId=i.memberId_ed
+					LEFT JOIN member_baseinfo mb2 ON i.memberId=mb2.memberId
+					LEFT JOIN member_certifi mc2 ON i.memberId=mc2.memberId
+					LEFT JOIN area_setting a ON a.memberId=i.memberId
+					INNER JOIN cars car ON car.userId = mb.memberId
+					WHERE i.type=3 and (transportType=0 or transportType is null)
+					<#if areaName?exists && areaName!="" >
+						  AND a.areaName like "%":areaName"%"
+					</#if>
+					<#if mobile?exists && mobile!="">
+					      AND mb2.mobile = :mobile
+					</#if>
+					<#if mobile_ed?exists && mobile_ed!="">
+					      AND mb.mobile = :mobile_ed
+					</#if>
+					<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+					      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+					</#if>
+					<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+					      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+					</#if>
+					<#if carCreateBeginTime?exists && carCreateBeginTime!="">
+					      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')>=:carCreateBeginTime
+					</#if>
+					<#if carCreateEndTime?exists && carCreateEndTime!="">
+					      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')<=:carCreateEndTime
+					</#if>
+					GROUP BY car.id
+			) a;
+	]]>
+</sql>
+
+<sql id="getMemberPublishCarCountSameCity">
+	<![CDATA[
+			SELECT COUNT(a.id) FROM
+			(
+				SELECT
+					car.id,
+					IF(mb2.userType=1,mb2.realName,mc2.linkMan) AS `name`,
+					IF(mb2.userType=1,mb2.mobile,mc2.mobile) AS `mobile`,
+					IF(mb.userType=1,mb.realName,mc.linkMan) AS name_ed,
+					IF(mb.userType=1,mb.mobile,mc.mobile) AS mobile_ed,
+					IF(mb.userType=1,'个人','企业') AS userType,
+					mb.`level`,
+					a.areaName,
+					mc.companyName,
+					car.createTime AS carCreateTime,
+					CASE mc.nstStatus
+					WHEN '0' THEN '未认证'
+					WHEN '1' THEN '已全部认证'
+					WHEN '2' THEN '认证未通过'
+					ELSE '未认证' END  AS nstStatus,
+					mb.createTime AS memberCreateTime
+				FROM
+					integral i 
+					LEFT JOIN member_baseinfo mb ON mb.memberId = i.memberId_ed
+					LEFT JOIN member_certifi mc ON mc.memberId=i.memberId_ed
+					LEFT JOIN member_baseinfo mb2 ON i.memberId=mb2.memberId
+					LEFT JOIN member_certifi mc2 ON i.memberId=mc2.memberId
+					LEFT JOIN area_setting a ON a.memberId=i.memberId
+					INNER JOIN cars car ON car.userId = mb.memberId
+					WHERE i.type=3 and transportType=1 
+					<#if areaName?exists && areaName!="" >
+						  AND a.areaName like "%":areaName"%"
+					</#if>
+					<#if mobile?exists && mobile!="">
+					      AND mb2.mobile = :mobile
+					</#if>
+					<#if mobile_ed?exists && mobile_ed!="">
+					      AND mb.mobile = :mobile_ed
+					</#if>
+					<#if memberCreateBeginTime?exists && memberCreateBeginTime!="">
+					      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')>=:memberCreateBeginTime
+					</#if>
+					<#if memberCreateEndTime?exists && memberCreateEndTime!="">
+					      AND DATE_FORMAT(mb.createTime,'%Y-%m-%d')<=:memberCreateEndTime
+					</#if>
+					<#if carCreateBeginTime?exists && carCreateBeginTime!="">
+					      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')>=:carCreateBeginTime
+					</#if>
+					<#if carCreateEndTime?exists && carCreateEndTime!="">
+					      AND DATE_FORMAT(car.createTime,'%Y-%m-%d')<=:carCreateEndTime
+					</#if>
+					GROUP BY car.id
+			) a;
+	]]>
+</sql>
+
+<sql id="getTotalForConsole">
+	<![CDATA[
+		SELECT 
+		count(1)  FROM (
+		SELECT  
+		a.id , b.carType , b.phone, a.createTime, m.userType ,e.areaName , a.isDeleted
+		 FROM   carline a 
+                 LEFT JOIN cars b on   a.carId =b.id 
+                 LEFT JOIN member_baseinfo m  on  b.userId=m.memberId
+                 LEFT JOIN integral i   on  b.userId= i.memberId_ed
+                 LEFT JOIN area_setting e on   e.memberId  = i.memberId
+         GROUP BY  a.id ) z
+         WHERE 1=1
+            <#if isDel?exists && isDel!="" >
+			      			AND z.isDeleted=1
+			     			<#else>
+			      			AND (z.isDeleted=0 or z.isDeleted is null)
+			 </#if> 
+			 <#if carType?exists && carType!="" >
+			    AND z.carType =:carType
+			  </#if>
+			  <#if mobile?exists && mobile!="" >
+			    AND z.phone =:mobile
+			   </#if>
+			   <#if startDate?exists && startDate!="" >
+			       AND z.createTime >=:startDate
+			   </#if>
+			   <#if endDate?exists && endDate!="" >
+			       AND DATE_FORMAT(z.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate, '%Y-%c-%d')
+			   </#if>
+	         
+			  <#if userType?exists && userType!="" >
+			      AND z.userType =:userType
+			  </#if>
+			  <#if areaName?exists && areaName!="" >
+		        and  z.areaName =:areaName 
+	         </#if>
+	]]>
+	</sql>
+	
+	<sql id="getCarLineCount">
+	  	<![CDATA[
+	  		SELECT
+				COUNT(cl.id)
+			FROM
+				carline cl
+				left join cars ca on cl.carId=ca.id
+			WHERE (cl.isDeleted IS NULL OR cl.isDeleted=0) AND cl.createTime >= date_sub(current_date(),INTERVAL 9 DAY)
+			<#--省市区目的地-->
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND (cl.e_provinceId= :e_provinceId 
+			      			 or cl.e_provinceId2= :e_provinceId
+			      			 	 or cl.e_provinceId3= :e_provinceId
+			      			 	 	 or cl.e_provinceId4= :e_provinceId
+			      			 	 	 	 or cl.e_provinceId5= :e_provinceId
+			      			 	 )
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND (cl.e_cityId= :e_cityId 
+			      			 or cl.e_cityId2= :e_cityId
+			      			 	 or cl.e_cityId3= :e_cityId
+			      			 	 	 or cl.e_cityId4= :e_cityId
+			      			 	 	 	 or cl.e_cityId5= :e_cityId
+			      			 	 )
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND (cl.e_areaId= :e_areaId 
+			      			 or cl.e_areaId2= :e_areaId
+			      			 	 or cl.e_areaId3= :e_areaId
+			      			 	 	 or cl.e_areaId4= :e_areaId
+			      			 	 	 	 or cl.e_areaId5= :e_areaId
+			      			 	 )
+			</#if>
+			<#--起始地地-->
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND (cl.s_provinceId= :s_provinceId 
+			      			 or cl.s_provinceId2= :s_provinceId
+			      			 	 or cl.s_provinceId3= :s_provinceId
+			      			 	 )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND (cl.s_cityId= :s_cityId 
+			      			 or cl.s_cityId2= :s_cityId
+			      			 	 or cl.s_cityId3= :s_cityId
+			      			 	 )
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND (cl.s_areaId= :s_areaId 
+			      			 or cl.s_areaId2= :s_areaId
+			      			 	 or cl.s_areaId3= :s_areaId
+			      			 	 )
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND ca.carType=:carType
+			</#if>
+			<#if carLengthFrom?exists && carLengthFrom!="" >
+			      AND IFNULL(ca.carLength,0) >=:carLengthFrom
+			</#if>
+			<#if carLengthTo?exists && carLengthTo!="" >
+			      AND IFNULL(ca.carLength,0) <=:carLengthTo
+			</#if>
+			<#if maxLoadFrom?exists && maxLoadFrom!="" >
+			      AND IFNULL(ca.maxLoad,0) >=:maxLoadFrom
+			</#if>
+			<#if maxLoadTo?exists && maxLoadTo!="" >
+			      AND IFNULL(ca.maxLoad,0) <=:maxLoadTo
+			</#if>			
+	  	]]>
+	  </sql>
+	  
+	  <sql id="getCarLinePageList">
+	  	<![CDATA[
+	  		SELECT
+	  			cl.id,
+	  			cl.memberId,
+				cl.e_provinceId ,
+				cl.e_cityId ,
+				cl.e_areaId ,
+				cl.e_provinceId2 ,
+				cl.e_cityId2 ,
+				cl.e_areaId2 ,
+				cl.e_provinceId3 ,
+				cl.e_cityId3 ,
+				cl.e_areaId3 ,
+				cl.e_provinceId4 ,
+				cl.e_cityId4 ,
+				cl.e_areaId4 ,
+				cl.e_provinceId5 ,
+				cl.e_cityId5 ,
+				cl.e_areaId5 ,
+				cl.s_provinceId ,
+				cl.s_cityId ,
+				cl.s_areaId ,
+				cl.s_provinceId2 ,
+				cl.s_cityId2 ,
+				cl.s_areaId2 ,
+				cl.s_provinceId3 ,
+				cl.s_cityId3 ,
+				cl.s_areaId3 ,
+				cl.price ,
+				cl.createTime,
+				cl.sentDate,
+				cl.sentDateType,
+				cl.sendGoodsType,
+				cl.createUserId,
+				CASE
+			    		cl.unitType 
+			    	WHEN 0 
+			    	THEN '元/吨' 
+			    	WHEN 1 
+			    	THEN '元/公斤' 
+			    	WHEN 2 
+			    	THEN '元/立方' 
+			    	ELSE '' 
+			    	END AS unitType,
+				ca.carLength,
+				ca.maxLoad,
+				ca.carType,
+				<#if closest?exists && closest!="" && closest=="Y" >
+			      ROUND(6378.138*2*ASIN(SQRT(POW(SIN(
+					 (:mlat*PI()/180-ar.lat*PI()/180)/2),2)+
+					 COS(:mlat*PI()/180)*COS(ar.lat*PI()/180)*
+	 				 POW(SIN( (:mlng*PI()/180-ar.lng*PI()/180)/2),2))),2) AS distance,
+				</#if>
+				IF (mb.userType = 2,mc.linkMan,mb.realName) AS linkMan,
+				IF(mb.userType=2,mc.mobile,mb.mobile) AS mobile,
+				mb.andupurl,
+				mc.nstStatus AS isCertify
+			FROM
+				carline cl
+				LEFT JOIN cars ca on cl.carId=ca.id
+				LEFT JOIN area ar on cl.s_cityId=ar.areaID
+				LEFT JOIN  member_baseinfo mb on cl.memberId=mb.memberId
+				LEFT JOIN member_certifi mc on  cl.memberId=mc.memberId
+			WHERE (cl.isDeleted IS NULL OR cl.isDeleted=0) AND cl.createTime >= date_sub(current_date(),INTERVAL 9 DAY)
+			<#--省市区目的地-->
+			<#if e_provinceId?exists && e_provinceId!="" >
+			      AND (cl.e_provinceId= :e_provinceId 
+			      			 or cl.e_provinceId2= :e_provinceId
+			      			 	 or cl.e_provinceId3= :e_provinceId
+			      			 	 	 or cl.e_provinceId4= :e_provinceId
+			      			 	 	 	 or cl.e_provinceId5= :e_provinceId
+			      			 	 )
+			</#if>
+			<#if e_cityId?exists && e_cityId!="" >
+			      AND (cl.e_cityId= :e_cityId 
+			      			 or cl.e_cityId2= :e_cityId
+			      			 	 or cl.e_cityId3= :e_cityId
+			      			 	 	 or cl.e_cityId4= :e_cityId
+			      			 	 	 	 or cl.e_cityId5= :e_cityId
+			      			 	 )
+			</#if>
+			<#if e_areaId?exists && e_areaId!="" >
+			      AND (cl.e_areaId= :e_areaId 
+			      			 or cl.e_areaId2= :e_areaId
+			      			 	 or cl.e_areaId3= :e_areaId
+			      			 	 	 or cl.e_areaId4= :e_areaId
+			      			 	 	 	 or cl.e_areaId5= :e_areaId
+			      			 	 )
+			</#if>
+			<#--起始地地-->
+			<#if s_provinceId?exists && s_provinceId!="" >
+			      AND (cl.s_provinceId= :s_provinceId 
+			      			 or cl.s_provinceId2= :s_provinceId
+			      			 	 or cl.s_provinceId3= :s_provinceId
+			      			 	 )
+			</#if>
+			<#if s_cityId?exists && s_cityId!="" >
+			      AND (cl.s_cityId= :s_cityId 
+			      			 or cl.s_cityId2= :s_cityId
+			      			 	 or cl.s_cityId3= :s_cityId
+			      			 	 )
+			</#if>
+			<#if s_areaId?exists && s_areaId!="" >
+			      AND (cl.s_areaId= :s_areaId 
+			      			 or cl.s_areaId2= :s_areaId
+			      			 	 or cl.s_areaId3= :s_areaId
+			      			 	 )
+			</#if>
+			<#if carType?exists && carType!="" >
+			      AND ca.carType=:carType
+			</#if>
+			<#if carLengthFrom?exists && carLengthFrom!="" >
+			      AND IFNULL(ca.carLength,0) >=:carLengthFrom
+			</#if>
+			<#if carLengthTo?exists && carLengthTo!="" >
+			      AND IFNULL(ca.carLength,0) <=:carLengthTo
+			</#if>
+			<#if maxLoadFrom?exists && maxLoadFrom!="" >
+			      AND IFNULL(ca.maxLoad,0) >=:maxLoadFrom
+			</#if>
+			<#if maxLoadTo?exists && maxLoadTo!="" >
+			      AND IFNULL(ca.maxLoad,0) <=:maxLoadTo
+			</#if>
+			ORDER BY id DESC
+			<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+			</#if>
+	  	]]>
+	  </sql>
+</sqlMap>

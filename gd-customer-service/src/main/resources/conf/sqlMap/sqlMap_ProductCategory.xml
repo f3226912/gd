@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProductCategoryEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO product_category(
+	marketId,createTime,typeIcon,updateTime,status,categoryId,rights,
+	curLevel,orderNum,lefts,parentId,updateUserId,webTypeIcon,
+	cateName,createUserId
+	) VALUES (
+	:marketId,:createTime,:typeIcon,:updateTime,:status,:categoryId,:rights,
+	:curLevel,:orderNum,:lefts,:parentId,:updateUserId,:webTypeIcon,
+	:cateName,:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="getCategoryNameList">
+	<![CDATA[
+	SELECT
+		cateName
+	FROM
+		re_business_category r
+	LEFT JOIN product_category p ON r.categoryId = p.categoryId
+	WHERE
+		r.businessId = :businessId
+    ORDER BY businessType ASC
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE product_category SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if typeIcon?exists && typeIcon!="" >
+		typeIcon=:typeIcon,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if categoryId?exists && categoryId!="" >
+		categoryId=:categoryId,
+	</#if>	
+	<#if rights?exists && rights!="" >
+		rights=:rights,
+	</#if>	
+	<#if curLevel?exists && curLevel!="" >
+		curLevel=:curLevel,
+	</#if>	
+	<#if orderNum?exists && orderNum!="" >
+		orderNum=:orderNum,
+	</#if>	
+	<#if lefts?exists && lefts!="" >
+		lefts=:lefts,
+	</#if>	
+	<#if parentId?exists && parentId!="" >
+		parentId=:parentId,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if webTypeIcon?exists && webTypeIcon!="" >
+		webTypeIcon=:webTypeIcon,
+	</#if>	
+	<#if cateName?exists && cateName!="" >
+		cateName=:cateName,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE categoryId=:categoryId
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,createTime,typeIcon,updateTime,status,categoryId,rights,
+	curLevel,orderNum,lefts,parentId,updateUserId,webTypeIcon,
+	cateName,createUserId
+	FROM product_category WHERE categoryId=:categoryId
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	marketId,createTime,typeIcon,updateTime,status,categoryId,rights,
+	curLevel,orderNum,lefts,parentId,updateUserId,webTypeIcon,
+	cateName,createUserId
+	FROM product_category WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if typeIcon?exists && typeIcon!="" >
+		AND typeIcon=:typeIcon
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND categoryId=:categoryId
+	</#if>
+	<#if rights?exists && rights!="" >
+		AND rights=:rights
+	</#if>
+	<#if curLevel?exists && curLevel!="" >
+		AND curLevel=:curLevel
+	</#if>
+	<#if orderNum?exists && orderNum!="" >
+		AND orderNum=:orderNum
+	</#if>
+	<#if lefts?exists && lefts!="" >
+		AND lefts=:lefts
+	</#if>
+	<#if parentId?exists && parentId!="" >
+		AND parentId=:parentId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if webTypeIcon?exists && webTypeIcon!="" >
+		AND webTypeIcon=:webTypeIcon
+	</#if>
+	<#if cateName?exists && cateName!="" >
+		AND cateName=:cateName
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	marketId,createTime,typeIcon,updateTime,status,categoryId,rights,
+	curLevel,orderNum,lefts,parentId,updateUserId,webTypeIcon,
+	cateName,createUserId
+	FROM product_category WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if typeIcon?exists && typeIcon!="" >
+		AND typeIcon=:typeIcon
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND categoryId=:categoryId
+	</#if>
+	<#if rights?exists && rights!="" >
+		AND rights=:rights
+	</#if>
+	<#if curLevel?exists && curLevel!="" >
+		AND curLevel=:curLevel
+	</#if>
+	<#if orderNum?exists && orderNum!="" >
+		AND orderNum=:orderNum
+	</#if>
+	<#if lefts?exists && lefts!="" >
+		AND lefts=:lefts
+	</#if>
+	<#if parentId?exists && parentId!="" >
+		AND parentId=:parentId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if webTypeIcon?exists && webTypeIcon!="" >
+		AND webTypeIcon=:webTypeIcon
+	</#if>
+	<#if cateName?exists && cateName!="" >
+		AND cateName=:cateName
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM product_category WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if typeIcon?exists && typeIcon!="" >
+		AND typeIcon=:typeIcon
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if categoryId?exists && categoryId!="" >
+		AND categoryId=:categoryId
+	</#if>
+	<#if rights?exists && rights!="" >
+		AND rights=:rights
+	</#if>
+	<#if curLevel?exists && curLevel!="" >
+		AND curLevel=:curLevel
+	</#if>
+	<#if orderNum?exists && orderNum!="" >
+		AND orderNum=:orderNum
+	</#if>
+	<#if lefts?exists && lefts!="" >
+		AND lefts=:lefts
+	</#if>
+	<#if parentId?exists && parentId!="" >
+		AND parentId=:parentId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if webTypeIcon?exists && webTypeIcon!="" >
+		AND webTypeIcon=:webTypeIcon
+	</#if>
+	<#if cateName?exists && cateName!="" >
+		AND cateName=:cateName
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM product_category WHERE categoryId=:categoryId
+	]]>
+</sql>
+<sql id="getCateNamebyMarket">
+	<![CDATA[
+	SELECT GROUP_CONCAT(t.cateName) FROM (
+SELECT pc.`cateName` FROM  `re_business_market` AS bm 
+LEFT JOIN `re_business_category` AS bc ON bm.`businessId`=bc.`businessId`
+LEFT JOIN `product_category` AS pc ON pc.`categoryId`=bc.`categoryId`
+WHERE bm.`marketId`=:marketId
+AND bc.businessType=0
+AND pc.STATUS=1
+AND curLevel=0
+GROUP BY pc.`cateName`
+) AS t
+	]]>
+</sql>
+
+</sqlMap>

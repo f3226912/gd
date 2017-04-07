@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="UserPhone">
+	
+	<sql id="getMobileById">
+		<![CDATA[
+			SELECT 
+				mobile 
+			FROM 
+				member_baseinfo 
+			WHERE 
+				memberId = :memberId
+			LIMIT 1		
+		]]>
+	</sql>
+	
+	<sql id="getPhoneCallResult">
+		<![CDATA[
+			SELECT
+				COUNT(c.source) AS `count`,
+				c.source AS pageType
+			FROM
+				callstatistics c
+			WHERE
+				c.s_Mobile = :mobile
+			AND c.createTime <= :endTime
+			AND c.createTime >= :startTime
+			GROUP BY
+				source
+			ORDER BY
+				`count` DESC		
+		]]>
+	</sql>
+	
+</sqlMap>

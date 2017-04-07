@@ -1,0 +1,14 @@
+
+img{width:100%;display: block;}
+
+
+.wrapList{
+	width:100%;
+	background-color:#f7f7f7;
+}
+.listImg{
+	width:95%;
+	margin:.8rem auto;
+	border-radius:8px;
+	margin-top:.8rem;
+}

@@ -1,0 +1,1394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProductBaseinfo">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO product_baseinfo(
+	provinceId,createTime,minBuyCount,cityId,state,updatePriceTime,areaId,
+	logisticsRemark,description,roleType,visitCount,businessId,createUserId,
+	marketId,productSign,expirationDate,updateTime,editSign,keyword,
+	priceType,stockCount,productId,content,unit,updateUserId,
+	originCityId,price,infoLifeDay,address,originAreaId,channel,
+	name,originProvinceId,cateId
+	) VALUES (
+	:provinceId,:createTime,:minBuyCount,:cityId,:state,:updatePriceTime,:areaId,
+	:logisticsRemark,:description,:roleType,:visitCount,:businessId,:createUserId,
+	:marketId,:productSign,:expirationDate,:updateTime,:editSign,:keyword,
+	:priceType,:stockCount,:productId,:content,:unit,:updateUserId,
+	:originCityId,:price,:infoLifeDay,:address,:originAreaId,:channel,
+	:productName,:originProvinceId,:cateId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE product_baseinfo SET 
+	<#if provinceId?exists && provinceId!="" >
+		provinceId=:provinceId,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if minBuyCount?exists && minBuyCount!="" >
+		minBuyCount=:minBuyCount,
+	</#if>	
+	<#if cityId?exists && cityId!="" >
+		cityId=:cityId,
+	</#if>	
+	<#if state?exists && state!="" >
+		state=:state,
+	</#if>	
+	<#if updatePriceTime?exists && updatePriceTime!="" >
+		updatePriceTime=:updatePriceTime,
+	</#if>	
+	<#if areaId?exists && areaId!="" >
+		areaId=:areaId,
+	</#if>	
+	<#if logisticsRemark?exists && logisticsRemark!="" >
+		logisticsRemark=:logisticsRemark,
+	</#if>	
+	<#if description?exists && description!="" >
+		description=:description,
+	</#if>	
+	<#if roleType?exists && roleType!="" >
+		roleType=:roleType,
+	</#if>	
+	<#if visitCount?exists && visitCount!="" >
+		visitCount=:visitCount,
+	</#if>	
+	<#if businessId?exists && businessId!="" >
+		businessId=:businessId,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if productSign?exists && productSign!="" >
+		productSign=:productSign,
+	</#if>	
+	<#if expirationDate?exists && expirationDate!="" >
+		expirationDate=:expirationDate,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if editSign?exists && editSign!="" >
+		editSign=:editSign,
+	</#if>	
+	<#if keyword?exists && keyword!="" >
+		keyword=:keyword,
+	</#if>	
+	<#if priceType?exists && priceType!="" >
+		priceType=:priceType,
+	</#if>	
+	<#if stockCount?exists && stockCount!="" >
+		stockCount=:stockCount,
+	</#if>	
+	<#if productId?exists && productId!="" >
+		productId=:productId,
+	</#if>	
+	<#if content?exists && content!="" >
+		content=:content,
+	</#if>	
+	<#if unit?exists && unit!="" >
+		unit=:unit,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if originCityId?exists && originCityId!="" >
+		originCityId=:originCityId,
+	</#if>	
+	<#if price?exists && price!="" >
+		price=:price,
+	</#if>	
+	<#if infoLifeDay?exists && infoLifeDay!="" >
+		infoLifeDay=:infoLifeDay,
+	</#if>	
+	<#if address?exists && address!="" >
+		address=:address,
+	</#if>	
+	<#if originAreaId?exists && originAreaId!="" >
+		originAreaId=:originAreaId,
+	</#if>	
+	<#if channel?exists && channel!="" >
+		channel=:channel,
+	</#if>	
+	<#if productName?exists && productName!="" >
+		name=:productName,
+	</#if>	
+	<#if originProvinceId?exists && originProvinceId!="" >
+		originProvinceId=:originProvinceId,
+	</#if>	
+	<#if cateId?exists && cateId!="" >
+		cateId=:cateId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE productId=:productId
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+		  p.provinceId,p.createTime,p.minBuyCount,p.cityId,p.state,p.updatePriceTime,p.areaId,
+		  p.logisticsRemark,p.description,p.roleType,p.visitCount,p.businessId,p.createUserId,
+		  mt.id as marketId,p.productSign,p.expirationDate,p.updateTime,p.editSign,p.keyword,
+		  p.priceType,p.stockCount,p.productId,p.content,p.unit,p.updateUserId,
+		  p.originCityId,p.price,p.infoLifeDay,p.address,p.originAreaId,p.channel,
+		  p.name,p.name AS productName,p.originProvinceId,p.cateId,
+	      b.shopsName businessName,m.memberId
+	 FROM product_baseinfo p 
+	 LEFT JOIN business_baseinfo  b ON p.businessId=b.businessId 
+	 LEFT JOIN member_baseinfo  m ON m.memberId = b.userId 
+	 LEFT JOIN re_business_market rbm on b.businessId =rbm.businessId 
+   	 LEFT JOIN market mt on rbm.marketId =  mt.id 
+    WHERE p.productId=:productId
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	provinceId,createTime,minBuyCount,cityId,state,updatePriceTime,areaId,
+	logisticsRemark,description,roleType,visitCount,businessId,createUserId,
+	marketId,productSign,expirationDate,updateTime,editSign,keyword,
+	priceType,stockCount,productId,content,unit,updateUserId,
+	originCityId,price,infoLifeDay,address,originAreaId,channel,
+	name AS productName,originProvinceId,cateId
+	FROM product_baseinfo WHERE 1=1 AND productType = '1' 
+	<#if provinceId?exists && provinceId!="" >
+		AND provinceId=:provinceId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if minBuyCount?exists && minBuyCount!="" >
+		AND minBuyCount=:minBuyCount
+	</#if>
+	<#if cityId?exists && cityId!="" >
+		AND cityId=:cityId
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if updatePriceTime?exists && updatePriceTime!="" >
+		AND updatePriceTime=:updatePriceTime
+	</#if>
+	<#if areaId?exists && areaId!="" >
+		AND areaId=:areaId
+	</#if>
+	<#if logisticsRemark?exists && logisticsRemark!="" >
+		AND logisticsRemark=:logisticsRemark
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if roleType?exists && roleType!="" >
+		AND roleType=:roleType
+	</#if>
+	<#if visitCount?exists && visitCount!="" >
+		AND visitCount=:visitCount
+	</#if>
+	<#if businessId?exists && businessId!="" >
+		AND businessId=:businessId
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if productSign?exists && productSign!="" >
+		AND productSign=:productSign
+	</#if>
+	<#if expirationDate?exists && expirationDate!="" >
+		AND expirationDate=:expirationDate
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if editSign?exists && editSign!="" >
+		AND editSign=:editSign
+	</#if>
+	<#if keyword?exists && keyword!="" >
+		AND keyword=:keyword
+	</#if>
+	<#if priceType?exists && priceType!="" >
+		AND priceType=:priceType
+	</#if>
+	<#if stockCount?exists && stockCount!="" >
+		AND stockCount=:stockCount
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND productId=:productId
+	</#if>
+	<#if content?exists && content!="" >
+		AND content=:content
+	</#if>
+	<#if unit?exists && unit!="" >
+		AND unit=:unit
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if originCityId?exists && originCityId!="" >
+		AND originCityId=:originCityId
+	</#if>
+	<#if price?exists && price!="" >
+		AND price=:price
+	</#if>
+	<#if infoLifeDay?exists && infoLifeDay!="" >
+		AND infoLifeDay=:infoLifeDay
+	</#if>
+	<#if address?exists && address!="" >
+		AND address=:address
+	</#if>
+	<#if originAreaId?exists && originAreaId!="" >
+		AND originAreaId=:originAreaId
+	</#if>
+	<#if channel?exists && channel!="" >
+		AND channel=:channel
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND name=:productName
+	</#if>
+	<#if originProvinceId?exists && originProvinceId!="" >
+		AND originProvinceId=:originProvinceId
+	</#if>
+	<#if cateId?exists && cateId!="" >
+		AND cateId=:cateId
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	provinceId,createTime,minBuyCount,cityId,state,updatePriceTime,areaId,
+	logisticsRemark,description,roleType,visitCount,businessId,createUserId,
+	marketId,productSign,expirationDate,updateTime,editSign,keyword,
+	priceType,stockCount,productId,content,unit,updateUserId,
+	originCityId,price,infoLifeDay,address,originAreaId,channel,
+	name AS productName,originProvinceId,cateId
+	FROM product_baseinfo WHERE 1=1  AND productType = '1'
+	<#if provinceId?exists && provinceId!="" >
+		AND provinceId=:provinceId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if minBuyCount?exists && minBuyCount!="" >
+		AND minBuyCount=:minBuyCount
+	</#if>
+	<#if cityId?exists && cityId!="" >
+		AND cityId=:cityId
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if updatePriceTime?exists && updatePriceTime!="" >
+		AND updatePriceTime=:updatePriceTime
+	</#if>
+	<#if areaId?exists && areaId!="" >
+		AND areaId=:areaId
+	</#if>
+	<#if logisticsRemark?exists && logisticsRemark!="" >
+		AND logisticsRemark=:logisticsRemark
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if roleType?exists && roleType!="" >
+		AND roleType=:roleType
+	</#if>
+	<#if visitCount?exists && visitCount!="" >
+		AND visitCount=:visitCount
+	</#if>
+	<#if businessId?exists && businessId!="" >
+		AND businessId=:businessId
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if productSign?exists && productSign!="" >
+		AND productSign=:productSign
+	</#if>
+	<#if expirationDate?exists && expirationDate!="" >
+		AND expirationDate=:expirationDate
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if editSign?exists && editSign!="" >
+		AND editSign=:editSign
+	</#if>
+	<#if keyword?exists && keyword!="" >
+		AND keyword=:keyword
+	</#if>
+	<#if priceType?exists && priceType!="" >
+		AND priceType=:priceType
+	</#if>
+	<#if stockCount?exists && stockCount!="" >
+		AND stockCount=:stockCount
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND productId=:productId
+	</#if>
+	<#if content?exists && content!="" >
+		AND content=:content
+	</#if>
+	<#if unit?exists && unit!="" >
+		AND unit=:unit
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if originCityId?exists && originCityId!="" >
+		AND originCityId=:originCityId
+	</#if>
+	<#if price?exists && price!="" >
+		AND price=:price
+	</#if>
+	<#if infoLifeDay?exists && infoLifeDay!="" >
+		AND infoLifeDay=:infoLifeDay
+	</#if>
+	<#if address?exists && address!="" >
+		AND address=:address
+	</#if>
+	<#if originAreaId?exists && originAreaId!="" >
+		AND originAreaId=:originAreaId
+	</#if>
+	<#if channel?exists && channel!="" >
+		AND channel=:channel
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND name=:productName
+	</#if>
+	<#if originProvinceId?exists && originProvinceId!="" >
+		AND originProvinceId=:originProvinceId
+	</#if>
+	<#if cateId?exists && cateId!="" >
+		AND cateId=:cateId
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM product_baseinfo WHERE 1=1 and productType = '1'
+	<#if provinceId?exists && provinceId!="" >
+		AND provinceId=:provinceId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if minBuyCount?exists && minBuyCount!="" >
+		AND minBuyCount=:minBuyCount
+	</#if>
+	<#if cityId?exists && cityId!="" >
+		AND cityId=:cityId
+	</#if>
+	<#if state?exists && state!="" >
+		AND state=:state
+	</#if>
+	<#if updatePriceTime?exists && updatePriceTime!="" >
+		AND updatePriceTime=:updatePriceTime
+	</#if>
+	<#if areaId?exists && areaId!="" >
+		AND areaId=:areaId
+	</#if>
+	<#if logisticsRemark?exists && logisticsRemark!="" >
+		AND logisticsRemark=:logisticsRemark
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if roleType?exists && roleType!="" >
+		AND roleType=:roleType
+	</#if>
+	<#if visitCount?exists && visitCount!="" >
+		AND visitCount=:visitCount
+	</#if>
+	<#if businessId?exists && businessId!="" >
+		AND businessId=:businessId
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if productSign?exists && productSign!="" >
+		AND productSign=:productSign
+	</#if>
+	<#if expirationDate?exists && expirationDate!="" >
+		AND expirationDate=:expirationDate
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+	<#if editSign?exists && editSign!="" >
+		AND editSign=:editSign
+	</#if>
+	<#if keyword?exists && keyword!="" >
+		AND keyword=:keyword
+	</#if>
+	<#if priceType?exists && priceType!="" >
+		AND priceType=:priceType
+	</#if>
+	<#if stockCount?exists && stockCount!="" >
+		AND stockCount=:stockCount
+	</#if>
+	<#if productId?exists && productId!="" >
+		AND productId=:productId
+	</#if>
+	<#if content?exists && content!="" >
+		AND content=:content
+	</#if>
+	<#if unit?exists && unit!="" >
+		AND unit=:unit
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if originCityId?exists && originCityId!="" >
+		AND originCityId=:originCityId
+	</#if>
+	<#if price?exists && price!="" >
+		AND price=:price
+	</#if>
+	<#if infoLifeDay?exists && infoLifeDay!="" >
+		AND infoLifeDay=:infoLifeDay
+	</#if>
+	<#if address?exists && address!="" >
+		AND address=:address
+	</#if>
+	<#if originAreaId?exists && originAreaId!="" >
+		AND originAreaId=:originAreaId
+	</#if>
+	<#if channel?exists && channel!="" >
+		AND channel=:channel
+	</#if>
+	<#if productName?exists && productName!="" >
+		AND name=:productName
+	</#if>
+	<#if originProvinceId?exists && originProvinceId!="" >
+		AND originProvinceId=:originProvinceId
+	</#if>
+	<#if cateId?exists && cateId!="" >
+		AND cateId=:cateId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM product_baseinfo WHERE productId=:productId
+	]]>
+</sql>
+
+<sql id="getSupplierProductTotal">
+	<![CDATA[
+	SELECT
+		count(0)
+	FROM
+		product_baseinfo p
+	LEFT JOIN business_baseinfo b ON p.businessId = b.businessId
+	LEFT JOIN member_baseinfo m ON m.memberId = b.userId
+	WHERE
+		1 = 1 AND p.productType = '1'
+	<#if userId?exists && userId!="" >
+	    AND b.userId <> :userId
+	</#if> 	
+	
+	<#if provinceId?exists && provinceId!="" >
+	    AND b.provinceId =:provinceId
+	</#if>
+	<#if cityId?exists && cityId!="" >
+	    AND b.cityId =:cityId
+	</#if>
+	<#if areaId?exists && areaId!="" >
+	    AND b.areaId =:areaId
+	</#if>
+	<#if shopRecommend?exists && shopRecommend!="" >
+	    AND m.shopRecommend=:shopRecommend
+	</#if>
+	<#if level?exists && level!="" >
+	    AND m.level =:level
+	</#if>
+	<#if cateId?exists && cateId!="" >
+	    AND p.cateId =:cateId
+	</#if>
+	    AND p.state=3
+	]]>
+</sql>
+
+<sql id="getSupplierProduct">
+	<![CDATA[
+		SELECT
+		   gys.*, p2.url170,
+		   IFNULL(c. STATUS, 0) cbstatus,
+		   IFNULL(c1. STATUS, 0) ccstatus,
+		   IFNULL(c2. STATUS, 0) certifstatus,
+		   IFNULL(c3. STATUS, 0) comstatus,
+		   s.codeValue unitName
+		FROM
+		   (
+		      SELECT
+		         p.name,
+		         p.productId,
+		         p.price,
+		         p.updateTime,
+		         p.unit,
+		         b.userId,
+		         (
+		            IFNULL(p.visitCount, 0) + IFNULL(b.browseCount, 0)
+		         ) visitCount,
+		         m.memberGrade,
+		         b.shopsName businessName,
+		         b.businessId
+		      FROM
+		         product_baseinfo p
+		      LEFT JOIN business_baseinfo b ON p.businessId = b.businessId
+		      LEFT JOIN member_baseinfo m ON m.memberId = b.userId
+		      WHERE
+		         1 = 1 AND p.productType = '1'
+		      <#if userId?exists && userId!="" >
+			    AND b.userId <> :userId
+		    	</#if> 	
+		      <#if provinceId?exists && provinceId!="" >
+			    AND b.provinceId =:provinceId
+			    </#if>
+			    <#if cityId?exists && cityId!="" >
+			    AND b.cityId =:cityId
+			    </#if>
+			    <#if areaId?exists && areaId!="" >
+			    AND b.areaId =:areaId
+			    </#if>
+		      <#if shopRecommend?exists && shopRecommend!="" >
+			    AND m.shopRecommend=:shopRecommend
+			    </#if>
+		      <#if level?exists && level!="" >
+			    AND m.level =:level
+			    </#if>
+		      <#if cateId?exists && cateId!="" >
+			    AND p.cateId =:cateId
+			    </#if>
+		      AND p.state = 3
+		      ORDER BY
+		         m.memberGrade DESC,
+		         p.updateTime DESC
+		      LIMIT :startRow,:endRow
+		   ) gys
+		LEFT JOIN product_picture p2 ON gys.productId = p2.productId
+		AND pictureType = 4
+		LEFT JOIN (
+		   SELECT
+		      s0.codeKey,
+		      s0.codeValue
+		   FROM
+		      system_code s0
+		   WHERE
+		      s0.type = 'ProductUnit'
+		) s ON s.codeKey = gys.unit
+		LEFT JOIN certif_base c ON c.memberId = gys.userId
+		LEFT JOIN certif_corp c1 ON c1.memberId = gys.userId
+		LEFT JOIN certif_sp_product c2 ON c2.productId = gys.productId
+		LEFT JOIN certif_company c3 ON c3.memberId = gys.userId
+		ORDER BY
+		   gys.memberGrade DESC,
+		   gys.updateTime DESC
+	]]>
+</sql>
+
+
+<sql id="getSupplierProductTotalByPrecise">
+	<![CDATA[
+	SELECT
+		count(0)
+	FROM
+		product_baseinfo p
+	LEFT JOIN  business_baseinfo  b ON p.businessId = b.businessId
+	LEFT JOIN  member_baseinfo  m ON m.memberId = b.userId
+	LEFT JOIN product_category p1 ON p.cateId = p1.categoryId
+	WHERE
+		1 = 1 AND p.productType = '1'
+	
+    <#if userId?exists && userId!="" >
+	    AND p1.cateName IN(SELECT
+								p4.cateName
+							FROM
+								product_baseinfo p3
+							LEFT JOIN business_baseinfo b1 ON b1.businessId = p3.businessId
+							LEFT JOIN product_category p4 ON p3.cateId = p4.categoryId
+							WHERE
+								b1.userid = :userId and p3.state<>'5' AND p3.productType = '1')
+	</#if> 
+	<#if manageType?exists && manageType!="" >
+	    AND b.managementtype =:manageType
+	</#if>
+	<#if shopRecommend?exists && shopRecommend!="" >
+		AND m.shopRecommend=:shopRecommend
+	</#if>
+    <#if level?exists && level!="" >
+		AND m.level=:level
+	</#if>
+    <#if provinceId?exists && provinceId!="" >
+	    AND b.provinceId =:provinceId
+	</#if>
+	<#if cityId?exists && cityId!="" >
+	    AND b.cityId =:cityId
+	</#if>
+	<#if areaId?exists && areaId!="" >
+	    AND b.areaId =:areaId
+	</#if>
+
+	<#if area1?exists && area1!="" >
+	    AND p.originProvinceId =:area1
+	</#if>
+	<#if area2?exists && area2!="" >
+	    AND p.originCityId =:area2
+	</#if>
+	<#if area3?exists && area3!="" >
+	    AND p.originAreaId =:area3
+	</#if>
+	   AND p.state=3
+	<#if categoryIds??>
+		AND b.businessId in(
+			select businessId from re_business_category
+			where categoryId in(
+			<#list categoryIds as categoryId>
+				<#if categoryId_index gt 0>
+					,${categoryId}
+				<#else>
+					${categoryId}
+				</#if>
+			</#list>)
+			)
+	</#if>	
+	]]>
+</sql>
+
+<sql id="getSupplierProductByPrecise">
+	<![CDATA[
+	SELECT
+		p.name,
+		p.productId,
+		p.price,
+		(IFNULL(p.visitCount,0)+IFNULL(b.browseCount,0)) visitCount,
+		IFNULL(m.memberGrade,0) memberGrade,
+		IFNULL(c. STATUS, 0) cbstatus,
+	    IFNULL(c1. STATUS, 0) ccstatus,
+	    IFNULL(c2. STATUS, 0) certifstatus,
+	    IFNULL(c3. STATUS, 0) comstatus,
+		b.shopsName businessName,
+		b.businessId,
+		s.codeValue unitName,
+		p.updatePriceTime,
+		p.updateTime,
+		a1.area originProvinceName,
+		a2.area originCityName,
+		p2.url170,
+		CASE WHEN p.price = 0 THEN "1900-01-01 00:00:00" ELSE IFNULL(p.updatePriceTime, p.updateTime) END sortTime
+	FROM
+		product_baseinfo p
+	LEFT JOIN business_baseinfo  b ON p.businessId = b.businessId
+	LEFT JOIN member_baseinfo  m ON m.memberId = b.userId
+	LEFT JOIN product_category p1 ON p.cateId = p1.categoryId
+	LEFT JOIN (select c.codeKey,c.codeValue from system_code c where  c.type = 'ProductUnit') s   ON s.codeKey = p.unit 
+	LEFT JOIN certif_base c ON c.memberId = b.userId
+    LEFT JOIN certif_corp c1 ON c1.memberId = b.userId
+    LEFT JOIN certif_sp_product c2 ON c2.productId = p.productId
+    LEFT JOIN certif_company c3 ON c3.memberId = b.userId
+    LEFT JOIN (select c.productId,c.url170 from product_picture c where c.pictureType=4 )p2 ON p.productId = p2.productId 
+    LEFT JOIN area a1 ON a1.areaId=p.originProvinceId
+    LEFT JOIN area a2 ON a2.areaId=p.originCityId
+    LEFT JOIN (SELECT (CASE price WHEN 0 THEN 999999999 ELSE price END) priceSort,productid FROM  product_baseinfo  WHERE productType = '1') pr ON pr.productid=p.productId
+	WHERE
+		1 = 1
+
+    AND p.productType = '1'
+	<#if userId?exists && userId!="" >
+	    AND p1.cateName IN(SELECT
+								p4.cateName
+							FROM
+								product_baseinfo p3
+							LEFT JOIN business_baseinfo b1 ON b1.businessId = p3.businessId
+							LEFT JOIN product_category p4 ON p3.cateId = p4.categoryId
+							WHERE
+								b1.userid = :userId  and p3.state<>'5' AND p3.productType = '1')
+	</#if> 	
+	 <#if shopRecommend?exists && shopRecommend!="" >
+		AND m.shopRecommend=:shopRecommend
+	</#if>
+    <#if level?exists && level!="" >
+		AND m.`level`=:level
+	</#if>
+	<#if provinceId?exists && provinceId!="" >
+	    AND b.provinceId =:provinceId
+	</#if>
+	<#if cityId?exists && cityId!="" >
+	    AND b.cityId =:cityId
+	</#if>
+	<#if areaId?exists && areaId!="" >
+	    AND b.areaId =:areaId
+	</#if>
+
+	<#if area1?exists && area1!="" >
+	    AND p.originProvinceId =:area1
+	</#if>
+	<#if area2?exists && area2!="" >
+	    AND p.originCityId =:area2
+	</#if>
+	<#if area3?exists && area3!="" >
+	    AND p.originAreaId =:area3
+	</#if>
+	<#if manageType?exists && manageType!="" >
+	    AND b.managementtype =:manageType
+	</#if>
+	    AND p.state=3
+	<#if categoryIds??>
+		AND b.businessId in(
+			select businessId from re_business_category
+			where categoryId in(
+			<#list categoryIds as categoryId>
+				<#if categoryId_index gt 0>
+					,${categoryId}
+				<#else>
+					${categoryId}
+				</#if>
+			</#list>)
+			)
+	</#if>
+    <#if queryMode?exists && queryMode!=""&&queryMode=="1">
+	    ORDER BY
+		m.memberGrade DESC,
+		sortTime DESC,
+	    p.price != 0 DESC,
+	    p.price ASC,
+	    p.updateTime DESC
+	</#if>
+	<#if queryMode?exists && queryMode!=""&&queryMode=="2">
+	    <#if priceSort?exists&&priceSort!=""&&priceSort=="desc">
+	       ORDER BY 
+		    m.memberGrade DESC,
+		    p.price != 0 DESC,
+		    p.price DESC,
+		    sortTime DESC,
+		    p.updateTime DESC
+	    </#if>
+	   <#if priceSort?exists&&priceSort!=""&&priceSort=="asc">
+	       ORDER BY
+	        m.memberGrade DESC,
+		    p.price != 0 DESC,
+		    p.price ASC,
+		    sortTime DESC,
+		    p.updateTime DESC
+	    </#if>
+	</#if>
+	LIMIT :startRow,:endRow
+	]]>
+</sql>
+
+
+<sql id="getSupplierProductTotalByRecommend">
+	<![CDATA[
+
+SELECT COUNT(0) FROM ((SELECT  bb.`shopsName` businessName, bb.userId, m.realName, sc.codeValue unitName, m.memberGrade,	
+		        IFNULL(c. STATUS, 0) cbstatus,
+	            IFNULL(c1. STATUS, 0) ccstatus,
+	            IFNULL(c2. STATUS, 0) certifstatus,
+	            IFNULL(c3. STATUS, 0) comstatus,
+		        s.name,s.productId,c4.url170,s.updatePriceTime,s.updateTime,
+		        c5.area originProvinceName,
+		        c6.area originCityName,
+            s.price,
+            s.level
+		 FROM (
+		
+		SELECT gys.*
+		
+		
+		, CASE WHEN gys.cateName2 = gps.cateName2 THEN 2 WHEN gys.cateName1 = gps.cateName1 THEN 1 END LEVEL FROM (
+		
+		SELECT c1.*, c.`parentId` cateId1,c.cateName cateName1 FROM (
+		
+		SELECT c2.*, c.`parentId` cateId2, c.`cateName` cateName2  FROM (
+		
+		
+		SELECT p.`productId`, p.`cateId` cateId3, p. NAME,
+			p.price,
+			p.visitCount, p.businessId, p.unit,p.updatePriceTime,p.updateTime,p.originProvinceId,p.originCityId FROM product_baseinfo p WHERE p.`businessId` IN (
+		
+		SELECT b.`businessId` FROM business_baseinfo b WHERE b.offlineStatus=1 AND b.userId IN (
+		
+		SELECT m.`memberId` FROM member_baseinfo m WHERE m.`level`  = 4 AND shopRecommend=1) )  and p.state = 3 AND p.productType = '1'
+		
+		
+		) c2 LEFT JOIN   product_category   c ON c2.`cateId3` = c.`categoryId` and c.curLevel = 2
+		
+		) c1 LEFT JOIN  product_category  c ON c.categoryId = c1.cateId2 and c.curLevel = 1
+		
+		
+		
+		) gys 
+		
+		INNER JOIN (		
+				
+		SELECT c1.*, c.`parentId` cateId1,c.cateName cateName1 FROM (
+		
+		SELECT c2.*, c.`parentId` cateId2, c.`cateName` cateName2  FROM (
+					
+		SELECT p.`productId`, p.`cateId` cateId3 FROM product_baseinfo p WHERE p.`businessId` IN (
+		
+		SELECT b.`businessId` FROM business_baseinfo b WHERE b.userId IN (
+		
+		SELECT m.`memberId` FROM member_baseinfo m WHERE m.`level`  = 1 AND m.`memberId` =:userId) )  and p.state = 3 AND p.productType = '1'
+		
+		
+		) c2 LEFT JOIN  (select pc.categoryId, pc.cateName,pc.parentId from product_category pc where pc.curLevel = 2) c ON c2.`cateId3` = c.`categoryId`
+		
+		) c1 LEFT JOIN (select pc.categoryId, pc.cateName,pc.parentId from product_category pc where pc.curLevel = 1) c ON c.categoryId = c1.cateId2
+		
+		
+		) gps
+		
+		
+		ON gys.cateName2 = gps.cateName2
+		
+		) s 
+		
+		LEFT JOIN (select b.businessId, b.userId, b.shopsName from business_baseinfo b where b.offlineStatus = 1) bb on s.businessId = bb.businessId
+		LEFT JOIN (select m1.memberId, m1.realName, m1.memberGrade from member_baseinfo m1 where m1.`level` = 4 and m1.`status` = 1) m ON m.memberId = bb.userId
+		LEFT JOIN (select cc.codeKey, cc.codeValue from system_code cc where cc.type = 'ProductUnit' and cc.state = 1) sc ON sc.codeKey = s.unit
+		LEFT JOIN (select cc.status,cc.memberId from certif_base cc) c ON c.memberId = bb.userId
+		LEFT JOIN (select cc.status,cc.memberId from certif_corp cc) c1 ON c1.memberId = bb.userId
+		LEFT JOIN (select cc.status,cc.productId from certif_sp_product cc) c2 ON c2.productId = s.productId
+        LEFT JOIN (select cc.status,cc.memberId from  certif_company cc ) c3 ON c3.memberId = bb.userId
+		LEFT JOIN (select cc.url170,cc.productId,cc.pictureType from product_picture cc ) c4 ON c4.productId = s.productId AND c4.pictureType=4
+		LEFT JOIN (select cc.area,cc.areaId from area cc )c5 ON c5.areaId=s.originProvinceId
+        LEFT JOIN (select cc.area,cc.areaId from area cc )c6 ON c6.areaId=s.originCityId)
+
+UNION all
+(SELECT
+			 bu.`shopsName` businessName, bu.userId, m.realName, sc.codeValue unitName, m.memberGrade,	
+		   IFNULL(c. STATUS, 0) cbstatus,
+			 IFNULL(c1. STATUS, 0) ccstatus,
+			 IFNULL(c2. STATUS, 0) certifstatus,
+			 IFNULL(c3. STATUS, 0) comstatus,
+			 pr.name,pr.productId,c4.url170,pr.updatePriceTime,pr.updateTime,
+		   c5.area originProvinceName,
+		   c6.area originCityName,
+       pr.price,
+       '0' level
+		FROM
+			product_baseinfo pr
+		LEFT JOIN business_baseinfo bu ON pr.businessId = bu.businessId
+		LEFT JOIN re_business_category re ON re.businessId = bu.businessId
+		LEFT JOIN product_category pc ON pc.categoryId = re.categoryId
+		LEFT JOIN member_baseinfo m on m.memberId=bu.userId 
+		LEFT JOIN (select cc.codeKey, cc.codeValue from system_code cc where cc.type = 'ProductUnit' and cc.state = 1) sc ON sc.codeKey = pr.unit
+		LEFT JOIN  certif_base  c ON c.memberId = bu.userId
+		LEFT JOIN  certif_corp  c1 ON c1.memberId = bu.userId
+		LEFT JOIN certif_sp_product  c2 ON c2.productId = pr.productId
+		LEFT JOIN certif_company  c3 ON c3.memberId = bu.userId
+		LEFT JOIN  product_picture  c4 ON c4.productId = pr.productId AND c4.pictureType=4
+		LEFT JOIN  area c5 ON c5.areaId=pr.originProvinceId
+		LEFT JOIN  area c6 ON c6.areaId=pr.originCityId
+		WHERE
+		 1=1 AND pr.productType = '1'
+		 <#if isHaveBusiness == "true">
+		 and re.categoryId IN (select DISTINCT(suppCategoryId) from ref_cate_sup_nps rs where npsCategoryId in(
+				SELECT DISTINCT(r.categoryId)
+				FROM
+					business_baseinfo b
+				LEFT JOIN re_business_category r ON r.businessId = b.businessId
+				WHERE
+					b.userId = :userId)
+			)
+		</#if>
+	     and re.businessType=0
+		 and m.shopRecommend=1
+		 and m.status=1
+		 and m.`level`=4
+		 and pr.state = 3)) tr
+		]]>
+	</sql>
+	
+	<sql id="getSupplierProductByRecommend">
+		<![CDATA[
+(SELECT  bb.`shopsName` businessName, bb.userId, m.realName, sc.codeValue unitName, m.memberGrade,	
+		        IFNULL(c. STATUS, 0) cbstatus,
+	            IFNULL(c1. STATUS, 0) ccstatus,
+	            IFNULL(c2. STATUS, 0) certifstatus,
+	            IFNULL(c3. STATUS, 0) comstatus,
+		        s.name,s.productId,c4.url170,s.updatePriceTime,s.updateTime,
+		        c5.area originProvinceName,
+		        c6.area originCityName,
+            s.price,
+            s.level,
+            CASE WHEN s.price = 0 THEN "1900-01-01 00:00:00" ELSE IFNULL(s.updatePriceTime, s.updateTime) END sortTime
+		 FROM (
+		
+		SELECT gys.*
+		
+		
+		, CASE WHEN gys.cateName2 = gps.cateName2 THEN 2 WHEN gys.cateName1 = gps.cateName1 THEN 1 END LEVEL FROM (
+		
+		SELECT c1.*, c.`parentId` cateId1,c.cateName cateName1 FROM (
+		
+		SELECT c2.*, c.`parentId` cateId2, c.`cateName` cateName2  FROM (
+		
+		
+		SELECT p.`productId`, p.`cateId` cateId3, p. NAME,
+			p.price,
+			p.visitCount, p.businessId, p.unit,p.updatePriceTime,p.updateTime,p.originProvinceId,p.originCityId FROM product_baseinfo p WHERE p.`businessId` IN (
+		
+		SELECT b.`businessId` FROM business_baseinfo b WHERE b.offlineStatus=1 AND b.userId IN (
+		
+		SELECT m.`memberId` FROM member_baseinfo m WHERE m.`level`  = 4 AND shopRecommend=1) ) and p.state = 3 AND p.productType = '1'
+		
+		
+		) c2 LEFT JOIN   product_category   c ON c2.`cateId3` = c.`categoryId` and c.curLevel = 2
+		
+		) c1 LEFT JOIN  product_category  c ON c.categoryId = c1.cateId2 and c.curLevel = 1
+		
+		
+		
+		) gys 
+		
+		INNER JOIN (		
+				
+		SELECT c1.*, c.`parentId` cateId1,c.cateName cateName1 FROM (
+		
+		SELECT c2.*, c.`parentId` cateId2, c.`cateName` cateName2  FROM (
+					
+		SELECT p.`productId`, p.`cateId` cateId3 FROM product_baseinfo p WHERE p.`businessId` IN (
+		
+		SELECT b.`businessId` FROM business_baseinfo b WHERE b.userId IN (
+		
+		SELECT m.`memberId` FROM member_baseinfo m WHERE m.`level`  = 1 AND m.`memberId` =:userId) ) and p.state = 3 AND p.productType = '1'
+		
+		
+		) c2 LEFT JOIN  (select pc.categoryId, pc.cateName,pc.parentId from product_category pc where pc.curLevel = 2) c ON c2.`cateId3` = c.`categoryId`
+		
+		) c1 LEFT JOIN (select pc.categoryId, pc.cateName,pc.parentId from product_category pc where pc.curLevel = 1) c ON c.categoryId = c1.cateId2
+		
+		
+		) gps
+		
+		
+		ON gys.cateName2 = gps.cateName2
+		
+		) s 
+		
+		LEFT JOIN (select b.businessId, b.userId, b.shopsName from business_baseinfo b where b.offlineStatus = 1) bb on s.businessId = bb.businessId
+		LEFT JOIN (select m1.memberId, m1.realName, m1.memberGrade from member_baseinfo m1 where m1.`level` = 4 and m1.`status` = 1) m ON m.memberId = bb.userId
+		LEFT JOIN (select cc.codeKey, cc.codeValue from system_code cc where cc.type = 'ProductUnit' and cc.state = 1) sc ON sc.codeKey = s.unit
+		LEFT JOIN (select cc.status,cc.memberId from certif_base cc) c ON c.memberId = bb.userId
+		LEFT JOIN (select cc.status,cc.memberId from certif_corp cc) c1 ON c1.memberId = bb.userId
+		LEFT JOIN (select cc.status,cc.productId from certif_sp_product cc) c2 ON c2.productId = s.productId
+        LEFT JOIN (select cc.status,cc.memberId from  certif_company cc ) c3 ON c3.memberId = bb.userId
+		LEFT JOIN (select cc.url170,cc.productId,cc.pictureType from product_picture cc ) c4 ON c4.productId = s.productId AND c4.pictureType=4
+		LEFT JOIN (select cc.area,cc.areaId from area cc )c5 ON c5.areaId=s.originProvinceId
+        LEFT JOIN (select cc.area,cc.areaId from area cc )c6 ON c6.areaId=s.originCityId)
+
+UNION all
+((SELECT
+			 bu.`shopsName` businessName, bu.userId, m.realName, sc.codeValue unitName, m.memberGrade,	
+		   IFNULL(c. STATUS, 0) cbstatus,
+			 IFNULL(c1. STATUS, 0) ccstatus,
+			 IFNULL(c2. STATUS, 0) certifstatus,
+			 IFNULL(c3. STATUS, 0) comstatus,
+			 pr.name,pr.productId,c4.url170,pr.updatePriceTime,pr.updateTime,
+		   c5.area originProvinceName,
+		   c6.area originCityName,
+       pr.price,
+       (CASE re.businessType WHEN 0 THEN 1 WHEN 1 THEN 0 END ) level,
+       CASE WHEN pr.price = 0 THEN "1900-01-01 00:00:00" ELSE IFNULL(pr.updatePriceTime, pr.updateTime) END sortTime
+		FROM
+			product_baseinfo pr
+		LEFT JOIN business_baseinfo bu ON pr.businessId = bu.businessId
+		LEFT JOIN re_business_category re ON re.businessId = bu.businessId
+		LEFT JOIN product_category pc ON pc.categoryId = re.categoryId
+		LEFT JOIN member_baseinfo m on m.memberId=bu.userId 
+		LEFT JOIN (select cc.codeKey, cc.codeValue from system_code cc where cc.type = 'ProductUnit' and cc.state = 1) sc ON sc.codeKey = pr.unit
+		LEFT JOIN  certif_base  c ON c.memberId = bu.userId
+		LEFT JOIN  certif_corp  c1 ON c1.memberId = bu.userId
+		LEFT JOIN certif_sp_product  c2 ON c2.productId = pr.productId
+		LEFT JOIN certif_company  c3 ON c3.memberId = bu.userId
+		LEFT JOIN  product_picture  c4 ON c4.productId = pr.productId AND c4.pictureType=4
+		LEFT JOIN  area c5 ON c5.areaId=pr.originProvinceId
+		LEFT JOIN  area c6 ON c6.areaId=pr.originCityId
+		WHERE
+		 1=1 AND pr.productType = '1'
+		 <#if isHaveBusiness == "true">
+		 and re.categoryId IN (select DISTINCT(suppCategoryId) from ref_cate_sup_nps rs where npsCategoryId in(
+				SELECT DISTINCT(r.categoryId)
+				FROM
+					business_baseinfo b
+				LEFT JOIN re_business_category r ON r.businessId = b.businessId
+				WHERE
+					b.userId = :userId)
+			)
+		</#if>
+     	 and re.businessType=0
+		 and m.shopRecommend=1
+		 and m.status=1
+		 and m.`level`=4
+		 and pr.state = 3) )
+
+ ORDER BY
+	      memberGrade DESC,
+		    price != 0 DESC,
+		    price ASC,
+		    sortTime DESC,
+		    updateTime DESC
+	     LIMIT :startRow,:endRow
+	
+	]]>
+</sql>
+
+	<sql id="getTotalSearch">
+		<![CDATA[
+			SELECT FOUND_ROWS()
+		]]>
+	</sql>
+	
+	<sql id="getListSearchAccurateProduct">
+		<![CDATA[
+			SELECT SQL_CALC_FOUND_ROWS
+				pb.productId, pb.businessId, bb.shopsName AS businessName, pb.`name`, pb.visitCount,
+				sc.codeValue AS unitName, pp.url170 AS url170, a1.area AS originProvinceName,
+				a2.area AS originCityName, mb.memberId, mb.`level` AS memberLvl, pb.stockCount,
+				IFNULL(c.`status`, 0) cbstatus, IFNULL(c1.`status`, 0) ccstatus,
+				IFNULL(c2.`status`, 0) certifstatus, IFNULL(c3.`status`, 0) comstatus,
+				IFNULL(mb.memberGrade, 0) memberGrade, pb.updatePriceTime, pb.updateTime, pb.price,
+				CASE WHEN pb.price = 0 THEN "1900-01-01 00:00:00" ELSE IFNULL(pb.updatePriceTime, pb.updateTime) END sortTime
+			FROM
+				product_baseinfo pb
+			LEFT JOIN business_baseinfo bb ON pb.businessId = bb.businessId
+			LEFT JOIN member_baseinfo mb ON bb.userId = mb.memberId
+			AND mb.`level` = 4 AND mb.`status` = 1 AND bb.userId != :memberId
+			LEFT JOIN product_category pc ON pb.cateId = pc.categoryId
+			LEFT JOIN product_picture pp ON pb.productId = pp.productId
+			AND pp.pictureType = 4
+			LEFT JOIN area a1 ON bb.provinceId = a1.areaID
+			LEFT JOIN area a2 ON bb.cityId = a2.areaID
+			LEFT JOIN system_code sc ON pb.unit = sc.codeKey AND sc.type = 'ProductUnit'
+			LEFT JOIN certif_base c ON c.businessId = bb.businessId
+			LEFT JOIN certif_corp c1 ON c1.businessId = bb.businessId
+			LEFT JOIN certif_sp_product c2 ON c2.productId = pb.productId
+			LEFT JOIN certif_company c3 ON c3.memberId = bb.userId
+			INNER JOIN (SELECT    DISTINCT
+					p2.cateName
+				FROM
+					business_baseinfo b1
+				 JOIN product_baseinfo p1 ON b1.businessId = p1.businessId
+				 JOIN product_category p2 ON p1.cateId = p2.categoryId
+				WHERE
+					b1.userId = :memberId AND p1.state != 5
+			 ) t on t.cateName=pc.cateName
+			WHERE 1=1 AND pb.productType = '1'
+				AND	pb.state = 3
+				AND pb.`name` LIKE "%":searchStr"%"
+			<#if productProvinceId?exists && productProvinceId != "" >
+				AND pb.provinceId = :productProvinceId
+			</#if>
+			<#if productCityId?exists && productCityId != "" >
+				AND pb.cityId = :productCityId
+			</#if>
+			<#if productAreaId?exists && productAreaId != "" >
+				AND pb.areaId = :productAreaId
+			</#if>
+			<#if shopProvinceId?exists && shopProvinceId != "" >
+				AND bb.provinceId = :shopProvinceId
+			</#if>
+			<#if shopCityId?exists && shopCityId != "" >
+				AND bb.cityId = :shopCityId
+			</#if>
+			<#if shopAreaId?exists && shopAreaId != "" >
+				AND bb.areaId = :shopAreaId
+			</#if>
+			<#if managementType?exists && managementType != "" && managementType != "0" >
+				AND bb.managementtype = :managementType
+			</#if>
+			HAVING memberLvl IS NOT NULL
+			ORDER BY
+				mb.memberGrade DESC,
+			<#if priceOdr?exists && priceOdr == "0" >
+		        sortTime DESC, pb.price != 0 DESC, pb.price ASC, pb.updateTime DESC
+		    </#if>
+			<#if priceOdr?exists && priceOdr == "1" >
+		       pb.price != 0 DESC, pb.price ASC, pb.updateTime DESC
+		    </#if>	
+			<#if priceOdr?exists && priceOdr == "2" >
+		       pb.price DESC, pb.updateTime DESC
+		    </#if>	
+			LIMIT :startRow,:endRow 
+		]]>
+	</sql>
+	
+	<sql id="getListSearchAccurateShop">
+		<![CDATA[
+			SELECT SQL_CALC_FOUND_ROWS
+				b2.businessId,
+				bb.shopsName,
+				bb.mainProduct,
+				bb.businessModel,
+				bb.managementtype,
+				bb.provinceId,
+				bb.cityId,
+				bb.areaId,
+				a1.area AS province,	
+				a2.area AS city,
+				a3.area AS area,
+				bb.userId,
+				mb.`level` AS memberLvl,
+				mb.mobile,
+				IFNULL(result.count, 0) prodCount,
+				IFNULL(c.`status`, 0) cbstatus,
+				IFNULL(c1.`status`, 0) ccstatus,
+				IFNULL(c3.`status`, 0) comstatus,
+				IFNULL(mb.memberGrade, 0) memberGrade,
+				bb.updateTime
+			FROM
+				(
+					SELECT DISTINCT
+						pb.businessId
+					FROM
+						product_baseinfo pb
+					LEFT JOIN product_category pc ON pb.cateId = pc.categoryId
+					WHERE pb.productType = '1' AND
+						pc.cateName IN (
+							SELECT DISTINCT
+								p2.cateName
+							FROM
+								business_baseinfo b1
+							LEFT JOIN product_baseinfo p1 ON b1.businessId = p1.businessId AND p1.productType = '1'
+							LEFT JOIN product_category p2 ON p1.cateId = p2.categoryId
+							WHERE
+								b1.userId = :memberId AND p1.state != 5
+						)
+				) b2
+			LEFT JOIN business_baseinfo bb ON bb.businessId = b2.businessId
+			LEFT JOIN member_baseinfo mb ON bb.userId = mb.memberId AND mb.`level` = 4 AND mb.`status` = 1
+			LEFT JOIN area a1 ON bb.provinceId = a1.areaID
+			LEFT JOIN area a2 ON bb.cityId = a2.areaID
+			LEFT JOIN area a3 ON bb.areaId = a3.areaID
+			LEFT JOIN certif_base c ON c.businessId = bb.businessId
+			LEFT JOIN certif_corp c1 ON c1.businessId = bb.businessId
+			LEFT JOIN certif_company c3 ON c3.memberId = bb.userId
+			LEFT JOIN (
+				SELECT
+					count(p.productId) count,
+					p.businessId
+				FROM
+					product_baseinfo p
+				WHERE
+					p.state = '3' and p.productType = '1'
+				GROUP BY
+					p.businessId
+			) result ON result.businessId = b2.businessId
+			WHERE
+				bb.userId != :memberId
+			AND bb.shopsName LIKE "%":searchStr"%"
+			<#if shopProvinceId?exists && shopProvinceId != "" >
+				AND bb.provinceId = :shopProvinceId
+			</#if>
+			<#if shopCityId?exists && shopCityId != "" >
+				AND bb.cityId = :shopCityId
+			</#if>
+			<#if shopAreaId?exists && shopAreaId != "" >
+				AND bb.areaId = :shopAreaId
+			</#if>
+			<#if managementType?exists && managementType != "" && managementType != "0" >
+				AND bb.managementtype = :managementType
+			</#if>
+			HAVING
+				memberLvl IS NOT NULL
+			ORDER BY
+				mb.memberGrade DESC,
+				bb.updateTime DESC	
+			LIMIT :startRow,:endRow 
+		]]>
+	</sql>
+	
+	<sql id="getListPage">
+	<![CDATA[
+		SELECT 
+		  * 
+		FROM
+		  (SELECT 
+		    pb.`productId`,
+		    pb.`name`,
+		    mb.mobile,
+		    bb.shopsName,
+		    pb.`cateId`,
+		    pc.`cateName`,
+		    m.`id` marketId,
+		    m.`marketName`,
+		    pb.createTime,
+		    (SELECT 
+		      pc1.parentId 
+		    FROM
+		      product_category pc1 
+		    WHERE pc1.`categoryId` = pc.`parentId`) topParentId 
+		  FROM
+		    `product_baseinfo` pb 
+		    LEFT JOIN business_baseinfo bb 
+		      ON (bb.businessId = pb.`businessId`) 
+		    LEFT JOIN re_business_market rbm 
+		      ON (
+		        rbm.`businessId` = bb.`businessId`
+		      ) 
+		    LEFT JOIN product_category pc 
+		      ON (pc.`categoryId` = pb.`cateId`) 
+		    LEFT JOIN member_baseinfo mb 
+		      ON (mb.`memberId` = bb.`userId`) 
+		    LEFT JOIN market m 
+		      ON (m.`id` = rbm.`marketId`) 
+		  WHERE 1 = 1 and pb.productType = '1'
+		  	<#if productId?exists && productId != "" >
+				 AND pb.`productId` = :productId 
+			</#if>
+			<#if state?exists && state != "">
+				 AND pb.`state` = :state 
+			</#if>
+		    <#if name?exists && name != "" && name != "0" >
+				 AND pb.`name` like "%":name"%" 
+			</#if>
+		    <#if marketId?exists && marketId != "" && marketId != "0" >
+				 AND rbm.`marketId` = :marketId
+			</#if>
+			<#if mobile?exists && mobile != "" && mobile != "0" >
+				 AND mb.`mobile` like "%":mobile"%"
+			</#if>
+			<#if level?exists && level != "" && level != "0" >
+				 AND mb.`level` = :level 
+			</#if>
+			<#if shopsName?exists && shopsName != "" && shopsName != "0" >
+				 AND bb.`shopsName` like "%":shopsName"%"
+			</#if>
+			<#if categoryId?exists && categoryId != "" && categoryId != "0" >
+				 AND pb.`cateId` = :categoryId
+			</#if>
+			<#if parentId?exists && parentId != "" && parentId != "0" >
+				 AND pc.`parentId` = :parentId 
+			</#if>
+		    ) t 
+		WHERE 1 = 1 
+			<#if topParentId?exists && topParentId != "" && topParentId != "0" >
+				 AND t.topParentId = :topParentId
+			</#if>
+		<#if startRow?exists && startRow != "">
+			 LIMIT :startRow , :endRow
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+		  COUNT(productId)
+		FROM
+		  (SELECT 
+		    pb.`productId`,
+		    pb.`name`,
+		    mb.mobile,
+		    bb.shopsName,
+		    pb.`cateId`,
+		    pc.`cateName`,
+		    m.`id`,
+		    m.`marketName`,
+		    (SELECT 
+		      pc1.parentId 
+		    FROM
+		      product_category pc1 
+		    WHERE pc1.`categoryId` = pc.`parentId`) topParentId 
+		  FROM
+		    `product_baseinfo` pb 
+		    LEFT JOIN business_baseinfo bb 
+		      ON (bb.businessId = pb.`businessId`) 
+		    LEFT JOIN re_business_market rbm 
+		      ON (
+		        rbm.`businessId` = bb.`businessId`
+		      ) 
+		    LEFT JOIN product_category pc 
+		      ON (pc.`categoryId` = pb.`cateId`) 
+		    LEFT JOIN member_baseinfo mb 
+		      ON (mb.`memberId` = bb.`userId`) 
+		    LEFT JOIN market m 
+		      ON (m.`id` = rbm.`marketId`) 
+		  WHERE 1 = 1 and pb.productType = '1'
+		    <#if productId?exists && productId != "" >
+				 AND pb.`productId` = :productId 
+			</#if>
+		    <#if name?exists && name != "" && name != "0" >
+				 AND pb.`name` like "%":name"%"
+			</#if>
+		    <#if marketId?exists && marketId != "" && marketId != "0" >
+				 AND rbm.`marketId` = :marketId
+			</#if>
+			<#if mobile?exists && mobile != "" && mobile != "0" >
+				 AND mb.`mobile` like "%":mobile"%"
+			</#if>
+			<#if level?exists && level != "" && level != "0" >
+				 AND mb.`level` = :level 
+			</#if>
+			<#if shopsName?exists && shopsName != "" && shopsName != "0" >
+				 AND bb.`shopsName` like "%":shopsName"%"
+			</#if>
+			<#if cateId?exists && cateId != "" && cateId != "0" && cateId != "-1" >
+				 AND pb.`cateId` = :cateId
+			</#if>
+			<#if parentId?exists && parentId != "" && parentId != "0" >
+				 AND pc.`parentId` = :parentId 
+			</#if>
+		    ) t 
+		WHERE 1 = 1 
+			<#if topParentId?exists && topParentId != "" && topParentId != "0" >
+				 AND t.topParentId = :topParentId
+			</#if>
+	]]>
+	</sql>
+	
+	<sql id="getProductList">
+	<![CDATA[
+	SELECT 
+		  p.provinceId,p.createTime,p.minBuyCount,p.cityId,p.state,p.updatePriceTime,p.areaId,
+		  p.logisticsRemark,p.description,p.roleType,p.visitCount,p.businessId,p.createUserId,
+		  p.marketId,p.productSign,p.expirationDate,p.updateTime,p.editSign,p.keyword,
+		  p.priceType,p.stockCount,p.productId,p.content,p.unit,p.updateUserId,
+		  p.originCityId,p.price,p.infoLifeDay,p.address,p.originAreaId,p.channel,
+		  p.name,p.name AS productName,p.originProvinceId,p.cateId,
+	      b.shopsName businessName
+	 FROM product_baseinfo p LEFT JOIN business_baseinfo  b ON p.businessId=b.businessId
+    WHERE 1=1 and p.productType = '1'
+    <#if productId?exists && productId!="" >
+		AND p.productId=:productId
+	</#if>
+	<#if productIds?exists>
+	     <#assign n = productIds?size />
+			<#if n gt 0>
+				AND p.productId in (
+				<#list productIds as itemId>
+					<#if itemId_index != n-1>
+						${itemId} ,
+					<#else>
+						${itemId}
+					</#if>
+				</#list>
+				)
+			</#if>
+    </#if>  
+	]]>
+</sql>
+</sqlMap>

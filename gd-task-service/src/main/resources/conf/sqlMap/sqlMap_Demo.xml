@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Demo">
+	<sql id="getDic">
+	<![CDATA[
+		SELECT 
+			id,name  
+		FROM 
+			t_dic  t 
+		WHERE 
+			id =:id
+	]]>
+	</sql>
+	
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT 
+			id,name 
+		FROM 
+			t_dic  t 
+		WHERE 
+			id =:id
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			t_dic  t 
+		WHERE 
+			id =:id
+	]]>
+	</sql>
+</sqlMap>

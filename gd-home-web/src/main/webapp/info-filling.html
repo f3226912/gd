@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>推广录入</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta name="format-detection" content="telephone=no">
+	<meta http-equiv="x-rim-auto-match" content="none">
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<style>
+
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+		input,button,select,textarea{outline:none}
+		img{vertical-align:top;border:none;}
+		textarea{overflow: auto;vertical-align: top;resize:none;}
+		button,input,select,textarea {font-size:100%;}
+		h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+		table {border-collapse:collapse;border-spacing:0}
+		em,i,b{ font-style:normal; font-weight:normal;}
+		body {
+			overflow-x:hidden;
+			font: normal 100% "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;  /*为了让电脑上和手机一样字体效果。手机是没有"Microsoft YaHei",'Helvetica Neue'*/
+			/***min-width: 300px;设置最小宽HTCG7***/
+			-webkit-text-size-adjust:none;/**避免重力感应时文字随分辨率增大而增大**/ 
+			/** display:-webkit-box;/**流布局**/
+			color:#404040;
+			background: #fff;
+
+		}
+		article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}
+		ul, li, ol, dl, dd, dt{list-style:none;list-style-position:outside;}
+		img	{ border:none;max-width: 100%;height: auto;}
+		a{color:#565656;}
+		a:link, a:hover{text-decoration:none;color:#666}
+		a:link *, a:hover *{text-decoration:none;}
+		@-ms-viewport {width: device-width;}
+		.clear{clear:both}
+		.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+		.clearfix{zoom:1}
+
+		@media screen and (min-width:1200px){
+			.main-wrap{
+				font-size:20px;
+			}
+		}
+
+		@media screen and (min-width: 768px) and (max-width: 1199px) {
+			.main-wrap{
+				font-size:16px;
+			}
+		}
+
+		@media screen and (max-width: 767px){
+			.main-wrap{
+				font-size:16px;
+			}
+		}
+		@media screen and (max-width: 479px) {
+			.main-wrap{
+				font-size:14px;
+			}
+		}
+		.main-wrap{padding: 10px 0%;}
+		.tg-name-a { display: flex; width: 97%; padding-left: 3%; border-bottom: solid 1px #eee;}
+		.tg-name{ text-align: right; width: 28%; line-height: 3em;}
+		.txt{-webkit-appearance:none; width:67%; border: none; height: 3em; padding-left: 5%; }
+		.selt{ -webkit-appearance:none; width: 72%; border: none; height: 3em; padding-left: 5%; }
+ 		.sbt{ width: 100%; margin-top: 1em; display: flex;}
+ 		.sbt-1 ,.rst-1{ width: 35%; margin-left: 10%; display: inline-block;}
+		.sbt-a{ -webkit-appearance:none; background: #398346; cursor: pointer; width: 100%; height: 3em; border:none; border-radius: 2px;}
+		.rst-a{ background: #ccc;}
+	</style>
+</head>
+
+<body>	
+	<div class="main-wrap">
+		<form action='/pushOffLine/add'>
+			<div id="username" class="tg-name-a clearfix"><span class="tg-name">推广人员姓名</span>
+				<input type="text" name="pushName" maxlength="10" placeholder="请输入推广人员姓名" class="txt pushName">
+			</div>
+			<div id="username1" class="tg-name-a tg-phone clearfix"><span class="tg-name">推广人员手机</span>
+				<input type="text" name="pushMobile" maxlength="11" placeholder="请输入推广人员手机" class="txt pushMobile">
+			</div>
+			<div class="tg-name-a hy-list clearfix"><span class="tg-name">所属行业</span>
+					 <select name="industry" class="txt selt selt1">
+						<option value ="工厂">工厂</option>
+						<option value ="学校/食堂">学校/食堂</option>
+						<option value="下级批发商">下级批发商</option>
+						<option value="餐馆">餐馆</option>
+						<option value="超市">超市</option>
+						<option value="门店">门店</option>
+						<option value="垂直生鲜电商">垂直生鲜电商</option>
+					</select>
+			</div>
+			<div class="tg-name-a tg-source clearfix"><span class="tg-name">推广来源</span>
+					 <select name="source" class="txt selt selt2">
+						<option value ="农速通">农速通</option>
+						<option value ="农商友">农商友</option>
+						<option value="农商友-农批商">农商友-农批商</option>
+						<option value="农批友">农批友</option>
+						<option value="谷登农批网">谷登农批网</option>
+					</select>
+			</div>
+			<div id="username2" class="tg-name-a vip-phone clearfix"><span class="tg-name">会员手机</span>
+				<input type="text" name="memberMobile" maxlength="11" placeholder="请输入会员手机" class="txt pushMobile-a">
+			</div>
+			<div class="sbt">
+				<div class="sbt-1"><input class="sbt-a sbt-aa" type="button" value="提交"></div>
+				<div class="rst-1"><input class="sbt-a rst-a" type="reset" value="重置"></div>
+			</div>
+		</form>
+		
+	</div>
+<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="js/jquery.cookie.js"></script>
+<script type="text/javascript">
+	  $(function () { 
+     	
+     	var pushName=$.cookie("pushName"); 
+     	var pushMobile = $.cookie('pushMobile');
+     	    if(pushName){
+     	    	if(pushName=='null'){
+     	    		 $('.pushName').val('');
+     	    		}else{
+     	    		$('.pushName').val(pushName);
+     	    		}
+		    
+		  }
+		    if(pushMobile){
+		    	if(pushMobile=='null'){
+		    		$('.pushMobile').val('');
+		    	}else{
+		    		$('.pushMobile').val(pushMobile);
+		    	}
+		     
+		  }
+		  $('.sbt-aa').click(function(){
+		  	 var reg = /[\u4E00-\u9FA5\uF900-\uFA2D]/;
+		  	 var mob = $('.pushMobile').val();
+		  	 var vip = $('.pushMobile-a').val();
+		  	 if(!reg.test($('.pushName').val())){
+		  	 	alert('用户名有误！');
+		  	 	return false;
+		  	 }
+		  	 var tru = checkMoblie(mob,1);
+		  	 if(tru==false){
+		  	 	return false;
+		  	 }
+		  	 var trua = checkMoblie(vip,2);
+		  	 //console.log(1)
+		  	$.cookie('pushName',$('.pushName').val(),{expires:15});
+		  	$.cookie('pushMobile',$('.pushMobile').val(),{expires:15});
+		  	var formdata = $("form").serialize();
+		  	if(tru==false || trua == false){
+		  		return false;
+		  	}else if(tru==true && trua == true){
+		  		//$("form").submit();
+		  		$.ajax({
+				   type: "POST",
+				   url: "/pushOffLine/add",
+				   data: formdata,
+				   success: function(msg){
+					   var data = $.parseJSON(msg);
+					   if(data.status==1){
+					  	  	alert('添加成功！');
+					  	  	window.location.reload();
+						}else{
+							var message = "";
+							if(data.errorCode == 1){
+								message = "会员手机号不能为空";
+							}else if(data.errorCode == 2){
+								message = "该会员手机号已入库";
+							}else if(data.errorCode == 3){
+								message = "服务端系统异常";
+							}else if(data.errorCode == 4){
+								message = "该会员手机号尚未注册谷登农批网, 请先注册";
+							}
+						  	alert(message);
+						}
+					}
+
+				});
+			
+		  	};
+		  	//window.location("/pushOffLine/add");
+		  	
+		  });
+
+		  $('.rst-a').click(function(){
+		  	$('.pushName').val('');
+		  	$('.pushMobile').val('');
+		  	$('.pushMobile-a').val('');
+			$('.selt1').val('工厂');
+			$('.selt2').val('农速通');
+		  	//$.cookie('pushName',null);
+		  	//$.cookie('pushMobile',null);
+		  })
+		  function checkMoblie(check,phone){
+		  	 if(check.length<11){
+				if(phone==1){
+					alert('你输入的推广人员手机有误!');
+
+					
+				}else if(phone==2){
+					alert('你输入的会员手机有误!');
+					
+				}
+		  	 	return false;
+		  	 }else if(check.length==11){
+		  	 	if(!/(^[1][34587][0-9]{9}$)/g.test(check))
+		  	 	{
+					if(phone==1){
+						alert('你输入的推广人员手机有误!');
+						
+					}else if(phone==2){
+						alert('你输入的会员手机有误!');
+						
+					}
+					return false;
+		  	 	}
+		  	 	else{
+		  	 		return true;
+		  	 	}
+		  	 }
+		  }
+    }) 
+
+</script>
+</body>
+</html>

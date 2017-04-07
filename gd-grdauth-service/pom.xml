@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.gudeng.commerce.gd</groupId>
+		<artifactId>gd-grdauth-pom</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../gd-grdauth-pom/pom.xml</relativePath>
+	</parent>
+
+	<artifactId>gd-grdauth-service</artifactId>
+	<version>${gd.grdauth.version}</version>
+	<packaging>jar</packaging>
+
+	<name>gd-grdauth-service</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.gudeng.commerce.gd</groupId>
+			<artifactId>gd-grdauth-intf</artifactId>
+			<version>${gd.grdauth.version}</version>
+		</dependency>
+	</dependencies>
+</project>

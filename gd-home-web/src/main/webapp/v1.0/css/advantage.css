@@ -1,0 +1,24 @@
+.advt-top{text-align: center;}
+.adv-txt{font-size:1.3em; }
+.adv-num,.adv-det-ico,.adv-det-ico2,.adv-det-ico3{background: url(../images/about-ico1.png) no-repeat;background-size: 20.5em 10em;}
+.adv-num{float: left;width: 2.2em;display: inline-block;height: 2.2em;font-family: Constantia;text-align: center;background-position:-4.45em 0;}
+.adv-num-t{font-size: 2.5em;margin-top: -0.3em;display: inline-block;color: #f22d49}
+.adv-txt{margin-left: 2em;line-height: 1.2em;font-weight: bold;display: block;}
+.adv-t{margin-bottom: 1em;}
+.adv{margin-bottom: 2em;}
+.adv-c{line-height: 2em;font-size: 1.2em}
+.adv-c-img{margin: 1.2em;text-align: center;}
+.adc-tab {margin-top: 1em}
+.adc-tab td{text-align: center;padding: 1em;border: 1px solid #e4e4e4;}
+
+.adv-det li{ line-height: 2.5em;font-size: 1.2em;text-indent: -1.5em;margin-left: 1.5em}
+.adv-det-ico{display: inline-block;width: 1.5em;height: 1.5em;background-position: -8.95em 0.8em;}
+.adv-det2{ color: #7e95b6;display: -webkit-box; display: -moz-box;  display: -ms-flexbox; display: -webkit-flex;display: flex;  margin: 1em 0 }
+.adv-det2 li{width: 33.33%;text-align: center;}
+.adv-det-ico2{width: 6.6em;height: 6.5em;display: inline-block;}
+.det-ico2-ico1{background-position: 0 -3.5em;}
+.det-ico2-ico2{background-position: -6.99em -3.5em;}
+.det-ico2-ico3{background-position: -14em -3.5em;}
+.spilt{height: 0; border: 0 ;border-top: 1px solid #e1e1e1;margin: 2em 0;}
+.adv-last{line-height: 2em;text-align: center; color: #999;font-size: 1.2em}
+.adv-det-ico3{background-position: 0 0;width: 3em;height: 1.8em;display: inline-block;}

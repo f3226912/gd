@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MarketBerth">
+	
+	<sql id="getTotal">
+	<![CDATA[
+	SELECT count(cou) FROM(
+		SELECT 
+			count(1) as cou 
+		FROM 
+			market_berth t
+	  	WHERE 1=1
+	    <#if marketId?exists && marketId!="" >
+		    AND  marketId = :marketId
+		</#if>
+		GROUP BY t.marketId) T 
+	]]>
+	</sql>
+	
+	<sql id="getByCondition">
+	<![CDATA[
+		SELECT t.id, t.marketId, t.area, t.build, t.layer, t.berth, t.createUser, t.createTime,  
+			t.updateUser, t.updateTime, m.marketName 
+		FROM 
+			market_berth  t  
+		LEFT JOIN market m on (t.marketId = m.id)
+		WHERE 1=1 
+		<#if marketId?exists && marketId!="" >
+		    AND  t.marketId = :marketId  
+		</#if> 
+		GROUP BY t.marketId 
+		ORDER BY t.updateTime desc
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getTotalByDtl">
+	<![CDATA[
+		SELECT 
+			count(1) as cou 
+		FROM 
+			market_berth t
+	  	WHERE 1=1
+	    <#if marketId?exists && marketId!="" >
+		    AND  marketId = :marketId
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getByConditionByDtl">
+	<![CDATA[
+		SELECT t.id, t.marketId, t.area, t.build, t.layer, t.berth, t.createUser, t.createTime, 
+			t.updateUser, t.updateTime,berthCode
+		FROM 
+			market_berth  t 
+		WHERE 1=1
+		<#if marketId?exists && marketId!="" >
+		    AND  t.marketId = :marketId
+		</#if> 
+		ORDER BY t.area,t.build,t.layer,t.berth asc
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	
+	<sql id="queryMarketGroup">
+	<![CDATA[
+		
+		SELECT area as maxArea, max(build) as maxBuild, max(layer) as maxLayer, max(berth) as maxBerth
+		FROM market_berth 
+		where 1=1
+		<#if marketId?exists && marketId!="" >
+		    AND  marketId = :marketId
+		</#if> 
+		GROUP BY area
+	]]>
+	</sql>
+	
+	<sql id="queryMarketGroupTotal">
+	<![CDATA[
+		SELECT count(1) FROM(
+			SELECT count(1)
+			FROM market_berth 
+			where 1=1
+			<#if marketId?exists && marketId!="" >
+			    AND  marketId = :marketId
+			</#if> 
+			GROUP BY area
+		) T
+	]]>
+	</sql>
+	
+	
+	<sql id="addMerketBerth">
+	<![CDATA[
+		INSERT INTO market_berth(marketId, area, build, layer, berth, createUser, createTime, updateUser, updateTime)
+		VALUES(:marketId, :area, :build, :layer, :berth, :createUser, sysdate(), :updateUser, sysdate())
+	]]>
+	</sql>
+	<sql id="deleteMarketBerth">
+	<![CDATA[
+		delete from market_berth where marketId = :marketId
+	]]>
+	</sql>
+	<sql id="updateMarketBerth">
+	<![CDATA[
+		update market_berth
+		set 
+		<#if area?exists && area!="" >
+		    area = :area
+		</#if> 
+		<#if build?exists && build!="" >
+		    build = :build
+		</#if> 
+		<#if layer?exists && layer!="" >
+		    layer = :layer
+		</#if> 
+		<#if berth?exists && berth!="" >
+		    berth = :berth
+		</#if> 
+		<#if updateUser?exists && updateUser!="" >
+		    updateUser = :updateUser
+		</#if> 
+		updateTime = sysdate()
+		where marketId = :marketId
+	]]>
+	</sql>
+	<sql id="updateMarketBerthById">
+	<![CDATA[
+		update market_berth
+		set 
+		<#if area?exists && area!="" >
+		    area = :area,
+		</#if> 
+		<#if build?exists && build!="" >
+		    build = :build,
+		</#if> 
+		<#if layer?exists && layer!="" >
+		    layer = :layer,
+		</#if> 
+		<#if berth?exists && berth!="" >
+		    berth = :berth,
+		</#if> 
+		<#if updateUser?exists && updateUser!="" >
+		    updateUser = :updateUser,
+		</#if> 
+		<#if berthCode?exists && berthCode!="" >
+		    berthCode = :berthCode,
+		</#if> 
+		updateTime = sysdate()
+		where id = :id
+	]]>
+	</sql>
+	<sql id="updateMarketBerthCodeById">
+	<![CDATA[
+		update market_berth
+		set berthCode = :berthCode,
+	    updateUser = :updateUser,
+		updateTime = sysdate()
+		where id = :id
+	]]>
+	</sql>
+</sqlMap>

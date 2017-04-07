@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Sysmessage">
+	<sql id="getListByConditon">
+	<![CDATA[
+		SELECT
+			id,title,content,createUserId,createUserName,createTime,updateUserId,updateUserName,updateTime
+		FROM
+			sysmessage r
+		WHERE
+			1 = 1
+		<#if title?exists && title!="">
+			AND r.title LIKE "%":title"%"
+		</#if>
+		<#if content?exists && content!="">
+			AND r.content LIKE "%":content"%"
+		</#if>
+		<#if id?exists && id!="">
+			AND r.id =:id
+		</#if>
+		ORDER BY createtime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotalByCondition">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			sysmessage r
+		WHERE
+			1 = 1
+		<#if title?exists && title!="">
+			AND r.title LIKE "%":title"%"
+		</#if>
+		<#if content?exists && content!="">
+			AND r.content LIKE "%":content"%"
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="insert">
+	<![CDATA[
+		INSERT INTO sysmessage(title,content,createUserId,createUserName,createTime,updateUserId,updateUserName,updateTime) 
+		VALUES (:title,:content,:createUserId,:createUserName,SYSDATE(),:updateUserId,:updateUserName,SYSDATE())
+	]]>
+	</sql>
+	<sql id="delete">
+	<![CDATA[
+		DELETE FROM sysmessage WHERE id=:id
+	]]>
+	</sql>
+		
+	<sql id="getMessageListByUser">
+		 <![CDATA[  
+			SELECT message.id,
+			 	   message.title,
+				   message.content,
+				   message.type,
+				   message.state,
+				   messageuser.createTime,			   
+				   messageUser.isread  
+			FROM sysregisteruser sysuser,
+				 sysmessage message,
+			     sysmessageuser messageUser
+			WHERE sysuser.userID=messageUser.userID
+			AND message.id=messageUser.messageID
+			<#if userID?exists && userID!="" >
+				AND messageUser.userID=:userID
+			</#if>
+			AND messageUser.isdel=1
+			ORDER BY messageUser.isread ASC,messageuser.createTime DESC
+			LIMIT :startRow,:endRow
+			 ]]>
+	</sql>
+	<sql id="getMessageDetail">
+		 <![CDATA[  
+			SELECT message.id,
+				   message.title,
+				   message.content,
+				   message.type,
+				   message.state,
+				   messageuser.createTime,	
+				   messageUser.isread  
+			FROM sysregisteruser sysuser,
+				 sysmessage message,
+			     sysmessageuser messageUser
+			WHERE sysuser.userID=messageUser.userID
+			AND message.id=messageUser.messageID
+			AND messageUser.userID=:userID
+			AND messageUser.messageID=:messageID
+			AND messageUser.isdel=1
+			 ]]>
+	</sql>
+	<!-- 获取未读的记录数 -->
+	<sql id="getUnReadMessageCount">
+		 <![CDATA[  
+			SELECT COUNT(1) as total 
+			FROM sysregisteruser sysuser,
+				 sysmessage message,
+			     sysmessageuser messageUser
+			WHERE sysuser.userID=messageUser.userID
+			AND message.id=messageUser.messageID
+			<#if userID?exists && userID!="" >
+				AND messageUser.userID=:userID
+			</#if>
+			AND messageUser.isdel=1
+			AND messageUser.isread=1
+		 ]]>
+	</sql>
+	
+</sqlMap>

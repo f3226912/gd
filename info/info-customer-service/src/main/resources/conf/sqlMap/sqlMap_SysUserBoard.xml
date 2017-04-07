@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlMap namespace="SysUserBoard">
+
+    <sql id="getUserBoardList">
+	 <![CDATA[  
+		    SELECT 
+		    sub.rmID,
+		    sub.userID,
+		    sub.boardID,
+		    sub.createUserID,
+		    sub.createTime,
+		    sub.type
+			FROM sysuserboard sub WHERE 
+			sub.userID =:userID
+			<#if type?exists && type!="">
+				AND sub.type=:type
+			</#if>
+			<#if list?exists>
+			<#assign n = list?size />
+			<#if n gt 0>
+				AND sub.boardID in (
+				<#list list as boardID>
+					<#if boardID_index != n-1>
+						${boardID} ,
+					<#else>
+						${boardID}
+					</#if>
+				</#list>
+				)
+			</#if>
+		</#if>  
+		]]>
+	</sql>
+	
+	 <sql id="insertUserBoard">
+	<![CDATA[
+			INSERT INTO sysuserboard(rmID,userID,boardID,type,createUserID,createTime) 
+			VALUES (:rmID,:userID,:boardID,:type,:createUserID,SYSDATE())
+	]]>
+	</sql>
+	
+	<sql id="deleteUserBoard">
+	<![CDATA[
+		DELETE FROM sysuserboard WHERE userID=:userID AND boardID=:boardID
+		AND type=:type
+	]]>
+	</sql>
+	
+</sqlMap>

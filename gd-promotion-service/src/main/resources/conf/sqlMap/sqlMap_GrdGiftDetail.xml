@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdGiftDetail">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO grd_gift_detail(
+		recordId,createTime,updateTime,countNo,code,orderTime,type,
+		buyerName,shopsName,id,updateUserId,buyerMobile,orderNo,
+		giftName,giftId,orderPrice,businessId,createUserId
+	) VALUES (
+		:recordId,:createTime,:updateTime,:countNo,:code,:orderTime,:type,
+		:buyerName,:shopsName,:id,:updateUserId,:buyerMobile,:orderNo,
+		:giftName,:giftId,:orderPrice,:businessId,:createUserId
+	)
+]]>
+</sql>
+
+<sql id="batchInsertEntity">
+	<![CDATA[
+		INSERT INTO
+		grd_gift_detail(
+			type,recordId,orderPrice,createTime,updateTime,createUserId,
+			giftName,giftId,countNo,orderNo,orderTime,businessId,shopsName,buyerName,buyerMobile,code 
+		) VALUES (
+			:type,:recordId,:orderPrice,SYSDATE(),:updateTime,:createUserId,
+			:giftName,:giftId,:countNo,:orderNo,:orderTimeStr,:businessId,:shopsName,:realName,:mobile,:code 
+		)
+	]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE grd_gift_detail
+ SET 
+
+<#if id?exists && id!="" >
+id=:id,
+</#if>
+<#if type?exists && type!="" >
+type=:type,
+</#if>
+<#if recordId?exists && recordId!="" >
+recordId=:recordId,
+</#if>
+<#if orderPrice?exists && orderPrice!="" >
+orderPrice=:orderPrice,
+</#if>
+<#if createTime?exists && createTime!="" >
+createTime=:createTime,
+</#if>
+<#if updateTime?exists && updateTime!="" >
+updateTime=:updateTime,
+</#if>
+<#if createUserId?exists && createUserId!="" >
+createUserId=:createUserId,
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+updateUserId=:updateUserId,
+</#if>
+
+<#if giftName?exists && giftName!="" >
+giftName=:giftName,
+</#if>
+<#if giftId?exists && giftId!="" >
+giftId=:giftId,
+</#if>
+<#if countNo?exists && countNo!="" >
+countNo=:countNo,
+</#if>
+<#if orderNo?exists && orderNo!="" >
+orderNo=:orderNo,
+</#if>
+<#if orderTime?exists && orderTime!="" >
+orderTime=:orderTime
+</#if>
+ WHERE id=:id
+
+]]>
+</sql>
+<sql id="getByCondition">
+<![CDATA[
+	SELECT 
+		d.id,d.type,d.recordId,d.orderPrice,d.createTime,d.updateTime,d.createUserId,d.updateUserId,
+		d.giftName,d.giftId,d.countNo,d.orderNo,d.orderTime,d.businessId,d.shopsName,gg.unit,d.code
+	FROM 
+		grd_gift_detail d 
+	left join 
+		grd_gift gg  
+	on 
+		d.giftId=gg.id
+	WHERE 1=1
+	
+	<#if id?exists && id!="" >
+	AND d.id=:id
+	</#if>
+	<#if type?exists && type!="" >
+	AND d.type=:type
+	</#if>
+	<#if recordId?exists && recordId!="" >
+	AND d.recordId=:recordId
+	</#if>
+	<#if orderPrice?exists && orderPrice!="" >
+	AND d.orderPrice=:orderPrice
+	</#if>
+	<#if createTime?exists && createTime!="" >
+	AND d.createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+	AND d.updateTime=:updateTime
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+	AND d.createUserId=:createUserId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+	AND d.updateUserId=:updateUserId
+	</#if>
+	
+	<#if giftName?exists && giftName!="" >
+	AND d.giftName=:giftName
+	</#if>
+	<#if giftId?exists && giftId!="" >
+	AND d.giftId=:giftId
+	</#if>
+	<#if countNo?exists && countNo!="" >
+	AND d.countNo=:countNo
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+	AND d.orderNo=:orderNo
+	</#if>
+	<#if orderTime?exists && orderTime!="" >
+	AND d.orderTime=:orderTime
+	</#if>
+	<#if businessId?exists && businessId!="" >
+	AND d.businessId=:businessId
+	</#if>
+	<#if shopsName?exists && shopsName!="" >
+	AND d.shopsName=:shopsName
+	</#if>
+]]>
+</sql>
+<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+		d.id,d.type,d.recordId,d.orderPrice,d.createTime,d.updateTime,d.createUserId,d.updateUserId,
+		d.giftName,d.giftId,d.countNo,d.orderNo,d.orderTime,d.businessId,d.shopsName,gg.unit,d.code
+	FROM 
+		grd_gift_detail d 
+	left join 
+		grd_gift gg  
+	on 
+		d.giftId=gg.id
+	WHERE 1=1
+	<#if id?exists && id!="" >
+	AND d.id=:id
+	</#if>
+	<#if type?exists && type!="" >
+	AND d.type=:type
+	</#if>
+	<#if recordId?exists && recordId!="" >
+	AND d.recordId=:recordId
+	</#if>
+	<#if orderPrice?exists && orderPrice!="" >
+	AND d.orderPrice=:orderPrice
+	</#if>
+	<#if createTime?exists && createTime!="" >
+	AND d.createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+	AND d.updateTime=:updateTime
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+	AND d.createUserId=:createUserId
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+	AND d.updateUserId=:updateUserId
+	</#if>
+	
+	<#if giftName?exists && giftName!="" >
+	AND d.giftName=:giftName
+	</#if>
+	<#if giftId?exists && giftId!="" >
+	AND d.giftId=:giftId
+	</#if>
+	<#if countNo?exists && countNo!="" >
+	AND d.countNo=:countNo
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+	AND d.orderNo=:orderNo
+	</#if>
+	<#if orderTime?exists && orderTime!="" >
+	AND d.orderTime=:orderTime
+	</#if>
+	<#if businessId?exists && businessId!="" >
+	AND d.businessId=:businessId
+	</#if>
+	<#if shopsName?exists && shopsName!="" >
+	AND d.shopsName=:shopsName
+	</#if>
+	LIMIT :startRow, :endRow
+]]>
+</sql>
+<sql id="getTotal">
+<![CDATA[
+	SELECT count(*)
+	FROM 
+grd_gift_detail t WHERE 1=1
+
+<#if id?exists && id!="" >
+AND t.id=:id
+</#if>
+<#if type?exists && type!="" >
+AND t.type=:type
+</#if>
+<#if recordId?exists && recordId!="" >
+AND t.recordId=:recordId
+</#if>
+<#if orderPrice?exists && orderPrice!="" >
+AND t.orderPrice=:orderPrice
+</#if>
+<#if createTime?exists && createTime!="" >
+AND t.createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND t.updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND t.createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND t.updateUserId=:updateUserId
+</#if>
+
+<#if giftName?exists && giftName!="" >
+AND t.giftName=:giftName
+</#if>
+<#if giftId?exists && giftId!="" >
+AND t.giftId=:giftId
+</#if>
+<#if countNo?exists && countNo!="" >
+AND t.countNo=:countNo
+</#if>
+<#if orderNo?exists && orderNo!="" >
+AND t.orderNo=:orderNo
+</#if>
+<#if orderTime?exists && orderTime!="" >
+AND t.orderTime=:orderTime
+</#if>
+<#if businessId?exists && businessId!="" >
+AND t.businessId=:businessId
+</#if>
+<#if shopsName?exists && shopsName!="" >
+AND t.shopsName=:shopsName
+</#if>
+<#if giftNos?exists>
+	<#assign n = giftNos?size />
+	<#if n gt 0>
+		AND (
+		<#list giftNos as singleId>
+		<#if singleId_index != n-1>
+			giftId =${singleId}  OR
+		<#else>
+			giftId =${singleId}
+		</#if>
+		</#list>
+		)
+	</#if>
+</#if>
+]]>
+</sql>
+<sql id="deleteById">
+<![CDATA[
+	DELETE grd_gift_detail
+ WHERE id=:id
+]]>
+</sql>
+
+<!-- 包括订单，和注册所领取的明细  -->
+<sql id="getDetailByMobileAndType">
+<![CDATA[
+	SELECT  
+		d.id,d.type,d.recordId,d.orderPrice,d.createTime,d.updateTime,d.createUserId,d.updateUserId,
+		d.giftName,d.giftId,d.countNo,d.orderNo,d.orderTime,d.businessId,d.shopsName,d.code
+	from 
+		grd_gift_detail d 
+	where 
+		1=1
+	<#if type?exists && type=="0" >
+		AND (d.type =2 or dtype =3)
+	</#if>
+	<#if type?exists && type!="0" >
+		AND d.type =:type
+	</#if>
+	and 
+		d.recordId in(
+			select id from grd_gift_record r where r.mobile =:mobile 
+		)
+]]>
+</sql>
+
+<!-- 根据礼品记录id查询  -->
+<sql id="queryByRecordId">
+	<![CDATA[
+		SELECT  gd.*,gg.giftNo  FROM 
+			grd_gift_detail gd
+		left join 
+			grd_gift gg
+		on gd.giftId =gg.id 
+		WHERE 
+			gd.recordId = :recordId
+	]]>
+</sql>
+
+<!-- 分页查询我的促成订单 -->
+<!--当查看我邀请注册的客户时，增加农速通的邀请注册客户，type故传入为3时，直接查type=3和type=4 -->
+<sql id="queryCreateOrderByConditionPage">
+	<![CDATA[
+	SELECT 
+		d.orderNo, d.orderPrice, d.buyerName as realName, d.buyerMobile as mobile, d.createTime, d.orderTime, d.shopsName
+	FROM 
+		grd_gift_record r left join grd_gift_detail d on (d.recordId = r.id)
+	WHERE 1=1 
+	<#if type?exists && type!="3" >
+		AND d.type=:type
+	</#if>
+	<#if type?exists && type == "3" >
+		AND (d.type=3 or d.type=4)
+	</#if>
+	<#if date?exists && date!="" >
+		AND date_format(d.orderTime, '%Y-%m')=:date
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND r.createUserId=:createUserId
+	</#if>
+	ORDER BY 
+	<#if orderTime?exists && orderTime!="" >
+		orderTime
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		createTime
+	</#if>
+	 DESC
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotalByUserId">
+	<![CDATA[
+		SELECT count(1) totalCount, if(SUM(d.orderPrice) is null, 0,  SUM(d.orderPrice) ) totalMoney
+		FROM 
+			grd_gift_record r left join grd_gift_detail d on (d.recordId = r.id)
+		WHERE 1=1
+		<#if type?exists && type!="3" >
+		AND d.type=:type
+		</#if>
+		<#if type?exists && type == "3" >
+		AND (d.type=3 or d.type=4)
+		</#if>
+		<#if createUserId?exists && createUserId!="" >
+			AND r.createUserId=:createUserId
+		</#if>
+		<#if date?exists && date!="" >
+			AND date_format(d.orderTime, '%Y-%m')=:date
+		</#if>
+	]]>
+</sql>
+	
+	<!-- 根据地推人员id统计促成订单信息 -->
+	<sql id="countOrderInfoByUserId">
+		<![CDATA[
+			SELECT
+				count(gd.id)
+			FROM
+				grd_gift_detail gd
+			INNER JOIN 
+				grd_gift_record gr 
+			ON 
+				gd.recordid = gr.id
+			WHERE
+				gd.type = '2' AND gd.createUserId = :userId
+			<#if businessName?exists && businessName!="" >
+				 AND 	gd.shopsName like  "%":businessName"%"
+			</#if>
+			<#if orderCode?exists && orderCode!="" >
+				 AND 	gd.orderNo like "%":orderCode"%"
+			</#if>
+			<#if startDate?exists && startDate!="" >
+				 AND 	gd.orderTime >= :startDate
+			</#if>
+		    <#if endDate?exists && endDate!="" >
+				 AND 	gd.orderTime <= :endDate
+			</#if>
+				
+		]]>
+	</sql>
+	
+	
+	<!-- 根据地推人员id分页查询促成订单信息 -->
+	<sql id="queryOrderInfoByUserId">
+		<![CDATA[
+			SELECT
+				gd.id,
+				gd.orderNo,
+				gd.orderTime,
+				gd.businessId,
+				gd.shopsName,
+				gd.orderPrice,
+				gd.buyerMobile,
+				gd.buyerName
+			FROM
+				grd_gift_detail gd
+			INNER JOIN 
+				grd_gift_record gr 
+			ON 
+				gd.recordid = gr.id
+			WHERE
+				gd.type = '2' AND gd.createUserId = :userId
+		    <#if businessName?exists && businessName!="" >
+				 AND 	gd.shopsName like  "%":businessName"%"
+			</#if>
+			<#if orderCode?exists && orderCode!="" >
+				 AND 	gd.orderNo like "%":orderCode"%"
+			</#if>
+			<#if startDate?exists && startDate!="" >
+				 AND 	gd.orderTime >= :startDate
+			</#if>
+		    <#if endDate?exists && endDate!="" >
+				 AND 	gd.orderTime <= :endDate
+			</#if>
+			ORDER BY gd.orderTime DESC
+			LIMIT :startRow, :endRow
+		]]>
+	</sql>
+
+	<sql id="getDetailByMap">
+	<![CDATA[
+		SELECT  
+			d.id,d.type,d.recordId,d.orderPrice,d.createTime,d.updateTime,d.createUserId,d.updateUserId,
+			d.giftName,d.giftId,d.countNo,d.orderNo,d.orderTime,d.businessId,d.shopsName ,d.code
+		from 
+			grd_gift_detail d 
+		join 
+			grd_gift_record r on r.id=d.recordId 
+		where 
+			1=1
+		<#if memberId?exists && memberId!="" >
+			AND r.memberId =:memberId 
+		</#if>
+		<#if type?exists && type!="" >
+			AND d.type =:type 
+		</#if>	
+		<#if code?exists && code!="" >
+			AND d.code=:code
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getGrdOrderList">
+	<![CDATA[
+		SELECT gm.market,gm.name, gm.mobile, ggd.orderNo, ggd.orderTime, ggd.buyerMobile, ggd.buyerName, ggd.shopsName, ggd.orderPrice 
+		FROM grd_gift_detail ggd 
+		LEFT JOIN grd_gift_record ggr ON (ggd.recordId = ggr.id) 
+		LEFT JOIN grd_member gm ON (ggr.createUserId = gm.id) 
+		WHERE ggd.type=2 
+		<#if startDate?exists && startDate!="" >
+			 AND ggd.orderTime >= :startDate 
+		</#if>
+	    <#if endDate?exists && endDate!="" >
+			 AND ggd.orderTime <= :endDate 
+		</#if>
+		<#if shopsName?exists && shopsName!="" >
+			 AND ggd.shopsName like "%":shopsName"%" 
+		</#if>
+		<#if orderNo?exists && orderNo!="" >
+			 AND ggd.orderNo like "%":orderNo"%" 
+		</#if>
+		<#if buyerMobile?exists && buyerMobile!="" >
+ 			 AND ggd.buyerMobile like "%":buyerMobile"%" 
+		</#if>
+		<#if market?exists && market!="" >
+			 AND gm.marketid = :market 
+		</#if>
+		<#if name?exists && name!="" >
+			 AND gm.name like "%":name"%"  
+		</#if>
+		<#if mobile?exists && mobile!="" >
+  			 AND gm.mobile like "%":mobile"%" 
+		</#if>
+		ORDER BY ggd.orderTime DESC	 
+		LIMIT :startRow, :endRow 
+		]]>
+	</sql>
+	
+	
+	<sql id="getGrdOrderTotal">
+	<![CDATA[
+		SELECT COUNT(1) 
+		FROM grd_gift_detail ggd 
+		LEFT JOIN grd_gift_record ggr ON (ggd.recordId = ggr.id) 
+		LEFT JOIN grd_member gm ON (ggr.createUserId = gm.id) 
+		WHERE ggd.type=2 
+		<#if startDate?exists && startDate!="" >
+			 AND ggd.orderTime >= :startDate 
+		</#if>
+	    <#if endDate?exists && endDate!="" >
+			 AND ggd.orderTime <= :endDate 
+		</#if>
+		<#if shopsName?exists && shopsName!="" >
+			 AND ggd.shopsName like "%":shopsName"%" 
+		</#if>
+		<#if orderNo?exists && orderNo!="" >
+			 AND ggd.orderNo like "%":orderNo"%" 
+		</#if>
+		<#if buyerMobile?exists && buyerMobile!="" >
+			 AND ggd.buyerMobile like "%":buyerMobile"%" 
+		</#if>
+		<#if market?exists && market!="" >
+			 AND gm.marketid = :market 
+		</#if>
+		<#if name?exists && name!="" >
+			 AND gm.name like "%":name"%"  
+		</#if>
+		<#if mobile?exists && mobile!="" >
+			 AND gm.mobile like "%":mobile"%" 
+		</#if>
+		]]>
+	</sql>
+	
+	
+	
+</sqlMap>
+

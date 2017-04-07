@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdInstorage">
+
+<sql id="insertInstorage">
+<![CDATA[
+	INSERT INTO
+grd_instorage(inStorageId,purchaseNO,createTime,createUser,createUserName,
+updateTime,updateUser,updateUserName,remarks
+) VALUES (:inStorageId,:purchaseNO,SYSDATE(),:createUser,:createUserName,
+SYSDATE(),:updateUser,:updateUserName,:remarks
+)
+]]>
+</sql>
+
+<sql id="insertInstorageDetail">
+<![CDATA[
+	INSERT INTO
+grd_instoragedetail(inStorageId,purchaseGiftId,inCount
+) VALUES (:inStorageId,:purchaseGiftId,:instockcount
+)
+]]>
+</sql>
+
+
+<sql id="queryGrdGiftStockInfo">
+<![CDATA[
+	SELECT 
+		gg.id AS giftId,
+		gg.giftNo,
+		gg.`marketId`,
+		gg.`giftstoreId` AS warehouseId,
+		gg.`stock_available` AS stockTotal,
+		gg.`stock_total` AS stockAvailable,
+		gg.`unit`
+	FROM grd_gift gg 
+	WHERE gg.`marketId`=:marketId
+	AND gg.`giftstoreId`=:warehouseId
+	AND gg.giftNo =:giftNo
+	AND gg.status = '0'
+]]>
+</sql>
+
+<sql id="insertGrdGiftStockInfo">
+<![CDATA[
+	INSERT INTO
+grd_gift(giftNo,`type`,`name`,marketId,giftstoreId,`status`,stock_Total ,stock_Available,createTime,
+updateTime,createUserId,updateUserId,unit
+) VALUES (:giftNo,:type,:name,:marketId,:warehouseId,'0',:instockcount,:instockcount,SYSDATE(),
+SYSDATE(),:createUserId,:updateUserId,:unit
+)
+]]>
+</sql>
+
+<sql id="updateGrdGiftStockInfo">
+<![CDATA[
+	UPDATE grd_gift
+ SET 
+stock_Total=stock_Total+:instockcount,
+stock_Available=stock_Available+:instockcount,
+<#if updateUserId?exists && updateUserId!="" >
+updateUserId=:updateUserId,
+</#if>
+
+updateTime=SYSDATE()
+WHERE `marketId`=:marketId
+AND `giftstoreId`=:warehouseId
+AND giftNo =:giftNo
+AND `status` = '0'
+]]>
+</sql>
+
+<sql id="insertGrdGiftLog">
+<![CDATA[
+	INSERT INTO
+grd_gift_log(
+giftId,orignValue,realValue,reason,createTime,updateTime,createUserId,updateUserId,purchaseNO,inStorageId,balance
+) VALUES (
+:giftId,
+<#if flag?exists && flag =="1" >
+(SELECT IFNULL(gg.`stock_total`,0) FROM grd_gift gg WHERE gg.`marketId`=:marketId
+AND gg.`giftstoreId`=:warehouseId AND gg.giftNo =:giftNo AND gg.`status`='0')-:instockcount,
+<#else>
+0,
+</#if>
+(SELECT IFNULL(gg.`stock_total`,0) FROM grd_gift gg WHERE gg.`marketId`=:marketId
+AND gg.`giftstoreId`=:warehouseId AND gg.giftNo =:giftNo AND gg.`status`='0'),
+:reason,SYSDATE(),SYSDATE(),:createUserName,:updateUserName,:purchaseNO,:inStorageId,:balance
+)
+]]>
+</sql>
+
+
+
+<sql id="updatePurchasegiftStatus">
+<![CDATA[
+	UPDATE grd_purchasegift
+	SET status=:status
+	WHERE purchaseGiftId=:purchaseGiftId
+
+]]>
+</sql>
+
+<sql id="updatePurchaseStatus">
+<![CDATA[
+	UPDATE grd_purchase
+	SET
+	<#if statusFlag?exists && statusFlag =="1" >
+		status='3'
+		<#else>
+		status='2'
+	</#if>
+	
+	WHERE purchaseNO=:purchaseNO
+
+]]>
+</sql>
+
+<sql id="getTodayTotal">
+<![CDATA[
+	SELECT count(*)
+	FROM 
+grd_instorage gi WHERE 1=1
+AND DATE(gi.createTime) = CURDATE()
+]]>
+</sql>
+
+<sql id="getPurchaseGiftCount">
+<![CDATA[
+SELECT count(1)
+	FROM grd_purchasegift gpg
+	LEFT JOIN grd_purchase gp
+	ON gpg.`purchaseNO`=gp.`purchaseNO`
+	WHERE 1=1
+	AND gpg.purchaseNO=:purchaseNO
+	AND gp.status='1'
+	AND gpg.`giftNo`=:giftNo
+	]]>
+</sql>
+<sql id="getPurchaseGift2InstorageCount">
+<![CDATA[
+SELECT count(1)
+	FROM grd_purchasegift gpg
+	WHERE 1=1
+	AND gpg.purchaseNO=:purchaseNO
+	AND gpg.status IN('0','1')
+	]]>
+</sql>
+<sql id="queryPurchaseGift2InstorageInfo">
+<![CDATA[
+SELECT 
+		t.giftNo,t.purchaseGiftId,t.purchaseNO,t.status,
+		(CASE WHEN t.count-t.incount <=0 THEN 0
+		ELSE t.count-t.incount END)AS count
+	FROM(SELECT 
+		   gpg.`giftNo` AS giftNo,
+		   gpg.purchaseGiftId AS purchaseGiftId,
+		   gp.`purchaseNO` AS purchaseNO,
+		   IFNULL(gpg.count,0) AS count,
+	   	   gpg.`status` AS status,
+	   	   (SELECT IFNULL(SUM(gid.`inCount`),0) FROM grd_instoragedetail gid WHERE gid.`purchaseGiftId`=gpg.`purchaseGiftId`)AS incount
+	FROM grd_purchasegift gpg
+	LEFT JOIN grd_purchase gp
+	ON gpg.`purchaseNO`=gp.`purchaseNO`
+	WHERE gp.`status` IN('1','2')
+	)t
+	WHERE 1=1
+	AND t.status IN ('0','1')
+	AND t.purchaseNO=:purchaseNO
+	AND t.giftNo=:giftNo
+		]]>
+</sql>
+
+</sqlMap>

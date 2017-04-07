@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PosBankCard">
+	<!-- 根据  MemberId 查找 -->
+	<sql id="getByMemberId">
+	<![CDATA[
+		SELECT memberId,bankCardNo,createTime,updateTime,creatUserId,updateUserId from pos_bank_Card   
+		WHERE
+			memberId  =:memberId 
+	]]>
+	</sql>
+	
+	<!-- 全查找 -->
+	<sql id="getByBankNo">
+	<![CDATA[
+		SELECT
+			a.memberId, mb.account, mb.mobile, mb.`status`, mb.realName
+		FROM
+			pos_bank_card a
+		LEFT JOIN 
+			member_baseinfo mb ON a.memberId = mb.memberId
+		WHERE 1 = 1
+		<#if bankCardNo?exists && bankCardNo!="" >
+		      AND a.bankCardNo = :bankCardNo
+		</#if>
+	]]>
+	</sql>
+	
+	 
+	<sql id="deleteByBankCardNo">
+	<![CDATA[
+		DELETE FROM pos_bank_Card
+		WHERE
+			bankCardNo  =:bankCardNo 
+	]]>
+	</sql>
+	
+	<sql id="deleteByMemberId">
+	<![CDATA[
+		DELETE FROM pos_bank_Card
+		WHERE
+			memberId  =:memberId 
+	]]>
+	</sql>
+	
+	
+	<sql id="insert">
+	<![CDATA[
+		insert into 
+		pos_bank_Card
+		(
+		memberId,bankCardNo,createTime,updateTime,creatUserId,updateUserId
+		)
+		values
+		(
+		:memberId,:bankCardNo,sysdate(),:updateTime,:creatUserId,:updateUserId
+		)
+	]]>
+	</sql>
+	
+	
+</sqlMap>

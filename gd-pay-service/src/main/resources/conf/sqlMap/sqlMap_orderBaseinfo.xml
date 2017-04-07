@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="orderBaseinfo">
+	<sql id="selectOne">
+	<![CDATA[
+	    SELECT 
+	    	orderStatus,
+	    	payAmount,
+	    	sellMemberId,
+	    	orderTime
+	    FROM 
+			order_baseinfo
+	    WHERE 
+	    	orderNo=:orderNo
+	]]>
+	</sql>
+	<sql id="updateOrderStatus">
+	<![CDATA[
+	    UPDATE 
+	    	order_baseinfo
+	    SET 
+			orderStatus=:orderStatus,
+			payType=:payType,
+	    	<#if paySubType?exists && paySubType!="" >
+			paySubType=:paySubType,
+			</#if>
+			updateTime=:updateTime,
+			updateUserId=:updateUserId
+	    WHERE 
+	    	orderNo=:orderNo
+	    	and orderStatus='1'
+	]]>
+	</sql>
+</sqlMap>

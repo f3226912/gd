@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberPageStatistic">
+
+	<sql id="addPageStatisMember">
+ 	<![CDATA[
+ 		INSERT INTO `page_statis_member` (
+		  `pageType`,
+		  `memberId`,
+		  `createUserId`,
+		  `updateUserId`
+		) 
+		VALUES
+		  (
+		    :pageType,
+		    :memberId,
+		    :createUserId,
+		    :updateUserId
+		  )
+		]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)
+		from page_statis_member pv 
+		join member_baseinfo u on u.memberId = pv.memberId
+		left join business_baseinfo b on pv.memberId = b.userid
+		left join (select businessId, categoryId from re_business_category where businessType = 0) bc on b.businessId = bc.businessId
+		left join product_category pc on pc.categoryId = bc.categoryId
+		WHERE  1=1 
+			<#if account?exists && account!="" >
+			     AND u.account like "%":account"%"
+			</#if>
+			<#if shopsName?exists && shopsName!="" >
+			     AND b.shopsName like "%":shopsName"%"
+			</#if>     
+			<#if mobile?exists && mobile!="" >
+			     AND u.mobile like  "%":mobile"%"
+			</#if>	     
+			<#if memberGrade?exists && memberGrade!="" >
+				AND u.memberGrade = :memberGrade
+			</#if>
+			<#if startDate?exists && startDate!="" >
+				AND pv.statisTime >=:startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+				AND pv.statisTime <= :endDate
+			</#if>
+			
+	]]>
+	</sql>
+	
+    <sql id="getBySearch" >
+	 	<![CDATA[
+		select b.shopsName, u.status, u.account, u.mobile, u.createTime, pc.cateName, pv.pageType, pv.statisTime, u.memberGrade 
+		from page_statis_member pv 
+		join member_baseinfo u on u.memberId = pv.memberId
+		left join business_baseinfo b on pv.memberId = b.userid
+		left join (select businessId, categoryId from re_business_category where businessType = 0) bc on b.businessId = bc.businessId
+		left join product_category pc on pc.categoryId = bc.categoryId
+		WHERE  1=1 
+			<#if account?exists && account!="" >
+			     AND u.account like "%":account"%"
+			</#if>
+			<#if shopsName?exists && shopsName!="" >
+			     AND b.shopsName like "%":shopsName"%"
+			</#if>     
+			<#if mobile?exists && mobile!="" >
+			     AND u.mobile like  "%":mobile"%"
+			</#if>	     
+			<#if memberGrade?exists && memberGrade!="" >
+				AND u.memberGrade = :memberGrade
+			</#if>
+			<#if startDate?exists && startDate!="" >
+				AND pv.statisTime >=:startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+				AND pv.statisTime <= :endDate
+			</#if>
+			
+		 	ORDER BY 
+		 		pv.statisTime desc 
+			LIMIT :startRow,:endRow
+		]]>
+    </sql>
+
+</sqlMap>

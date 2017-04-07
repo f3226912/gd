@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="appshare">	
+
+<sql id="getTotalCountByCondition">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			appshare a
+		WHERE EXISTS(
+				 SELECT shareId FROM (
+					SELECT MIN(shareId) AS shareId FROM appshare GROUP BY memberId
+				 )tt WHERE tt.`shareId` = a.`shareId`
+			 )
+		<#if account?exists && account != "">
+			AND a.account = :account
+		</#if>
+		<#if mobile?exists && mobile != "">
+			AND a.mobile = :mobile
+		</#if>
+		<#if realName?exists && realName != "">
+			AND a.realName = :realName
+		</#if>
+		
+		<#if startDate?exists && startDate!="">
+			AND a.shareDate >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND a.shareDate <= :endDate
+		</#if>
+		<#if marketId?exists && marketId != "">
+			AND a.marketId = :marketId
+		</#if>
+	]]>
+	</sql>
+	<sql id="getDetailTotalCountByCondition">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			appshare a
+		WHERE a.memberId=:memberId
+	]]>
+	</sql>
+	<sql id="queryListByCondition">
+	<![CDATA[
+		SELECT 
+			shareId,
+			memberId,
+			realName,
+			mobile,
+			account,
+			marketId,
+			(SELECT m.marketName FROM market m WHERE m.status ='0' AND m.marketType ='2' AND m.id=t.marketId) AS marketName,
+			shareClient,
+			shareAction,
+			shareDate,
+			shareWhere,
+			giftStatu,
+			shareUrl,
+			viewCount,
+			updateUserId,
+			updateTime  
+		FROM 
+			 appshare t
+		WHERE EXISTS(
+				 SELECT shareId FROM (
+					SELECT MIN(shareId) AS shareId FROM appshare GROUP BY memberId
+				 )tt WHERE tt.`shareId` = t.`shareId`
+			 )
+		
+		<#if marketId?exists && marketId!="">
+				AND t.marketId= :marketId
+		</#if>
+		
+		<#if account?exists && account != "">
+			AND t.account = :account
+		</#if>
+		<#if mobile?exists && mobile != "">
+			AND t.mobile = :mobile
+		</#if>
+		<#if realName?exists && realName != "">
+			AND t.realName = :realName
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND t.shareDate >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND t.shareDate <= :endDate
+		</#if>
+		ORDER BY t.shareDate DESC
+	]]>
+	</sql>
+	
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT 
+			shareId,
+			memberId,
+			realName,
+			mobile,
+			account,
+			marketId,
+			(SELECT m.marketName FROM market m WHERE m.status ='0' AND m.marketType ='2' AND m.id=t.marketId) AS marketName,
+			shareClient,
+			shareAction,
+			shareDate,
+			shareWhere,
+			giftStatu,
+			shareUrl,
+			viewCount,
+			updateUserId,
+			updateTime  
+		FROM 
+			 appshare t
+		WHERE EXISTS(
+				 SELECT shareId FROM (
+					SELECT MIN(shareId) AS shareId FROM appshare GROUP BY memberId
+				 )tt WHERE tt.`shareId` = t.`shareId`
+			 )
+		
+		<#if marketId?exists && marketId!="">
+				AND t.marketId= :marketId
+		</#if>
+		<#if account?exists && account != "">
+			AND t.account = :account
+		</#if>
+		<#if mobile?exists && mobile != "">
+			AND t.mobile = :mobile
+		</#if>
+		<#if realName?exists && realName != "">
+			AND t.realName = :realName
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND t.shareDate >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND t.shareDate <= :endDate
+		</#if>
+		ORDER BY t.shareDate DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	<sql id="queryDetailPageByCondition">
+	<![CDATA[
+		SELECT 
+			shareId,
+			memberId,
+			realName,
+			mobile,
+			account,
+			marketId,
+			(SELECT m.marketName FROM market m WHERE m.status ='0' AND m.marketType ='2' AND m.id=t.marketId) AS marketName,
+			shareClient,
+			shareAction,
+			shareDate,
+			shareWhere,
+			giftStatu,
+			shareUrl,
+			viewCount,
+			updateUserId,
+			updateTime  
+		FROM 
+			 appshare t
+		WHERE memberId=:memberId
+		ORDER BY t.shareDate DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	<sql id="getAppShareByCondition">
+	<![CDATA[
+		SELECT 
+			shareId,
+			memberId,
+			realName,
+			mobile,
+			account,
+			marketId,
+			shareClient,
+			shareAction,
+			shareDate,
+			shareWhere,
+			giftStatu,
+			shareUrl,
+			viewCount,
+			updateUserId,
+			updateTime  
+		FROM 
+			 appshare t
+		WHERE  1=1
+		<#if memberId?exists && memberId!="">
+				AND t.memberId= :memberId
+		</#if>
+		<#if marketId?exists && marketId!="">
+				AND t.marketId= :marketId
+		</#if>
+		<#if shareId?exists && shareId!="">
+				AND t.shareId= :shareId
+		</#if>
+	
+	]]>
+	</sql>
+	<sql id="getVisitorIpCount">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 share_visitorip t
+		WHERE  1=1
+		<#if memberId?exists && memberId!="">
+				AND t.memberId= :memberId
+		</#if>
+		<#if marketId?exists && marketId!="">
+				AND t.marketId= :marketId
+		</#if>
+		<#if visitorIp?exists && visitorIp!="">
+				AND t.visitorIp= :visitorIp
+		</#if>
+	
+	]]>
+	</sql>
+	<sql id="insert">
+	<![CDATA[
+	    INSERT INTO  
+	    	appshare
+	    	(
+				memberId,
+				realName,
+				mobile,
+				account,
+				marketId,
+				shareClient,
+				shareAction,
+				shareDate,
+				shareWhere,
+				giftStatu,
+				shareUrl,
+				viewCount
+			)
+	    VALUES
+	    	(
+				:memberId,
+				:realName,
+				:mobile,
+				:account,
+				:marketId,
+				:shareClient,
+				:shareAction,
+				SYSDATE(),
+				:shareWhere,
+				:giftStatu,
+				:shareUrl,
+				0
+			)
+	]]>
+	</sql>
+	<sql id="updateAppShareViewCount">
+	<![CDATA[
+	   update appshare  SET 
+	        viewCount=viewCount+1
+ 			WHERE 1=1
+ 			<#if memberId?exists && memberId!="">
+				AND memberId= :memberId
+			</#if>
+			<#if marketId?exists && marketId!="">
+				AND marketId= :marketId
+			</#if>
+ 	
+	]]>
+	</sql>
+	<sql id="updateStatus">
+	<![CDATA[
+	   update appshare  SET 
+ 			
+ 			<#if giftStatu?exists && giftStatu!="" > 
+ 				 giftStatu=:giftStatu, 
+ 			</#if>
+ 			<#if updateUserId?exists && updateUserId!="" > 
+ 				 updateUserId=:updateUserId, 
+ 			</#if>
+ 			updateTime=SYSDATE()
+ 			WHERE 1=1
+ 			
+ 			<#if shareId?exists && shareId!="">
+				AND shareId= :shareId
+			</#if>
+	]]>
+	</sql>
+	<sql id="addVisitorIpInfo">
+	<![CDATA[
+	    INSERT INTO  
+	    	share_visitorip
+	    	(
+				memberId,
+				marketId,
+				visitorIp,
+				createTime
+			)
+	    VALUES
+	    	(
+				:memberId,
+				:marketId,
+				:visitorIp,
+				SYSDATE()
+			)
+	]]>
+	</sql>
+</sqlMap>

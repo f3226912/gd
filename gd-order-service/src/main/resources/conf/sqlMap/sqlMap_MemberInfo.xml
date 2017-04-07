@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberInfo">
+	<sql id="queryPosBankCard">
+	<![CDATA[
+		SELECT memberId FROM pos_bank_card WHERE bankCardNo = :bankCardNo
+	]]>
+	</sql>
+	<sql id="insertMember">
+	<![CDATA[
+		insert into member_baseinfo(account, mobile, level, status, regetype, nsyUserType, memberGrade, shopRecommend, 
+			createUserId, createTime, updateUserId, updateTime)
+		values (:account, :mobile, :level, :status, :regetype, :nsyUserType, :memberGrade, :shopRecommend, 
+			:createUserId, sysdate(), :createUserId, sysdate())
+	]]>
+	</sql>
+	<sql id="queryMember">
+	<![CDATA[
+		select memberId 
+		from member_baseinfo
+		where account = :account
+	]]>
+	</sql>
+	<sql id="insertPosBankCard">
+	<![CDATA[
+		insert into pos_bank_Card (memberId,bankCardNo,createTime,updateTime,creatUserId,updateUserId)
+		values(:memberId,:bankCardNo,sysdate(),sysdate(),:createUserId,:createUserId)
+	]]>
+	</sql>
+	<sql id="queryBusinessInfo">
+	<![CDATA[	
+	select distinct rbp.businessId, bb.userId sellerMemberId, bb.shopsName, rbm.marketId
+	from re_business_pos rbp join business_baseinfo bb on rbp.businessId = bb.businessId
+		join re_business_market rbm on rbm.businessId = bb.businessId
+	where rbp.posNumber = :posNumber
+	]]>
+	</sql>
+	<sql id="queryBusinessIds">
+	<![CDATA[
+		SELECT 
+			id
+		FROM 
+			re_business_pos 
+		WHERE 
+			id IN(
+                 SELECT 
+                 	MAX(id) 
+                 FROM 
+                 	re_business_pos rb  
+                 WHERE 
+                 	businessId = :businessId AND state=1 
+                 GROUP BY posNumber
+                 ) 
+	]]>
+	</sql>
+</sqlMap>

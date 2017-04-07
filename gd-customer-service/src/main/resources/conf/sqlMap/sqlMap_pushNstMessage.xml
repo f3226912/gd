@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlMap namespace="PushNstMessage">
+
+
+
+
+	<sql id="setReadStatus">
+	<![CDATA[
+	  UPDATE  
+	  nstpush_message
+	  SET 
+	  readed=1,
+	  updateTime = SYSDATE()
+	  WHERE 
+	  id=:messageId
+	]]>
+	</sql>
+	 
+	 
+	 	<sql id="getNewCount">
+	<![CDATA[
+	    select count(id)  from
+	    	nstpush_message
+		WHERE 
+		    memberId=:memberId
+		    and readed=0
+		    and IFNULL(deleted,0)=0
+	]]>
+	</sql>
+	
+	
+
+	
+	
+		<sql id="delNstPush">
+		<![CDATA[
+		UPDATE nstpush_message SET deleted=1,updateTime=SYSDATE()
+		WHERE 
+		id IN 
+		<#assign n = orderNoList?size />
+			<#if n gt 0>
+				(
+				<#list orderNoList as messageId>
+					<#if messageId_index != n-1>
+							${messageId} ,
+						<#else>
+							${messageId}
+					</#if>
+				</#list>
+				) 
+			</#if>
+		]]>
+	</sql>
+
+</sqlMap>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlMap namespace="PushFilterDate">
+	<sql id="getList">
+		select * from pushfilterdate p where now() BETWEEN startDate and endDate;
+ 	</sql>
+ </sqlMap>	

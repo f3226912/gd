@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>谷登农批网—欢迎注册农商友-农批商app</title>
+	<meta name="keywords" content="谷登农批网、农商友-农批商、农产品批发、农产品、农批市场" />
+	<meta name="description" content="谷登农批网的农商友-农批商app是一款服务于农批市场商户，为农产品供应商提供一键发布农产品供应信息，管理网上店铺，打理线上订单，最终实现农产品便捷交易和增加订单量的手机客户端！欢迎您下载注册！" />
+	<meta name="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit">	
+	<meta name="Resource-type" content="Document" />
+	<link rel="stylesheet" href="v1.0/css/global.css">
+	<link rel="stylesheet" href="v1.0/css/app-nps.css">
+	<link rel="stylesheet" href="v1.0/css/jquery.fullPage.css">
+	<script src="v1.0/js/jquery-1.8.3.min.js"></script>
+	<script src="v1.0/js/gdui.js"></script>
+
+</head>
+<body> 
+	
+	<ul id="menu">
+		<li data-menuanchor="firstPage"><a href="#firstPage"></a></li>
+		<li data-menuanchor="secondPage"><a href="#secondPage"></a></li>
+		<li data-menuanchor="3rdPage"><a href="#3rdPage"></a></li>
+		<li data-menuanchor="4thPage"><a href="#4thPage"></a></li>
+	</ul>
+	<!--head star-->
+		<!--#include virtual="zhuanti/pub/head.html"-->
+	<!--head end-->	
+	<div id="fullpage">
+		<div class="section " id="section0">
+			
+			<div class="wrap-conten">
+			 	<div class="section0-bg"></div>
+			 	<div class="sec-posr">
+			 		<div class="sect-txt first-sect-txt">
+				 		<h2 class="sect-txt-t">足不出户 货销全国</h2>
+				 		<p>谷登农批网的农商友-农批商app是一款服务于农批市场商户，</p>
+				 		<p>为农产品供应商提供一键发布农产品供应信息，</p>
+				 		<p>管理网上店铺，打理线上订单，</p>
+				 		<p>最终实现农产品便捷交易和增加订单量的手机客户端！欢迎您下载注册！</p>			 		
+				 	</div>
+				 	<div class="ewm-a-wrap first-ewm">
+				 		<img src="v1.0/images/appdown/erweima-nps.png" alt="手机扫码下载农速通">
+				 		<a href="http://www.gdeng.cn/nsy-sell/nsy-nps.apk" class="ewmdown-btn">Android下载</a>
+				 		<a href="https://itunes.apple.com/cn/app/nong-pi-shang/id1074569572?mt=8" class="ewmdown-btn1">AppStore下载</a>
+				 	</div>
+				 	<a href="#secondPage" class="sec-arrow"></a>
+			 	</div>
+			 	
+			 	
+			</div>
+			
+		</div>
+		<div class="section" id="section1">
+			<div class="sec-posr">
+				<div class="second-main"></div>
+				<div class="sect-ico second-ico">货源选择</div>
+		 		<div class="sect-txt second-sect-txt">
+			 		<h2 class="sect-txt-t">店主足不出户 产品货销全国</h2>
+			 		<p>方便商户发布海量产品信息，</p>
+			 		<p>让你的商品展示无死角，</p>
+			 		<p>注册即可实现足不出户，货销全国！</p>			 		
+			 	</div>
+			 	<div class="ewm-a-wrap second-ewm">
+			 		<img src="v1.0/images/appdown/erweima-nps.png" alt="手机扫码下载农速通">
+			 		<a href="http://www.gdeng.cn/nsy-sell/nsy-nps.apk" class="ewmdown-btn">Android下载</a>
+				 	<a href="https://itunes.apple.com/cn/app/nong-pi-shang/id1074569572?mt=8" class="ewmdown-btn1">AppStore下载</a>
+			 	</div>	
+			 	<a href="#3rdPage" class="sec-arrow"></a>
+		 	</div>
+		</div>
+		<div class="section" id="section2">
+			<div class="sec-posr">
+				<div class="third-main"></div>
+				<div class="sect-ico third-ico">海量货源</div>
+		 		<div class="sect-txt third-sect-txt">
+			 		<h2 class="sect-txt-t">轻松查找订单 便捷订单结算</h2>
+			 		<p>方便商户实时跟踪在线下单记录，</p>
+			 		<p>轻松完成订单结算，</p>
+			 		<p>注册即可实现一键结算，订单管理！</p>	
+			 	</div>
+			 	<div class="ewm-a-wrap third-ewm">
+			 		<img src="v1.0/images/appdown/erweima-nps.png" alt="手机扫码下载农速通">
+			 		<a href="http://www.gdeng.cn/nsy-sell/nsy-nps.apk" class="ewmdown-btn">Android下载</a>
+				 	<a href="https://itunes.apple.com/cn/app/nong-pi-shang/id1074569572?mt=8" class="ewmdown-btn1">AppStore下载</a>
+			 	</div>	
+			 	<a href="#4thPage" class="sec-arrow"></a>
+		 	</div>
+		</div>
+		<div class="section" id="section3">
+			<div class="sec-posr">
+				<div class="fourth-main"></div>
+				<div class="sect-ico fourth-ico">按需预约</div>
+		 		<div class="sect-txt fourth-sect-txt">
+			 		<h2 class="sect-txt-t">农批商 商户生意好帮手</h2>
+			 		<p>一键打理网上店铺、及时更新产品信息，</p>
+			 		<p>便捷订单管理与签收，</p>
+			 		<p>农商友-农批商在手，生意打理不用愁！</p>	
+			 	</div>
+			 	<div class="ewm-a-wrap fourth-ewm">
+			 		<img src="v1.0/images/appdown/erweima-nps.png" alt="手机扫码下载农速通">
+			 		<a href="http://www.gdeng.cn/nsy-sell/nsy-nps.apk" class="ewmdown-btn">Android下载</a>
+				 	<a href="https://itunes.apple.com/cn/app/nong-pi-shang/id1074569572?mt=8" class="ewmdown-btn1">AppStore下载</a>
+			 	</div>	
+			 	
+		 	</div>
+		</div>
+	</div>	
+	<script src="v1.0/js/jquery-1.8.3.min.js"></script>
+	<script src="v1.0/js/jquery.fullPage.js"></script>
+	<script src="v1.0/js/jquery.easing.min.js"></script>
+	<script type="text/javascript">
+		$(".app-h-wrap").width($('body').width()).show();
+		$(document).ready(function() {
+			$('#fullpage').fullpage({
+				sectionsColor: ['#010300','#91a0ff', '#5cd393', '#6dd5d4'],
+				anchors: ['firstPage', 'secondPage', '3rdPage', '4thPage'],
+				menu: '#menu',
+				afterLoad: function(anchorLink, index){
+					$("#menu").removeClass("first-sec second-sec third-sec fourth-sec")
+					if(index == 1){
+						//$(".head-wrap").fadeOut();
+						$("#menu").addClass("first-sec");
+						$(".first-sect-txt").animate({
+							top: (($(".first-sect-txt").parent(".sec-posr").height()-0)-($(".first-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".first-sect-txt").height()*1.3)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".first-ewm").animate({
+							right: '134px',
+							opacity:1
+						}, 1500, 'easeOutExpo');
+					}
+					//section 2
+					if(index == 2){
+						//moving the image
+						$("#menu").addClass("second-sec");
+						$(".second-sect-txt").fadeIn("fast").animate({
+							top: (($(".second-sect-txt").parent(".sec-posr").height()-0)-($(".second-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".second-sect-txt").height()*1.5)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".second-ewm").animate({
+							bottom: '20px',
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".second-main").animate({
+							bottom: '-2px',
+							left:'150px',
+							opacity:1
+						}, 1500, 'easeOutQuad',function(){
+							$(".second-ico").animate({
+								top:($(".second-main").height()-0)*0.12+($(".second-main").position().top-0)+'px',
+								opacity:1
+							})
+						});
+
+					}
+					if(index == 3){
+						$("#menu").addClass("third-sec");
+						$(".third-sect-txt").fadeIn("fast").animate({
+							top: (($(".third-sect-txt").parent(".sec-posr").height()-0)-($(".third-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".third-sect-txt").height()*1.5)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".third-ewm").animate({
+							bottom: '20px',
+							opacity:1
+						}, 1500, 'easeInOutCubic');
+						$(".third-main").animate({
+							left: '150px',
+							opacity:1
+						}, 1500, 'easeOutQuart',function(){
+							$(".third-ico").animate({
+								top:($(".third-main").height()-0)*0.42+($(".third-main").position().top-0)+'px',
+								opacity:1
+							})
+						});
+					}
+					if(index == 4){
+						$("#menu").addClass("fourth-sec");
+						$(".fourth-sect-txt").fadeIn("fast").animate({
+							top: (($(".fourth-sect-txt").parent(".sec-posr").height()-0)-($(".fourth-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".fourth-sect-txt").height()*1.5)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".fourth-ewm").animate({
+							right: '134px',
+							opacity:1
+						}, 1500, 'easeInOutCubic');
+						$(".fourth-main").animate({
+							left: '150px',
+							bottom:'-3px',
+							opacity:1
+						}, 1500, 'easeOutQuart',function(){
+							$(".fourth-ico").animate({
+								left:'77px',
+								top:($(".fourth-main").height()-0)*0.38+($(".fourth-main").position().top-0)+'px',
+								opacity:1
+							})
+						});
+					}
+	
+				}
+			});
+
+		});
+	</script>
+	<script>
+	var  _hmt  =  _hmt  ||  [];
+	(function()  {
+	    var  hm  =  document.createElement("script");
+	    hm.src  =  "//hm.baidu.com/hm.js?e2dcda84fba5f34e3f6954d2990a58fa";
+	    var  s  =  document.getElementsByTagName("script")[0];  
+	    s.parentNode.insertBefore(hm,  s);
+	})();
+	</script>
+</body>
+</html>

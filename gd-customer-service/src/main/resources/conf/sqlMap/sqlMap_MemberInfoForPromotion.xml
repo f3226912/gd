@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="MemberForPromotion">
+
+	<!-- 本条sql只返回一条记录, 不要擅自更改本sql, 如有需要请先咨询ZYZ -->
+	<sql id="queryMemberInfoForPromotion">
+	<![CDATA[
+		SELECT
+			t.memberId, t.account,t.password,t.mobile,t.unionid,t.openId,t.memberGrade,t.validTime
+		FROM
+			member_baseinfo t
+		WHERE  1=1 
+		<#if unionid?exists && unionid!="" >
+		    AND t.unionid =:unionid
+		</#if>
+		<#if account?exists && account!="" >
+		    AND t.account =:account
+		</#if>
+		<#if mobile?exists && mobile!="" >
+		    AND t.mobile =:mobile
+		</#if>
+		<#if memberId?exists && memberId!="" >
+		    AND t.memberId =:memberId
+		</#if>
+		LIMIT 0,1
+	]]>
+	</sql>
+
+	<sql id="queryMemberInfoForPromotionBymemberId">
+		<![CDATA[
+		SELECT
+			t.memberId, t.account,t.password,t.mobile,t.unionid,t.openId,t.memberGrade,t.validTime
+		FROM
+			member_baseinfo t
+		WHERE  t.memberId =:memberId
+	]]>
+	</sql>
+	<sql id="queryMemberInfoForPromotionByMobile">
+		<![CDATA[
+		SELECT
+			t.memberId, t.account,t.password,t.mobile,t.unionid,t.openId,t.memberGrade,t.validTime
+		FROM
+			member_baseinfo t
+		WHERE t.mobile =:mobile
+	]]>
+	</sql>
+
+	<sql id="queryMemberSelectPageByCondition">
+	<![CDATA[
+		SELECT
+			m.memberId,
+			m.account,
+			m.realName,
+			m.mobile,
+			m.createTime
+		FROM
+			member_baseinfo m
+		WHERE
+			1 = 1
+		<#if account?exists && account!="" >
+		     AND m.account like "%":account"%"
+		</#if>
+		<#if userGroup?exists && userGroup=="0" >
+		     AND m.openId is not null
+		</#if>
+		ORDER BY m.createTime desc 
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getMemberSelectTotalByCondition">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			member_baseinfo m
+		WHERE
+			1 = 1
+		<#if account?exists && account!="" >
+		     AND m.account like "%":account"%"
+		</#if>
+		<#if userGroup?exists && userGroup=="0" >
+		     AND m.openId is not null
+		</#if>
+	]]>
+	</sql>
+
+	<!-- -->
+
+	<sql id="queryMemberInfoForPromotion">
+		<![CDATA[
+		SELECT
+			t.memberId, t.account,t.password,t.mobile,t.unionid,t.openId
+		FROM
+			member_baseinfo t
+		WHERE  1=1
+		<#if unionid?exists && unionid!="" >
+		    AND t.unionid =:unionid
+		</#if>
+		<#if account?exists && account!="" >
+		    AND t.account =:account
+		</#if>
+		<#if mobile?exists && mobile!="" >
+		    AND t.mobile =:mobile
+		</#if>
+		<#if memberId?exists && memberId!="" >
+		    AND t.memberId =:memberId
+		</#if>
+		LIMIT 0,1
+	]]>
+	</sql>
+</sqlMap>

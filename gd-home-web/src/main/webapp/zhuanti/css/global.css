@@ -1,0 +1,45 @@
+/** css reset s **/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+input,button,select,textarea{outline:none}
+ol,ul,li{list-style:none}
+img{vertical-align:top;border:none;}
+textarea{overflow: auto;vertical-align: top;resize:none;}
+body{width:auto;height:auto;_height:100%;min-height:100%;color:#3a3a3a; }
+body,input,textarea{font: 12px Microsoft YaHei,Tahoma, Helvetica, Arial, "\5b8b\4f53", sans-serif;}
+button,input,select,textarea {font-size:100%;}
+h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+table {border-collapse:collapse;border-spacing:0}
+em,i,b{ font-style:normal; font-weight:normal;}
+a{color:#3a3a3a;text-decoration:none;cursor:pointer;}
+a:hover{color:#069139;}
+a:focus{outline:0;}
+input,button,select,textarea{ outline:none; border:none 0; background:none;}
+/** css reset e **/
+.clear{clear:both}
+.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+.clearfix{zoom:1}
+
+.fl{float:left;}
+.fr{float:right;}
+.fn-text{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.por{position:relative;}
+.poa{position:absolute;}
+.dn{display:none;}
+.dsi{display:inline;}
+.dsb{display:block;}
+.tac{text-align: center;}
+.dn{display: none;}
+
+.wrap-1200{width: 1200px;margin: 0 auto;}
+.wrap-1100{width: 1100px;margin: 0 auto;}
+.wrap-1170{width: 1170px;margin: 0 auto;}
+
+/** menu s **/
+.main-menu{width: 100%;height: 48px;border-bottom: #069139 2px solid;color: #3e3e3e;font-size: 16px;
+		line-height: 48px;}
+.main-menu-item{display: inline-block;width: 125px;text-align: center;position: relative;}
+.main-menu .active{color: #069139;}
+.main-menu .active:after{content: "";position: absolute;bottom: 0;border-left: transparent 7px solid;
+		border-right: transparent 7px solid;border-bottom: #069139 8px solid;left: 50%;margin-left: -7px;}
+
+

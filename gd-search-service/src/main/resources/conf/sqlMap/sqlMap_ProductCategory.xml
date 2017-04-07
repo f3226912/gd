@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProductCategory">	
+	<!-- 删除产品分类信息 -->
+	<sql id="deleteProductCategory">
+	<![CDATA[
+		update 
+			product_category t 
+		set 
+			t.status = '0' 
+		where 
+			t.categoryId = :id
+	]]>
+	</sql>
+	
+	<!-- 检查某个分类下是否存在产品 -->
+	<sql id="isExistProductByCateId">
+	<![CDATA[
+		select 
+			productId 
+		from 
+			product_baseinfo t 
+		where 
+			t.cateId = :cateId and t.state != 4 and t.state != 5 and t.productType = '1'
+	]]>
+	</sql>
+	
+	<!-- 修改产品分类信息 -->
+	<sql id="updateProductCategory">
+	<![CDATA[
+		update product_category  
+		set 
+			<#if cateName?exists && cateName!="">
+				cateName = :cateName,
+			</#if>
+			<#if curLevel?exists && curLevel!="">
+				curLevel = :curLevel,
+			</#if>
+			<#if updateUserId?exists && updateUserId!="">
+				updateUserId = :updateUserId,
+			</#if>
+			<#if parentId?exists && parentId!="">
+				parentId = :parentId,
+			</#if>
+			<#if orderNum?exists && orderNum!="">
+				orderNum = :orderNum,
+			</#if>
+			<#if status?exists && status!="">
+				status = :status,
+			</#if>
+			<#if typeIcon?exists && typeIcon!="">
+				typeIcon = :typeIcon,
+			</#if>
+			updateTime = SYSDATE() 
+		where categoryId = :categoryId
+	]]>
+	</sql>
+	
+	<!-- 查看产品分类信息 -->
+	<sql id="getProductCategory">
+	<![CDATA[
+		select 
+			t.categoryId,t.cateName,t.curLevel,t.parentId,
+			t.orderNum,t.status,t.typeIcon,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime  
+		from 
+			product_category t 
+		where 
+			t.categoryId = :id
+	]]>
+	</sql>
+	
+	<!-- 查询所有产品分类信息 -->
+	<sql id="listProductCategoryByName">
+	<![CDATA[
+		select 
+			t.categoryId,t.cateName,t.curLevel,t.parentId,
+			t.orderNum,t.status,t.typeIcon,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime 
+		from 
+			product_category t 
+		where 
+			t.status = '1' and t.cateName = :cateName 
+	]]>
+	</sql>
+	
+	<!-- 查询所有产品分类信息 -->
+	<sql id="listProductCategory">
+	<![CDATA[
+		select 
+			t.categoryId,t.cateName,t.curLevel,t.parentId,
+			t.orderNum,t.status,t.typeIcon,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime
+		from product_category t 
+		where 
+			t.status = '1'  
+		order by 
+			t.orderNum desc
+		
+	]]>
+	</sql>
+	
+	<!-- 查看一级产品分类信息 -->
+	<sql id="listTopProductCategory">
+	<![CDATA[
+		select  
+			t.categoryId,t.cateName,t.curLevel,t.parentId,
+			t.orderNum,t.status,t.typeIcon,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime
+		from product_category t 
+		where 
+			t.status = '1' and t.curLevel = '1'
+		order by 
+			t.orderNum desc
+	]]>
+	</sql>
+	
+	<!-- 查看子产品分类信息 -->
+	<sql id="listChildProductCategory">
+	<![CDATA[
+		select  
+			t.categoryId,t.cateName,t.curLevel,t.parentId,
+			t.orderNum,t.status,t.typeIcon,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime 
+		from product_category t 
+		where 
+			t.status = '1' and t.parentId = :parentId 
+		order by 
+			t.orderNum desc
+	]]>
+	</sql>
+	
+	<!-- 分页查询所有产品分类信息 -->
+	<sql id="queryProductCategoryPage">
+	<![CDATA[
+		select (select count(1) from product_category p where p.parentId = t.id) as isBottom, 
+			t.id,t.name,t.parentId,t.level,t.pictureUrl,
+			isInHomePage,t.des,t.createUserId,t.createTime,t.updateUserId,
+			t.status,t.updateTime 
+		from product_category  t 
+		where 1=1 	
+			<#if status?exists && status!="">
+				and t.status = :status 
+			</#if>
+			<#if parentId?exists && parentId!="">
+				and t.parentId = :parentId
+			</#if>
+			<#if level?exists && level!="">
+				and t.level = :level
+			</#if>
+			<#if name?exists && name!="">
+				and t.name like :name
+			</#if>
+		order by createTime desc 
+		limit :startIndex,:maxCount
+	]]>
+	</sql>
+	
+	<!-- 查询产品分类 -->
+	<sql id="queryProductCategoryPageCount">
+	<![CDATA[
+		select count(1) totalRows 
+		from product_category t 
+		where 1=1
+			<#if status?exists && status!="">
+				and t.status = :status 
+			</#if>
+			<#if parentId?exists && parentId!="">
+				and t.parentId = :parentId
+			</#if>
+			<#if level?exists && level!="">
+				and t.level = :level
+			</#if>
+			<#if name?exists && name!="">
+				and t.name like "%":name"%"
+			</#if>
+	]]>
+	</sql>
+</sqlMap>

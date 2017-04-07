@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="cashRequest">
+	<sql id="getByMemberId">
+ 		SELECT 
+		 	cashReqId  ,
+	  		cashAmount , 
+	  		reqUid ,
+	  		idCard,
+	  	 	depositBankName ,
+	  		bankCardNo  ,
+	  		memberId  ,
+	   		reqTime ,
+	   		payingTime  ,
+	    	transNo ,
+	     	status ,
+	      	createTime  ,
+	  		createUserId  ,
+	   		updateTime  ,
+	  		updateUserId  
+		FROM 
+			 cash_request 
+		WHERE 
+		 	 memberId=:memberId
+		ORDER BY createTime DESC
+		LIMIT 
+			:startRow,:endRow 
+	</sql>
+	
+	
+	
+	<sql id="add">
+ 	<![CDATA[
+	    INSERT INTO  cash_request
+	          (
+			  		cashAmount , 
+			  		reqUid ,
+			  		idCard,
+			  	 	depositBankName ,
+			  		bankCardNo  ,
+			  		memberId  ,
+			   		reqTime ,
+			   		payingTime  ,
+			    	transNo ,
+			     	status ,
+			      	createTime  ,
+			  		createUserId  ,
+			   		updateTime  ,
+			  		updateUserId  
+              )
+	        values
+	         (
+	       		:cashAmount , 
+		  		:reqUid ,
+		  		:idCard,
+		  	 	:depositBankName ,
+		  		:bankCardNo  ,
+		  		:memberId  ,
+		   		:reqTime ,
+		   		:payingTime  ,
+		    	:transNo ,
+		     	:status ,
+		      	   SYSDATE(), 
+		  		:createUserId  ,
+		   		   SYSDATE(), 
+		  		:updateUserId  
+              )
+	        
+		]]>
+	</sql>
+	
+	
+	
+	<sql id="getTotal">
+		<![CDATA[
+ 		SELECT 
+		 	count(*)
+		FROM 
+			 cash_request 
+		WHERE 
+		<#if memberId?exists && memberId!="" >
+			   memberId = :memberId 
+		</#if>	
+		]]>
+	</sql>
+	
+	
+	
+	
+	
+	
+	 
+</sqlMap>

@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PromotionSource">
+	<sql id="getById">
+	<![CDATA[
+		 SELECT 
+		 	ID,NAME
+		 FROM
+		 	promotion_source ps
+		 WHERE
+		 	id=:id
+	]]>
+	</sql>
+	
+	<sql id="getTotal">
+	<![CDATA[
+		 SELECT 
+		 	count(1)
+		 FROM
+		 	promotion_source ps
+		 WHERE
+		 	1=1
+		 	<#if name?exists && name!="" >
+		 		AND	name LIKE "%":name"%"
+			</#if>
+		 	
+	]]>
+	</sql>
+	
+	<sql id="getByName">
+	<![CDATA[
+		 SELECT 
+		 	ps.ID,ps.NAME,pu.sourceId,pu.type,pu.url,pu.urlImg, pt.`name` as typeName
+		 FROM
+		 	promotion_source ps
+		 LEFT JOIN 
+		 	promotion_URL PU
+		 ON 
+		 	PS.ID=PU.SOURCEID
+		 LEFT JOIN
+			promotion_type pt
+		 on pt.id = PU.type
+		 WHERE
+		 	1=1
+		 	<#if name?exists && name!="" >
+		 		AND	ps.name LIKE "%":name"%"
+			</#if>
+		 	ORDER BY PU.sourceId, PU.type
+	]]>
+	</sql>
+	
+	<sql id="deleteById">
+	<![CDATA[
+		 DELETE FROM
+		 	promotion_source  
+		 WHERE
+		 	id=:id
+	]]>
+	</sql>
+		
+	
+	<sql id="updateById">
+	<![CDATA[
+		 UPDATE
+		 	promotion_source ps
+		 SET
+		    name=:name
+		 WHERE 
+		 	id=:id
+	]]>
+	</sql>
+		
+	<sql id="getPromotionUrlBySourceId">
+	<![CDATA[
+		 SELECT 
+		 	id ,sourceId,type,url,urlImg
+	     FROM
+	    	promotion_url pu
+	     WHERE
+	        sourceId=:sourceId  
+	]]>
+	</sql>
+	
+	<sql id="deletePromotionUrlBySourceId">
+	<![CDATA[
+		  DELETE FROM
+		 	promotion_url  
+		 WHERE
+	        sourceId=:sourceId  
+	]]>
+	</sql>
+	 
+	<sql id="statisticsTotal">
+	<![CDATA[
+	 	SELECT 
+	 		count(1)
+		from 
+			(
+			 	SELECT 
+			 		ps.sourceId, ps.type, p.`name`, COUNT(ps.sourceId) as count
+				from 
+					promotion_statistics ps , promotion_source p
+				where 
+					ps.sourceId = p.id
+					<#if name?exists && name!="" >
+				 		AND	p.name LIKE "%":name"%"
+					</#if>
+					<#if createTimeStart?exists && createTimeStart!="" >
+				 		AND	ps.createTime >= :createTimeStart
+					</#if>
+					<#if createTimeEnd?exists && createTimeEnd!="" >
+				 		AND ps.createTime <= :createTimeEnd
+					</#if>
+				GROUP BY 
+					ps.sourceId, ps.type
+			) t 
+	]]>
+	</sql>
+	 
+	<sql id="statisticsAllCount">
+	<![CDATA[
+	 	SELECT 
+	 		count(1)
+		from 
+			promotion_statistics ps , promotion_source p
+		where 
+			ps.sourceId = p.id
+			<#if name?exists && name!="" >
+		 		AND	p.name LIKE "%":name"%"
+			</#if>
+			<#if createTimeStart?exists && createTimeStart!="" >
+		 		AND	ps.createTime >= :createTimeStart
+			</#if>
+			<#if createTimeEnd?exists && createTimeEnd!="" >
+		 		AND ps.createTime <= :createTimeEnd
+			</#if>
+	]]>
+	</sql>
+	 
+	<sql id="statisticsListAll">
+	<![CDATA[
+	 	SELECT 
+	 		ps.sourceId, ps.type, p.`name`, ps.ip, ps.createTime
+		from 
+			promotion_statistics ps , promotion_source p
+		where 
+			ps.sourceId = p.id
+			<#if name?exists && name!="" >
+		 		AND	p.name LIKE "%":name"%"
+			</#if>
+			<#if createTimeStart?exists && createTimeStart!="" >
+		 		AND	ps.createTime >= :createTimeStart
+			</#if>
+			<#if createTimeEnd?exists && createTimeEnd!="" >
+		 		AND ps.createTime <= :createTimeEnd
+			</#if>
+			
+	]]>
+	</sql>
+	 
+	<sql id="statisticsGroupList">
+	<![CDATA[
+	 	SELECT 
+	 		ps.sourceId, ps.type, p.`name`, COUNT(ps.sourceId) as count
+		from 
+			promotion_statistics ps , promotion_source p
+		where 
+			ps.sourceId = p.id
+			<#if name?exists && name!="" >
+		 		AND	p.name LIKE "%":name"%"
+			</#if>
+			<#if createTimeStart?exists && createTimeStart!="" >
+		 		AND	ps.createTime >= :createTimeStart
+			</#if>
+			<#if createTimeEnd?exists && createTimeEnd!="" >
+		 		AND ps.createTime <= :createTimeEnd
+			</#if>
+		GROUP BY 
+			ps.sourceId, ps.type  
+			
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getTypeTotal">
+	<![CDATA[
+		 SELECT 
+		 	count(1)
+		 FROM
+		 	promotion_type pt
+		 WHERE
+		 	1=1
+		 	<#if name?exists && name!="" >
+		 		AND	name LIKE "%":name"%"
+			</#if>
+	]]>
+	</sql>	
+	
+	<sql id="addTypeForPromotionURL">
+	<![CDATA[
+		insert into promotion_url(sourceid,type,url) 
+		SELECT sourceid,:type, concat(:prefix,sourceid,:suffix)
+		from promotion_url GROUP BY sourceid
+	]]>
+	</sql>	
+	
+	<sql id="getTypeInCondition">
+	<![CDATA[
+		 SELECT 
+		 	pt.id, pt.name, pt.url, pt.createUserId, pt.createTime, pt.updateUserId, pt.updateTime
+		 FROM
+		 	promotion_type pt
+		 WHERE
+		 	1=1
+		 	<#if name?exists && name!="" >
+		 		AND	name LIKE "%":name"%"
+			</#if>
+		 	LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+		<sql id="getTypeById">
+	<![CDATA[
+		 SELECT 
+		 	pt.id, pt.name, pt.url, pt.createUserId, pt.createTime, pt.updateUserId, pt.updateTime
+		 FROM
+		 	promotion_type pt
+		 WHERE
+		 	pt.id = :id
+		 	
+	]]>
+	</sql>
+	
+	<sql id="updateTypeById">
+	<![CDATA[
+		 UPDATE
+		 	promotion_type pt
+		 SET
+		 	<#if name?exists && name!="" >
+			    pt.name = :name,
+			</#if>
+			<#if url?exists && url!="" >
+			    pt.url = :url,
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+		 		pt.updateUserId = :updateUserId, 
+			</#if>
+		 		pt.updateTime = :updateTimeString
+		 WHERE 
+		 	id=:id
+	]]>
+	</sql>
+	
+	<sql id="deleteTypeById">
+	<![CDATA[
+		 DELETE FROM
+		 	promotion_type  
+		 WHERE
+		 	id=:id
+	]]>
+	</sql>
+</sqlMap>

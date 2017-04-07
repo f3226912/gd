@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 可以从core文件中copy过来 -->
+<config>
+  <luceneMatchVersion>5.3.0</luceneMatchVersion>
+ 
+  <directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.StandardDirectoryFactory}"/>
+
+  <dataDir>${solr.solrtest.data.dir:}</dataDir>  solr.solrtest.data.dir存放的是索引目录
+
+  <updateHandler class="solr.DirectUpdateHandler2">
+    <updateLog>
+      <str name="dir">${solr.solrtest.data.dir:}</str>
+    </updateLog>
+  </updateHandler>
+
+  <requestHandler name="/get" class="solr.RealTimeGetHandler">
+    <lst name="defaults">
+      <str name="omitHeader">true</str>
+    </lst>
+  </requestHandler>
+ 
+  <requestHandler name="/replication" class="solr.ReplicationHandler" startup="lazy" />
+
+  
+  <requestHandler name="/dataimport" class="org.apache.solr.handler.dataimport.DataImportHandler">  
+        <lst name="defaults">  
+            <str name="config">data-config.xml</str>  
+        </lst>  
+    </requestHandler>  
+  
+  <requestDispatcher handleSelect="true" >
+    <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048" />
+  </requestDispatcher>
+ 
+  <requestHandler name="standard" class="solr.StandardRequestHandler" default="true" />
+  <requestHandler name="/analysis/field" startup="lazy" class="solr.FieldAnalysisRequestHandler" />
+  <requestHandler name="/update" class="solr.UpdateRequestHandler"  />
+  <requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
+
+  <requestHandler name="/admin/ping" class="solr.PingRequestHandler">
+    <lst name="invariants">
+      <str name="q">solrpingquery</str>
+    </lst>
+    <lst name="defaults">
+      <str name="echoParams">all</str>
+    </lst>
+  </requestHandler>
+
+  <!-- config for the admin interface -->
+  <admin>
+    <defaultQuery>solr</defaultQuery>
+  </admin>
+
+</config>

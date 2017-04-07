@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NstOrderComplaint">
+	<sql id="getById">                 
+ 	<![CDATA[ 
+ 		SELECT 
+ 			noc.id,
+ 			noc.orderNo,
+ 			noc.complaintsDetails,
+ 			noc.appealDetails,
+ 			noc.reply,
+ 			noc.createTime,
+ 			noc.createUserId,
+ 			mb.realName as createUserName
+ 		FROM 
+ 			nst_order_complaint noc
+ 		LEFT JOIN 
+ 			member_baseinfo mb ON mb.memberId = noc.createUserId
+ 		WHERE
+ 			noc.id = :id
+ 	]]>
+ 	</sql>
+ 	
+ 	<!-- 后台统计订单投诉记录数  -->
+	<sql id="getOrderComplaintTotal">
+	<![CDATA[
+		 SELECT 
+			count(1)  
+			FROM
+		          nst_order_complaint  c
+      INNER JOIN  nst_order_baseinfo b
+      ON b.orderNo = c.orderNo	
+		WHERE  
+			1=1 
+			<#if orderNo?exists && orderNo!="" >
+			     AND b.orderNo =:orderNo 
+			</#if> 
+			<#if shipperName?exists && shipperName!="" >
+			     AND b.shipperName like "%":shipperName"%"
+			</#if> 
+			<#if shipperMobile?exists && shipperMobile!="" >
+			     AND b.shipperMobile =:shipperMobile 
+			</#if> 
+			<#if ownerName?exists && ownerName!="" >
+			     AND b.ownerName like "%":ownerName"%"
+			</#if>
+			<#if ownerMobile?exists && ownerMobile!="" >
+			     AND b.ownerMobile =:ownerMobile 
+			</#if>  
+			<#if startDate?exists && startDate!="" >
+			     AND DATE_FORMAT(orderTime,'%Y-%c-%d') >= DATE_FORMAT(:startDate,'%Y-%c-%d')
+			</#if> 
+			<#if endDate?exists && endDate!="" >
+			     AND DATE_FORMAT(orderTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate,'%Y-%c-%d')
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" >
+				 AND  b.orderStatus =:orderStatus
+			</#if>	
+			<#if replyStatus?exists && replyStatus!="" >
+				 AND  c.replyStatus =:replyStatus
+			</#if>	
+	]]>
+	</sql>
+	
+	
+	<sql id="getOrderComplaintListByCondition" >
+    	<![CDATA[
+	  SELECT 
+			c.id, b.orderNo, orderType,f_address_detail, s_address_detail ,  
+			orderStatus, orderTime , shipperName, shipperMobile, ownerName,ownerMobile,
+            c.replyStatus AS complaintStatus
+	  FROM
+		          nst_order_complaint  c
+      INNER JOIN  nst_order_baseinfo b
+      ON b.orderNo = c.orderNo	
+		WHERE  
+			1=1 
+			<#if orderNo?exists && orderNo!="" >
+			     AND b.orderNo =:orderNo 
+			</#if> 
+		   <#if shipperName?exists && shipperName!="" >
+			     AND b.shipperName like "%":shipperName"%"
+			</#if> 
+			<#if shipperMobile?exists && shipperMobile!="" >
+			     AND b.shipperMobile =:shipperMobile 
+			</#if> 
+			<#if ownerName?exists && ownerName!="" >
+			     AND b.ownerName like "%":ownerName"%"
+			</#if>
+			<#if ownerMobile?exists && ownerMobile!="" >
+			     AND b.ownerMobile =:ownerMobile 
+			</#if>  
+			<#if startDate?exists && startDate!="" >
+			     AND DATE_FORMAT(orderTime,'%Y-%c-%d') >= DATE_FORMAT(:startDate,'%Y-%c-%d')
+			</#if> 
+			<#if endDate?exists && endDate!="" >
+			     AND DATE_FORMAT(orderTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate,'%Y-%c-%d')
+			</#if>
+			<#if orderStatus?exists && orderStatus!="" >
+				 AND  b.orderStatus =:orderStatus
+			</#if>	
+			<#if replyStatus?exists && replyStatus!="" >
+				 AND  c.replyStatus =:replyStatus
+			</#if>	
+			        order by orderTime desc 
+					LIMIT :startRow,:endRow
+			
+		]]>
+    </sql>
+    
+    
+    <sql id="getOrderInfoById">                 
+ 	<![CDATA[
+ 		SELECT
+			c.id,
+			nob.orderNo,
+			nob.orderType,
+			nob.orderTime,
+			nob.f_address_detail,
+			nob.s_address_detail,
+			nob.shipperName,
+			nob.shipperMobile,
+			nob.orderStatus,
+			ma.goodsName,
+			ma.totalSize,
+			ma.totalWeight,
+			ma.hundredweight,
+			ma.sendGoodsType,
+			ma.sendDate,
+			nob.ownerName,
+			nob.ownerMobile,
+			car.carNumber,
+			c.complaintsDetails ,
+			c.reply,
+			c.createUserId,
+			c.createTime
+		FROM
+			nst_order_baseinfo nob
+			INNER JOIN member_address ma ON nob.memberAddressId = ma.id
+			LEFT JOIN member_certifi mc ON nob.memberId = mc.memberId
+			LEFT JOIN cars car  ON nob.carId=car.id
+			LEFT JOIN nst_order_complaint  c ON  nob.orderNo = c.orderNo	
+ 		WHERE
+ 			c.id = :id
+ 	]]>
+ 	</sql>
+ 	
+ 	<!-- 同城订单查询 -->
+ 	 <sql id="getSameCityOrderById">                 
+ 	<![CDATA[
+ 		SELECT
+			c.id,
+			nob.orderNo,
+			nob.orderType,
+			nob.orderTime,
+			nob.f_address_detail,
+			nob.s_address_detail,
+			nob.shipperName,
+			nob.shipperMobile,
+			nob.orderStatus,
+			ma.totalSize,
+			ma.totalWeight,
+			ma.hundredweight,
+			ma.goodsType,
+			nob.ownerName,
+			nob.ownerMobile,
+			car.carNumber,
+			c.complaintsDetails ,
+			c.reply,
+			c.createUserId,
+			c.createTime
+		FROM
+			nst_order_baseinfo nob
+			INNER JOIN nst_same_city_address ma ON nob.same_memberAddressId = ma.id
+			LEFT JOIN member_certifi mc ON nob.memberId = mc.memberId
+			LEFT JOIN cars car  ON nob.carId=car.id
+			LEFT JOIN nst_order_complaint  c ON  nob.orderNo = c.orderNo	
+ 		WHERE
+ 			c.id = :id
+ 	]]>
+ 	</sql>
+    
+    
+    <sql id="updateStatus">
+	<![CDATA[
+		UPDATE nst_order_complaint
+	    SET replyStatus=1 , 
+	        reply=:reply  ,
+	        updateUserId=:updateUserId ,
+            updateTime=sysdate()
+	    WHERE id=:id
+	]]>
+	</sql>
+	
+ 	
+</sqlMap>

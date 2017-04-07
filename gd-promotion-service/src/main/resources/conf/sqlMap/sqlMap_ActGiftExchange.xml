@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GiftExchange">
+
+	<sql id="getActivityExchangeRecord">
+	<![CDATA[
+		SELECT
+			DATE_FORMAT(e.createTime,'%Y-%m-%d %T') as exchangeTime,e.STATUS, ua.account, ua.mobile, ag.gift_id as gift_id,
+			e.score AS score, g.`NAME` as giftName, ag.exchange_score as exchangeScore
+		FROM
+			act_gift_exchange_apply e, act_re_user_activity ua, act_re_activitity_gift ag, act_gift_baseinfo g
+		WHERE
+			e.userid = ua.userid AND e.activity_id = ua.activity_id AND e.activity_id = ag.activity_id AND e.gift_id = ag.gift_id AND g.id = ag.gift_id
+			AND e.activity_id = :activityId
+		<#if userid?exists && userid!="" >
+		    and e.userid = :userid
+		</#if>
+		<#if status?exists && status!="" >
+		    and e.STATUS = :status
+		</#if>
+		<#if gift_id?exists && gift_id!="" >
+		    and ag.gift_id = :gift_id
+		</#if>
+			ORDER BY e.createTime DESC
+
+		<#if usePage?exists && usePage = "1" >
+			LIMIT :startRow,:endRow
+		</#if>
+	]]>
+	</sql>
+
+<!-- 	<sql id="getUserActivityExchangeRecord">
+	<![CDATA[
+		SELECT
+			e.send_time as exchangeTime,e.STATUS, ua.account, ua.mobile, g.`NAME` as giftName
+		FROM
+			act_gift_exchange_apply e, act_re_user_activity ua, act_gift_baseinfo g
+		WHERE
+			e.userid = ua.userid AND e.gift_id = g.id
+			AND e.activity_id = :activityId
+			AND e.userid = :userid
+		<#if status?exists && status!="" >
+		    and e.STATUS = :status,
+		</#if>
+	]]>
+	</sql> -->
+
+	<sql id="queryPageByCondition">
+	<![CDATA[
+		SELECT
+			ge.id,
+		  	ge.activity_id ,
+			ac.NAME as activityName,
+			ge.gift_id,
+		  	g.`NAME` as giftName,
+		  	ge.`STATUS` as status,
+			ge.send_time,
+		  	ge.createUserId,
+		  	ge.createTime,
+		  	ua.account,
+		  	ua.mobile
+		FROM
+			act_gift_exchange_apply ge
+		LEFT JOIN
+			act_activity_baseinfo ac ON ac.id = ge.activity_id
+		LEFT JOIN
+			act_gift_baseinfo g ON g.id = ge.gift_id
+		LEFT JOIN
+			act_re_user_activity ua ON ge.activity_id = ua.activity_id AND ua.userid = ge.userid
+		WHERE
+			1 = 1
+		<#if account?exists && account != "">
+			AND ua.account = :account
+		</#if>
+		<#if mobile?exists && mobile != "">
+			AND ua.mobile = :mobile
+		</#if>
+		<#if activityName?exists && activityName != "">
+			AND ac.NAME = :activityName
+		</#if>
+		<#if giftName?exists && giftName != "">
+			AND g.NAME = :giftName
+		</#if>
+		<#if status?exists && status != "">
+			AND ge.STATUS = :status
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND ge.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND ge.createTime <= :endDate
+		</#if>
+		ORDER BY ge.createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+
+	<sql id="getTotalCountByCondition">
+	<![CDATA[
+		SELECT
+			count(*)
+		FROM
+			act_gift_exchange_apply ge
+		LEFT JOIN
+			act_activity_baseinfo ac ON ac.id = ge.activity_id
+		LEFT JOIN
+			act_gift_baseinfo g ON g.id = ge.gift_id
+		LEFT JOIN
+			act_re_user_activity ua ON ge.activity_id = ua.activity_id AND ua.userid = ge.userid
+		WHERE
+			1 = 1
+		<#if account?exists && account != "">
+			AND ua.account = :account
+		</#if>
+		<#if mobile?exists && mobile != "">
+			AND ua.mobile = :mobile
+		</#if>
+		<#if activityName?exists && activityName != "">
+			AND ac.NAME = :activityName
+		</#if>
+		<#if giftName?exists && giftName != "">
+			AND g.NAME = :giftName
+		</#if>
+		<#if status?exists && status != "">
+			AND ge.STATUS = :status
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND ge.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND ge.createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="queryListByCondition">
+	<![CDATA[
+		SELECT
+			ge.id,
+		  	ge.activity_id ,
+			ac.NAME as activityName,
+			ge.gift_id,
+		  	g.`NAME` as giftName,
+		  	ge.`STATUS` as status,
+			ge.send_time,
+		  	ge.createUserId,
+		  	ge.createTime,
+		  	ua.account,
+		  	ua.mobile
+		FROM
+			act_gift_exchange_apply ge
+		LEFT JOIN
+			act_activity_baseinfo ac ON ac.id = ge.activity_id
+		LEFT JOIN
+			act_gift_baseinfo g ON g.id = ge.gift_id
+		LEFT JOIN
+			act_re_user_activity ua ON ge.activity_id = ua.activity_id AND ua.userid = ge.userid
+		WHERE
+			1 = 1
+		<#if account?exists && account != "">
+			AND ua.account = :account
+		</#if>
+		<#if mobile?exists && mobile != "">
+			AND ua.mobile = :mobile
+		</#if>
+		<#if activityName?exists && activityName != "">
+			AND ac.NAME = :activityName
+		</#if>
+		<#if giftName?exists && giftName != "">
+			AND g.NAME = :giftName
+		</#if>
+		<#if status?exists && status != "">
+			AND ge.STATUS = :status
+		</#if>
+		<#if startDate?exists && startDate!="">
+			AND ge.createTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="">
+			AND ge.createTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			t.id,
+		  	t.activity_id ,
+			(select NAME from act_activity_baseinfo where id = t.activity_id) as activityName,
+			t.gift_id,
+			(select NAME from act_gift_baseinfo where id = t.gift_id) as giftName,
+			t.userid,
+		  	t.`STATUS` as status,
+			t.send_time,
+		  	t.createUserId,
+		  	t.createTime,
+		  	ua.account,
+		  	ua.mobile,
+		  	t.updateUserId,
+		  	t.updateTime
+		 FROM
+		 	act_gift_exchange_apply t
+		 LEFT JOIN
+		 	act_re_user_activity ua ON ua.activity_id = t.activity_id AND ua.userid = t.userid
+		 WHERE
+		 	t.id = :id
+	]]>
+	</sql>
+
+	<sql id="update">
+	<![CDATA[
+		UPDATE
+		 	act_gift_exchange_apply
+		 SET
+		 	activity_id = :activity_id,
+		 	gift_id = :gift_id,
+		 	updateUserId = :updateUserId,
+		 	updateTime = SYSDATE()
+		 WHERE
+		 	id = :id
+	]]>
+	</sql>
+
+	<sql id="updateStatus">
+	<![CDATA[
+		UPDATE
+		 	act_gift_exchange_apply
+		 SET
+		 	`STATUS` = :status,
+		 	<#if status?exists && status == "2">
+		 		send_time = SYSDATE(),
+		 	</#if>
+		 	updateUserId = :updateUserId,
+		 	updateTime = SYSDATE()
+		 WHERE
+		 	id = :id
+	]]>
+	</sql>
+
+	<sql id="getUserExchangeCount">
+	<![CDATA[
+		SELECT count(*) FROM act_gift_exchange_apply where activity_id = :activityId AND userid = :userId
+	]]>
+	</sql>
+	
+	<sql id="getUserExchangeScore">
+		<![CDATA[
+			SELECT IFNULL(SUM(agea.`score`),0) AS sumExchangeScore 
+			FROM act_gift_exchange_apply agea
+			WHERE agea.`STATUS` IN('1','2') AND agea.activity_id = :activityId AND agea.userid = :userid
+		]]>
+	</sql>
+	
+</sqlMap>

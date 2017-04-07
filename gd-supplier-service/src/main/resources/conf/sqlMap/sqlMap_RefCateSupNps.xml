@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="RefCateSupNps">
+
+	<!-- 根据产品ID查询图片记录 -->
+	<sql id="getRefCateSupNpsByNpsCateId">
+	<![CDATA[
+		SELECT 
+			refId,suppCategoryId,npsCategoryId,status,
+			orderNum,marketId,createTime,createUserId,
+			updateUserId,updateTime,type
+			
+		FROM 
+			ref_cate_sup_nps r
+		WHERE 
+			r.npsCategoryId = :cateId
+			<#if type?exists && type!="1" >
+				AND r.type = :type
+			<#else>
+				AND (r.type = :type OR r.type IS NULL)
+			</#if>
+	]]>
+	</sql>
+	
+		<!-- 批量添加对应关系 -->
+	<sql id="updateRefCateSupNps">
+	<![CDATA[
+		INSERT INTO ref_cate_sup_nps(suppCategoryId,npsCategoryId,status,orderNum,marketId,createUserId,updateUserId,type) VALUES
+		<#assign n = cateList?size />
+		<#if n gt 0>
+			<#list cateList as npsRef>
+				(
+					'${npsRef.suppCategoryId}',
+					'${npsRef.npsCategoryId}',
+					'${npsRef.status}',
+					'${npsRef.orderNum}',
+					'${npsRef.marketId}',
+					'${npsRef.createUserId}',
+					'${npsRef.updateUserId}',
+					'${npsRef.type}'
+				)
+				<#if npsRef_index != n-1>
+				,
+				</#if>
+			</#list>
+		</#if>
+		
+
+	]]>
+	</sql>
+	
+	<!-- 删除对应农批商数据 -->
+	<sql id="deleteRefCateSupNpsByNpsCateId">
+	<![CDATA[
+		DELETE FROM ref_cate_sup_nps 
+		WHERE npsCategoryId = :cateId
+		<#if type?exists && type!="1" >
+			AND type = :type
+		<#else>
+			AND (type = :type OR type IS NULL)
+		</#if>
+	]]>
+	</sql>
+	
+</sqlMap>

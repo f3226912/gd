@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Prices">
+<!-- 市场价格管理操作SQL -->
+	<!-- 根据ID查找数据 -->
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			t.id,productName,productTypeId,t.maketId,m.`marketName`, averagePrice,
+			minPrice,maxPrice,DATE,publishTime,t.status,t.description,locale,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,targetUrl
+		FROM
+			prices t
+			LEFT JOIN market m 
+		    ON t.`maketId` = m.`id` 
+		    AND m.`status` = '0' 
+		    AND m.`marketType` = '2' 
+		WHERE t.id =:id
+	]]>
+	</sql>
+	
+	<!-- 分页获取集合列表 -->
+	<sql id="getPricesList">
+	<![CDATA[
+		SELECT
+			t.id,productName,productTypeId,t.maketId,m.`marketName`, averagePrice,
+			minPrice,maxPrice,DATE,publishTime,t.status,t.description,locale,
+			t.createUserId,t.createTime,t.updateUserId,t.updateTime,targetUrl
+		FROM
+			prices t
+			LEFT JOIN market m 
+		    ON t.`maketId` = m.`id` 
+		    AND m.`status` = '0' 
+		    AND m.`marketType` = '2' 
+		WHERE
+			1 = 1 
+			<#if productName?exists && productName!="" >
+			      AND productName like "%":productName"%"
+			</#if>
+			<#if locale?exists && locale!="" >
+			      AND locale like "%":locale"%"
+			</#if>
+			<#if maketId?exists && maketId!="" >
+			      AND t.maketId = :maketId 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND publishTime >= :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND publishTime <= :endDate
+			</#if>
+			ORDER BY t.id DESC 
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<!-- 获取数据总记录条数 -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			prices  t 
+		WHERE  1=1
+		<#if productName?exists && productName!="" >
+		      AND productName like "%":productName"%"
+		</#if>
+		<#if locale?exists && locale!="" >
+		      AND locale like "%":locale"%"
+		</#if>
+		<#if maketId?exists && maketId!="" >
+			      AND maketId = :maketId 
+		</#if>
+		<#if startDate?exists && startDate!="" >
+		      AND publishTime >= :startDate
+		</#if>
+		<#if endDate?exists && endDate!="" >
+		      AND publishTime <= :endDate
+		</#if>
+	]]>
+	</sql>
+	
+	<!-- 判断该记录是否存在 -->
+	<sql id="checkExsit">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			prices  t 
+		WHERE 1=1
+		AND id =:id
+	]]>
+	</sql>
+	
+	<!-- 新增 市场价格记录-->
+	<sql id="addPricesDTO">
+	<![CDATA[
+	    INSERT INTO prices (
+			productName,productTypeId,maketId,averagePrice,
+			minPrice,maxPrice,date,status,description,locale,
+			createUserId,createTime,publishTime,targetUrl
+		)
+		VALUES(
+			:productName,:productTypeId,:maketId,:averagePrice,
+			:minPrice,:maxPrice,:date_string,:status,:description,:locale,
+			:createUserId,SYSDATE(),:publishTime_str,:targetUrl
+		)
+	]]>
+	</sql>
+	 <!-- 删除市场价格信息 -->
+	<sql id="deletePricesDTO">
+	<![CDATA[
+		DELETE FROM prices WHERE id =:id
+	]]>
+	</sql>
+	<!-- 更新市场价格信息 -->
+	<sql id="updatePricesDTO">
+	<![CDATA[
+	    UPDATE prices SET 
+	    	productName=:productName,productTypeId=:productTypeId,maketId=:maketId,averagePrice=:averagePrice,
+			minPrice=:minPrice,maxPrice=:maxPrice,date=:date_string,status=:status,description=:description,locale=:locale,
+			updateUserId=:updateUserId,updateTime=SYSDATE(),publishTime=:publishTime_str,targetUrl=:targetUrl WHERE id=:id
+	]]>
+	</sql>
+</sqlMap>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PushNotice">
+	<sql id="deleteById">
+	<![CDATA[
+		DELETE FROM 
+			push_notice 
+		WHERE 
+			id=:id
+	]]>
+	</sql>
+	
+	<sql id="updateDTO">
+	<![CDATA[
+	    UPDATE 
+	    	push_notice t 
+	    SET 
+	    	t.state=:state,
+	    	t.updateUserId=:updateUserId,
+	    	t.updateUserName=:updateUserName,
+			t.updateTime=SYSDATE()
+	    WHERE 
+	    	t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="updatePushNoticeInfo">
+	<![CDATA[
+	    UPDATE 
+	    	push_notice t 
+	    SET 
+	    	t.title = :title,
+	    	t.content =:content,
+	    	t.client = :client,
+	    	t.updateUserId=:updateUserId,
+	    	t.updateUserName=:updateUserName,
+			t.updateTime=SYSDATE()
+	    WHERE 
+	    	t.id=:id
+	]]>
+	</sql>
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+			push_notice t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if title?exists && title!="" >
+			      AND t.title like "%":title"%" 
+			</#if>
+			<#if content?exists && content!="" >
+			      AND t.content = :content 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if linkUrl?exists && linkUrl!="" >
+			      AND t.linkUrl = :linkUrl 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if client?exists && client!="" >
+			      AND t.client like "%":client"%"
+			</#if>
+	]]>
+	</sql>
+
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			t.id,t.title,t.content,t.state,t.linkUrl,t.createUserId,t.createUserName,t.client,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime 
+		FROM 
+			push_notice t 
+		WHERE 
+			t.id=:id
+	]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+	<![CDATA[
+		SELECT 
+			t.id,t.title,t.content,t.state,t.linkUrl,t.createUserId,t.createUserName,t.client,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime 
+		FROM 
+			push_notice t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if title?exists && title!="" >
+			      AND t.title like "%":title"%" 
+			</#if>
+			<#if content?exists && content!="" >
+			      AND t.content = :content 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if linkUrl?exists && linkUrl!="" >
+			      AND t.linkUrl = :linkUrl 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if>
+			<#if client?exists && client!="" >
+			      AND t.client like "%":client"%"
+			</#if>
+		ORDER BY 
+			t.createTime desc 
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT 
+			t.id,t.title,t.content,t.state,t.linkUrl,t.createUserId,t.createUserName,t.client,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime 
+		FROM 
+			push_notice t 
+		WHERE 1=1 
+			<#if id?exists && id!="" >
+			      AND t.id = :id 
+			</#if>
+			<#if title?exists && title!="" >
+			      AND t.title like "%":title"%" 
+			</#if>
+			<#if content?exists && content!="" >
+			      AND t.content = :content 
+			</#if>
+			<#if state?exists && state!="" >
+			      AND t.state = :state 
+			</#if>
+			<#if linkUrl?exists && linkUrl!="" >
+			      AND t.linkUrl = :linkUrl 
+			</#if>
+			<#if startDate?exists && startDate!="" >
+			      AND t.createTime > :startDate
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			      AND t.createTime < :endDate
+			</#if>
+			<#if createUserId?exists && createUserId!="" >
+			      AND t.createUserId = :createUserId 
+			</#if>
+			<#if createUserName?exists && createUserName!="" >
+			      AND t.createUserName = :createUserName 
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+			      AND t.updateUserId = :updateUserId 
+			</#if>
+			<#if updateUserName?exists && updateUserName!="" >
+			      AND t.updateUserName = :updateUserName 
+			</#if> 
+			<#if client?exists && client!="" >
+			      AND t.client like "%":client"%"
+			</#if> 
+		ORDER BY 
+			t.createTime desc 
+	]]>
+	</sql>
+	<!-- 获取未读的记录数 -->
+	<sql id="getUnReadMessageCount">
+		 <![CDATA[ 
+		 
+		 SELECT COUNT(1) as total FROM gudeng.`push_notice` pn 
+		 WHERE 1=1 AND NOT EXISTS(SELECT rmID FROM gudeng.`push_notice_user` pnu 
+		 		WHERE pnu.`noticeID`=pn.`id`
+		 		<#if userID?exists && userID!="" > 
+		 			AND pnu.`userID`=:userID
+		 		</#if>
+		 		)
+			AND IFNULL(FIND_IN_SET(:client,pn.`client`),0)>0
+			AND pn.state='1'
+			AND DATE_FORMAT(pn.createTime, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(:createTimeStr, '%Y-%m-%d %H:%i:%s')
+		 ]]>
+	</sql>
+	
+	<sql id="getMessageDetail">
+	<![CDATA[
+		SELECT 
+			t.id,t.title,t.content,t.state,t.linkUrl,t.createUserId,t.createUserName,t.client,
+			t.createTime,t.updateUserId,t.updateUserName,t.updateTime 
+		FROM 
+			push_notice t 
+		WHERE 
+			t.id=:id
+		AND t.state='1'
+	]]>
+	</sql>
+	 <sql id="updateMessageIsread">
+	<![CDATA[
+			INSERT INTO push_notice_user(noticeID,userID,createUserID,createTime,isread,isdel) 
+			VALUES (:id,:userID,:userID,SYSDATE(),'2',:isdel)
+	]]>
+	</sql>
+	<sql id="updateSysmessageIsdel">
+		<![CDATA[
+			UPDATE push_notice_user pnu
+			SET 
+			pnu.isdel=2
+			WHERE pnu.userID=:userID
+			AND pnu.noticeID=:id
+			
+		]]>
+	</sql>
+	
+	<sql id="getMessageListByUser">
+		 <![CDATA[
+		SELECT v.id,v.title,v.content,v.state,v.createTime,v.client,IFNULL(d.isread,'1')AS isread 
+		FROM (SELECT * FROM gudeng.`push_notice` pn 
+		 WHERE 1=1 AND NOT EXISTS(SELECT rmID FROM gudeng.`push_notice_user` pnu 
+		 		WHERE pnu.`noticeID`=pn.`id`
+		 		 
+		 			AND pnu.`userID`=:userID
+		 			AND  pnu.isdel ='2'
+		 		
+		 		)
+			AND IFNULL(FIND_IN_SET(:client,pn.`client`),0)>0
+			AND pn.state='1'
+			AND DATE_FORMAT(pn.createTime, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(:createTimeStr, '%Y-%m-%d %H:%i:%s'))v LEFT JOIN gudeng.`push_notice_user` d
+			ON v.id=d.noticeID
+			AND d.`userID`=:userID
+	    ORDER BY v.createTime DESC
+	    LIMIT :startRow , :endRow
+	]]>
+	</sql>
+	
+	<!-- 获取未读的记录数 -->
+	<sql id="getPushUserCount">
+		 <![CDATA[ 
+		 SELECT COUNT(1) AS total FROM gudeng.`push_notice_user` pnu 
+		 WHERE pnu.`noticeID`=:id
+		 AND pnu.`userID`=:userID
+		 ]]>
+	</sql>
+	
+	<!-- 查询当前用户的注册日期 -->
+	<sql id="getUserRegisteTime">
+		 <![CDATA[ 
+		SELECT mb.`createTime` AS createTime 
+		FROM gudeng.`member_baseinfo` mb
+		WHERE mb.`memberId` =:userID
+		 ]]>
+	</sql>
+	
+</sqlMap>

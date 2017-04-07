@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderFeeItemDetailEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO order_fee_item_detail(
+	amount,id,createTime,createUser,orderNo,description,payerType,
+	feeType,payeeType
+	) VALUES (
+	:amount,:id,:createTime,:createUser,:orderNo,:description,:payerType,
+	:feeType,:payeeType
+	)
+	]]>
+</sql>
+
+	<sql id="batchInsertEntity">
+	<![CDATA[
+		INSERT INTO order_fee_item_detail(
+			amount, createTime, createUser, orderNo, description, payerType,
+			feeType, payeeType
+		) VALUES (
+			:amount, SYSDATE(), :createUser, :orderNo, :description, :payerType,
+			:feeType, :payeeType
+		)
+	]]>
+	</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE order_fee_item_detail SET 
+	<#if amount?exists && amount!="" >
+		amount=:amount,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if createUser?exists && createUser!="" >
+		createUser=:createUser,
+	</#if>	
+	<#if orderNo?exists && orderNo!="" >
+		orderNo=:orderNo,
+	</#if>	
+	<#if description?exists && description!="" >
+		description=:description,
+	</#if>	
+	<#if payerType?exists && payerType!="" >
+		payerType=:payerType,
+	</#if>	
+	<#if feeType?exists && feeType!="" >
+		feeType=:feeType,
+	</#if>	
+	<#if payeeType?exists && payeeType!="" >
+		payeeType=:payeeType,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	amount,id,createTime,createUser,orderNo,description,payerType,
+	feeType,payeeType
+	FROM order_fee_item_detail WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	amount,id,createTime,createUser,orderNo,description,payerType,
+	feeType,payeeType
+	FROM order_fee_item_detail WHERE 1=1
+	<#if amount?exists && amount!="" >
+		AND amount=:amount
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+		AND orderNo=:orderNo
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if payerType?exists && payerType!="" >
+		AND payerType=:payerType
+	</#if>
+	<#if feeType?exists && feeType!="" >
+		AND feeType=:feeType
+	</#if>
+	<#if payeeType?exists && payeeType!="" >
+		AND payeeType=:payeeType
+	</#if>
+	<#if payeeType?exists && payeeType!="" >
+		AND payeeType=:payeeType
+	</#if>
+	<#if memberAddressId?exists && memberAddressId!="" >
+	    AND orderNo= (SELECT orderNo FROM product_delivery_detail WHERE memberAddressId=:memberAddressId LIMIT 1)
+	</#if>
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	amount,id,createTime,createUser,orderNo,description,payerType,
+	feeType,payeeType
+	FROM order_fee_item_detail WHERE 1=1
+	<#if amount?exists && amount!="" >
+		AND amount=:amount
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+		AND orderNo=:orderNo
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if payerType?exists && payerType!="" >
+		AND payerType=:payerType
+	</#if>
+	<#if feeType?exists && feeType!="" >
+		AND feeType=:feeType
+	</#if>
+	<#if payeeType?exists && payeeType!="" >
+		AND payeeType=:payeeType
+	</#if>
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM order_fee_item_detail WHERE 1=1
+	<#if amount?exists && amount!="" >
+		AND amount=:amount
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if createUser?exists && createUser!="" >
+		AND createUser=:createUser
+	</#if>
+	<#if orderNo?exists && orderNo!="" >
+		AND orderNo=:orderNo
+	</#if>
+	<#if description?exists && description!="" >
+		AND description=:description
+	</#if>
+	<#if payerType?exists && payerType!="" >
+		AND payerType=:payerType
+	</#if>
+	<#if feeType?exists && feeType!="" >
+		AND feeType=:feeType
+	</#if>
+	<#if payeeType?exists && payeeType!="" >
+		AND payeeType=:payeeType
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM order_fee_item_detail WHERE id=:id
+	]]>
+</sql>
+
+<sql id="deleteByOrderNo">
+	<![CDATA[
+	DELETE FROM order_fee_item_detail WHERE orderNo = :orderNo
+	]]>
+</sql>
+
+<sql id="deleteByParam">
+	<![CDATA[
+	DELETE FROM order_fee_item_detail 
+	   WHERE 1=1
+	 <#if orderNo?exists && orderNo!="" >
+	 	AND orderNo = :orderNo
+	 </#if>
+	 <#if feeType?exists && feeType!="" >
+	 	AND feeType=:feeType
+	 </#if>
+	 <#if payerType?exists && payerType!="" >
+	 	AND payerType=:payerType
+	 </#if>
+	]]>
+</sql>
+</sqlMap>

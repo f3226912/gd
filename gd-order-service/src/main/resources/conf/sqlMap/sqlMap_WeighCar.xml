@@ -1,0 +1,847 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="WeighCar">
+	
+	<sql id="insert">
+		<![CDATA[
+			INSERT INTO weigh_car
+			(
+				memberId,carId,tare,type,createTime,totalWeight,netWeight,status,tapWeight,
+				tareMemberId, totalMemberId, netCreateTime, totalCreateTime,place,quality,allWeigh,others,updateTime
+			)
+			VALUES 
+			(
+				:memberId,:carId,:tare,:type,SYSDATE(), :totalWeight,:netWeight,:status,:tapWeight,
+				:tareMemberId,:totalMemberId,:netCreateTime,:totalCreateTime,:place,:quality,:allWeigh,:others,SYSDATE()
+			)
+		]]>
+	</sql>
+	
+	<sql id="delete">
+		<![CDATA[
+			DELETE FROM weigh_car
+			WHERE
+			weighCarId = :weighCarId
+		]]>
+	</sql>
+	
+	<sql id="batchDeleteById">
+		<![CDATA[
+			DELETE FROM weigh_car
+			WHERE
+			weighCarId IN 
+			<#assign n = weighCarId?size />
+			<#if n gt 0>
+				(
+				<#list weighCarIds as id>
+					<#if weighCarId_index != n-1>
+							${id} ,
+						<#else>
+							${id}
+					</#if>
+				</#list>
+				) 
+			</#if>
+		]]>
+	</sql>
+	
+	<sql id="updateDTO">
+		<![CDATA[
+			UPDATE
+			weigh_car
+			SET
+			<#if memberId?exists && memberId!="" >
+					     memberId=:memberId,
+			</#if>
+			<#if carId?exists && carId!="" >
+					     carId=:carId,
+			</#if>	
+			<#if tar3?exists && tar3!="" >
+					    tar=:tar,
+			</#if>	
+			<#if totalWeight?exists && totalWeight!="" >
+					    totalWeight=:totalWeight,
+			</#if>	
+			<#if netWeight?exists && netWeight!="" >
+					    netWeight=:netWeight,
+			</#if>	
+			<#if type?exists && type!="" >
+					     type=:type,
+			</#if>
+			<#if updateUserId?exists && updateUserId!="" >
+					     updateUserId=:updateUserId,
+			</#if>
+			<#if status?exists && status!="" >
+					     status=:status,
+			</#if>
+			<#if allWeigh?exists && allWeigh!="" >
+					     allWeigh=:allWeigh,
+			</#if>
+			<#if place?exists && place!="" >
+					     place=:place,
+			</#if>
+			<#if quality?exists && quality!="" >
+					     quality=:quality,
+			</#if>
+			<#if others?exists && others!="" >
+					     others=:others,
+			</#if>
+			updateTime=SYSDATE()
+			WHERE
+				weighCarId = :weighCarId
+		]]>
+	</sql>
+	
+	<sql id="getTotal">
+		<![CDATA[
+			SELECT 
+				count(wc.weighCarId)
+			FROM
+			weigh_car wc
+			LEFT JOIN 
+			member_baseinfo mb
+			ON
+			mb.memberId = wc.memberId
+			LEFT JOIN 
+			order_outmarketinfo ob
+			ON
+			ob.weighCarId = wc.weighCarId
+			LEFT JOIN
+			car_baseinfo cb
+			ON
+			cb.carId = wc.carId
+			LEFT JOIN 
+			member_baseinfo mb1
+			ON
+			mb1.memberId = wc.tareMemberId
+			LEFT JOIN 
+			member_baseinfo mb2
+			ON
+			mb2.memberId = wc.totalMemberId
+			WHERE
+			1=1  
+			<#if memberId?exists && memberId!="" >
+					    AND wc.memberId=:memberId
+			</#if>
+			<#if carId?exists && carId!="" >
+					    AND wc.carId=:carId
+			</#if>	
+			<#if tare?exists && tare!="" >
+					    AND wc.tare=:tare
+			</#if>
+			<#if status?exists && status!="" >
+					    AND wc.status=:status
+			</#if>	
+			<#if totalWeight?exists && totalWeight!="" >
+					    AND wc.totalWeight=:totalWeight
+			</#if>	
+			<#if netWeight?exists && netWeight!="" >
+					    AND wc.netWeight=:netWeight
+			</#if>	
+			<#if type?exists && type!="" >
+					    AND wc.type=:type
+			</#if>	
+			<#if allWeigh?exists && allWeigh!="" >
+					     AND wc.allWeigh=:allWeigh
+			</#if>
+			<#if place?exists && place!="" >
+					     AND wc.place=:place
+			</#if>
+			<#if quality?exists && quality!="" >
+					     AND wc.quality=:quality
+			</#if>
+			<#if others?exists && others!="" >
+					     AND wc.others=:others
+			</#if>
+			<#if account?exists && account!="" >
+					     AND mb.account=:account
+			</#if>
+			<#if carNumber?exists && carNumber!="" >
+					     AND cb.carNumber like "%":carNumber"%"
+			</#if>
+			<#if tapWeight?exists && tapWeight!="" >
+					     AND wc.tapWeight=:tapWeight
+			</#if>
+			<#if tareStartTime?exists && tareStartTime!="" >
+					     AND wc.tareCreateTime>=:tareStartTime
+			</#if>
+			<#if tareEndTime?exists && tareEndTime!="" >
+					     AND wc.tareCreateTime<=:tareEndTime
+			</#if>
+			<#if totalStartTime?exists && totalStartTime!="" >
+					     AND wc.totalCreateTime>=:totalStartTime
+			</#if>
+			<#if totalEndTime?exists && totalEndTime!="" >
+					     AND wc.totalCreateTime<=:totalEndTime
+			</#if>
+			
+		]]>
+	</sql>
+	
+	<sql id="getListByConditionPage">
+		<![CDATA[
+			SELECT 
+				weighCarId,memberId,carId,tare,totalWeight,netWeight
+				type,createTime,createUserId,
+				updateTime,updateUserId 
+			FROM
+			weigh_car
+			WHERE
+			1=1  
+			<#if memberId?exists && memberId!="" >
+					    AND memberId=:memberId
+			</#if>
+			<#if carId?exists && carId!="" >
+					    AND carId=:carId
+			</#if>	
+			<#if tare?exists && tare!="" >
+					    AND tare=:tare
+			</#if>	
+			<#if totalWeight?exists && totalWeight!="" >
+					    AND totalWeight=:totalWeight
+			</#if>	
+			<#if netWeight?exists && netWeight!="" >
+					    AND netWeight=:netWeight
+			</#if>	
+			<#if type?exists && type!="" >
+					    AND type=:type
+			</#if>	
+			<#if allWeigh?exists && allWeigh!="" >
+					     AND allWeigh=:allWeigh
+			</#if>
+			<#if place?exists && place!="" >
+					     AND place=:place
+			</#if>
+			<#if quality?exists && quality!="" >
+					     AND quality=:quality
+			</#if>
+			<#if others?exists && others!="" >
+					     AND others=:others
+			</#if>
+			ORDER BY createTime DESC
+			LIMIT 
+			:startRow,:endRow 
+		]]>
+	</sql>
+	
+	<sql id="getListByConditionPageForAdmin">
+		<![CDATA[
+			SELECT 
+				wc.weighCarId,wc.memberId,wc.carId,wc.tare,wc.totalWeight,wc.netWeight,
+				wc.type,wc.createTime,wc.createUserId,
+				wc.updateTime,wc.updateUserId, 
+				wc.tareCreateTime,wc.totalCreateTime,mb.account account,mb.realName as memberName,cb.carNumber, ob.orderWeigh,
+				mb1.account as tareMember,mb2.account as totalMember, ob.omId, cwp.type carType,mb.mobile as memberPhone
+			FROM
+			weigh_car wc
+			LEFT JOIN 
+			member_baseinfo mb
+			ON
+			mb.memberId = wc.memberId
+			LEFT JOIN 
+			order_outmarketinfo ob
+			ON
+			ob.weighCarId = wc.weighCarId
+			LEFT JOIN 
+			re_order_outmark roo
+			ON
+			roo.omId = ob.omId
+			LEFT JOIN
+			car_baseinfo cb
+			ON
+			cb.carId = wc.carId
+			LEFT JOIN 
+			member_baseinfo mb1
+			ON
+			mb1.memberId = wc.tareMemberId
+			LEFT JOIN 
+			member_baseinfo mb2
+			ON
+			mb2.memberId = wc.totalMemberId
+			LEFT JOIN
+			car_weigh_pro cwp
+			ON
+			cwp.cwpId=cb.cwpId
+			WHERE
+			1=1  
+			<#if memberId?exists && memberId!="" >
+					    AND wc.memberId=:memberId
+			</#if>
+			<#if carId?exists && carId!="" >
+					    AND wc.carId=:carId
+			</#if>	
+			<#if tare?exists && tare!="" >
+					    AND wc.tare=:tare
+			</#if>
+			<#if status?exists && status!="" >
+					    AND wc.status=:status
+			</#if>	
+			<#if totalWeight?exists && totalWeight!="" >
+					    AND wc.totalWeight=:totalWeight
+			</#if>	
+			<#if netWeight?exists && netWeight!="" >
+					    AND wc.netWeight=:netWeight
+			</#if>	
+			<#if type?exists && type!="" >
+					    AND wc.type=:type
+			</#if>	
+			<#if allWeigh?exists && allWeigh!="" >
+					     AND wc.allWeigh=:allWeigh
+			</#if>
+			<#if place?exists && place!="" >
+					     AND wc.place=:place
+			</#if>
+			<#if quality?exists && quality!="" >
+					     AND wc.quality=:quality
+			</#if>
+			<#if others?exists && others!="" >
+					     AND wc.others=:others
+			</#if>
+			<#if account?exists && account!="" >
+					     AND mb.account=:account
+			</#if>
+			<#if carNumber?exists && carNumber!="" >
+					     AND cb.carNumber like "%":carNumber"%"
+			</#if>
+			<#if tapWeight?exists && tapWeight!="" >
+					     AND wc.tapWeight=:tapWeight
+			</#if>
+			<#if tareStartTime?exists && tareStartTime!="" >
+					     AND wc.tareCreateTime>=:tareStartTime
+			</#if>
+			<#if tareEndTime?exists && tareEndTime!="" >
+					     AND wc.tareCreateTime<=:tareEndTime
+			</#if>
+			<#if totalStartTime?exists && totalStartTime!="" >
+					     AND wc.totalCreateTime>=:totalStartTime
+			</#if>
+			<#if totalEndTime?exists && totalEndTime!="" >
+					     AND wc.totalCreateTime<=:totalEndTime
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+					    AND roo.orderNo=:orderNo
+			</#if>
+			
+			GROUP BY wc.weighCarId
+			
+			<#if status?exists && status=="1" >
+				ORDER BY wc.tareCreateTime DESC
+			</#if>
+			<#if status?exists && status=="2" >
+				ORDER BY wc.totalCreateTime DESC
+			</#if>
+			LIMIT 
+			:startRow,:endRow 
+		]]>
+	</sql>
+	
+	<sql id="getById">
+	<![CDATA[
+		SELECT 
+			wc.memberId, wc.weighCarId, wc.carId, wc.type, wc.status, wc.tapWeight, wc.tare, 
+			wc.totalWeight,wc.netWeight,wc.createTime, wc.totalCreateTime, wc.tareCreateTime, 
+			wc.totalMemberId, wc.tareMemberId,mb.account account,mb.realName as memberName,cb.carNumber, ob.orderWeigh,
+			mb1.account as tareMember,mb2.account as totalMember, ob.omId, ob.carNumberImage as carNumberImageOut, wc.carNumberImage,
+			cwp.type as carType
+		FROM
+			weigh_car wc
+		LEFT JOIN 
+		member_baseinfo mb
+		ON
+		mb.memberId = wc.memberId
+		LEFT JOIN 
+		order_outmarketinfo ob
+		ON
+		ob.weighCarId = wc.weighCarId
+		LEFT JOIN
+		car_baseinfo cb
+		ON
+		cb.carId = wc.carId
+		LEFT JOIN
+		car_weigh_pro cwp
+		ON
+		cwp.cwpid = cb.cwpid
+		LEFT JOIN 
+		member_baseinfo mb1
+		ON
+		mb1.memberId = wc.tareMemberId
+		LEFT JOIN 
+		member_baseinfo mb2
+		ON
+		mb2.memberId = wc.totalMemberId
+		WHERE 
+			wc.weighCarId = :weighCarId
+	]]>
+	</sql>
+	
+	<sql id="getByIdForAdmin">
+	<![CDATA[
+		SELECT 
+			wc.memberId, wc.weighCarId, wc.carId, wc.type, wc.status, wc.tapWeight, wc.tare, 
+			wc.totalWeight,wc.netWeight,wc.createTime, wc.totalCreateTime, wc.tareCreateTime,
+			wc.totalMemberId, wc.tareMemberId,mb.account account,mb.realName as memberName,cb.carNumber, ob.orderWeigh,
+			mb1.account as tareMember,mb2.account as totalMember, ob.omId, ob.carNumberImage as carNumberImageOut, wc.carNumberImage,
+			cwp.type as carType,wc.weighType as weighType
+		FROM
+			weigh_car wc
+		LEFT JOIN 
+		member_baseinfo mb
+		ON
+		mb.memberId = wc.memberId
+		LEFT JOIN 
+		order_outmarketinfo ob
+		ON
+		ob.weighCarId = wc.weighCarId
+		LEFT JOIN
+		car_baseinfo cb
+		ON
+		cb.carId = wc.carId
+		LEFT JOIN
+		car_weigh_pro cwp
+		ON
+		cwp.cwpid = cb.cwpid
+		LEFT JOIN 
+		member_baseinfo mb1
+		ON
+		mb1.memberId = wc.tareMemberId
+		LEFT JOIN 
+		member_baseinfo mb2
+		ON
+		mb2.memberId = wc.totalMemberId
+		WHERE 
+			wc.weighCarId = :weighCarId
+	]]>
+	</sql>
+	
+	<sql id="updateTotalWeight">
+	<![CDATA[
+		UPDATE 
+			weigh_car
+		SET 
+			totalWeight = :totalWeight, 
+			netWeight = :netWeight,
+			tapWeight = :tapWeight,
+			totalMemberId = :totalMemberId,
+			totalCreateTime = SYSDATE(),
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE 
+			weighCarId = :weighCarId
+	]]>
+	</sql>
+	
+	<sql id="updateTareWeight">
+	<![CDATA[
+		UPDATE 
+			weigh_car
+		SET 
+			tare = :tare, 
+			netWeight = :netWeight,
+			tapWeight = :tapWeight,
+			tareMemberId = :tareMemberId,
+			tareCreateTime = SYSDATE(),
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		WHERE 
+			weighCarId = :weighCarId
+	]]>
+	</sql>
+	
+	
+	<sql id="getWeighCar">
+	<![CDATA[
+		SELECT 
+			memberId,memberName,weighCarId,carId,carNumber,type,status,tapWeight,tare, 
+			totalWeight,netWeight,createTime,totalCreateTime,tareCreateTime, 
+			totalMemberId,tareMemberId
+		FROM
+		(
+			SELECT 
+				wc.memberId, mb.realName memberName, wc.weighCarId, wc.carId, cb.carNumber, wc.type, wc.status, wc.tapWeight, wc.tare, 
+				wc.totalWeight,wc.netWeight,wc.createTime, wc.totalCreateTime, wc.tareCreateTime, 
+				wc.totalMemberId, wc.tareMemberId
+			FROM
+				weigh_car wc
+			LEFT JOIN car_baseinfo cb ON wc.carId = cb.carId
+			LEFT JOIN member_baseinfo mb ON mb.memberId = wc.memberId
+			WHERE wc.status is not null
+			<#if mobile?exists && mobile!="">
+				AND (mb.account = :mobile or mb.mobile = :mobile)
+			</#if>	
+			<#if carNumber?exists && carNumber!="">
+				AND cb.carNumber = :carNumber
+			</#if>
+			<#if type?exists && type!="">
+				AND wc.type = :type
+			</#if>
+			<#if status?exists && status!="">
+				AND wc.status = :status
+			</#if>
+			ORDER BY
+				wc.createTime desc
+		) t
+		GROUP BY carId
+	]]>
+	</sql>
+	
+	<sql id="getLastWeighCar">
+	<![CDATA[
+		SELECT 
+			wc.memberId, mb.realName memberName, wc.weighCarId, wc.carId, cb.carNumber, wc.type, wc.status, wc.tapWeight, wc.tare, 
+			wc.totalWeight,wc.netWeight,wc.createTime, wc.totalCreateTime, wc.tareCreateTime, 
+			wc.totalMemberId, wc.tareMemberId
+		FROM
+			weigh_car wc
+		LEFT JOIN 
+			car_baseinfo cb
+		ON 
+			wc.carId = cb.carId
+		LEFT JOIN
+			member_baseinfo mb
+		ON
+			mb.memberId = wc.memberId
+		WHERE 
+			wc.status is not null
+		<#if mobile?exists && mobile!="">
+			AND (mb.account = :mobile or mb.mobile = :mobile)
+		</#if>
+		<#if type?exists && type!="">
+			AND wc.type = :type
+		</#if>
+		<#if status?exists && status!="">
+			AND wc.status = :status
+		</#if>
+		ORDER BY
+			wc.createTime desc
+		LIMIT 1
+	]]>
+	</sql>	
+	
+	<sql id="getLastFiveWeighCar">
+	<![CDATA[
+		SELECT * 
+		FROM (
+			SELECT 
+				wc.memberId, mb.realName memberName, wc.weighCarId, wc.carId, cb.carNumber, wc.type, wc.status, wc.tapWeight, wc.tare, 
+				wc.totalWeight,wc.netWeight,wc.createTime, wc.totalCreateTime, wc.tareCreateTime, 
+				wc.totalMemberId, wc.tareMemberId
+			FROM weigh_car wc
+			LEFT JOIN member_baseinfo mb on wc.memberId = mb.memberId
+			LEFT JOIN car_baseinfo cb on cb.carId = wc.carId
+			WHERE 
+				mb.mobile = :mobile AND wc.status is not null
+			<#if type?exists && type!="">
+				AND wc.type = :type
+			</#if>
+			ORDER BY wc.createTime DESC
+		) t
+		GROUP BY carId
+		LIMIT 5 
+	]]>
+	</sql>
+	
+	<sql id="getNumWeighCarByCarNumberAndTime">
+	<![CDATA[
+		SELECT 
+			count(wc.memberId) 
+		FROM 
+			weigh_car wc 
+		LEFT JOIN 
+			car_baseinfo cb 
+		ON 
+			wc.carId = cb.carId 
+		WHERE 
+			1 = 1 
+		<#if createTimeStart?exists && createTimeStart!="">
+			AND DATE_FORMAT(wc.createTime, 'yyyy-MM-dd') >= DATE_FORMAT(:createTimeStart , 'yyyy-MM-dd')
+		</#if>
+		<#if createTimeEnd?exists && createTimeEnd!=""> 
+			AND DATE_FORMAT(wc.createTime, 'yyyy-MM-dd') <= DATE_FORMAT(:createTimeEnd , 'yyyy-MM-dd')
+		</#if> 
+		<#if carNumber?exists && carNumber!=""> 
+			AND cb.carNumber = :carNumber 
+		</#if> 
+	]]>
+	</sql>	
+	
+	<sql id="getEntranceWeighList">
+	<![CDATA[
+		SELECT
+			wc.weighCarId,
+			wc.tareCreateTime,
+			wc.totalCreateTime,
+			mb.account,
+			mb.realName AS memberName,
+			cb.carNumber,
+			wc.tare,
+			wc.totalWeight,
+			wc.netWeight,
+			<#if state?exists && state!="" && state="1">
+				(SELECT SUM(pwd.weigh) FROM pre_weighcar_detail pwd WHERE wc.weighCarId=pwd.weighCarId GROUP BY pwd.weighCarId) AS weigh,
+			</#if>
+			<#if state?exists && state!="" && state="2">
+				(SELECT SUM(std.weigh) FROM order_outmarketinfo oo ,sal_toshops_detail std WHERE wc.weighCarId=oo.weighCarId AND oo.omId=std.outmarketId GROUP BY wc.weighCarId) AS weigh,
+			</#if>
+			wc.netWeight AS rates,
+			wc.`status`,
+			<#if state?exists && state!="" && state="1">
+				mb3.account AS weighMember,
+			</#if>
+			<#if state?exists && state!="" && state="2">
+				mb2.account AS weighMember,
+			</#if>
+			wc.tapWeight
+		FROM
+			weigh_car wc 
+		LEFT JOIN member_baseinfo mb ON wc.memberId = mb.memberId
+		LEFT JOIN member_baseinfo mb2 ON wc.tareMemberId=mb2.memberId
+		LEFT JOIN member_baseinfo mb3 ON wc.totalMemberId=mb3.memberId
+		LEFT JOIN car_baseinfo cb ON wc.carId = cb.carId
+		where 1=1 AND wc.type='1'
+		<#if status?exists && status!="">
+			AND wc.status = :status 
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="">
+			AND wc.tareCreateTime >= :tareStartTime 
+		</#if>
+		<#if tareEndTime?exists && tareEndTime!="">
+			AND wc.tareCreateTime <= :tareEndTime 
+		</#if>
+		<#if totalStartTime?exists && totalStartTime!="">
+			AND wc.totalCreateTime >= :totalStartTime 
+		</#if>
+		<#if totalEndTime?exists && totalEndTime!="">
+			AND wc.totalCreateTime <= :totalEndTime 
+		</#if>
+		<#if account?exists && account!="">
+			AND mb.account = :account 
+		</#if>
+		<#if carNumber?exists && carNumber!="">
+			AND cb.carNumber = :carNumber 
+		</#if>
+		<#if tapWeight?exists && tapWeight!="">
+			AND wc.tapWeight = :tapWeight 
+		</#if>
+		ORDER BY wc.weighCarId
+		LIMIT :startRow,:endRow 
+		
+	]]>
+	</sql>	
+	<sql id="getEntranceWeighListTotal">
+	<![CDATA[
+		SELECT
+			count(wc.weighCarId)
+		FROM
+			weigh_car wc 
+		LEFT JOIN member_baseinfo mb ON wc.memberId = mb.memberId
+		LEFT JOIN member_baseinfo mb2 ON wc.tareMemberId=mb2.memberId
+		LEFT JOIN member_baseinfo mb3 ON wc.totalMemberId=mb3.memberId
+		LEFT JOIN car_baseinfo cb ON wc.carId = cb.carId
+		where 1=1 AND wc.type='1'
+		<#if status?exists && status!="">
+			AND wc.status = :status 
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="">
+			AND wc.tareCreateTime >= :tareStartTime 
+		</#if>
+		<#if tareEndTime?exists && tareEndTime!="">
+			AND wc.tareCreateTime <= :tareEndTime 
+		</#if>
+		<#if totalStartTime?exists && totalStartTime!="">
+			AND wc.totalCreateTime >= :totalStartTime 
+		</#if>
+		<#if totalEndTime?exists && totalEndTime!="">
+			AND wc.totalCreateTime <= :totalEndTime 
+		</#if>
+		<#if account?exists && account!="">
+			AND mb.account = :account 
+		</#if>
+		<#if carNumber?exists && carNumber!="">
+			AND cb.carNumber = :carNumber 
+		</#if>
+		<#if tapWeight?exists && tapWeight!="">
+			AND wc.tapWeight = :tapWeight 
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getEntranceWeighById">
+	<![CDATA[
+		SELECT
+			wc.weighCarId,
+			wc.tareCreateTime,
+			wc.totalCreateTime,
+			mb.account,
+			mb.realName AS memberName,
+			cb.carNumber,
+			wc.tare,
+			wc.totalWeight,
+			wc.netWeight,
+			wc.netWeight AS rates,
+			wc.`status`,
+			<#if state?exists && state!="" && state="1">
+				mb3.account AS weighMember,
+			</#if>
+			<#if state?exists && state!="" && state="2">
+				mb2.account AS weighMember,
+			</#if>
+			wc.carNumberImage,
+			wc.place,
+			wc.quality,
+			wc.allWeigh,
+			wc.others,
+			wc.marketId,
+			wc.tapWeight
+		FROM
+			weigh_car wc 
+		LEFT JOIN member_baseinfo mb ON wc.memberId = mb.memberId
+		LEFT JOIN member_baseinfo mb2 ON wc.tareMemberId=mb2.memberId
+		LEFT JOIN member_baseinfo mb3 ON wc.totalMemberId=mb3.memberId
+		LEFT JOIN car_baseinfo cb ON wc.carId = cb.carId
+		where 1=1 AND wc.type='1' AND wc.weighCarId = :weighCarId
+	]]>
+	</sql>
+
+	<sql id="getLastTwoDayWeighCarOrder">
+	<![CDATA[
+		SELECT 
+			r.OrderNo, c.carNumber, m.account, m.realName as memberName, w.tare as tareWeight, w.totalWeight, w.netWeight, o.createTime
+		FROM 
+			re_order_outmark r
+		LEFT JOIN 
+			order_outmarketinfo o ON r.omId = o.omId
+		LEFT JOIN 
+			weigh_car w on w.weighCarId = o.weighCarId
+		LEFT JOIN 
+			member_baseinfo m ON m.memberId = w.memberId 
+		LEFT JOIN 
+			car_baseinfo c ON c.carId = w.carId 
+		WHERE 
+			DATEDIFF(SYSDATE(), o.createTime) < 2 AND w.totalMemberId = :memberId
+		ORDER BY 
+			o.createTime DESC
+	]]>
+	</sql>
+	
+
+	<sql id="getProductListByWeighCarId">
+	<![CDATA[
+		SELECT
+			pwe.weighCarId,
+			pwe.productId,
+			pwe.productName,
+			pwe.weigh
+	   FROM
+			weigh_car wc
+	   LEFT JOIN pre_weighcar_detail pwe ON wc.weighCarId = pwe.weighCarId
+	   WHERE wc.weighCarId =:weighCarId
+	]]>
+	</sql>
+	
+	<sql id="getOutProductListByWeighCarId">
+	<![CDATA[
+		SELECT
+			oo.weighCarId,
+			std.productId,
+			std.productName,
+			std.weigh
+		FROM
+		weigh_car wc
+		LEFT JOIN order_outmarketinfo oo ON wc.weighCarId = oo.weighCarId
+		LEFT JOIN sal_toshops_detail std ON oo.omId = std.outmarketId
+		WHERE wc.weighCarId =:weighCarId
+	]]>
+	</sql>
+	
+	
+
+	<sql id="getLastTwoDayWeighCarOrderTotal">
+	<![CDATA[
+		SELECT 
+			COUNT(1)
+		FROM 
+			re_order_outmark r
+		LEFT JOIN 
+			order_outmarketinfo o ON r.omId = o.omId
+		LEFT JOIN 
+			weigh_car w on w.weighCarId = o.weighCarId
+		LEFT JOIN 
+			member_baseinfo m ON m.memberId = w.memberId 
+		LEFT JOIN 
+			car_baseinfo c ON c.carId = w.carId 
+		WHERE 
+			DATEDIFF(SYSDATE(), o.createTime) < 2 AND w.totalMemberId = :memberId
+	]]>
+	</sql>
+	
+	<sql id="updateStatus">
+	<![CDATA[
+		UPDATE 
+			weigh_car
+		SET 
+			status = :status,
+			updateTime = SYSDATE()
+		WHERE 
+			weighCarId = :weighCarId
+	]]>
+	</sql>
+	
+	<sql id="updateStatusByCarId">
+	<![CDATA[
+		UPDATE weigh_car SET `status` = :status
+		WHERE carId = :carId
+	]]>
+	</sql>
+	
+	<sql id="updateStatusByWeighCarId">
+	<![CDATA[
+		UPDATE weigh_car SET `status` = :status
+		WHERE weighCarId = :weighCarId
+	]]>
+	</sql>
+	
+		
+	<sql id="getWeighCarOrderPage">
+	<![CDATA[
+		SELECT 
+			r.OrderNo, c.carNumber, m.account, m.realName as memberName, w.tare as tareWeight, w.totalWeight, w.netWeight, o.createTime
+		FROM 
+			re_order_outmark r
+		LEFT JOIN 
+			order_outmarketinfo o ON r.omId = o.omId
+		LEFT JOIN 
+			weigh_car w on w.weighCarId = o.weighCarId
+		LEFT JOIN 
+			member_baseinfo m ON m.memberId = w.memberId 
+		LEFT JOIN 
+			car_baseinfo c ON c.carId = w.carId 
+		WHERE 1=1
+		<#if memberId?exists && memberId != "">
+			And (w.totalMemberId = :memberId or w.tareMemberId = :memberId or w.createUserId = :memberId)
+		</#if>
+		ORDER BY 
+			o.createTime DESC
+		LIMIT :startRow,:endRow 
+	]]>
+	</sql>
+	
+	<sql id="getWeighCarOrderTotal">
+	<![CDATA[
+		SELECT 
+			count(1)
+		FROM 
+			re_order_outmark r
+		LEFT JOIN 
+			order_outmarketinfo o ON r.omId = o.omId
+		LEFT JOIN 
+			weigh_car w on w.weighCarId = o.weighCarId
+		LEFT JOIN 
+			member_baseinfo m ON m.memberId = w.memberId 
+		LEFT JOIN 
+			car_baseinfo c ON c.carId = w.carId 
+		WHERE 1=1
+		<#if memberId?exists && memberId != "">
+			And (w.totalMemberId = :memberId or w.tareMemberId = :memberId or w.createUserId = :memberId)
+		</#if>
+	]]>
+	</sql>
+</sqlMap>

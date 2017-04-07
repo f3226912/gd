@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProBszbank">
+	<!-- 日交易流水 -->
+	<sql id="getTradeByDay">
+		<![CDATA[
+			SELECT id,datatimes,transactionAmount FROM pro_bszbank 
+			WHERE DATE_FORMAT(datatimes, '%Y-%m-%d')>='2016-02-29' 
+			AND DATE_FORMAT(datatimes, '%Y-%m-%d')<='2016-03-02'
+			order by datatimes asc
+		
+		]]>
+	</sql>
+	<!-- 日订单量 -->
+	<sql id="getOrderByDay">
+	<![CDATA[
+		SELECT id,datatimes,orderNumbers FROM pro_bszbank 
+		WHERE DATE_FORMAT(datatimes, '%Y-%m-%d')>='2016-02-29' 
+		AND DATE_FORMAT(datatimes, '%Y-%m-%d')<='2016-03-02'
+		order by datatimes asc
+	
+	]]>
+	</sql>
+	
+	
+	
+	<sql id="sumReport">
+	<![CDATA[
+		SELECT
+			reportsID,
+			DATE_FORMAT(datatimes, '%Y-%m-%d') as datatimes,
+			IFNULL(transactionAmount, 0) as transactionAmount,
+			IFNULL(orderNumbers, 0) as orderNumbers,
+			IFNULL(orderAmount, 0) as orderAmount,
+			IFNULL(transactionUsers, 0) as transactionUsers,
+			IFNULL(newUsers, 0) as newUsers,
+			IFNULL(oldUsers, 0) as oldUsers,
+			IFNULL(newUserAmount, 0) as newUserAmount,
+			IFNULL(oldUserAmount, 0) as oldUserAmount,
+			IFNULL(newUserAvgUnitPrice, 0) as newUserAvgUnitPrice,
+			IFNULL(oldUserAvgUnitPrice, 0) as oldUserAvgUnitPrice,
+			IFNULL(userTradeAvg, 0) as userTradeAvg,
+			IFNULL(usersAmount, 0) as usersAmount
+		FROM
+			pro_bszbank
+		WHERE
+			reportsID = :reportsId
+		<#if queryStartDate?exists && queryStartDate!="" && queryEndDate?exists && queryEndDate!="">
+			AND DATE_FORMAT(datatimes, '%Y-%m-%d') >= DATE_FORMAT(:queryStartDate, '%Y-%m-%d')
+			AND DATE_FORMAT(datatimes, '%Y-%m-%d') <= DATE_FORMAT(:queryEndDate, '%Y-%m-%d')
+		</#if>
+		GROUP BY DATE_FORMAT(datatimes, '%Y-%m-%d')
+	]]>
+	</sql>
+</sqlMap>

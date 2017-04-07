@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdProCallstatisticsEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO grd_pro_callstatistics(
+	marketId,createTime,updateTime,callTime,grdMobile,grdUserName,serviceType,
+	grdId,id,updateUserId,marketName,source,s_Mobile,
+	callRole,s_Name,e_Mobile,e_Name,createUserId
+	) VALUES (
+	:marketId,:createTime,:updateTime,:callTime,:grdMobile,:grdUserName,:serviceType,
+	:grdId,:id,:updateUserId,:marketName,:source,:s_Mobile,
+	:callRole,:s_Name,:e_Mobile,:e_Name,:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE grd_pro_callstatistics SET 
+	<#if marketId?exists && marketId!="" >
+		marketId=:marketId,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if updateTime?exists && updateTime!="" >
+		updateTime=:updateTime,
+	</#if>	
+	<#if callTime?exists && callTime!="" >
+		callTime=:callTime,
+	</#if>	
+	<#if grdMobile?exists && grdMobile!="" >
+		grdMobile=:grdMobile,
+	</#if>	
+	<#if grdUserName?exists && grdUserName!="" >
+		grdUserName=:grdUserName,
+	</#if>	
+	<#if serviceType?exists && serviceType!="" >
+		serviceType=:serviceType,
+	</#if>	
+	<#if grdId?exists && grdId!="" >
+		grdId=:grdId,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if marketName?exists && marketName!="" >
+		marketName=:marketName,
+	</#if>	
+	<#if source?exists && source!="" >
+		source=:source,
+	</#if>	
+	<#if s_Mobile?exists && s_Mobile!="" >
+		s_Mobile=:s_Mobile,
+	</#if>	
+	<#if callRole?exists && callRole!="" >
+		callRole=:callRole,
+	</#if>	
+	<#if s_Name?exists && s_Name!="" >
+		s_Name=:s_Name,
+	</#if>	
+	<#if e_Mobile?exists && e_Mobile!="" >
+		e_Mobile=:e_Mobile,
+	</#if>	
+	<#if e_Name?exists && e_Name!="" >
+		e_Name=:e_Name,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE marketId=:marketId
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	marketId,createTime,updateTime,callTime,grdMobile,grdUserName,serviceType,
+	grdId,id,updateUserId,marketName,source,s_Mobile,
+	callRole,s_Name,e_Mobile,e_Name,createUserId
+	FROM grd_pro_callstatistics WHERE marketId=:marketId
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	marketId,createTime,updateTime,callTime,grdMobile,grdUserName,
+	(CASE WHEN serviceType=1 THEN '干线业务' 
+	      WHEN serviceType=2 THEN '同城业务'
+	 ELSE '' END
+	)as serviceType,
+	grdId,id,updateUserId,marketName,
+	(CASE WHEN source=1 THEN '物流公司找车' 
+	      WHEN source=2 THEN '物流公司分给我的货' 
+	      WHEN source=3 THEN '物流公司订单' 
+	      WHEN source=4 THEN '车主找货' 
+	      WHEN source=5 THEN '车主订单' 
+	      WHEN source=6 THEN '货主我发的货' 
+	 ELSE '货主运单' END
+	)as source,
+	s_Mobile,
+	(CASE WHEN callRole=1 THEN '车主' 
+	      WHEN callRole=2 THEN '物流公司' 
+	 ELSE '货主' END
+	)as callRole,
+	s_Name,e_Mobile,e_Name,createUserId
+	FROM grd_pro_callstatistics WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+		<#if startDate?exists && startDate!="" >
+		AND date_format(callTime,'%Y-%m-%d') >=:startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(callTime,'%Y-%m-%d') <=:endDate
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE '%${grdMobile}%'
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE '%${grdUserName}%'
+	</#if>
+	<#if serviceType?exists && serviceType!="" >
+		AND serviceType=:serviceType
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName LIKE '%${marketName}%'
+	</#if>
+	<#if source?exists && source!="" >
+		AND source=:source
+	</#if>
+	<#if s_Mobile?exists && s_Mobile!="" >
+		AND s_Mobile LIKE '%${s_Mobile}%'
+	</#if>
+	<#if callRole?exists && callRole!="" >
+		AND callRole=:callRole
+	</#if>
+	<#if s_Name?exists && s_Name!="" >
+		AND s_Name like '%${s_Name}%'
+	</#if>
+	<#if e_Mobile?exists && e_Mobile!="" >
+		AND e_Mobile like '%${e_Mobile}%'
+	</#if>
+	<#if e_Name?exists && e_Name!="" >
+		AND e_Name like '%${e_Name}%'
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	order by callTime desc
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	marketId,createTime,updateTime,callTime,grdMobile,grdUserName,
+	(CASE WHEN serviceType=1 THEN '干线业务' 
+	      WHEN serviceType=2 THEN '同城业务'
+	 ELSE '' END
+	)as serviceType,
+	grdId,id,updateUserId,marketName,
+	(CASE WHEN source=1 THEN '物流公司找车' 
+	      WHEN source=2 THEN '物流公司分给我的货' 
+	      WHEN source=3 THEN '物流公司订单' 
+	      WHEN source=4 THEN '车主找货' 
+	      WHEN source=5 THEN '车主订单' 
+	      WHEN source=6 THEN '货主我发的货' 
+	 ELSE '货主运单' END
+	)as source,
+	s_Mobile,
+	(CASE WHEN callRole=1 THEN '车主' 
+	      WHEN callRole=2 THEN '物流公司' 
+	 ELSE '货主' END
+	)as callRole,
+	s_Name,e_Mobile,e_Name,createUserId
+	FROM grd_pro_callstatistics WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+		<#if startDate?exists && startDate!="" >
+		AND date_format(callTime,'%Y-%m-%d') >=:startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(callTime,'%Y-%m-%d') <=:endDate
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE '%${grdMobile}%'
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE '%${grdUserName}%'
+	</#if>
+	<#if serviceType?exists && serviceType!="" >
+		AND serviceType=:serviceType
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName LIKE '%${marketName}%'
+	</#if>
+	<#if source?exists && source!="" >
+		AND source=:source
+	</#if>
+	<#if s_Mobile?exists && s_Mobile!="" >
+		AND s_Mobile LIKE '%${s_Mobile}%'
+	</#if>
+	<#if callRole?exists && callRole!="" >
+		AND callRole=:callRole
+	</#if>
+	<#if s_Name?exists && s_Name!="" >
+		AND s_Name like '%${s_Name}%'
+	</#if>
+	<#if e_Mobile?exists && e_Mobile!="" >
+		AND e_Mobile like '%${e_Mobile}%'
+	</#if>
+	<#if e_Name?exists && e_Name!="" >
+		AND e_Name like '%${e_Name}%'
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	order by callTime desc
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(1) FROM grd_pro_callstatistics WHERE 1=1
+	<#if marketId?exists && marketId!="" >
+		AND marketId=:marketId
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		AND createTime=:createTime
+	</#if>
+	<#if updateTime?exists && updateTime!="" >
+		AND updateTime=:updateTime
+	</#if>
+		<#if startDate?exists && startDate!="" >
+		AND date_format(callTime,'%Y-%m-%d') >=:startDate
+	</#if>
+	<#if endDate?exists && endDate!="" >
+		AND date_format(callTime,'%Y-%m-%d') <=:endDate
+	</#if>
+	<#if grdMobile?exists && grdMobile!="" >
+		AND grdMobile LIKE '%${grdMobile}%'
+	</#if>
+	<#if grdUserName?exists && grdUserName!="" >
+		AND grdUserName LIKE '%${grdUserName}%'
+	</#if>
+	<#if serviceType?exists && serviceType!="" >
+		AND serviceType=:serviceType
+	</#if>
+	<#if grdId?exists && grdId!="" >
+		AND grdId=:grdId
+	</#if>
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		AND updateUserId=:updateUserId
+	</#if>
+	<#if marketName?exists && marketName!="" >
+		AND marketName LIKE '%${marketName}%'
+	</#if>
+	<#if source?exists && source!="" >
+		AND source=:source
+	</#if>
+	<#if s_Mobile?exists && s_Mobile!="" >
+		AND s_Mobile LIKE '%${s_Mobile}%'
+	</#if>
+	<#if callRole?exists && callRole!="" >
+		AND callRole=:callRole
+	</#if>
+	<#if s_Name?exists && s_Name!="" >
+		AND s_Name like '%${s_Name}%'
+	</#if>
+	<#if e_Mobile?exists && e_Mobile!="" >
+		AND e_Mobile like '%${e_Mobile}%'
+	</#if>
+	<#if e_Name?exists && e_Name!="" >
+		AND e_Name like '%${e_Name}%'
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM grd_pro_callstatistics WHERE marketId=:marketId
+	]]>
+</sql>
+</sqlMap>

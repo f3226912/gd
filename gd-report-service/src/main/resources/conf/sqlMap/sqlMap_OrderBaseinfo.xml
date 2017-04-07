@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="OrderBaseinfo">
+
+	<!-- 交易买家 -->
+	<sql id="queryBuyerNum">
+	<![CDATA[
+	    SELECT 
+	    	DISTINCT b.memberId
+	    FROM order_baseinfo b
+	     where b.sellMemberId = :memberId 
+	     	AND b.`memberId` IS NOT NULL
+	     	AND b.orderStatus IN ('3', '10') 
+			AND EXISTS (SELECT 1 FROM pay_serialnumber p WHERE b.orderNo = p.orderNo AND p.payTime >= :startTime AND p.payTime <= :endTime)
+	]]>
+	</sql>
+
+	<!-- 产品成交量  -->
+	<sql id="queryGoodsNum">
+	<![CDATA[
+	    SELECT 
+	    	IFNULL(SUM(op.purQuantity), 0)
+	    FROM 
+			(select * from order_baseinfo b where b.sellMemberId = :memberId 
+			<#if orderStatus?exists && orderStatus!="" >
+			     and b.orderStatus = :orderStatus
+			</#if>
+			) o 
+		JOIN 
+			pay_serialnumber p ON o.orderNo = p.orderNo
+		JOIN 
+			order_product_detail op ON o.orderNo = op.orderNo
+	    WHERE 
+	    	p.payTime >= :startTime
+	    	AND p.payTime <= :endTime
+	    	
+	]]>
+	</sql>
+	
+	<sql id="queryTradeInfo">
+	<![CDATA[
+		SELECT a.*, IFNULL(ROUND(tradeAmt/orderNum, 2), 0) AS orderAvgTradeAmt, IFNULL(ROUND(tradeAmt/buyerNum, 2), 0) AS buyerAvgTradeAmt FROM (	
+
+			SELECT COUNT(1) AS orderNum, IFNULL(SUM(o.payAmount), 0) AS tradeAmt, COUNT(DISTINCT o.memberId) AS buyerNum FROM (
+						
+				SELECT * FROM order_baseinfo b 
+				
+					WHERE b.sellMemberId = :memberId
+					
+					<#if orderStatus?exists && orderStatus!="" >
+					     and b.orderStatus = :orderStatus
+					</#if>
+					<#if orderStatusIn?exists>
+						<#assign n = orderStatusIn?size />
+						<#if n gt 0>
+							and b.orderStatus in (
+							<#list orderStatusIn as orderStatus>
+								<#if orderStatus_index != n-1>
+									${orderStatus} ,
+								<#else>
+									${orderStatus}
+								</#if>
+							</#list>
+							)
+						</#if>
+					</#if>
+					
+					<#if isNogGoods?exists && isNogGoods!="" >
+						AND NOT EXISTS (SELECT 1 FROM order_product_detail p WHERE p.`orderNo` = b.orderNo)
+					</#if>
+					<#if timeFlag?exists >
+						<#if timeFlag=="1" >
+							AND b.`orderTime` >= :startTime AND b.`orderTime` <= :endTime
+						</#if>
+						<#if timeFlag=="2" >
+							AND EXISTS (SELECT 1 FROM pay_serialnumber p WHERE b.orderNo = p.orderNo AND p.payTime >= :startTime AND p.payTime <= :endTime)
+						</#if>
+						<#if timeFlag=="3" >
+							AND b.`closeTime` >=  :startTime AND b.`closeTime` <= :endTime
+						</#if>
+					</#if>
+			) o 
+		
+		) a
+	]]>
+	</sql>
+	
+	<sql id="queryAllTradeInfo">
+	<![CDATA[
+		SELECT a.`orderStatus`, a.`hasGoods`, COUNT(1) AS orderNum, IFNULL(SUM(a.payAmount), 0) AS tradeAmt, COUNT(DISTINCT a.memberId) AS buyerNum, SUM(a.goodsNum) AS goodsNum FROM (
+
+			SELECT 
+			
+			  t.*, COUNT(d.productId) AS goodsNum,
+			  
+			  CASE WHEN MAX(d.`preSalProductDetailId`) IS NULL THEN 0 ELSE 1 END AS hasGoods
+			  
+			FROM
+			  (
+				SELECT b.`orderNo`, b.`payAmount`, b.`memberId`,
+				
+					CASE WHEN b.`orderStatus` = '8' THEN '9' WHEN b.`orderStatus` = '10' THEN '3' ELSE b.`orderStatus` END AS orderStatus
+					
+				FROM order_baseinfo b 
+				
+				WHERE b.sellMemberId = :memberId
+				
+					AND (b.orderStatus = '1' AND b.`orderTime` >= :startTime AND b.`orderTime` <= :endTime
+					
+					OR b.orderStatus IN ('3', '10') AND EXISTS (SELECT 1 FROM pay_serialnumber p WHERE b.orderNo = p.orderNo AND p.payTime >= :startTime AND p.payTime <= :endTime)
+					
+					OR b.orderStatus IN ('8', '9') AND b.`closeTime` >=  :startTime AND b.`closeTime` <= :endTime)
+			  
+			  ) t 
+			  
+			  LEFT JOIN order_product_detail d ON t.`orderNo` = d.`orderNo` 
+			  
+			  GROUP BY t.`orderNo`
+			  
+		) a
+		
+		GROUP BY a.`orderStatus`, a.hasGoods
+	]]>
+	</sql>
+	
+	<sql id="queryTradeResultList">
+	<![CDATA[
+	    SELECT * FROM (
+
+			SELECT a.payTime AS TIME, SUM(a.payAmount) tradeAmt, COUNT(1) orderNum FROM (
+			
+				SELECT ob.`orderNo`, MIN(ob.payAmount) AS payAmount, 
+				
+				<#if xaxisDataType=="1" >
+				     DATE_FORMAT(MIN(ps.`payTime`),'%H')
+				</#if>
+				<#if xaxisDataType=="2" >
+				     DATE_FORMAT(MIN(ps.`payTime`),'%Y-%m-%d')
+				</#if>
+				AS payTime 
+				
+				FROM (
+				
+				SELECT b.`orderNo`, b.`payAmount` FROM order_baseinfo b 
+				
+				WHERE b.`sellMemberId` = :memberId 
+				
+				AND (b.`orderStatus` = '3' OR b.`orderStatus` = '10')
+				
+				) AS ob 
+				
+				LEFT JOIN pay_serialnumber AS ps
+				
+				ON ob.orderNo = ps.orderNo
+				
+				WHERE ps.`payTime` >= :startTime AND ps.`payTime` <= :endTime
+				
+				GROUP BY ob.orderNo
+				
+			  ) a
+			
+			GROUP BY a.payTime
+			
+		) b ORDER BY b.TIME ASC
+	    	
+	]]>
+	</sql>
+	
+</sqlMap>

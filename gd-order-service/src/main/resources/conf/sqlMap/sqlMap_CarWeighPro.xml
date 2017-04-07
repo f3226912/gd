@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CarWeighPro">
+	<sql id="getCarWeighProList">
+	<![CDATA[
+		SELECT 
+			cwpid, type, tareWeigh, zeroperWeigh, thirtyperWeigh, halfperWeigh, allWeigh, status
+		FROM 
+			car_weigh_pro cpp
+		WHERE 
+			1 = 1
+		<#if cwpId?exists && cwpId!="">
+			AND cwpid = :cwpId
+		</#if>
+		<#if status?exists && status!="">
+			AND status = :status
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="updateCarWeighPro">
+	<![CDATA[
+		UPDATE car_weigh_pro
+		SET
+		<#if type?exists && type!="">
+			type = :type,
+		</#if>
+		<#if tareWeigh?exists && tareWeigh!="">
+			tareWeigh = :tareWeigh,
+		</#if>
+		<#if zeroperWeigh?exists && zeroperWeigh!="">
+			zeroperWeigh = :zeroperWeigh,
+		</#if>
+		<#if thirtyperWeigh?exists && thirtyperWeigh!="">
+			thirtyperWeigh = :thirtyperWeigh,
+		</#if>
+		<#if halfperWeigh?exists && halfperWeigh!="">
+			halfperWeigh = :halfperWeigh,
+		</#if>
+		<#if allWeigh?exists && allWeigh!="">
+			allWeigh = :allWeigh,
+		</#if>
+		<#if status?exists && status!="">
+			status = :status,
+		</#if>
+		updateTime=SYSDATE(),
+		updateUserId=:updateUserId
+		WHERE
+		cwpid=:cwpid
+	]]>
+	</sql>
+	
+	<sql id="insertCarWeighPro">
+	<![CDATA[
+		INSERT 
+		car_weigh_pro(
+			type,tareWeigh,zeroperWeigh,thirtyperWeigh,halfperWeigh,
+			allWeigh,status,createUserId,createTime,updateUserId,updateTime
+		)
+		VALUES(
+			:type,:tareWeigh,:zeroperWeigh,:thirtyperWeigh,
+			:halfperWeigh,:allWeigh,:status,:createUserId,SYSDATE(),:updateUserId,SYSDATE()
+		)
+	]]>
+	</sql>
+	
+</sqlMap>

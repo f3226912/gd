@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CertifPersonalEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO certif_personal(
+	icon,createTime,idCard,status,updateTime,cardPhotoUrl,
+	updateUserId,commitTime,account,memberId,realName,createUserId,optionUser
+
+	) VALUES (
+	:icon,:createTime,:idCard,:status,:updateTime,:cardPhotoUrl,
+	:updateUserId,:commitTime,:account,:memberId,:realName,:createUserId,:optionUser
+
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE certif_personal SET
+	<#if icon?exists && icon!="" >
+		icon=:icon,
+	</#if>
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>
+	<#if idCard?exists && idCard!="" >
+		idCard=:idCard,
+	</#if>
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>
+	<#if cardPhotoUrl?exists && cardPhotoUrl!="" >
+		cardPhotoUrl=:cardPhotoUrl,
+	</#if>
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>
+	<#if commitTime?exists && commitTime!="" >
+		commitTime=:commitTime,
+	</#if>
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>
+	<#if realName?exists && realName!="" >
+		realName=:realName,
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>
+	<#if optionUser?exists && optionUser!="" >
+		optionUser=:optionUser,
+	</#if>
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT
+	cp.icon,cp.createTime,cp.idCard,cp.status,cp.updateTime,cp.cardPhotoUrl,cp.id,
+	cp.updateUserId,cp.commitTime,cp.account,cp.memberId,cp.realName,cp.createUserId, cp.optionUser,mb.status as userStatus 
+
+	FROM 
+		certif_personal cp,member_baseinfo mb
+	WHERE 
+	 	id=:id 
+	and cp.memberId = mb.memberId
+	 	
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT
+			icon,createTime,idCard,status,updateTime,cardPhotoUrl,id,
+			updateUserId,commitTime,account,memberId,realName,createUserId, optionUser
+	FROM
+			certif_personal cp
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+        AND realName like "%":realName"%"
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	ORDER BY createTime desc 
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT
+		cp.icon,cp.createTime,cp.idCard,cp.status,cp.updateTime,cp.cardPhotoUrl,cp.id,
+		cp.updateUserId,cp.commitTime,cp.account,cp.memberId,cp.realName,cp.createUserId, cp.optionUser,
+		m.mobile
+	FROM certif_personal cp
+	LEFT JOIN member_baseinfo m on cp.memberId = m.memberId
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND cp.status=:status
+	</#if>
+	<#if account?exists && account!="" >
+		AND cp.account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+        AND cp.realName like "%":realName"%"
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND cp.createUserId=:createUserId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(cp.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(cp.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND m.mobile=:mobile
+	</#if>
+	ORDER BY createTime desc 
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) 
+	FROM certif_personal cp
+	LEFT JOIN member_baseinfo m on cp.memberId = m.memberId
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND cp.status=:status
+	</#if>
+	<#if account?exists && account!="" >
+		AND cp.account=:account
+	</#if>
+	<#if realName?exists && realName!="" >
+        AND cp.realName like "%":realName"%"
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND cp.createUserId=:createUserId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(cp.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(cp.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND m.mobile=:mobile
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM certif_personal WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

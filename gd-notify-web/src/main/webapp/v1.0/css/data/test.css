@@ -1,0 +1,66 @@
+/* 从这里开始是注释掉的 */
+.rank{
+	    /* border: 1px solid #dcdcdc; */
+    border-top: 1px solid #dcdcdc;
+    border-left: 1px solid #dcdcdc;
+    /* border-bottom: 1px solid #dcdcdc; */
+    border-right: 1px solid #dcdcdc;
+    width: 23%;
+    text-align: center;
+	}
+
+.goods-name{
+	    border-top: 1px solid #dcdcdc;
+    /* border-left: 1px solid #dcdcdc; */
+    /* border-bottom: 1px solid #dcdcdc; */
+    /* border-right: 1px solid #dcdcdc; */
+    width: 31%;
+    text-align: center
+}
+.sales-volumes{
+	    border-top: 1px solid #dcdcdc;
+    border-left: 1px solid #dcdcdc;
+    border-right: 1px solid #dcdcdc;
+    width: 23%;
+    text-align: center;
+}
+.trading-volumes{
+	border-top: 1px solid #dcdcdc;
+    border-right: 1px solid #dcdcdc;
+    width: 23%;
+    text-align: center
+}
+.trading-volumes,.sales-volumes,.goods-name,.rank{
+	box-sizing: border-box;
+	display: inline-block;
+	float: left;
+	padding-top:5px;
+	padding-bottom: 5px;
+}
+.tab-bottom{
+	border-bottom: 1px solid #dcdcdc;
+}
+ul{
+	margin:0;
+	padding:0;
+}
+.list-cont ul{
+	padding-left: 15px;
+	padding-right: 15px;
+}
+li{
+	list-style: none;
+}
+.tab-head{
+	background-color: #fbfbfd;
+}
+.list-cont{
+	
+}
+.list-cont div{
+	overflow: hidden;
+	font-size: 13px;
+}
+.ta-right{
+	text-align: right;
+}

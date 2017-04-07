@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="GrdGiftLog">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+grd_gift_log(
+
+id,giftId,realValue,reason,orignValue,createTime,updateTime,createUserId,updateUserId
+) VALUES (
+
+:id,:giftId,:realValue,:reason,:orignValue,:createTime,:updateTime,:createUserId,:updateUserId
+)
+]]>
+</sql>
+
+<sql id="update">
+<![CDATA[
+	UPDATE grd_gift_log
+ SET 
+
+<#if id?exists && id!="" >
+id=:id,
+</#if>
+<#if giftId?exists && giftId!="" >
+giftId=:giftId,
+</#if>
+<#if realValue?exists && realValue!="" >
+realValue=:realValue,
+</#if>
+<#if reason?exists && reason!="" >
+reason=:reason,
+</#if>
+<#if orignValue?exists && orignValue!="" >
+orignValue=:orignValue,
+</#if>
+<#if createTime?exists && createTime!="" >
+createTime=:createTime,
+</#if>
+<#if updateTime?exists && updateTime!="" >
+updateTime=:updateTime,
+</#if>
+<#if createUserId?exists && createUserId!="" >
+createUserId=:createUserId,
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+updateUserId=:updateUserId
+</#if>
+ WHERE id=:id
+
+]]>
+</sql>
+<sql id="getByCondition">
+<![CDATA[
+	SELECT 
+
+ggl.id,ggl.giftId,ggl.realValue,ggl.reason,ggl.orignValue,ggl.createTime,ggl.updateTime,ggl.createUserId,ggl.updateUserId,
+gg.giftstoreId,
+(SELECT `name` FROM grd_gd_giftstore t WHERE t.`id`= gg.`giftstoreId`)AS giftstoreName
+	FROM 
+grd_gift_log ggl LEFT JOIN grd_gift gg ON ggl.`giftId`=gg.`id` WHERE 1=1
+
+<#if id?exists && id!="" >
+AND ggl.id=:id
+</#if>
+<#if giftId?exists && giftId!="" >
+AND ggl.giftId=:giftId
+</#if>
+<#if realValue?exists && realValue!="" >
+AND ggl.realValue=:realValue
+</#if>
+<#if reason?exists && reason!="" >
+AND ggl.reason=:reason
+</#if>
+<#if orignValue?exists && orignValue!="" >
+AND ggl.orignValue=:orignValue
+</#if>
+<#if createTime?exists && createTime!="" >
+AND ggl.createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND ggl.updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND ggl.createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND ggl.updateUserId=:updateUserId
+</#if>
+ORDER BY ggl.id DESC
+]]>
+</sql>
+<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+
+id,giftId,realValue,reason,orignValue,createTime,updateTime,createUserId,updateUserId
+	FROM 
+grd_gift_log WHERE 1=1
+
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if giftId?exists && giftId!="" >
+AND giftId=:giftId
+</#if>
+<#if realValue?exists && realValue!="" >
+AND realValue=:realValue
+</#if>
+<#if reason?exists && reason!="" >
+AND reason=:reason
+</#if>
+<#if orignValue?exists && orignValue!="" >
+AND orignValue=:orignValue
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+LIMIT :startRow, :endRow
+]]>
+</sql>
+<sql id="getTotal">
+<![CDATA[
+	SELECT count(*)
+	FROM 
+grd_gift_log WHERE 1=1
+
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if giftId?exists && giftId!="" >
+AND giftId=:giftId
+</#if>
+<#if realValue?exists && realValue!="" >
+AND realValue=:realValue
+</#if>
+<#if reason?exists && reason!="" >
+AND reason=:reason
+</#if>
+<#if orignValue?exists && orignValue!="" >
+AND orignValue=:orignValue
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+]]>
+</sql>
+<sql id="deleteById">
+<![CDATA[
+	DELETE grd_gift_log
+ WHERE id=:id
+]]>
+</sql>
+</sqlMap>

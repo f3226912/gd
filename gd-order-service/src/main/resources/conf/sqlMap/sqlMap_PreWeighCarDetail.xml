@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="PreWeighCarDetail">
+
+	<sql id="getByWeighCarId">
+	<![CDATA[
+		SELECT
+			p.pwdId, p.weighCarId, p.productName, p.productName,p.weigh, p.marginWeigh
+		FROM
+			pre_weighcar_detail p
+		LEFT JOIN 
+			weigh_car w ON w.weighCarId = p.weighCarId
+	  	WHERE
+			w.`status` = 1 and p.weighCarId = :weiCarId 
+	]]>
+	</sql>
+	
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			pwdId, weighCarId, productId, productName, productName, purQuantity, weigh, marginWeigh,
+			price, tradingPrice, needToPayAmount
+		FROM
+			pre_weighcar_detail
+		WHERE
+			pwdId = :id
+	]]>
+	</sql>	
+	
+	<sql id="getByBusinessUserId">
+	<![CDATA[
+		SELECT 
+			pwd.pwdId,pwd.memberId,pwd.weighCarId,pwd.productId,pwd.productName,pwd.cateId,pwd.purQuantity,pwd.price,
+			pwd.tradingPrice,pwd.needToPayAmount,pwd.createTime,pwd.createUserId,pwd.updateTime,pwd.updateUserId,pwd.weigh,pwd.marginWeigh,
+			pwd.type,pwd.unit,mb.mobile,mb.realName  
+		from 
+			pre_weighcar_detail pwd 
+		INNER JOIN 
+			re_weighcar_business rwb
+		on 
+		pwd.weighCarId=rwb.weighCarId  
+		INNER JOIN  (
+			 SELECT 
+			 	a.businessid,ifnull(b.categoryId,0) categoryId from business_baseinfo a
+			 LEFT JOIN  
+			 	re_business_category  b 
+			 on 
+			 	a.businessId=b.businessId
+			 where userid= :userId   
+		 ) c 
+		 on 
+		 (	rwb.businessid=c.businessid 
+			or 
+			rwb.categoryid=c.categoryid 
+		 ) 
+		left join 
+			member_Baseinfo mb
+		on 
+			mb.memberId = pwd.memberId
+		where
+			pwd.marginWeigh >0
+		AND 
+	   	    pwd.CREATETIME >= DATE_SUB(CURRENT_DATE(),INTERVAL 2 DAY) 	
+		GROUP BY pwdId 	
+		LIMIT 
+			:startRow,:endRow 
+		 
+
+	]]>
+	</sql>	
+	
+	<sql id="getCountByUserId">
+	<![CDATA[
+		SELECT 
+			count(DISTINCT(pwd.pwdId)) count
+		from 
+			pre_weighcar_detail pwd 
+		INNER JOIN 
+			re_weighcar_business rwb
+		on 
+		pwd.weighCarId=rwb.weighCarId  
+		INNER JOIN  (
+			 SELECT 
+			 	a.businessid,ifnull(b.categoryId,0) categoryId from business_baseinfo a
+			 LEFT JOIN  
+			 	re_business_category  b 
+			 on 
+			 	a.businessId=b.businessId
+			 where userid= :userId   
+		 ) c 
+		 on 
+		 (	rwb.businessid=c.businessid 
+			or 
+			rwb.categoryid=c.categoryid 
+		 ) 
+		left join 
+			member_Baseinfo mb
+		on 
+			mb.memberId = pwd.memberId
+		where
+			pwd.marginWeigh >0
+		AND 
+	   	    pwd.CREATETIME >= DATE_SUB(CURRENT_DATE(),INTERVAL 2 DAY) 	
+
+	]]>
+	</sql>	
+	
+	
+	<sql id="getCountByMobile">
+	<![CDATA[
+		SELECT 
+			count(DISTINCT(pwd.pwdId)) count
+		from 
+			pre_weighcar_detail pwd 
+		left join 
+			member_Baseinfo mb
+		on 
+			mb.memberId = pwd.memberId
+		where
+			pwd.marginWeigh >0
+		and
+			mb.mobile like "%":mobile"%"
+	]]>
+	</sql>	
+	
+	<sql id="getByMobile">
+	<![CDATA[
+		SELECT 
+			pwd.pwdId,pwd.memberId,pwd.weighCarId,pwd.productId,pwd.productName,pwd.cateId,pwd.purQuantity,pwd.price,
+			pwd.tradingPrice,pwd.needToPayAmount,pwd.createTime,pwd.createUserId,pwd.updateTime,pwd.updateUserId,pwd.weigh,pwd.marginWeigh,
+			pwd.type,pwd.unit,mb.mobile,mb.realName  
+		from 
+			pre_weighcar_detail pwd 
+		left join 
+			member_Baseinfo mb
+		on 
+			mb.memberId = pwd.memberId
+		where
+			pwd.marginWeigh >0
+		AND
+			mb.mobile like "%":mobile"%"
+		LIMIT 
+			:startRow,:endRow 
+	]]>
+	</sql>	
+	
+	<sql id="getByCategoryUserId">
+	<![CDATA[
+		SELECT
+			pwd.pwdId,pwd.memberId,pwd.weighCarId,pwd.productId,pwd.productName,pwd.cateId,pwd.purQuantity,pwd.price,
+			pwd.tradingPrice,pwd.needToPayAmount,pwd.createTime,pwd.createUserId,pwd.updateTime,pwd.updateUserId,pwd.weigh,pwd.marginWeigh,
+			pwd.type,pwd.unit
+		FROM
+			pre_weighcar_detail pwd 
+		INNER JOIN 
+			re_weighcar_business rwb
+		on 
+			pwd.weighCarId=rwb.weighCarId  
+		INNER JOIN 
+			re_business_category rbc
+		on 
+			rwb.categoryId=rbc.categoryId  
+		INNER JOIN 
+			business_baseinfo bb  
+		on 
+			rbc.businessId=bb.businessId
+		where 
+		 	bb.userid=:userId
+	]]>
+	</sql>	
+	
+	<sql id="getByConditionPageForAdmin">
+	<![CDATA[
+		SELECT
+			pwd.pwdId,pwd.memberId,pwd.weighCarId,pwd.productId,pwd.productName,pwd.cateId,pwd.purQuantity,pwd.price,
+			pwd.tradingPrice,pwd.needToPayAmount,pwd.createTime,pwd.createUserId,pwd.updateTime,pwd.updateUserId,pwd.weigh,pwd.marginWeigh,
+			pwd.type,pwd.unit,wc.totalCreateTime,wc.tareCreateTime,pc.cateName,std.weigh as outWeigh,mb.account,mb.realName memberName
+		FROM
+			pre_weighcar_detail pwd 
+		LEFT JOIN
+			weigh_car wc
+		ON
+			wc.weighCarId = pwd.weighCarId
+		LEFT JOIN
+			product_category pc
+		ON
+			pc.categoryId = pwd.cateId
+		LEFT JOIN
+			sal_toshops_detail std
+		ON
+			std.pwdId = pwd.pwdId
+		LEFT JOIN
+			member_baseinfo mb
+		ON
+			mb.memberId = pwd.memberId
+		LEFT JOIN
+			in_store_detail isd
+		ON
+			isd.pwdId = pwd.pwdId
+		where 
+			1=1
+	 	<#if totalStartTime?exists && totalStartTime!="" >
+			AND wc.totalCreateTime>=:totalStartTime
+		</#if>
+		<#if totalEndTime?exists && totalEndTime!="" >
+			AND wc.totalCreateTime<=:totalEndTime
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="" >
+			AND wc.tareCreateTime=:tareStartTime
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="" >
+			AND wc.tareCreateTime=:tareStartTime
+		</#if>
+		<#if paymentStatus?exists && paymentStatus!="" >
+			AND pwd.paymentStatus=:paymentStatus
+		</#if>
+		<#if account?exists && account!="" >
+			AND mb.account=:account
+		</#if>
+		<#if inStoreNo?exists && inStoreNo!="" >
+			AND isd.inStoreNo=:inStoreNo
+		</#if>
+		GROUP BY pwd.pwdId
+		LIMIT :startRow, :endRow
+	]]>
+	</sql>
+	
+	<sql id="getTotalForAdmin">
+	<![CDATA[
+		SELECT
+			count(pwd.pwdId)
+		FROM
+			pre_weighcar_detail pwd 
+		LEFT JOIN
+			weigh_car wc
+		ON
+			wc.weighCarId = pwd.weighCarId
+		LEFT JOIN
+			product_category pc
+		ON
+			pc.categoryId = pwd.cateId
+		LEFT JOIN
+			sal_toshops_detail std
+		ON
+			std.pwdId = pwd.pwdId
+		LEFT JOIN
+			in_store_detail isd
+		ON
+			isd.pwdId = pwd.pwdId
+		where 
+			1=1
+	 	<#if totalStartTime?exists && totalStartTime!="" >
+			AND wc.totalCreateTime>=:totalStartTime
+		</#if>
+		<#if totalEndTime?exists && totalEndTime!="" >
+			AND wc.totalCreateTime<=:totalEndTime
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="" >
+			AND wc.tareCreateTime=:tareStartTime
+		</#if>
+		<#if tareStartTime?exists && tareStartTime!="" >
+			AND wc.tareCreateTime=:tareStartTime
+		</#if>
+		<#if paymentStatus?exists && paymentStatus!="" >
+			AND pwd.paymentStatus=:paymentStatus
+		</#if>
+		<#if account?exists && account!="" >
+			AND mb.account=:account
+		</#if>
+		<#if inStoreNo?exists && inStoreNo!="" >
+			AND isd.inStoreNo=:inStoreNo
+		</#if>
+		GROUP BY pwd.pwdId
+	]]>
+	</sql>
+	
+	
+	<sql id="updateDto">
+	<![CDATA[
+		update 
+			pre_weighcar_detail
+		set 
+			<#if marginWeigh?exists>
+				marginWeigh=:marginWeigh,
+			</#if>
+			updateTime=SYSDATE()
+		where 
+			pwdId=:pwdId
+	]]>
+	</sql>	
+	
+	<sql id="batchUpdatePaymentStatus">
+	<![CDATA[
+		update 
+			pre_weighcar_detail
+		set 
+			paymentStatus = 2,
+			updateUserId = :updateUserId,
+			updateTime = SYSDATE()
+		where 
+		<#assign n = pwds?size />
+		<#if n gt 0>
+			pwdId IN (
+			<#list pwds as pwdId>
+				<#if pwds_index != n-1>
+						 :pwdId,
+					<#else>
+						 :pwdId
+				</#if>
+			</#list>
+			)
+		</#if>
+	]]>
+	</sql>	
+	
+	<!-- 
+	        热门好货商铺推送，默认销售全部商品
+	   1 产地供应商有100吨，批发商取消购买，直接删除推送商铺的关联表，即此好货不再显示与批发商的好货列表
+	   2 产地供应商有100度，批发商购买了部分，如50吨，减去热门好货的库存后，删除推送商铺的关联表，此好货不再显示与批发商的好货列表
+	 -->
+	<sql id="deleteBusiness">
+	<![CDATA[
+		delete from
+			re_weighcar_business 
+		where 
+			weighCarId=:weighCarId 
+		and 
+			businessId=:businessId
+	]]>
+	</sql>	
+	
+</sqlMap>

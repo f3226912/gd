@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="NstSequence">
+
+	<sql id="getNstOrderNo">                 
+ 	<![CDATA[
+		SELECT nextval('nst_order')
+ 	]]>
+ 	</sql>
+
+</sqlMap>

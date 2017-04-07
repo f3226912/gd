@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="CertifCompanyEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO certif_company(
+	icon,createTime,idCard,status,updateTime,cardPhotoUrl,companyName,
+	optionUser,bzl,id,updateUserId,commitTime,account,
+	realName,memberId,appType,bzlPhotoUrl,createUserId
+	) VALUES (
+	:icon,:createTime,:idCard,:status,:updateTime,:cardPhotoUrl,:companyName,
+	:optionUser,:bzl,:id,:updateUserId,:commitTime,:account,
+	:realName,:memberId,:appType,:bzlPhotoUrl,:createUserId
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE certif_company SET 
+	<#if icon?exists && icon!="" >
+		icon=:icon,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if idCard?exists >
+		idCard=:idCard,
+	</#if>	
+	<#if status?exists && status!="" >
+		status=:status,
+	</#if>	
+	<#if cardPhotoUrl?exists >
+		cardPhotoUrl=:cardPhotoUrl,
+	</#if>	
+	<#if companyName?exists && companyName!="" >
+		companyName=:companyName,
+	</#if>	
+	<#if optionUser?exists && optionUser!="" >
+		optionUser=:optionUser,
+	</#if>	
+	<#if bzl?exists && bzl!="" >
+		bzl=:bzl,
+	</#if>	
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if updateUserId?exists && updateUserId!="" >
+		updateUserId=:updateUserId,
+	</#if>	
+	<#if commitTime?exists && commitTime!="" >
+	    commitTime=SYSDATE(),
+	</#if>
+	<#if account?exists && account!="" >
+		account=:account,
+	</#if>	
+	<#if realName?exists && realName!="" >
+		realName=:realName,
+	</#if>	
+	<#if memberId?exists && memberId!="" >
+		memberId=:memberId,
+	</#if>	
+	<#if appType?exists && appType!="" >
+		appType=:appType,
+	</#if>	
+	<#if bzlPhotoUrl?exists && bzlPhotoUrl!="" >
+		bzlPhotoUrl=:bzlPhotoUrl,
+	</#if>	
+	<#if createUserId?exists && createUserId!="" >
+		createUserId=:createUserId,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	cc.icon,cc.createTime,cc.idCard,cc.status,cc.updateTime,cc.cardPhotoUrl,cc.companyName,
+	cc.optionUser,cc.bzl,cc.id,cc.updateUserId,cc.commitTime,cc.account,
+	cc.realName,cc.memberId,cc.appType,cc.bzlPhotoUrl,cc.createUserId,mb.status as userStatus 
+	FROM certif_company cc,member_baseinfo mb 
+	WHERE 
+		id=:id
+	and cc.memberId = mb.memberId
+	]]>
+</sql>
+
+<sql id="getOneBySearch">
+	<![CDATA[
+	SELECT 
+		cc.icon,cc.createTime,cc.idCard,cc.status,cc.updateTime,cc.cardPhotoUrl,cc.companyName,
+		cc.optionUser,cc.bzl,cc.id,cc.updateUserId,cc.commitTime,cc.account,
+		cc.realName,cc.memberId,cc.appType,cc.bzlPhotoUrl,cc.createUserId,
+		(case cc.status  WHEN '2' THEN 
+			(SELECT clog.reason FROM certif_log clog WHERE clog.optionId = cc.id AND clog.type= 2 AND clog.status = 2 ORDER BY clog.createTime DESC LIMIT 0,1) 
+		 ELSE '' END) as reason
+	FROM 
+		certif_company cc
+	WHERE
+		1 = 1
+	<#if id?exists && id!="" >
+		AND cc.id=:id
+	</#if>
+	<#if memberId?exists && memberId!="" >
+		AND cc.memberId = :memberId
+	</#if>	
+	<#if status?exists && status!="" >
+		AND cc.status = :status
+	</#if>	
+	<#if optionUser?exists && optionUser!="" >
+		AND cc.optionUser=:optionUser
+	</#if>
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+		icon,createTime,idCard,status,updateTime,cardPhotoUrl,companyName,
+		optionUser,bzl,id,updateUserId,commitTime,account,
+		realName,memberId,appType,bzlPhotoUrl,createUserId
+	FROM certif_company 
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND status=:status
+	</#if>
+	<#if account?exists && account!="" >
+		AND account=:account
+	</#if>
+	<#if companyName?exists && companyName!="" >
+        AND companyName like "%":companyName"%"
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND createUserId=:createUserId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	ORDER BY createTime desc 
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+		cc.icon,cc.createTime,cc.idCard,cc.status,cc.updateTime,cc.cardPhotoUrl,cc.companyName,
+		cc.optionUser,cc.bzl,cc.id,cc.updateUserId,cc.commitTime,cc.account,
+		cc.realName,cc.memberId,cc.appType,cc.bzlPhotoUrl,cc.createUserId,m.mobile
+	FROM certif_company cc
+	LEFT JOIN member_baseinfo m ON cc.memberId = m.memberId
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND cc.status=:status
+	</#if>
+	<#if account?exists && account!="" >
+		AND cc.account=:account
+	</#if>
+	<#if companyName?exists && companyName!="" >
+        AND cc.companyName like "%":companyName"%"
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND cc.createUserId=:createUserId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(cc.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(cc.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND m.mobile=:mobile
+	</#if>
+	ORDER BY createTime desc 
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(1) 
+	FROM certif_company cc
+	LEFT JOIN member_baseinfo m ON cc.memberId = m.memberId
+	WHERE 1=1
+	<#if status?exists && status!="" >
+		AND cc.status=:status
+	</#if>
+	<#if account?exists && account!="" >
+		AND cc.account=:account
+	</#if>
+	<#if companyName?exists && companyName!="" >
+        AND cc.companyName like "%":companyName"%"
+	</#if>
+	<#if createUserId?exists && createUserId!="" >
+		AND cc.createUserId=:createUserId
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(cc.commitTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(cc.commitTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if mobile?exists && mobile!="" >
+		AND m.mobile=:mobile
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM certif_company WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

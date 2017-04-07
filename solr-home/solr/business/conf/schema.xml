@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<schema name="mytest" version="1.1">
+  <types>  
+        <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>  
+		 
+		<fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
+		
+		<fieldtype name="binary" class="solr.BinaryField"/>
+		
+		<fieldType name="sint" class="solr.TrieIntField" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+		<fieldType name="float" class="solr.TrieFloatField" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+		<fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" omitNorms="true" 
+                                                                positionIncrementGap="0"/>
+       
+       
+      
+        <fieldType name="text" class="solr.TextField" >
+	    <!--  <analyzer type="query">
+            <tokenizer class="org.wltea.analyzer.lucene.IKAnalyzer" useSmart="false"/>
+        </analyzer> 
+		  <analyzer class="org.apache.lucene.analysis.cjk.CJKAnalyzer"/> 
+		  -->
+		  <!-- 配置中文分词器 -->
+		  <analyzer class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+
+		</fieldType>
+		
+		<fieldType name="date" class="solr.TrieDateField" sortMissingLast="true" omitNorms="true"/>
+     </types>  
+      
+	  <!--   
+		    <field column="businessId" name="businessId"/>  
+            <field column="name" name="name"/>  
+            <field column="businessModel" name="businessModel"/>  
+            <field column="companyProfile" name="companyProfile"/>  
+            <field column="shopsName" name="shopsName"/>  
+            <field column="shopsDesc" name="shopsDesc"/>  
+            <field column="shopsUrl" name="shopsUrl"/>  
+            <field column="categoryId" name="categoryId"/>  
+            <field column="cateName" name="cateName"/>  
+             <field column="status" name="status"/>   
+			 
+			 <field column="provinceId" name="provinceId"/>  
+            <field column="cityId" name="cityId"/>  
+            <field column="areaId" name="areaId"/>  
+            <field column="address" name="address"/>  
+			
+			
+				<entity name="products" query=" select pc.categoryId,pc.cateName from product_category pc LEFT JOIN re_business_category rbc on pc.categoryId=rbc.categoryId LEFT JOIN business_baseinfo bb on bb.businessId=rbc.businessId where bb.businessId= '${baseInfo.businessId}'	">
+				<field name="categoryId" column="productId" />
+				<field name="cateName" column="cateName" />
+            </entity>
+			
+			
+ 			<entity name="products" query=" select pb.productId ,pp.urlOrg from product_baseinfo pb  LEFT JOIN product_picture pp on pb.productId=pp.productId where businessId='${baseInfo.businessId}'	">
+				<field name="productId" column="productId" />
+				<field name="urlOrg" column="urlOrg" />
+            </entity>
+			 -->
+	  
+     <fields>  
+	   <field name="_version_" type="long" indexed="true" stored="true"/>
+	   
+	    <field name="businessId" type="sint" indexed="true" stored="true" required="true" />  
+		<field name="name" type="text" indexed="false" stored="true" /> 
+		<field name="mainProduct" type="text" indexed="true" stored="true" /> 
+		<field name="businessModel" type="sint" indexed="true" stored="true" /> 
+		<field name="companyProfile " type="text" indexed="false" stored="true" /> 
+		<field name="shopsName" type="text" indexed="true" stored="true" /> 
+		<field name="shopDesc" type="text" indexed="false" stored="true" /> 
+		
+		
+		<field name="provinceId" type="text" indexed="true" stored="true" /> 
+		<field name="cityId" type="text" indexed="true" stored="true" /> 
+		<field name="areaId" type="text" indexed="true" stored="true" /> 
+		<field name="address" type="text" indexed="false" stored="true" /> 
+		
+		<field name="level" type="sint" indexed="true" stored="true" /> 
+		
+		<field name="mobile" type="text" indexed="false" stored="true" /> 
+		<field name="memberGrade" type="sint" indexed="true" stored="true" /> 
+		<field name="shopsUrl" type="text" indexed="false" stored="true" /> 
+		
+		<field name="status" type="sint"   indexed="true" stored="false" /> 
+		
+		<field name="marketId" type="sint"   indexed="true" stored="true" /> 
+		<field name="marketName" type="text"   indexed="false" stored="true" /> 
+		
+		<field name="categoryId" type="long"  multiValued="true" indexed="true" stored="true"   />
+		<field name="cateName" type="text"    multiValued="true" indexed="true" stored="true"   />
+		
+		<field name="productId" type="long"  multiValued="true" indexed="true" stored="true"   />
+		<field name="urlOrg" type="text"  multiValued="true" indexed="false" stored="true"   />
+
+ 		<field name="managementType" type="sint" indexed="true" stored="true" /> 
+
+		<field name="price" type="double"  multiValued="true" indexed="false" stored="true"   />
+		<field name="unit" type="string"  multiValued="true" indexed="false" stored="true"   />
+		<field name="productName" type="text"  multiValued="true" indexed="false" stored="true"   />
+ 
+	   <field name="comstatus" type="sint"   indexed="false" stored="true" /> 
+	   <field name="ccstatus" type="sint"   indexed="false" stored="true" /> 
+	   <field name="cbstatus" type="sint"   indexed="false" stored="true" /> 
+	   
+     </fields>  
+
+  <uniqueKey>businessId</uniqueKey>
+
+ 
+ 
+ <defaultSearchField>shopsName</defaultSearchField>  
+      
+      <solrQueryParser defaultOperator="AND"/>  
+      <!-- 
+    	<copyField source="b_name" dest="text"/>  
+        <copyField source="b_shopName" dest="text"/>  
+	  -->
+</schema>

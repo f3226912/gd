@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="*" />
+
+	<bean id="loggingInitialization"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetClass"
+			value="com.gudeng.framework.core2.config.LogbackConfigurer" />
+		<property name="targetMethod" value="initLogging" />
+		<property name="arguments">
+			<list>
+				<value>${maven.logger}</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="baseDao" class="com.gudeng.commerce.gd.customer.dao.impl.BaseDaoImpl" />
+
+	<bean id="cacheBo" class="com.gudeng.commerce.gd.customer.bo.CacheBo"></bean>
+
+	<bean id="demoService" class="com.gudeng.commerce.gd.customer.service.impl.DemoServiceImpl"/>
+
+	<!--  会员  -->
+	<bean id="memberBaseinfoService" class="com.gudeng.commerce.gd.customer.service.impl.MemberBaseinfoServiceImpl"/>
+
+	<!--街市  -->
+	<bean id="marketService" class="com.gudeng.commerce.gd.customer.service.impl.MarketServiceImpl"/>
+	
+    <!--区域  -->
+    <bean id="areaService" class="com.gudeng.commerce.gd.customer.service.impl.AreaServiceImpl"/>
+
+    <!--会员区域设置  -->
+    <bean id="areaSettingService" class="com.gudeng.commerce.gd.customer.service.impl.AreaSettingServiceImpl"/>
+
+     <!--农速通城市设置  -->
+    <bean id="areaConfigService" class="com.gudeng.commerce.gd.customer.service.impl.AreaConfigServiceImpl"/>
+
+
+    <!--收发地址  -->
+    <bean id="memberAddressService" class="com.gudeng.commerce.gd.customer.service.impl.MemberAddressServiceImpl"/>
+
+    <!--车辆管理  -->
+    <bean id="carsService" class="com.gudeng.commerce.gd.customer.service.impl.CarsServiceImpl"/>
+
+    <!--车辆专线管理  -->
+    <bean id="carLineService" class="com.gudeng.commerce.gd.customer.service.impl.CarLineServiceImpl"/>
+
+	<!--  认证信息  -->
+	<bean id="memberCertifiService" class="com.gudeng.commerce.gd.customer.service.impl.MemberCertifiServiceImpl"/>
+
+	<!--  商铺信息  -->
+	<bean id="businessBaseinfoService" class="com.gudeng.commerce.gd.customer.service.impl.BusinessBaseinfoServiceImpl"/>
+
+	<!-- 广告推送  开始 -->
+	<!-- 推送广告轮播 -->
+	<bean id="pushAdInfoService" class="com.gudeng.commerce.gd.customer.service.impl.PushAdInfoServiceImpl"/>
+	<!-- 公告 -->
+	<bean id="pushNoticeService" class="com.gudeng.commerce.gd.customer.service.impl.PushNoticeServiceImpl"/>
+	<!-- 广告推送  结束 -->
+	<!-- 农批市场信息  -->
+	<bean id="farmersMarketService" class="com.gudeng.commerce.gd.customer.service.impl.FarmersMarketServiceImpl"/>
+
+	<!-- 商铺和所属市场关联表 Service -->
+	<bean id="reBusinessMarketService" class="com.gudeng.commerce.gd.customer.service.impl.ReBusinessMarketServiceImpl"/>
+
+	<!-- 用户和所属市场关联表 Service -->
+	<bean id="reMemberMarketService" class="com.gudeng.commerce.gd.customer.service.impl.ReMemberMarketServiceImpl"/>
+
+	<!-- 商铺和分类关联表  Service -->
+	<bean id="reBusinessCategoryService" class="com.gudeng.commerce.gd.customer.service.impl.ReBusinessCategoryServiceImpl"/>
+
+	<!-- 审核信息表 -->
+	<bean id="auditInfoService" class="com.gudeng.commerce.gd.customer.service.impl.AuditInfoServiceImpl"/>
+
+
+	<!-- 	用户收藏或者取消收藏商品分类 -->
+	<!-- 	用户收藏或者取消收藏 -->
+	<bean id="usercollectProductCategoryService" class ="com.gudeng.commerce.gd.customer.service.impl.UsercollectProductCategoryServiceImpl"></bean>
+	<!-- 	用户收藏或者取消收藏商品 -->
+	<bean id="usercollectProductService" class ="com.gudeng.commerce.gd.customer.service.impl.UsercollectProductServiceImpl"></bean>
+
+	<!-- 商铺自定义产品类型 -->
+	<bean id="businessProducttypeService" class="com.gudeng.commerce.gd.customer.service.impl.BusinessProducttypeServiceImpl"></bean>
+
+	<!-- 用户收藏店铺 -->
+	<bean id="usercollectShopService" class="com.gudeng.commerce.gd.customer.service.impl.UsercollectShopServiceImpl"></bean>
+
+
+
+	<!-- 电话拨打记录 -->
+	<bean id="callstatiSticsService" class="com.gudeng.commerce.gd.customer.service.impl.CallstatiSticsServiceImpl"></bean>
+
+	<!-- 礼品 -->
+	<bean id="giftService" class="com.gudeng.commerce.gd.customer.service.impl.GiftServiceImpl"></bean>
+
+
+	<!-- 消息推送任务服务 -->
+	<bean id="pushTaskService" class="com.gudeng.commerce.gd.customer.service.impl.PushTaskServiceImpl"></bean>
+
+	<!-- 消息推送记录 -->
+	<bean id="pushRecordService" class="com.gudeng.commerce.gd.customer.service.impl.PushRecordServiceImpl"></bean>
+
+	<!-- 消息推送记录 -->
+	<bean id="reCategoryBanelImgService" class="com.gudeng.commerce.gd.customer.service.impl.ReCategoryBanelImgServiceImpl"></bean>
+	<!-- 数据字典服务 -->
+	<bean id="systemCodeService" class="com.gudeng.commerce.gd.customer.service.impl.SystemCodeServiceImpl"></bean>
+
+	<!-- 推广渠道管理  -->
+	<bean id="promotionSourceService" class="com.gudeng.commerce.gd.customer.service.impl.PromotionSourceServiceImpl"></bean>
+
+  	<!-- 积分流水记录 -->
+	<bean id="integralService" class="com.gudeng.commerce.gd.customer.service.impl.IntegralServiceImpl"></bean>
+
+ 	<!-- 活动 -->
+	<bean id="activityService" class="com.gudeng.commerce.gd.customer.service.impl.ActivityServiceImpl"></bean>
+
+	<!-- 会员积分兑换礼物服务 -->
+	<bean id="memberIntegralConversionService" class="com.gudeng.commerce.gd.customer.service.impl.MemberIntegralConversionServiceImpl"></bean>
+
+	<!-- 银行卡服务 -->
+	<bean id="accBankCardInfoService" class="com.gudeng.commerce.gd.customer.service.impl.AccBankCardInfoServiceImpl"></bean>
+
+
+
+	<!-- 提现服务 -->
+<!-- 	<bean id="cashRequestService" class="com.gudeng.commerce.gd.customer.service.impl.CashRequestServiceImpl"></bean> -->
+
+	<!-- 交易流水服务 -->
+	<bean id="accTransInfoService" class="com.gudeng.commerce.gd.customer.service.impl.AccTransInfoServiceImpl"></bean>
+
+	<bean id="friendsLinksService" class="com.gudeng.commerce.gd.customer.service.impl.FriendsLinksServiceImpl"/>
+	<!-- NST推送服务 -->
+	<bean id="pushNstMessageService" class="com.gudeng.commerce.gd.customer.service.impl.PushNstMessageServiceImpl"/>
+	<!-- 线下推广统计服务 -->
+	<bean id="pushOfflineService" class="com.gudeng.commerce.gd.customer.service.impl.PushOfflineServiceImpl"/>
+	<!-- 投诉建议服务 -->
+	<bean id="complaintService" class="com.gudeng.commerce.gd.customer.service.impl.ComplaintServiceImpl"/>
+	<!--pos卡号服务 -->
+	<bean id="posBankCardService" class="com.gudeng.commerce.gd.customer.service.impl.PosBankCardServiceImpl"/>
+	<!--商铺-pos关联服务-->
+	<bean id="reBusinessPosService" class="com.gudeng.commerce.gd.customer.service.impl.ReBusinessPosServiceImpl"/>
+	<!--商铺-电子称关联服务-->
+	<bean id="reBusinessSteelyardService" class="com.gudeng.commerce.gd.customer.service.impl.ReBusinessSteelyardServiceImpl"/>
+	<!-- 农速通专线服务 -->
+	<bean id="nstSpecialLineService" class="com.gudeng.commerce.gd.customer.service.impl.NstSpecialLineServiceImpl"/>
+
+	<!-- 农速通运单服务 -->
+	<bean id="nstOrderBaseinfoService" class="com.gudeng.commerce.gd.customer.service.impl.NstOrderBaseinfoServiceImpl"/>
+
+	<bean id="nstOrderCommentService" class="com.gudeng.commerce.gd.customer.service.impl.NstOrderCommentServiceImpl"/>
+
+	<bean id="nstOrderNoService" class="com.gudeng.commerce.gd.customer.service.impl.NstOrderNoServiceImpl"></bean>
+
+	<bean id="nstOrderComplaintService" class="com.gudeng.commerce.gd.customer.service.impl.NstOrderComplaintServiceImpl"></bean>
+<!-- 农速通公告服务  -->
+	<bean id="nstNoticeService" class="com.gudeng.commerce.gd.customer.service.impl.NstNoticeServiceImpl"></bean>
+
+	<!-- 农速通一手货源分配规则 -->
+	<bean id="nstGoodAssignRuleService" class="com.gudeng.commerce.gd.customer.service.impl.NstGoodAssignRuleServiceImpl"></bean>
+<!-- 广告管理 -->
+	<bean id="adAdvertiseService" class="com.gudeng.commerce.gd.customer.service.impl.AdAdvertiseServiceImpl"></bean>
+
+	<bean id="adSpaceService" class="com.gudeng.commerce.gd.customer.service.impl.AdSpaceServiceImpl"></bean>
+	<bean id="adMenuService" class="com.gudeng.commerce.gd.customer.service.impl.AdMenuServiceImpl"></bean>
+
+ 	<bean id="businessBaseinfoAopUtil" class ="com.gudeng.commerce.gd.customer.util.BusinessBaseinfoAopUtil"/>
+	<!-- 账单 -->
+	<bean id="billDetailService" class="com.gudeng.commerce.gd.customer.service.impl.BillDetailServiceImpl"></bean>
+
+	<!-- app版本服务 -->
+	<bean id="appVersionService" class="com.gudeng.commerce.gd.customer.service.impl.AppVersionServiceImpl"></bean>
+
+	<bean id="creditService" class="com.gudeng.commerce.gd.customer.service.impl.CreditServiceImpl"></bean>
+<!--农速通同城发布货源-->
+	<bean id="nstSameCityAddressService" class="com.gudeng.commerce.gd.customer.service.impl.NstSameCityAddressServiceImpl"></bean>
+
+	<!-- 农速通同城找车-->
+	<bean id="nstSameCityCarlineService" class=" com.gudeng.commerce.gd.customer.service.impl.NstSameCityCarlineServiceImpl"/>
+
+	<!-- 农速通干线找货-->
+	<bean id="trunkAddressService" class="com.gudeng.commerce.gd.customer.service.impl.TrunkAddressServiceImpl"/>
+
+	<bean id="ipAddressLogService" class="com.gudeng.commerce.gd.customer.service.impl.IpAddressLogServiceImpl"/>
+
+	<bean id="ipAddressBlackService" class="com.gudeng.commerce.gd.customer.service.impl.IpAddressBlackServiceImpl"/>
+		<bean id="specialcharacterService" class="com.gudeng.commerce.gd.customer.service.impl.SpecialcharacterServiceImpl" />
+	<!-- 市场铺位 -->
+	<bean id="marketBerthService" class="com.gudeng.commerce.gd.customer.service.impl.MarketBerthServiceImpl"></bean>
+
+    <bean id="financeCreditService" class="com.gudeng.commerce.gd.customer.service.impl.FinanceCreditServiceImpl"></bean>
+	<bean id="certifPersonalService" class="com.gudeng.commerce.gd.customer.service.impl.certif.CertifPersonalServiceImpl"></bean>
+	<bean id="certifCorpService" class="com.gudeng.commerce.gd.customer.service.impl.certif.CertifCorpServiceImpl"></bean>
+    <bean id="certifLogService" class="com.gudeng.commerce.gd.customer.service.impl.certif.CertifLogServiceImpl"></bean>
+	<bean id="certifBaseService" class="com.gudeng.commerce.gd.customer.service.impl.certif.CertifBaseServiceImpl"></bean>
+	<bean id="certifCompanyService" class="com.gudeng.commerce.gd.customer.service.impl.certif.CertifCompanyServiceImpl"></bean>
+	<bean id="certifSpProductService" class="com.gudeng.commerce.gd.customer.service.impl.certif.CertifSpProductServiceImpl"></bean>
+	<bean id="certifShopService" class="com.gudeng.commerce.gd.customer.service.impl.certif.CertifShopServiceImpl"></bean>
+	
+   	<bean id="memberBaseAopUtil" class ="com.gudeng.commerce.gd.customer.util.MemberBaseAopUtil"/>
+   	
+   	<bean id="posMachineConfigAopUtils" class ="com.gudeng.commerce.gd.customer.util.PosMachineConfigAopUtils"/>
+
+	<bean id="mqAsyncErrorService" class="com.gudeng.commerce.gd.customer.service.impl.MqAsyncErrorServiceImpl"/>
+	
+	<bean id="accBankCardInfoAopUtils" class ="com.gudeng.commerce.gd.customer.util.AccBankCardInfoAopUtils"/>
+	<bean id="sensitiveWordService" class="com.gudeng.commerce.gd.customer.service.impl.SensitiveWordServiceImpl"></bean>
+	<bean id="memberLoginLogService" class="com.gudeng.commerce.gd.customer.service.impl.MemberLoginLogServiceImpl"></bean>
+	<bean id="sensitiveLogService" class="com.gudeng.commerce.gd.customer.service.impl.SensitiveLogServiceImpl"></bean>
+	<bean id="appshareService" class="com.gudeng.commerce.gd.customer.service.impl.AppshareServiceImpl"></bean>
+	<bean id="appChannelLinkService" class="com.gudeng.commerce.gd.customer.service.impl.AppChannelLinkServiceImpl"></bean>
+	<bean id="myAddressService" class="com.gudeng.commerce.gd.customer.service.impl.MyAddressServiceImpl"></bean>
+	<bean id="deliveryAddressService" class="com.gudeng.commerce.gd.customer.service.impl.DeliveryAddressServiceImpl"></bean>
+	<bean id="memberChangeLogService" class="com.gudeng.commerce.gd.customer.service.impl.MemberChangeLogServiceImpl"/>
+	<!-- App启动统计 -->
+	<bean id="appactivitystatService" class="com.gudeng.commerce.gd.customer.service.impl.AppactivitystatServiceImpl"></bean>
+	<bean id="productCategoryService" class="com.gudeng.commerce.gd.customer.service.impl.ProductCategoryServiceImpl"></bean>
+
+	<bean id="memberMessageService" class="com.gudeng.commerce.gd.customer.service.impl.statis.MemberMessageServiceImpl"></bean>
+
+	<bean id="pvStatisticBusinessService" class="com.gudeng.commerce.gd.customer.service.impl.statis.PvStatisticBusinessServiceImpl"></bean>
+	
+	<bean id="memberPageStatisticService" class="com.gudeng.commerce.gd.customer.service.impl.statis.MemberPageStatisticServiceImpl"></bean>
+
+	<bean id="productBaseinfoService" class="com.gudeng.commerce.gd.customer.service.impl.ProductBaseinfoServiceImpl"></bean>
+	<bean id="memberMessageFlagService" class="com.gudeng.commerce.gd.customer.service.impl.MemberMessageFlagServiceImpl"></bean>
+	<bean id="cartInfoService" class="com.gudeng.commerce.gd.customer.service.impl.CartInfoServiceImpl"></bean>
+	<bean id="npsOfferPriceService" class="com.gudeng.commerce.gd.customer.service.impl.NpsOfferPriceServiceImpl"></bean>
+	<bean id="npsPurchaseService" class="com.gudeng.commerce.gd.customer.service.impl.NpsPurchaseServiceImpl"></bean>
+	<bean id="quickMakeSheetService" class="com.gudeng.commerce.gd.customer.service.impl.QuickMakeSheetServiceImpl"></bean>
+
+	<bean id="activityUserintegralService" class="com.gudeng.commerce.gd.customer.service.impl.ActivityUserintegralServiceImpl"></bean>
+
+	<bean id="activityUserintegralChangeService" class="com.gudeng.commerce.gd.customer.service.impl.ActivityUserintegralChangeServiceImpl"></bean></beans>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SystemLog">
+	<sql id="addLog">
+	<![CDATA[
+		INSERT INTO system_log
+			(type,content,createTime,chennel,createUserId,operationId)
+		VALUES
+			(:type,:content,:createTime,:chennel,:createUserId,:operationId)	
+	]]>
+	</sql>
+	
+</sqlMap>

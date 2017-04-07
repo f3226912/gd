@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="SensitiveLogEntity">
+<sql id="insert">
+	<![CDATA[
+	INSERT INTO sensitive_log(
+	id,createTime,words,type
+	) VALUES (
+	:id,:createTime,:words,:type
+	)
+	]]>
+</sql>
+
+<sql id="update">
+	<![CDATA[
+	UPDATE sensitive_log SET 
+	<#if id?exists && id!="" >
+		id=:id,
+	</#if>	
+	<#if createTime?exists && createTime!="" >
+		createTime=:createTime,
+	</#if>	
+	<#if words?exists && words!="" >
+		words=:words,
+	</#if>	
+	<#if type?exists && type!="" >
+		type=:type,
+	</#if>	
+		updateTime = SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getById">
+	<![CDATA[
+	SELECT 
+	id,createTime,words,type
+	FROM sensitive_log WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getList">
+	<![CDATA[
+	SELECT 
+	id,createTime,words,type
+	FROM sensitive_log WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if words?exists && words!="" >
+		AND words like "%":words"%"
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	order by createTime desc 
+	]]>
+</sql>
+
+<sql id="getListPage">
+	<![CDATA[
+	SELECT 
+	id,createTime,words,type
+	FROM sensitive_log WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+	<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if words?exists && words!="" >
+		AND words like "%":words"%"
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	order by createTime desc 
+	LIMIT :startRow, :endRow
+	]]>
+</sql>
+
+<sql id="getTotal">
+	<![CDATA[
+	SELECT count(*) FROM sensitive_log WHERE 1=1
+	<#if id?exists && id!="" >
+		AND id=:id
+	</#if>
+		<#if startDate?exists && startDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') >=DATE_FORMAT(:startDate, '%Y-%c-%d')
+	</#if>
+	<#if endDate?exists && endDate!="" >
+	    AND DATE_FORMAT(createTime,'%Y-%c-%d') <=DATE_FORMAT(:endDate, '%Y-%c-%d')
+	</#if>
+	<#if words?exists && words!="" >
+		AND words like "%":words"%"
+	</#if>
+	<#if type?exists && type!="" >
+		AND type=:type
+	</#if>
+	]]>
+</sql>
+
+<sql id="deleteById">
+	<![CDATA[
+	DELETE FROM sensitive_log WHERE id=:id
+	]]>
+</sql>
+</sqlMap>

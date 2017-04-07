@@ -1,0 +1,1425 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="BusinessBaseinfo">
+	<!-- 根据ID 精确查找 -->
+	<sql id="getByBusinessId">
+	<![CDATA[
+		SELECT 
+			   c.businessId ,   
+			   c.userId  ,  
+			   m.level,
+			   m.account,
+			   m.realName,
+			   m.nickName,
+			   m.memberGrade,
+			   m.status as memberStatus,
+			   c.name ,
+			   c.mainProduct ,
+			   c.staffCount ,
+			   c.businessModel ,
+			   c.companyProfile  ,
+			   c.companyPicture  ,
+			   c.founded  ,
+			   c.legalRepresentative ,
+			   c.shopsName,
+			   c.offlineStatus,
+			   c.shopsDesc ,
+			   c.shopsUrl ,
+			   c.provinceId ,
+			   c.cityId ,
+			   c.areaId,
+			   c.bunkCode,
+			   p.area province,
+			   i.area city,
+			   a.area area,
+			   c.address ,
+			   c.lon ,
+			   c.lat ,
+			   c.createUserId  ,
+			   c.createTime  ,
+			   c.updateUserId ,
+			   c.updateTime ,
+			   c.browseCount ,
+			   m.zipCode ,
+			   c.banelImgUrl ,
+			   c.userImgUrl ,
+			   result.posNumber as posNumber,
+			   c.businessNo ,
+			   c.managementType,
+			   mt.id as marketId ,
+			   mt.marketName as marketName ,
+			   m.realName as contact ,
+			   m.email as email ,
+			   m.telephone as telephone ,
+			   m.mobile as mobile ,
+			   m.sex as sex ,
+			   mc.isIdCard as isIdCard ,
+			   mc.status as cerifiStatus
+		FROM 
+			 business_baseinfo c
+		LEFT JOIN 
+			 member_baseinfo m
+		ON
+		     m.memberId=c.userId
+		LEFT JOIN 
+			re_business_market r 
+		ON 
+			(r.businessId=c.businessId)
+	 	LEFT JOIN 
+	 		market mt 
+	 	ON 
+	 		(mt.id=r.marketId)
+	 	LEFT JOIN 
+			 member_certifi mc
+		ON
+		     m.memberId=mc.memberId
+		LEFT JOIN 
+			 area p
+		ON
+		     p.areaId=c.provinceId
+		LEFT JOIN 
+			 area i
+		ON
+		     i.areaId=c.cityId
+		LEFT JOIN 
+			 area a
+		ON
+		     a.areaId=c.areaId
+		LEFT JOIN
+		   ( 
+			SELECT 
+				rbc.businessId, group_concat(DISTINCT posNumber) as posNumber  
+			from 
+				re_business_pos rbc  
+				where rbc.state=1     
+			GROUP BY 
+				rbc.businessId
+		   ) result 
+	    ON
+	    	result.businessId=c.businessId
+		WHERE  
+			c.businessId=:businessId
+	 
+	]]>
+	</sql>
+	 
+	 <sql id="getByMap">
+	<![CDATA[
+		SELECT
+			c.businessId,
+			c.userId,
+			m. LEVEL,
+			m.account,
+			m.realName,
+			m.nickName,
+			m.memberGrade,
+			m.`status` AS memberStatus,
+			c.`name`,
+			c.mainProduct,
+			c.businessModel,
+			c.shopsName,
+			c.shopsDesc,
+			c.provinceId,
+			c.cityId,
+			c.areaId,
+			c.address,
+			c.lon,
+			c.lat,
+			c.browseCount,
+			c.banelImgUrl,
+			c.userImgUrl,
+			c.posNumber,
+			c.businessNo,
+		    c.managementType,
+			mt.id AS marketId,
+			mt.marketName AS marketName,
+			m.realName AS contact,
+			m.email AS email,
+			m.telephone AS telephone,
+			m.mobile AS mobile,
+			m.sex AS sex,
+			mc.isIdCard AS isIdCard,
+			mc.`status` AS cerifiStatus,
+			CASE WHEN e.userId = :memberId THEN "1" else 0 end isFocus
+		FROM
+			business_baseinfo c
+		LEFT JOIN member_baseinfo m ON m.memberId = c.userId
+		LEFT JOIN re_business_market r ON (r.businessId = c.businessId)
+		LEFT JOIN market mt ON (mt.id = r.marketId)
+		LEFT JOIN member_certifi mc ON m.memberId = mc.memberId
+		LEFT JOIN (SELECT 
+									e.businessId, e.userId 
+								FROM 
+									usercollect_shop e 
+								WHERE 
+									e.userId = :memberId) e 
+					ON c.businessId = e.businessId
+		WHERE  
+			c.businessId=:businessId
+		LIMIT 1
+	]]>
+	</sql>
+	 
+	 <!-- 根据UserID 精确查找 -->
+	<sql id="getByUserId">
+	<![CDATA[
+		SELECT 
+			   c.businessId ,   
+			   c.userId  ,  
+			   m.level,
+			   m.account,
+			   m.realName,
+			   m.nickName,
+			   m.memberGrade,
+			   m.status as memberStatus,
+			   c.name ,
+			   c.mainProduct ,
+			   c.staffCount ,
+			   c.businessModel ,
+			   c.companyProfile  ,
+			   c.companyPicture  ,
+			   c.founded  ,
+			   c.legalRepresentative ,
+			   c.shopsName,
+			   c.shopsDesc ,
+			   c.shopsUrl ,
+			   c.provinceId ,
+			   c.cityId ,
+			   c.areaId,
+			   p.area province,
+			   i.area city,
+			   a.area area,
+			   c.address ,
+			   c.lon ,
+			   c.lat ,
+			   c.createUserId  ,
+			   c.createTime  ,
+			   c.updateUserId ,
+			   c.updateTime ,
+			   c.browseCount ,
+			   c.zipCode ,
+			   c.banelImgUrl ,
+			   c.userImgUrl ,
+			   c.posNumber ,
+			   c.businessNo ,
+			   c.offlineStatus,
+			   c.managementType,
+			   mt.id as marketId ,
+			   mt.marketType,
+			   mt.marketName as marketName ,
+			   m.realName as contact ,
+			   m.email as email ,
+			   m.telephone as telephone ,
+			   m.mobile as mobile ,
+			   m.sex as sex ,
+			   mc.isIdCard as isIdCard
+		FROM 
+			 business_baseinfo c
+		LEFT JOIN 
+			 member_baseinfo m
+		ON
+		     m.memberId=c.userId
+		LEFT JOIN 
+			re_business_market r 
+		ON 
+			(r.businessId=c.businessId)
+	 	LEFT JOIN 
+	 		market mt 
+	 	ON 
+	 		(mt.id=r.marketId)
+	 	LEFT JOIN 
+			 member_certifi mc
+		ON
+		     m.memberId=mc.memberId
+		LEFT JOIN 
+			 area p
+		ON
+		     p.areaId=c.provinceId
+		LEFT JOIN 
+			 area i
+		ON
+		     i.areaId=c.cityId
+		LEFT JOIN 
+			 area a
+		ON
+		     a.areaId=c.areaId
+		WHERE  
+			c.userId=:userId
+	 
+	]]>
+	</sql>
+	 
+	 
+	
+	<!-- 全查找 -->
+	<sql id="getAll">
+	<![CDATA[
+		SELECT 
+			   businessId ,   
+			   userId  ,   
+			   name ,
+			   mainProduct ,
+			   staffCount ,
+			   businessModel ,
+			   companyProfile  ,
+			   companyPicture  ,
+			   founded  ,
+			   legalRepresentative ,
+			   shopsName,
+			   shopsDesc ,
+			   shopsUrl ,
+			   provinceId ,
+			   cityId, 
+			   areaId,
+			   address ,
+			   lon ,
+			   lat ,
+			   createUserId  ,
+			   createTime  ,
+			   updateUserId ,
+			   updateTime
+		FROM 
+			 business_baseinfo c
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	  
+	
+	<!-- 统计总共记录数  -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1)  
+		FROM 
+			 business_baseinfo c
+		LEFT JOIN
+        	member_baseinfo m
+        ON
+        	c.userId=m.memberId
+       	LEFT JOIN 
+       		re_business_market r 
+       	ON 
+       		r.businessId = c.businessId 
+		LEFT JOIN 
+			market d 
+		ON 
+			r.marketId = d.id 
+		LEFT JOIN
+		   ( 
+				SELECT rbc.businessId, group_concat(cateName) as cateNames  from re_business_category rbc LEFT JOIN 
+				product_category pc on rbc.categoryId=pc.categoryId where pc.curLevel=0    GROUP BY rbc.businessId
+		   ) result 
+	    ON
+	    	 result.businessId=c.businessId
+	   	LEFT JOIN
+	    	re_business_category rbc
+	    ON	(
+	    		rbc.businessId = c.businessId AND rbc.businessType = 0
+	    	)
+		WHERE   
+			1=1 
+			<#if businessId?exists && businessId!="" >
+			     AND c.businessId =:businessId 
+			</#if> 
+			<#if marketId?exists && marketId!="" >
+			     AND d.id =:marketId AND level!=4
+			</#if> 
+			<#if mobile?exists && mobile!="" >
+			     AND m.mobile like "%":mobile"%"
+			</#if>
+			<#if level?exists && level!="" && level=="4" >
+			     AND level=4
+			</#if> 	 
+			<#if level?exists && level!="" && level!="4" >
+			     AND level!=4
+			</#if>
+			<#if mainProduct?exists && mainProduct!=""  >
+			     AND mainProduct like "%":mainProduct"%" 
+			</#if>
+			<#if userId?exists && userId!="" >
+			     AND userId =:userId 
+			</#if> 
+			<#if offlineStatus?exists && offlineStatus!="" >
+			     AND offlineStatus =:offlineStatus 
+			</#if>
+			<#if name?exists && name!="" >
+			     AND name like "%":name"%" 
+			</#if> 
+			<#if account?exists && account!=""  >
+			     AND account like "%":account"%" 
+			</#if>
+			<#if posNumber?exists && posNumber!=""  >
+			     AND  c.businessId in (
+			     	select businessId from re_business_pos where state=1 and posNumber like "%":posNumber"%" 
+			     )
+			</#if>
+			<#if businessNo?exists && businessNo!=""  >
+			     AND businessNo like "%":businessNo"%" 
+			</#if>
+			<#if userId?exists && userId!="" >
+			     AND userId =:userId 
+			</#if> 
+			<#if name?exists && name!="" >
+			     AND name like "%":name"%" 
+			</#if> 
+			<#if shopsName?exists && shopsName!="" >
+			     AND shopsName like "%":shopsName"%" 
+			</#if> 
+			<#if startDate?exists && startDate!="" >
+			     AND DATE_FORMAT(c.createTime,'%Y-%c-%d') >= DATE_FORMAT(:startDate,'%Y-%c-%d')
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			     AND DATE_FORMAT(c.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate,'%Y-%c-%d')
+			</#if>
+			<#if categoryID?exists && categoryID!="" >
+				AND  c.businessId in (
+					 	select businessId from re_business_category where categoryId=:categoryID AND businessType='0'
+				     )			
+			</#if> 
+			<#if provinceId?exists && provinceId!="" && provinceId!=0 >
+			     AND c.provinceId=:provinceId
+			</#if>
+			<#if cityId?exists && cityId!="" && cityId!=0 >
+			     AND c.cityId=:cityId
+			</#if>
+			<#if areaId?exists && areaId!="" && areaId!=0 >
+			     AND c.areaId=:areaId
+			</#if>
+			<#if address?exists && address!=""  >
+ 				AND c.address like "%":address"%" 
+ 			</#if>
+			<#if termType?exists && termType!=""  >
+ 				<#if termType=="1">
+ 					AND EXISTS (SELECT 1 FROM re_business_pos p WHERE state=1 and c.`businessId` = p.`businessId`)
+ 				</#if>
+ 				<#if termType=="2">
+ 					AND EXISTS (SELECT 1 FROM re_business_steelyard s WHERE c.`businessId` = s.`businessId`)
+ 				</#if>
+ 			</#if>
+ 			<#if mainCategoryId?exists && mainCategoryId!=""  >
+ 				AND rbc.categoryId = :mainCategoryId
+ 			</#if>
+	]]>
+	</sql>
+	
+	<!-- 增加记录，注意date类型的，使用  _string 字段的值，代替date类型的值  -->
+	<sql id="addBusinessBaseinfo">
+	<![CDATA[
+	    INSERT INTO  
+	    	business_baseinfo
+	    	(
+	    	   businessId ,   
+			   userId  ,   
+			   name ,
+			   mainProduct,
+			   staffCount ,
+			   businessModel ,
+			   companyProfile  ,
+			   companyPicture  ,
+			   founded  ,
+			   legalRepresentative ,
+			   shopsName,
+			   shopsDesc ,
+			   shopsUrl ,
+			   provinceId ,
+			   cityId, 
+			   areaId,
+			   address ,
+			   lon ,
+			   lat ,
+			   banelImgUrl ,
+			   userImgUrl ,
+			   createUserId  ,
+			   createTime  ,
+			   updateUserId ,
+			   updateTime,
+			   managementType
+			)
+	    VALUES
+	    	(
+			   :businessId ,   
+			   :userId  ,   
+			   :name ,
+			   :mainProduct
+			   :staffCount ,
+			   :businessModel ,
+			   :companyProfile  ,
+			   :companyPicture  ,
+			   :founded  ,
+			   :legalRepresentative ,
+			   :shopsName,
+			   :shopsDesc ,
+			   :shopsUrl ,
+			   :provinceId ,
+			   :cityId, 
+			   :areaId,
+			   :address ,
+			   :lon ,
+			   :lat ,
+			   :banelImgUrl,
+			   :userImgUrl,
+			   :createUserId  ,
+			   SYSDATE() ,
+			   :updateUserId ,
+			   SYSDATE()   ,
+			   managementType
+			)
+	]]>
+	</sql>
+	
+	<!-- 根据 memberId 删除记录 -->
+	<sql id="deleteBusinessBaseinfo">
+	<![CDATA[
+	DELETE FROM 
+		business_baseinfo
+    WHERE 
+    	businessId=:businessId
+	]]>
+	</sql>
+	
+	
+	<!-- 根据 id 更新记录，全部更新用此 sql -->
+	<sql id="updateBusinessBaseinfo">
+	<![CDATA[
+	   UPDATE 
+	   		business_baseinfo
+	   SET
+			<#if userId?exists && userId!="" >
+					     userId=:userId,
+			</#if>		
+			<#if name?exists && name!="" >
+					     name=:name,
+			</#if>	
+			<#if mainProduct?exists >
+					     mainProduct=:mainProduct,
+			</#if>	
+			<#if staffCount?exists && staffCount!="" >
+					     staffCount=:staffCount,
+			</#if>	
+			 <#if businessModel?exists && businessModel!="" >
+					     businessModel=:businessModel,
+			</#if>	
+			 <#if companyProfile?exists && companyProfile!="" >
+					     companyProfile=:companyProfile,
+			</#if>	
+			 <#if companyPicture?exists && companyPicture!="" >
+					     companyPicture=:companyPicture,
+			</#if>	
+			 <#if founded?exists && founded!="" >
+					     founded=:founded,
+			</#if>	
+			 <#if legalRepresentative?exists && legalRepresentative!="" >
+					     legalRepresentative=:legalRepresentative,
+			</#if>	
+			 <#if shopsName?exists && shopsName!="" >
+					     shopsName=:shopsName,
+			</#if>	
+			 <#if shopsDesc?exists >
+					     shopsDesc=:shopsDesc,
+			</#if>	
+			 <#if shopsUrl?exists && shopsUrl!="" >
+					     shopsUrl=:shopsUrl,
+			</#if>	
+			<#if provinceId?exists >
+				 		 provinceId=:provinceId,
+			</#if>
+			<#if cityId?exists >
+				  		 cityId=:cityId,
+			</#if>	    
+			<#if areaId?exists >
+				  		 areaId=:areaId,
+			</#if>	    
+			<#if address?exists >
+				 		  address =:address,
+			</#if>
+			<#if offlineStatus?exists && offlineStatus!=null  >
+				 		  offlineStatus =:offlineStatus,
+			</#if>
+			<#if lon?exists && lon!="" >
+				  		 lon=:lon,
+			</#if>	    
+			<#if lat?exists && lat!="" >
+				 		 lat=:lat,
+			</#if>
+			<#if bunkCode?exists && bunkCode!="" >
+				 		 bunkCode=:bunkCode,
+			</#if>	 
+			<#if banelImgUrl?exists && banelImgUrl!="" >
+				 		 banelImgUrl=:banelImgUrl,
+			</#if>	 	
+			<#if userImgUrl?exists && userImgUrl!="" >
+				 		 userImgUrl=:userImgUrl,
+			</#if>	 	
+			<#if businessNo?exists >
+				 		 businessNo=:businessNo,
+			</#if>	 	
+			<#if posNumber?exists >
+				 		 posNumber=:posNumber,
+			</#if>	
+			<#if managementType?exists >
+				 		 managementType=:managementType,
+			</#if>	 	
+			<#if updateUserId?exists && updateUserId!="" >
+					     updateUserId=:updateUserId,
+			</#if>	    					    
+			<#if browseCount?exists && browseCount!="" >
+					     browseCount=:browseCount,
+			</#if>	    					    
+						 updateTime=SYSDATE() 
+		WHERE 
+		    businessId=:businessId
+	]]>
+	</sql>
+	 
+	 
+    <sql id="getBySearch" >
+    	<![CDATA[
+	 	SELECT 
+			   c.businessId ,   
+			   c.userId  ,   
+			   c.name ,
+			   c.mainProduct,
+			   c.staffCount ,
+			   c.businessModel ,
+			   c.companyProfile  ,
+			   c.companyPicture  ,
+			   c.founded  ,
+			   c.legalRepresentative ,
+			   c.shopsName,
+			   c.shopsDesc ,
+			   c.shopsUrl ,
+			   c.provinceId ,
+			   c.cityId, 
+			   c.areaId,
+			   c.address ,
+			   c.lon ,
+			   c.offlineStatus,
+			   c.lat ,
+			   c.banelImgUrl ,
+			   c.userImgUrl ,
+			   c.bunkCode ,
+			   result.posNumber as posNumber,
+			   c.businessNo ,
+			   c.managementType,
+			   c.createUserId  ,
+			   c.createTime  ,
+			   c.updateUserId ,
+			   c.updateTime,
+			   m.account,
+			   m.level,
+			   m.mobile,
+			   d.id marketId,
+			   d.marketname,
+			   pc1.cateName,
+               result1.cateNames
+		FROM business_baseinfo c
+	  	LEFT JOIN member_baseinfo m ON c.userId=m.memberId
+       	LEFT JOIN re_business_market r ON r.businessId = c.businessId 
+		LEFT JOIN market d ON r.marketId = d.id 
+	  	LEFT JOIN
+		   ( 
+				SELECT rbc.businessId, group_concat(cateName) as cateNames  from re_business_category rbc LEFT JOIN 
+				product_category pc on rbc.categoryId=pc.categoryId where pc.curLevel=0 and rbc.businessType='0'  GROUP BY rbc.businessId
+		   ) result1 
+	    ON result1.businessId=c.businessId
+	    LEFT JOIN
+		   ( 
+			SELECT 
+				rbc.businessId, group_concat(DISTINCT posNumber) as posNumber  
+			from 
+				re_business_pos rbc   
+			    where rbc.state=1   
+			GROUP BY 
+				rbc.businessId
+		   ) result 
+	    ON result.businessId=c.businessId
+	    LEFT JOIN
+	    	re_business_category rbc
+	    ON	(
+	    		rbc.businessId = c.businessId AND rbc.businessType = 0
+	    	)
+	    LEFT JOIN
+	    	product_category pc1
+	    ON	(
+	    		rbc.categoryId = pc1.categoryId
+	    	)
+		WHERE   
+			1=1 
+			<#if businessId?exists && businessId!="" >
+			     AND c.businessId =:businessId 
+			</#if> 
+			<#if mobile?exists && mobile!="" >
+			     AND m.mobile like "%":mobile"%"
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			     AND d.id =:marketId AND level!=4
+			</#if> 
+			<#if categoryID?exists && categoryID!="" >
+				AND  c.businessId in (
+					 	select businessId from re_business_category where categoryId=:categoryID AND businessType='0'
+				     )			
+			</#if> 
+			<#if level?exists && level!="" && level=="4" >
+			     AND level=4
+			</#if> 	 
+			<#if level?exists && level!="" && level!="4" >
+			     AND level!=4
+			</#if>
+			<#if mainProduct?exists && mainProduct!=""  >
+			     AND mainProduct like "%":mainProduct"%" 
+			</#if>
+			<#if account?exists && account!=""  >
+			     AND account like "%":account"%" 
+			</#if>
+			<#if posNumber?exists && posNumber!=""  >
+			     AND  c.businessId in (
+			     	select businessId from re_business_pos where state=1 and posNumber like "%":posNumber"%" 
+			     )
+			</#if>
+			<#if businessNo?exists && businessNo!=""  >
+			     AND businessNo like "%":businessNo"%" 
+			</#if>
+			<#if userId?exists && userId!="" >
+			     AND userId =:userId 
+			</#if> 
+			<#if offlineStatus?exists && offlineStatus!="" >
+			     AND offlineStatus =:offlineStatus 
+			</#if>
+			<#if name?exists && name!="" >
+			     AND name like "%":name"%" 
+			</#if> 
+			<#if shopsName?exists && shopsName!="" >
+			     AND shopsName like "%":shopsName"%" 
+			</#if> 
+			<#if startDate?exists && startDate!="" >
+			     AND DATE_FORMAT(c.createTime,'%Y-%c-%d') >= DATE_FORMAT(:startDate,'%Y-%c-%d')
+			</#if>
+			<#if endDate?exists && endDate!="" >
+			     AND DATE_FORMAT(c.createTime,'%Y-%c-%d') <= DATE_FORMAT(:endDate,'%Y-%c-%d')
+			</#if>
+			<#if provinceId?exists && provinceId!="" && provinceId!=0 >
+			     AND c.provinceId=:provinceId
+			</#if>
+			<#if cityId?exists && cityId!="" && cityId!=0 >
+			     AND c.cityId=:cityId
+			</#if>
+			<#if areaId?exists && areaId!="" && areaId!=0 >
+			     AND c.areaId=:areaId
+			</#if>
+			<#if address?exists && address!=""  >
+ 				AND c.address like "%":address"%" 
+ 			</#if>
+ 			<#if termType?exists && termType!=""  >
+ 				<#if termType=="1">
+ 					AND EXISTS (SELECT 1 FROM re_business_pos p WHERE state=1 and c.`businessId` = p.`businessId`)
+ 				</#if>
+ 				<#if termType=="2">
+ 					AND EXISTS (SELECT 1 FROM re_business_steelyard s WHERE c.`businessId` = s.`businessId`)
+ 				</#if>
+ 			</#if>
+
+ 			<#if mainCategoryId?exists && mainCategoryId!=""  >
+ 				AND rbc.categoryId = :mainCategoryId
+ 			</#if>
+			
+			order by createTime desc 
+			LIMIT :startRow,:endRow
+		]]>
+    </sql>
+	
+	<sql id="getShops" >
+    	<![CDATA[
+    	SELECT 
+    		a.userId, a.businessId, a.shopsName, a.`name`, a.mainProduct, c.marketId, d.marketName, b.mobile, 
+    		CASE WHEN e.userId = :memberId THEN "1" else 0 end isFocus
+		FROM 
+		<#if categoryId?exists && categoryId !="" >
+		re_business_category rbc
+			LEFT JOIN 
+		</#if>
+			business_baseinfo a
+		<#if categoryId?exists && categoryId !="" >
+			ON rbc.businessId = a.businessId
+		</#if> 
+			LEFT JOIN member_baseinfo b ON a.userId = b.memberId  
+			LEFT JOIN re_business_market c ON c.businessId = a.businessId 
+			LEFT JOIN market d ON c.marketId = d.id 
+			LEFT JOIN (SELECT 
+							e.businessId, e.userId 
+						FROM 
+							usercollect_shop e 
+						WHERE 
+							e.userId = :memberId) e 
+			ON a.businessId = e.businessId
+		WHERE 
+			b.`status` = "1"
+			AND d.marketType IN (2,3)
+		<#if isFocus?exists && isFocus == 1 >
+		    AND e.userId = :memberId
+		</#if>
+		<#if categoryId?exists && categoryId !="" >
+		    AND rbc.categoryId = :categoryId
+		</#if>
+		<#if marketId?exists && marketId !="">
+		    AND c.marketId = :marketId
+		</#if>
+		LIMIT :startRow, :endRow
+    	]]>
+    </sql>
+    
+    <sql id="getShopsTotal" >
+    	<![CDATA[
+    	SELECT 
+    		COUNT(1)
+		FROM 
+		<#if categoryId?exists && categoryId !="" >
+		re_business_category rbc
+			LEFT JOIN 
+		</#if>
+			business_baseinfo a
+		<#if categoryId?exists && categoryId !="" >
+			ON rbc.businessId = a.businessId
+		</#if> 
+			LEFT JOIN member_baseinfo b ON a.userId = b.memberId  
+			LEFT JOIN re_business_market c ON c.businessId = a.businessId 
+			LEFT JOIN market d ON c.marketId = d.id 
+			LEFT JOIN (SELECT 
+							e.businessId, e.userId 
+						FROM 
+							usercollect_shop e 
+						WHERE 
+							e.userId = :memberId) e 
+			ON a.businessId = e.businessId
+		WHERE
+			b.`status` = "1"
+			AND d.marketType IN (2,3)
+		<#if isFocus?exists && isFocus == 1 >
+		    AND e.userId = :memberId
+		</#if>
+		<#if categoryId?exists && categoryId !="" >
+		    AND rbc.categoryId = :categoryId
+		</#if>
+		<#if marketId?exists && marketId !="">
+		    AND c.marketId = :marketId
+		</#if>
+    	]]>
+    </sql>
+    
+    <sql id="addBrowser" >
+	   	<![CDATA[
+	    	UPDATE 
+	    		business_baseinfo 
+	    	SET 
+	    		browseCount = browseCount + 1 
+	    	WHERE 
+	    		businessId = :businessId
+	   	]]>
+    </sql>
+    
+     <!-- 根据UserID 和marketID  精确查找，一个市场中，只能有一个商铺，切换不同的市场，不能看到商铺  -->
+	<sql id="getByUserIdAndMarketId">
+	<![CDATA[
+		SELECT 
+			   c.businessId ,   
+			   c.userId  ,  
+			   m.account,
+			   m.realName,
+			   m.nickName,
+			   c.name ,
+			   c.mainProduct ,
+			   c.staffCount ,
+			   c.businessModel ,
+			   c.companyProfile  ,
+			   c.companyPicture  ,
+			   c.founded  ,
+			   c.legalRepresentative ,
+			   c.shopsName,
+			   c.shopsDesc ,
+			   c.shopsUrl ,
+			   c.provinceId ,
+			   c.cityId ,
+			   c.areaId,
+			   c.address ,
+			   c.lon ,
+			   c.lat ,
+			   c.createUserId  ,
+			   c.createTime  ,
+			   c.updateUserId ,
+			   c.updateTime ,
+			   c.browseCount ,
+			   c.zipCode ,
+			   c.banelImgUrl ,
+			   c.userImgUrl ,
+			   c.businessNo ,
+			   c.posNumber ,
+			   c.managementType,
+			   mt.id as marketId ,
+			   mt.marketName as marketName ,
+			   m.realName as contact ,
+			   m.email as email ,
+			   m.telephone as telephone ,
+			   m.mobile as mobile ,
+			   m.sex as sex ,
+			   mc.isIdCard as isIdCard
+		FROM 
+			 business_baseinfo c
+		LEFT JOIN 
+			 member_baseinfo m
+		ON
+		     m.memberId=c.userId
+		LEFT JOIN 
+			re_business_market r 
+		ON 
+			(r.businessId=c.businessId)
+	 	LEFT JOIN 
+	 		market mt 
+	 	ON 
+	 		(mt.id=r.marketId)
+	 	LEFT JOIN 
+			 member_certifi mc
+		ON
+		     m.memberId=mc.memberId
+		WHERE  
+			c.userId=:userId
+	 	AND 
+	 		mt.id=:marketId
+	]]>
+	</sql>
+    
+    <!-- 根据商铺ID，得到对应的类目 -->
+    <sql id="getCategoryList" >
+	   	<![CDATA[
+	    	SELECT 
+	    		p.categoryId,
+	    		p.cateName
+	    	FROM 
+	    		re_business_category r
+	    	LEFT JOIN
+	    		product_category p
+	    	ON 
+	    		p.categoryId = r.categoryId
+	    	WHERE
+	    		r.businessId = :businessId
+	    	<#if startRow?exists && startRow !=-1>
+	    		LIMIT :startRow, :endRow
+	    	</#if>
+	   	]]>
+    </sql>
+    <sql id="getShop">
+    <![CDATA[
+		SELECT
+			b.businessId,
+			b.shopsName,
+			m.mobile,
+			m.realName
+		FROM
+			member_baseinfo m
+		LEFT JOIN business_baseinfo b ON m.memberId=b.userId
+		where 1=1
+		<#if shopsName?exists && shopsName !="">
+		    AND b.shopsName like "%":shopsName"%" 
+		</#if>
+		<#if mobile?exists && mobile !="">
+		    AND m.mobile = :mobile
+		</#if>
+    ]]>
+    </sql>
+    
+    <sql id="getByPosNumber">
+	<![CDATA[
+		SELECT 
+			   c.businessId ,   
+			   c.userId  ,  
+			   m.level,
+			   m.account,
+			   m.realName,
+			   m.nickName,
+			   m.status as memberStatus,
+			   c.name ,
+			   c.mainProduct ,
+			   c.staffCount ,
+			   c.businessModel ,
+			   c.companyProfile  ,
+			   c.companyPicture  ,
+			   c.founded  ,
+			   c.legalRepresentative ,
+			   c.shopsName,
+			   c.shopsDesc ,
+			   c.shopsUrl ,
+			   c.provinceId ,
+			   c.cityId ,
+			   c.areaId,
+			   p.area province,
+			   i.area city,
+			   a.area area,
+			   c.address ,
+			   c.lon ,
+			   c.lat ,
+			   c.createUserId  ,
+			   c.createTime  ,
+			   c.updateUserId ,
+			   c.updateTime ,
+			   c.browseCount ,
+			   m.zipCode ,
+			   c.banelImgUrl ,
+			   c.userImgUrl ,
+			   c.posNumber ,
+			   c.managementType,
+			   mt.id as marketId ,
+			   mt.marketName as marketName ,
+			   m.realName as contact ,
+			   m.email as email ,
+			   m.telephone as telephone ,
+			   m.mobile as mobile ,
+			   m.sex as sex ,
+			   mc.isIdCard as isIdCard ,
+			   mc.status as cerifiStatus
+		FROM 
+			 business_baseinfo c
+		LEFT JOIN 
+			 member_baseinfo m
+		ON
+		     m.memberId=c.userId
+		LEFT JOIN 
+			re_business_market r 
+		ON 
+			(r.businessId=c.businessId)
+	 	LEFT JOIN 
+	 		market mt 
+	 	ON 
+	 		(mt.id=r.marketId)
+	 	LEFT JOIN 
+			 member_certifi mc
+		ON
+		     m.memberId=mc.memberId
+		LEFT JOIN 
+			 area p
+		ON
+		     p.areaId=c.provinceId
+		LEFT JOIN 
+			 area i
+		ON
+		     i.areaId=c.cityId
+		LEFT JOIN 
+			 area a
+		ON
+		     a.areaId=c.areaId
+		WHERE  
+			c.posNumber=:posNumber
+	 
+	]]>
+	</sql>
+	
+	 <sql id="getByBusinessNo">
+    <![CDATA[
+		SELECT 
+			   c.businessId ,   
+			   c.userId  ,   
+			   c.name ,
+			   c.mainProduct,
+			   c.staffCount ,
+			   c.businessModel ,
+			   c.companyProfile  ,
+			   c.companyPicture  ,
+			   c.founded  ,
+			   c.legalRepresentative ,
+			   c.shopsName,
+			   c.shopsDesc ,
+			   c.shopsUrl ,
+			   c.provinceId ,
+			   c.cityId, 
+			   c.areaId,
+			   c.address ,
+			   c.lon ,
+			   c.lat ,
+			   c.banelImgUrl ,
+			   c.userImgUrl ,
+			   c.businessNo ,
+			   c.createUserId  ,
+			   c.createTime  ,
+			   c.updateUserId ,
+			   c.updateTime,
+			   m.account,
+			   m.level,
+			   d.id marketId,
+			   d.marketname
+		FROM 
+			 business_baseinfo c
+	  	LEFT JOIN
+        	member_baseinfo m
+        ON
+        	c.userId=m.memberId
+       	LEFT JOIN 
+       		re_business_market r 
+       	ON 
+       		r.businessId = c.businessId 
+		LEFT JOIN 
+			market d 
+		ON 
+			r.marketId = d.id 
+		WHERE   
+			businessNo=:businessNo
+    ]]>
+    </sql>
+    
+    <sql id="getByMacAddr">
+    <![CDATA[
+    	SELECT 
+			   c.businessId ,   
+			   c.userId  ,   
+			   c.name ,
+			   c.mainProduct,
+			   c.staffCount ,
+			   c.businessModel ,
+			   c.companyProfile  ,
+			   c.companyPicture  ,
+			   c.founded  ,
+			   c.legalRepresentative ,
+			   c.shopsName,
+			   c.shopsDesc ,
+			   c.shopsUrl ,
+			   c.provinceId ,
+			   c.cityId, 
+			   c.areaId,
+			   c.address ,
+			   c.lon ,
+			   c.lat ,
+			   c.banelImgUrl ,
+			   c.userImgUrl ,
+			   c.businessNo ,
+			   c.createUserId  ,
+			   c.createTime  ,
+			   c.updateUserId ,
+			   c.updateTime
+		FROM 
+			 business_baseinfo c
+		WHERE
+			1 = 1
+		<#if macAddr?exists && macAddr !="">
+		    AND c.`businessId` IN 
+			  (SELECT 
+			    s.`businessId` 
+			  FROM
+			    re_business_steelyard s 
+			  WHERE s.`macAddr` = :macAddr)
+		</#if>
+    ]]>
+    </sql>
+	
+	<sql id="getBusinessShortInfoBySearch">
+    <![CDATA[
+     SELECT 
+		b.shopsName , b.userId, b.businessId, mb.memberGrade,
+		(SELECT COUNT(1)  FROM product_baseinfo p WHERE p.businessId = b.businessId and p.productType = '1') as prodCount
+	FROM 
+		business_baseinfo b
+		LEFT JOIN member_baseinfo mb ON b.userId = mb.memberId
+	WHERE  
+		1 = 1
+		<#if businessId?exists && businessId !="">
+		    AND b.businessId = :businessId
+		</#if>		
+    ]]>
+    </sql>
+    
+	<sql id="getCertifForBusinessBySearch">
+    <![CDATA[
+    
+		SELECT 
+		IFNULL((SELECT 
+			com.`status`
+		FROM 
+			certif_company com
+		WHERE
+			com.memberId = :memberId),-1) as comstatus,		
+		IFNULL((SELECT 
+			cc.`status`
+		FROM 
+			certif_corp cc
+		WHERE
+			cc.businessId = :businessId),-1) as ccstatus,
+		IFNULL((SELECT 
+			cb.`status` 
+		FROM 
+			certif_base cb
+		WHERE
+			cb.businessId = :businessId),-1) as cbstatus
+    ]]>
+    </sql>    
+    
+	 <sql id="getSupplierShops" >
+    	<![CDATA[
+	 	  SELECT 
+		  m.realName,
+          m.mobile,
+          b.shopsName,
+          b.businessId,
+          IFNULL(c.status,0) comstatus,
+          IF(c.`STATUS` = 1 ,10000,-1) comStatusOrder,
+          IFNULL(c1.status,0) cpstatus,
+          d.marketName,
+          b.businessModel
+		FROM 
+			business_baseinfo b
+	  	LEFT JOIN
+        	member_baseinfo  m 
+        ON
+        	b.userId=m.memberId
+        LEFT JOIN 
+       		re_business_market r 
+       	ON 
+       		r.businessId = b.businessId 
+		LEFT JOIN 
+			market d 
+		ON 
+			r.marketId = d.id  
+	    LEFT JOIN
+	        certif_company  c
+	    ON  c.memberId=b.userId and c.`STATUS`=1
+        LEFT JOIN
+	        member_certifi c1  
+	    ON  c1.memberId=b.userId and c1.`STATUS`=1 and type=1
+			<#if type?exists && type!="" &&type=="2" >
+	    ,
+		(SELECT
+					(businessId)
+				FROM
+					product_baseinfo p
+				LEFT JOIN product_category p4 ON p.cateId = p4.categoryId
+				WHERE p.productType = '1' AND 
+					p4.cateName IN (
+						SELECT
+							cateName
+						FROM
+							product_category p3
+						WHERE
+							p3.categoryId IN (
+								SELECT
+									cateId
+								FROM
+									product_baseinfo p2
+								WHERE
+							p2.state <> '5' AND p2.productType = '1'
+						AND p2.businessId IN (
+										SELECT
+											businessId
+										FROM
+											business_baseinfo b2
+										WHERE
+											b2.userId = :userId
+									)
+							)
+			) 
+		GROUP BY businessId) t 
+			</#if>
+		WHERE   
+			1=1 
+			<#if shopRecommend?exists && shopRecommend!="" >
+		         AND m.shopRecommend=:shopRecommend
+		    </#if>	
+		    <#if level?exists && level!="" >
+		         AND m.`level`!=:level
+		    </#if>			
+			<#if userId?exists && userId!=""  >
+			     AND b.userId !=:userId
+			</#if>
+			<#if type?exists && type!="" &&type=="2" >
+				and t.businessId=b.businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			     AND r.marketId =:marketId 
+			</#if> 	
+			<#if keyWord?exists && keyWord!=""  >
+			     AND b.businessId IN(
+			     	SELECT DISTINCT
+						(businessId)
+					FROM
+						product_baseinfo p
+					WHERE
+						p.roleType != 4
+					AND p.state = 3
+					AND p. NAME LIKE "%":keyWord"%"
+					AND p.productType = '1'
+			     )
+			</#if>	
+			GROUP BY  m.realName,
+					  m.mobile,
+					  b.shopsName,
+					  b.businessId,
+					  c.status,
+					  c1.status,
+					  d.marketName,
+					  b.businessModel 
+			order by b.OfflineStatus asc,comStatusOrder desc,b.updateTime desc
+			limit :startRow,:endRow
+		]]>
+    </sql>
+    
+     <sql id="getTotalShops" >
+    	<![CDATA[
+	 	SELECT 
+		     count(0)
+		FROM 
+			 business_baseinfo b
+	  	LEFT JOIN
+        	member_baseinfo  m 
+        ON
+        	b.userId=m.memberId
+       	LEFT JOIN 
+       		re_business_market r 
+       	ON 
+       		r.businessId = b.businessId 
+			<#if type?exists && type!="" &&type=="2" >
+	    ,
+		(SELECT
+					(businessId)
+				FROM
+					product_baseinfo p
+				LEFT JOIN product_category p4 ON p.cateId = p4.categoryId
+				WHERE p.productType = '1' AND 
+					p4.cateName IN (
+						SELECT
+							cateName
+						FROM
+							product_category p3
+						WHERE
+							p3.categoryId IN (
+								SELECT
+									cateId
+								FROM
+									product_baseinfo p2
+								WHERE
+							p2.state <> '5' AND p2.productType = '1'
+						AND p2.businessId IN (
+										SELECT
+											businessId
+										FROM
+											business_baseinfo b2
+										WHERE
+											b2.userId = :userId
+									)
+							)
+			) 
+		GROUP BY businessId) t 
+			</#if>
+		WHERE   
+			1=1 	
+			<#if shopRecommend?exists && shopRecommend!="" >
+		         AND m.shopRecommend=:shopRecommend
+		    </#if>	
+		    <#if level?exists && level!="" >
+		         AND m.`level`!=:level
+		    </#if>					
+			
+			<#if userId?exists && userId!=""  >
+			     AND b.userId !=:userId
+			</#if>
+			<#if type?exists && type!="" &&type=="2" >
+				and t.businessId=b.businessId
+			</#if>
+			<#if marketId?exists && marketId!="" >
+			     AND r.marketId =:marketId 
+			</#if> 	
+			<#if keyWord?exists && keyWord!=""  >
+			     AND b.businessId IN(
+			     	SELECT DISTINCT
+						(businessId)
+					FROM
+						product_baseinfo p
+					WHERE
+						p.roleType != 4
+					AND p.state = 3
+					AND p. NAME LIKE "%":keyWord"%"
+					AND p.productType = '1'
+			     )
+			</#if>
+
+		]]>
+    </sql>
+    
+         <sql id="getTradingDynamics" >
+    	<![CDATA[
+	    SELECT
+			o.businessId,
+			b.shopsName,
+			sum(p.tradeAmount) tradingVolume,
+			p1.cateName productCategoryStr,
+			m.realName
+		FROM
+			pay_serialnumber p
+		LEFT JOIN order_baseinfo o ON p.orderNo = o.orderNo
+		LEFT JOIN business_baseinfo b ON o.businessId = b.businessId
+		LEFT JOIN re_business_category r ON r.businessId = b.businessId
+		LEFT JOIN member_baseinfo m ON b.userId = m.memberId
+		LEFT JOIN product_category p1 ON r.categoryId = p1.categoryId
+		WHERE
+			p.payStatus = 1
+		AND (o.orderType = 1 or o.orderType=3)
+		AND TO_DAYS(now()) - TO_DAYS(p.payTime) = 1
+		GROUP BY
+			b.businessId
+		ORDER BY
+			sum(P.tradeAmount) DESC
+		
+		LIMIT 0,
+		 100
+		]]>
+    </sql>
+    
+    <!-- 活动-参与的店铺列表 -->
+	<sql id="getListForGdActivity">
+	<![CDATA[
+		SELECT
+			b.shopsName,
+			b.createTime,
+			b.offlineStatus,
+			m.`level`,
+			m.mobile,
+			rm.marketId,
+			mk.marketName,
+			pc.cateName
+		FROM
+			business_baseinfo b
+		LEFT JOIN member_baseinfo m ON b.userId = m.memberId
+		LEFT JOIN re_business_market rm ON rm.businessId = b.businessId
+		LEFT JOIN market mk ON rm.marketid = mk.id
+		LEFT JOIN re_business_category rbc ON rbc.businessId = b.businessId AND rbc.businessType = 0
+		LEFT JOIN product_category pc ON pc.categoryId = rbc.categoryId
+		WHERE 
+			1 = 1
+		<#if businessId?exists && businessId !="" >
+		    AND b.businessId = :businessId
+		</#if>			
+		<#if businessIdList?exists>
+			<#assign n = businessIdList?size />
+			<#if n gt 0>
+				and(
+				<#list businessIdList as bId>
+					<#if bId_index != n-1>
+							b.businessId = '${bId}' or
+						<#else>
+							b.businessId = '${bId}'  
+					</#if>
+				</#list>
+				) 
+			</#if>
+		</#if>			
+		GROUP BY b.businessId 
+	]]>
+	</sql>
+    
+    <sql id="getBusinessInfoByUserId">
+	<![CDATA[
+	    SELECT t1.businessId,t1.userId memberId, t2.area provinceName, t3.area cityName, t4.area areaName,  
+			t1.businessModel, t1.shopsName, m.memberGrade,
+			m.realName as contact, m.mobile as mobile, t1.shopsName, mt.marketName
+		FROM business_baseinfo t1
+		LEFT JOIN area t2 ON t1.provinceId = t2.areaID
+		LEFT JOIN area t3 ON t1.cityId = t3.areaID
+		LEFT JOIN area t4 ON t1.areaId = t4.areaID
+		LEFT JOIN re_business_market r ON (r.businessId=t1.businessId)
+		LEFT JOIN  market mt ON (mt.id=r.marketId)
+		LEFT JOIN member_baseinfo m ON m.memberId=t1.userId
+		where t1.userId= :userId
+	]]>
+	</sql>
+</sqlMap>

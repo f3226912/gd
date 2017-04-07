@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>谷登农批网—欢迎注册农速通app</title>
+	<meta name="keywords" content="谷登农批网、农速通、农产品物流、农产品、农批市场" />
+	<meta name="description" content="谷登农批网的农速通app是一款服务于农产品批发市场，为农产品物流提供一键发布货源车源信息，帮车主找货主、助货主找车主，最终实现农产品物流信息对称和流通效率的手机客户端！欢迎您下载注册！" />
+	<meta name="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit">	
+	<meta name="Resource-type" content="Document" />
+	<link rel="stylesheet" href="v1.0/css/global.css">
+	<link rel="stylesheet" href="v1.0/css/app-nst.css">
+	<link rel="stylesheet" href="v1.0/css/jquery.fullPage.css">
+	<script src="v1.0/js/jquery-1.8.3.min.js"></script>
+	<script src="v1.0/js/gdui.js"></script>
+</head>
+<body> 
+	
+	<ul id="menu">
+		<li data-menuanchor="firstPage"><a href="#firstPage"></a></li>
+		<li data-menuanchor="secondPage"><a href="#secondPage"></a></li>
+		<li data-menuanchor="3rdPage"><a href="#3rdPage"></a></li>
+		<li data-menuanchor="4thPage"><a href="#4thPage"></a></li>
+	</ul>
+	<!--head star-->
+	<!--#include virtual="zhuanti/pub/head.html"-->
+	<!--head end-->
+	<div id="fullpage">
+		<div class="section " id="section0">
+				
+			<div class="wrap-conten">
+			 	<div class="section0-bg"></div>
+			 	<div class="sec-posr">
+			 		<div class="sect-txt first-sect-txt">
+				 		<h2 class="sect-txt-t">使用农速通，找车找货更轻松！</h2>
+				 		<p>谷登农批网的农速通app是一款服务于农产品批发市场，</p>
+				 		<p>为农产品物流提供一键发布货源车源信息，</p>
+				 		<p>帮车主找货主、助货主找车主，</p>
+				 		<p>最终实现农产品物流信息对称和流通效率提高的手机客户端！</p>			 		
+				 	</div>
+				 	<div class="ewm-a-wrap first-ewm">
+				 		<img src="v1.0/images/appdown/erweima-nst.jpg" alt="手机扫码下载农速通">
+				 	</div>
+				 	<a href="#secondPage" class="sec-arrow"></a>
+			 	</div>
+			 	
+			 	
+			</div>
+			
+		</div>
+		<div class="section" id="section1">
+			<div class="sec-posr">
+				<div class="second-main"></div>
+				<div class="sect-ico second-ico">货源选择</div>
+		 		<div class="sect-txt second-sect-txt">
+			 		<h2 class="sect-txt-t">车主货主好帮手</h2>
+			 		<p>专注国内农批市场农产品物流信息集散，</p>
+			 		<p>实现迅速筛选物流线路及货源，</p>
+			 		<p>注册农速通，约车找货一键解决！</p>			 		
+			 	</div>
+			 	<div class="ewm-a-wrap second-ewm">
+			 		<img src="v1.0/images/appdown/erweima-nst.jpg" alt="手机扫码下载农速通">
+			 	</div>	
+			 	<a href="#3rdPage" class="sec-arrow"></a>
+		 	</div>
+		</div>
+		<div class="section" id="section2">
+			<div class="sec-posr">
+				<div class="third-main"></div>
+				<div class="sect-ico third-ico">海量货源</div>
+		 		<div class="sect-txt third-sect-txt">
+			 		<h2 class="sect-txt-t">找货轻松  满载而归</h2>
+			 		<p>提供及时海量的商户发货信息，</p>
+			 		<p>让车主无需漫长等待，</p>
+			 		<p>注册农速通，让你的车满载而归！</p>	
+			 	</div>
+			 	<div class="ewm-a-wrap third-ewm">
+			 		<img src="v1.0/images/appdown/erweima-nst.jpg" alt="手机扫码下载农速通">
+			 	</div>	
+			 	<a href="#4thPage" class="sec-arrow"></a>
+		 	</div>
+		</div>
+		<div class="section" id="section3">
+			<div class="sec-posr">
+				<div class="fourth-main"></div>
+				<div class="sect-ico fourth-ico">按需预约</div>
+		 		<div class="sect-txt fourth-sect-txt">
+			 		<h2 class="sect-txt-t">海量路线  约车方便</h2>
+			 		<p>方便司机随时发布线路信息，</p>
+			 		<p>货主按需预约合适车主，</p>
+			 		<p>注册农速通，不再因延误耽搁生意！</p>	
+			 	</div>
+			 	<div class="ewm-a-wrap fourth-ewm">
+			 		<img src="v1.0/images/appdown/erweima-nst.jpg" alt="手机扫码下载农速通">
+			 	</div>	
+		 	</div>
+		</div>
+	</div>
+	<script src="v1.0/js/jquery.fullPage.js"></script>
+	<script src="v1.0/js/jquery.easing.min.js"></script>
+	<script type="text/javascript">
+		// $(".app-h-wrap").width($('body').width()).show();
+		// $(window).bind("resize",function(){
+		// 	$(".app-h-wrap").width($('body').width()).show();
+		// });		
+		$(document).ready(function() {
+			$('#fullpage').fullpage({
+				sectionsColor: ['#deedf7','#dcf1e0', '#ceebef', '#f2ecdb'],
+				anchors: ['firstPage', 'secondPage', '3rdPage', '4thPage'],
+				menu: '#menu',
+				/* onLeave: function(index){
+					if(index == 1){
+						//$(".head-wrap").fadeOut();
+						//$("#menu").addClass("first-sec");
+						$(".first-sect-txt").animate({
+							top: '0',
+							opacity:0
+						}, 1500, 'easeOutExpo');
+						$(".first-ewm").animate({
+							right: '-225px',
+							opacity:0
+						}, 1500, 'easeOutExpo');
+					}
+					//section 2
+					if(index == 2){
+						//moving the image
+						//$("#menu").addClass("second-sec");
+						$(".second-sect-txt").fadeIn("fast").animate({
+							top: '130px',
+							opacity:0
+						}, 1500, 'easeOutExpo');
+						$(".second-ewm").animate({
+							bottom: '-225px',
+							opacity:0
+						}, 1500, 'easeOutExpo');
+						$(".second-main").animate({
+							bottom: '-500px',
+							opacity:0
+						}, 1500, 'easeOutQuad',function(){
+							$(".second-ico").animate({
+								top:'-196px',
+								opacity:0
+							})
+						});
+
+					}
+					if(index == 3){
+						//$("#menu").addClass("third-sec");
+						$(".third-sect-txt").fadeIn("fast").animate({
+							top: '-15%',
+							opacity:0
+						}, 1500, 'easeOutExpo');
+						$(".third-ewm").animate({
+							bottom: '-225px',
+							opacity:0
+						}, 1500, 'easeInOutCubic');
+						$(".third-main").animate({
+							left: '-500px',
+							opacity:0
+						}, 1500, 'easeOutQuart',function(){
+							$(".third-ico").animate({
+								top:'-52%',
+								opacity:0
+							})
+						});
+					}
+					if(index == 4){
+						$("#menu").addClass("fourth-sec");
+						$(".fourth-sect-txt").fadeIn("fast").animate({
+							top: '-15%',
+							opacity:0
+						}, 1500, 'easeOutExpo');
+						$(".fourth-ewm").animate({
+							right: '-225px',
+							opacity:0
+						}, 1500, 'easeInOutCubic');
+						$(".fourth-main").animate({
+							left: '-628px',
+							bottom:'-505px',
+							opacity:0
+						}, 1500, 'easeOutQuart',function(){
+							$(".fourth-ico").animate({
+								left:'-100px',
+								opacity:0
+							})
+						});
+					}
+				}, */
+				afterLoad: function(anchorLink, index){
+					$("#menu").removeClass("first-sec second-sec third-sec fourth-sec")
+					if(index == 1){
+						//$(".head-wrap").fadeOut();
+						$("#menu").addClass("first-sec");
+						$(".first-sect-txt").animate({
+							top: (($(".first-sect-txt").parent(".sec-posr").height()-0)-($(".first-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".first-sect-txt").height()*1.3)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".first-ewm").show().animate({
+							right: '134px',
+							opacity:1
+						}, 1500, 'easeOutExpo');
+					}
+					//section 2
+					if(index == 2){
+						//moving the image
+						$("#menu").addClass("second-sec");
+						$(".second-sect-txt").fadeIn("fast").animate({
+							//top: '15%',
+							top: (($(".second-sect-txt").parent(".sec-posr").height()-0)-($(".second-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".second-sect-txt").height()*1.5)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".second-ewm").show().animate({
+							bottom: '20px',
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".second-main").animate({
+							bottom: '0px',
+							opacity:1
+						}, 1500, 'easeOutQuad',function(){
+							$(".second-ico").animate({
+								top:($(".second-main").height()-0)*0.12+($(".second-main").position().top-0)+'px',
+								opacity:1
+							})
+						});
+
+					}
+					if(index == 3){
+						$("#menu").addClass("third-sec");
+						$(".third-sect-txt").fadeIn("fast").animate({
+							top: (($(".third-sect-txt").parent(".sec-posr").height()-0)-($(".third-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".third-sect-txt").height()*1.5)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".third-ewm").show().animate({
+							bottom: '20px',
+							opacity:1
+						}, 1500, 'easeInOutCubic');
+						$(".third-main").animate({
+							left: '0px',
+							opacity:1
+						}, 1500, 'easeOutQuart',function(){
+							$(".third-ico").animate({
+								top:($(".third-main").height()-0)*0.42+($(".third-main").position().top-0)+'px',
+								opacity:1
+							})
+						});
+					}
+					if(index == 4){
+						$("#menu").addClass("fourth-sec");
+						$(".fourth-sect-txt").fadeIn("fast").animate({
+							top: (($(".fourth-sect-txt").parent(".sec-posr").height()-0)-($(".fourth-sect-txt").siblings(".ewm-a-wrap").height()-0)-20-($(".fourth-sect-txt").height()*1.5)),
+							opacity:1
+						}, 1500, 'easeOutExpo');
+						$(".fourth-ewm").show().animate({
+							right: '134px',
+							opacity:1
+						}, 1500, 'easeInOutCubic');
+						$(".fourth-main").animate({
+							left: '0px',
+							bottom:'0px',
+							opacity:1
+						}, 1500, 'easeOutQuart',function(){
+							$(".fourth-ico").animate({
+								left:'77px',
+								top:($(".fourth-main").height()-0)*0.38+($(".fourth-main").position().top-0)+'px',
+								opacity:1
+							})
+						});
+					}
+
+					
+				}
+			});
+
+		});
+	</script>
+	<script>
+	var  _hmt  =  _hmt  ||  [];
+	(function()  {
+	    var  hm  =  document.createElement("script");
+	    hm.src  =  "//hm.baidu.com/hm.js?e2dcda84fba5f34e3f6954d2990a58fa";
+	    var  s  =  document.getElementsByTagName("script")[0];  
+	    s.parentNode.insertBefore(hm,  s);
+	})();
+	</script>
+</body>
+</html>

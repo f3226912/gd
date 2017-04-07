@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProductDeliveryDetail">
+	<sql id="update">
+	<![CDATA[
+	    UPDATE 
+	    	product_delivery_detail
+	    SET 
+			 updateTime=SYSDATE()
+			 <#if type?exists && type!="" >
+			      ,type = :type 
+			 </#if>
+			 <#if orderNo?exists && orderNo!="" >
+			      ,orderNo = :orderNo 
+			 </#if>
+			 <#if sellerId?exists && sellerId!="" >
+			      ,sellerId = :sellerId 
+			 </#if>
+			 <#if shopName?exists && shopName!="" >
+			      ,shopName = :shopName 
+			 </#if>
+			 <#if buyerId?exists && buyerId!="" >
+			      ,buyerId = :buyerId 
+			 </#if>
+			 <#if buyerName?exists && buyerName!="" >
+			      ,buyerName = :buyerName 
+			 </#if>
+			 <#if businessId?exists && businessId!="" >
+			      ,businessId = :businessId 
+			 </#if>
+			 <#if productId?exists && productId!="" >
+			      ,productId = :productId 
+			 </#if>
+			 <#if productName?exists && productName!="" >
+			      ,productName = :productName 
+			 </#if>
+			 <#if price?exists && price!="" >
+			      ,price = :price 
+			 </#if>
+			 <#if purQuantity?exists && purQuantity!="" >
+			      ,purQuantity = :purQuantity 
+			 </#if>
+			 <#if subTotal?exists && subTotal!="" >
+			      ,subTotal = :subTotal 
+			 </#if>
+			 <#if imageUrl?exists && imageUrl!="" >
+			      ,imageUrl = :imageUrl 
+			 </#if>
+			 <#if unit?exists && unit!="" >
+			      ,unit = :unit 
+			 </#if>
+		WHERE
+			memberAddressId = :memberAddressId
+	]]>
+	</sql>
+	
+	<sql id="deleteByCondition">
+	<![CDATA[
+	    DELETE FROM 
+	    	product_delivery_detail
+		WHERE
+			memberAddressId = :memberAddressId
+			<#if orderNo?exists && orderNo!="" >
+			      AND orderNo = :orderNo 
+			 </#if>
+	]]>
+	</sql>
+	
+	<sql id="batchInsertEntity">
+	<![CDATA[
+	    INSERT INTO product_delivery_detail (
+		    memberAddressId,same_memberAddressId, type, orderNo, sellerId, shopName, buyerId, buyerName, businessId,
+		    productId, productName, price, purQuantity, subTotal, imageUrl, unit, createTime
+	    ) 
+		VALUES 
+		(
+		    :memberAddressId,:same_memberAddressId, :type, :orderNo, :sellerId, :shopName, :buyerId, :buyerName, :businessId,
+		    :productId, :productName, :price, :purQuantity, :subTotal, :imageUrl, :unit, SYSDATE()
+		)
+	]]>
+	</sql>
+	
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT
+			t.id, t.memberAddressId, t.type, t.orderNo, t.sellerId, t.businessId, t.shopName,
+			t.buyerId, t.buyerName, t.productId, t.productName, t.price, t.purQuantity,
+			t.subTotal, t.imageUrl, t.unit, sc.codeValue AS unitName, t.createTime, t.createUserId, t.updateTime, t.updateUserid
+		FROM
+			product_delivery_detail t 
+		LEFT JOIN 
+				system_code sc ON t.unit = sc.codeKey AND sc.type = 'ProductUnit'
+		WHERE 1=1
+			<#if memberAddressId?exists && memberAddressId!="" >
+			      AND t.memberAddressId = :memberAddressId 
+			</#if>
+			<#if orderNo?exists && orderNo!="" >
+			      AND t.orderNo = :orderNo 
+			</#if>
+			<#if sellerId?exists && sellerId!="" >
+			      AND t.sellerId = :sellerId 
+			</#if>
+			<#if businessId?exists && businessId!="" >
+			      AND t.businessId = :businessId 
+			</#if>
+			<#if buyerId?exists && buyerId!="" >
+			      AND t.buyerId = :buyerId 
+			</#if>
+			<#if productId?exists && productId!="" >
+			      AND t.productId = :productId 
+			</#if>
+		ORDER BY 
+			t.updateTime DESC
+	]]>
+	</sql>
+	
+	<sql id="getProductByMemberAddressId">
+	<![CDATA[
+		SELECT
+			id,
+			memberAddressId,
+			type,
+			orderNo,
+			shopName,
+			productId,
+			productName,
+			price,
+			purQuantity,
+			subTotal,
+			imageUrl,
+			(select codeValue from system_code where codeKey = t.unit and type='ProductUnit') as unit,
+			createTime
+		FROM
+			product_delivery_detail t
+		WHERE
+			memberAddressId = :memberAddressId
+	]]>
+	</sql>
+	
+	<sql id="getProductByMember">
+	<![CDATA[
+		SELECT
+			id,
+			memberAddressId,
+			type,
+			orderNo,
+			shopName,
+			productId,
+			productName,
+			price,
+			purQuantity,
+			subTotal,
+			imageUrl,
+			(select codeValue from system_code where codeKey = t.unit and type='ProductUnit') as unit,
+			createTime
+		FROM
+			product_delivery_detail t
+		WHERE
+		<#if source?? && source=="1">
+				same_memberAddressId = :memberAddressId			
+			<#else>
+				memberAddressId = :memberAddressId	
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getOrderByMemberAddressId">
+	<![CDATA[
+		SELECT
+			id,
+			memberAddressId,
+			type,
+			orderNo,
+			shopName,
+			createTime
+		FROM
+			product_delivery_detail
+		WHERE
+			memberAddressId = :memberAddressId
+		GROUP BY
+			orderNo
+	]]>
+	</sql>
+	
+	<sql id="getProductByOrderNo">
+	<![CDATA[
+		SELECT
+			id,
+			memberAddressId,
+			type,
+			productId,
+			productName,
+			price,
+			purQuantity,
+			subTotal,
+			imageUrl,
+			(select codeValue from system_code where codeKey = t.unit and type='ProductUnit') as unit,
+			createTime
+		FROM
+			product_delivery_detail t
+		WHERE
+			memberAddressId = :memberAddressId and orderNo = :orderNo
+	]]>
+	</sql>
+	
+	<sql id="getTypeByMemberAddressId">
+	<![CDATA[
+		SELECT
+			type
+		FROM
+			product_delivery_detail
+		WHERE
+			memberAddressId = :memberAddressId
+		LIMIT 1
+	]]>
+	</sql>
+	
+	
+	<sql id="getSwitchStatusByType">
+	<![CDATA[
+		SELECT 
+			t.`status` 
+		FROM 
+			switch_controller t 
+		WHERE 
+			t.type = :type 
+		ORDER BY 
+			t.createTime DESC 
+		LIMIT 1;
+	]]>
+	</sql>
+</sqlMap>

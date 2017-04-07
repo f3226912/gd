@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="Sysrolereports">
+	<sql id="getListByCondition">
+	<![CDATA[
+		SELECT
+			r.rmID,
+			r.roleID,
+			r.reportsID,
+			r.createUserID,
+			r.createTime
+		FROM
+			sysrolereports r
+		WHERE
+			1 = 1
+		<#if roleID?exists && roleID!="">
+			AND r.roleID =:roleID
+		</#if>
+		<#if reportsID?exists && reportsID!="">
+			AND r.reportsID = :reportsID
+		</#if>
+		ORDER BY createtime DESC
+		LIMIT
+		:startRow, :endRow
+	]]>
+	</sql>
+
+	<sql id="getTotalByCondition">
+	<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			sysrolereports r
+		WHERE
+			1 = 1
+		<#if roleID?exists && roleID!="">
+			AND r.roleID =:roleID
+		</#if>
+		<#if reportsID?exists && reportsID!="">
+			AND r.reportsID = :reportsID
+		</#if>
+	]]>
+	</sql>
+
+	<sql id="insert">
+	<![CDATA[
+		INSERT INTO sysrolereports(rmID,roleID,reportsID,createUserID,createTime) 
+		VALUES (:rmID,:roleID,:reportsID,:createUserID,SYSDATE())
+	]]>
+	</sql>
+	<sql id="delete">
+	<![CDATA[
+		DELETE FROM sysrolereports WHERE roleID=:roleID
+	]]>
+	</sql>
+</sqlMap>

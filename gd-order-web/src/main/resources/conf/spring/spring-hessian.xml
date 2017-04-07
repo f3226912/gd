@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cxf="http://cxf.apache.org/core"
+	xmlns:p="http://cxf.apache.org/policy" xmlns:ss="http://www.springframework.org/schema/security"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+   	http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd 
+   	http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd 
+   	http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
+   	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+   	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+   	http://cxf.apache.org/bindings/soap http://cxf.apache.org/schemas/configuration/soap.xsd 
+   	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd 
+   	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+   	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+   	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<bean id="defaultHandlerMapping"
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+
+	<bean name="/service/demoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="demoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.DemoService" />
+	</bean>
+
+	<bean name="/service/orderBaseinfoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderBaseinfoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderBaseinfoService" />
+	</bean>
+	<bean name="/service/orderProductDetailService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderProductDetailService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderProductDetailService" />
+	</bean>
+	<bean name="/service/paySerialnumberService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="paySerialnumberService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.PaySerialnumberService" />
+	</bean>
+	<bean name="/service/preSaleDetailService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="preSaleDetailService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.PreSaleDetailService" />
+	</bean>
+	<bean name="/service/preSaleService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="preSaleService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.PreSaleService" />
+	</bean>
+	<bean name="/service/subLimitRuleService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="subLimitRuleService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.SubLimitRuleService" />
+	</bean>
+	<bean name="/service/subAuditService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="subAuditService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.SubAuditService" />
+	</bean>
+	<bean name="/service/auditLogService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="auditLogService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.AuditLogService" />
+	</bean>
+	<!-- 补贴规则 -->
+	<bean name="/service/subPayRuleService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="subPayRuleService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.SubPayRuleService" />
+	</bean>
+	<bean name="/service/orderOutmarketinfoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderOutmarketinfoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderOutmarketinfoService" />
+	</bean>
+	<bean name="/service/weighCarService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="weighCarService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.WeighCarService" />
+	</bean>
+	<!--提现信息查询服务 -->
+	<bean name="/service/cashRequestService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="cashRequestService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.CashRequestService" />
+	</bean>
+	<bean name="/service/carWeighProService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="carWeighProService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.CarWeighProService" />
+	</bean>
+
+	<!-- 门岗车辆服务 -->
+	<bean name="/service/carBaseinfoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="carBaseinfoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.CarBaseinfoService" />
+	</bean>
+	<bean name="/service/reCarMemberService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="reCarMemberService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.ReCarMemberService" />
+	</bean>
+
+	<bean name="/service/salToshopsDetailService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="salToshopsDetailService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.SalToshopsDetailService" />
+	</bean>
+	<bean name="/service/taskService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="taskService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.TaskService" />
+	</bean>
+	<bean name="/service/orderSubService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderSubService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderSubService" />
+	</bean>
+	<bean name="/service/ShipperService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="shipperService" />
+		<property name="serviceInterface"
+			value=" com.gudeng.commerce.gd.order.service.ShipperService" />
+	</bean>
+
+	<!-- 货主入场商品服务 -->
+	<bean name="/service/preWeighCarDetailService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="preWeighCarDetailService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.PreWeighCarDetailService" />
+	</bean>
+
+	<!-- 规则频率HELP -->
+	<bean name="/service/subHelpService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="subHelpService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.SubHelpService" />
+	</bean>
+	<!-- 会员补贴统计 -->
+	<bean name="/service/memberSubsidyService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="memberSubsidyService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.MemberSubsidyService" />
+	</bean>
+
+	<!-- 入库信息查询 -->
+	<bean name="/service/inStoreDetailService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="inStoreDetailService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.InStoreDetailService" />
+	</bean>
+	<!-- 交易账单服务 -->
+	<bean name="/service/orderBillService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderBillService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderBillService" />
+	</bean>
+	<!-- 账户（钱包）信息查询 -->
+	<bean name="/service/accInfoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="accInfoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.AccInfoService" />
+	</bean>
+	<!-- 订单号生成 -->
+	<bean name="/service/orderNoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderNoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderNoService" />
+	</bean>
+
+	<!-- 账户（钱包）流水信息 -->
+	<bean name="/service/accTransInfoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="accTransInfoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.AccTransInfoService" />
+	</bean>
+
+	<!-- 补贴总额服务 -->
+	<bean name="/service/subAmountService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="subAmountService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.SubAmountService" />
+	</bean>
+	<!-- 交易账单导入日志记录服务 -->
+	<bean name="/service/orderBillImportLogService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderBillImportLogService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderBillImportLogService" />
+	</bean>
+	<!-- 产品出货信息服务 -->
+	<bean name="/service/productDeliveryDetailService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="productDeliveryDetailService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.ProductDeliveryDetailService" />
+	</bean>
+	<!-- 订单日志 -->
+	<bean name="/service/enPostLogService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="enPostLogService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.EnPostLogService" />
+	</bean>
+	<!-- 订单客户信息服务 -->
+	<bean name="/service/reOrderCustomerService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="reOrderCustomerService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.ReOrderCustomerService" />
+	</bean>
+	<!-- 订单收货信息服务 -->
+	<bean name="/service/orderDeliveryAddressService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderDeliveryAddressService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderDeliveryAddressService" />
+	</bean>
+	<!-- 订单支付结果服务 -->
+	<bean name="/service/payResultService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="payResultService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.PayResultService" />
+	</bean>
+	<!-- 订单发票服务 -->
+	<bean name="/service/invoiceInfoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="invoiceInfoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.InvoiceInfoService" />
+	</bean>
+	<!-- 订单活动信息服务 -->
+	<bean name="/service/orderActRelationService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderActRelationService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderActRelationService" />
+	</bean>
+
+	<bean name="/service/cartInfoService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="cartInfoService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.CartInfoService" />
+	</bean>
+
+	<bean name="/service/orderFeeItemDetailService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderFeeItemDetailService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderFeeItemDetailService" />
+	</bean>
+
+	<bean name="/service/bankInformationService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="bankInformationService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.BankInformationService" />
+	</bean>
+    <!-- 退款记录 -->
+	<bean name="/service/orderRefundRecordService.hs"
+		class="org.springframework.remoting.caucho.HessianServiceExporter">
+		<property name="service" ref="orderRefundRecordService" />
+		<property name="serviceInterface"
+			value="com.gudeng.commerce.gd.order.service.OrderRefundRecordService" />
+	</bean>
+
+</beans>

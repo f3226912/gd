@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="ProductBaseinfo">
+	<sql id="getUserProduct">
+	<![CDATA[
+	select t0.productId,
+       t0.businessId,
+       t0.name productName,
+       t0.price,
+       t0.priceType,
+       t0.state,
+       t0.provinceId,
+       t0.cityId,
+       t0.areaId,
+       t0.stockCount,
+       (select codeValue from gudeng.system_code where codeKey=t0.unit and type='ProductUnit') unit,
+       (select url120 from  gudeng.product_picture t3  where t3.productId=t0.productId and t3.pictureType='1') imgUrl
+  from gudeng.product_baseinfo t0
+ where 1=1 and t0.productType = '1'
+   and not exists(select 1 
+                    from prom_prod_info t2 inner join prom_req_audit  t5 on  t2.auditId = t5.auditId 
+                   where t2.prodId = t0.productId
+                     and t5.auditStatus<>'3')
+   and (t0.state = '3' or t0.state='4')
+   and  t0.businessId IN (
+				SELECT
+					t1.businessId
+				FROM
+					gudeng.business_baseinfo t1
+				WHERE
+					t1.userId = :userId 
+					<#if marketIds?exists>
+					<#assign n = marketIds?size />
+					<#if n gt 0>
+				AND EXISTS (
+					SELECT
+						1
+					FROM
+						gudeng.re_business_market t4
+					WHERE
+						t4.businessId = t1.businessId
+					AND t4.marketId IN (
+						<#list marketIds as singlemarketId>
+						<#if singlemarketId_index != n-1>
+						${singlemarketId}, <#else>
+						${singlemarketId} </#if>
+						</#list>
+					) 
+				) </#if></#if>
+			)   
+   order by t0.createTime desc
+   limit :startRow,:endRow         
+	]]>
+	</sql>
+	
+	<sql id="getProductTotalByUser">
+	<![CDATA[
+			SELECT
+				count(1)
+			FROM
+				gudeng.product_baseinfo t0
+			WHERE
+				1 = 1 and t0.productType = '1'
+			AND NOT EXISTS (
+				SELECT
+					1
+				FROM
+					prom_prod_info t2 inner join prom_req_audit  t5 on  t2.auditId = t5.auditId 
+				WHERE
+					t2.prodId = t0.productId
+		      	  AND 
+		      	    t5.auditStatus<>'3'
+			)
+			AND (t0.state = '3' OR t0.state = '4')
+			AND t0.businessId IN (
+				SELECT
+					t1.businessId
+				FROM
+					gudeng.business_baseinfo t1
+				WHERE
+					t1.userId = :userId 
+					<#if marketIds?exists>
+					<#assign n = marketIds?size />
+					<#if n gt 0>
+				AND EXISTS (
+					SELECT
+						1
+					FROM
+						gudeng.re_business_market t4
+					WHERE
+						t4.businessId = t1.businessId
+					AND t4.marketId IN (
+						<#list marketIds as singlemarketId>
+						<#if singlemarketId_index != n-1>
+						${singlemarketId}, <#else>
+						${singlemarketId} </#if>
+						</#list>
+					) 
+				) </#if></#if>
+			)   
+          
+	]]>
+	</sql>
+	
+	
+	<sql id="getProductTotalByParticipants">
+	<![CDATA[
+	select count(0)
+      from gudeng.product_baseinfo t0
+     where 1=1 and t0.productType = '1'
+       and t0.productId in (select distinct(prodId)
+                              from prom_prod_info t1
+                             where 1=1
+                               <#if actId?exists && actId!="">
+                               and t1.actId = :actId
+                               </#if>
+                               <#if userId?exists && userId!="">
+                               and t1.supplierId = :userId)
+                               </#if>
+	]]>
+	</sql>
+	
+	<sql id="getUserParticipantsProducts">
+	<![CDATA[
+	select t0.productId,
+           t0.businessId,
+           t0.name productName,
+           t0.price,
+           t0.priceType,
+           t0.state,
+           t0.provinceId,
+           t0.cityId,
+           t0.areaId,
+           t0.stockCount,
+
+           (select codeValue from gudeng.system_code where codeKey=t0.unit and type='ProductUnit') unit,
+	       (select url120 from gudeng.product_picture t1 where t0.productId = t1.productId and t1.pictureType ='1') imgUrl,
+	       (select actPrice from prom_prod_info t3 where t0.productId=t3.prodId and t3.actId=:actId) actPrice,
+           (select auditStatus from prom_req_audit t4 where t4.auditId=(select auditId
+                              from prom_prod_info t5
+                             where  t5.actId = :actId
+                               and  t5.prodId = t0.productId)) attendStatus
+      from gudeng.product_baseinfo t0
+     where t0.productId in (select distinct(prodId)
+                              from prom_prod_info t2
+                             where 1=1
+                               and  t2.actId = :actId
+                               and t2.supplierId = :userId) and t0.productType = '1'
+	 order by t0.createTime desc
+	 limit :startRow,:endRow
+	]]>
+	</sql>
+</sqlMap>

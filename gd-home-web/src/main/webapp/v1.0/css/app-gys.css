@@ -1,0 +1,76 @@
+@charset "utf-8";
+.app-head{ height: 60px; z-index: 9;left: 50%;margin-left: -585px;position: absolute;}
+.app-h-wrap{/*position: relative;*/background-color: #fff; height: 60px;/*display: none;*/}
+.head-wrap{z-index: 10;position: absolute; width: 100%;background-color: #f4f4f4;}
+.app-head-log{margin-top: 0px;padding:  11px 0 0 11px;}
+.head-app-r{font-size: 14px; color: #363636; font-family: "Microsoft YaHei";}
+/*.head-spilt2{border-left: 1px solid #363636;margin-top: 21px;}*/
+.head-app-r {line-height: 60px;}
+.gold-bg{background: url(../../v1.0/images/nsy-gys-down/g_img.jpg) center bottom no-repeat; width: 100%; height:593px; }
+.section0-bg{background: url(../../v1.0/images/nsy-gys-down/gys-a.jpg) center bottom no-repeat; width: 100%; height:593px; }
+#menu{position:fixed;top:50%;right:60px;height: 132px;z-index: 70;width: 20px;padding: 0;margin:0;margin-top: -66px;}
+#menu li {display:inline-block;width: 20px; height: 20px;}
+#menu li.active{color: #fff;}
+#menu li a{text-decoration:none;display:inline-block;width: 20px; height: 20px;background-image: url(../../v1.0/images/nsy-gys-down/tool-gys-ico.png);}
+.gold-sec li a{background-position: 0px 0;}
+.first-sec li a{background-position: -35px 0px;}
+.second-sec li a{background-position: -70px 0;}
+.third-sec li a{background-position: -105px 0;}
+.fourth-sec li a{background-position: -140px 0;}
+.five-sec li a{background-position: -175px 0;}
+
+.gold-sec li.active a{background-position: 0px -33px;}
+.first-sec li.active a{background-position: 0px -33px;}
+.second-sec li.active a{background-position: -70px -33px;}
+.third-sec li.active a{background-position: -105px -33px;}
+.fourth-sec li.active a{background-position: -140px -33px;}
+.five-sec li.active a{background-position: -175px -33px;}
+#menu li:hover{}
+#menu li a,#menu li.active a{display:block;}
+#menu li.active a{color: #fff;}
+.wrap-conten{ position: relative; height: 100%}
+.section0-bg ,.gold-bg{position: absolute; width: 100%; bottom: 0;}
+.sect-txt{position: absolute; font: 16px/30px "Microsoft YaHei";text-align: right;right: 112px;}
+.gold-sect-txt{ /*display: none;*/top:0px;}
+.second-sect-txt{top:130px;}
+.sec-posr{position: relative; width: 1170px ;margin: 0 auto; height: 100%}
+.sect-txt-t{font: 34px/42px "Microsoft YaHei";}
+.first-sect-txt{ color: #12577b; opacity: 0}
+.ewm-a-wrap{background: #fff;width: 197px; height: 300px; z-index:1; padding: 26px 0 0 28px;right: 134px;position: absolute; bottom:12px;}
+.gold-ewm{opacity:0; right: -225px;}
+.first-ewm{opacity:0; right: -225px;}
+.second-ewm{opacity:0; bottom: -225px;}
+.third-ewm{opacity:0; bottom: -225px;}
+.fourth-ewm{opacity:0; right: -225px;}
+.five-ewm{opacity:0; right: -225px;}
+.ewmdown-btn{background-image: url(../../v1.0/images/nsy-gys-down/android.png);display: inline-block;width: 171px; height: 40px;text-indent: -9999px;margin-top: 13px;}
+.ewmdown-btn1{background-image: url(../../v1.0/images/nsy-gys-down/ios-gys.jpg);display: inline-block;width: 171px; height: 40px;text-indent: -9999px;margin-top: 13px;}
+.gold-sect-txt{color: #3b3a00; top:-15%; opacity: 0;}
+.second-sect-txt{color: #015a2a; top:-15%; opacity: 0;}
+.third-sect-txt{color: #7c6400;/*top:15%;*/top:-15%; opacity: 0}
+.fourth-sect-txt{color: #006160;top:-15%; opacity: 0}
+.five-sect-txt{color: #006160;top:-15%; opacity: 0}
+.five-sect-txt{color:#fff;}
+.second-sect-txt h2,.third-sect-txt h2,.fourth-sect-txt h2 ,.five-sect-txt h2{margin-bottom: 30px;}
+.second-main{background: url(../../v1.0/images/nsy-gys-down/gys-2.jpg) no-repeat;width: 572px; height: 531px; /*bottom: 0;*/ position: absolute;opacity: 0;bottom: -500px;}
+.third-main{background: url(../../v1.0/images/nsy-gys-down/gys-3.jpg) no-repeat;width: 435px; height: 510px; position: absolute;bottom: 0;opacity: 0;left: -500px;}
+.third-ico{left: 332px;background: url(../nsy-gys-down/nps-5.png) no-repeat;top:-52%;opacity: 0;}
+.fourth-main{background: url(../../v1.0/images/nsy-gys-down/gys-4.jpg) no-repeat;width: 379px; height: 535px; position: absolute;/*bottom: 0*/bottom: -505px; opacity: 0;left:-628px;}
+.five-main{background: url(../../v1.0/images/nsy-gys-down/gys-5.jpg) no-repeat;width: 597px; height: 530px; position: absolute;/*bottom: 0*/bottom: -505px; opacity: 0;left:-628px;}
+.sec-arrow{position: absolute;left: 50%;width: 58px; height: 36px; display: inline-block;background: url(../../v1.0/images/nsy-gys-down/app-arrow.png) no-repeat;bottom: 20px;margin-left: -28px;animation:arrowShake 1s infinite;-webkit-animation:arrowShake 1s infinite; /* Safari and Chrome */}
+@keyframes arrowShake
+{
+0%   {bottom:20px;}
+25%   {bottom:15px;}
+50%  {bottom:10px;}
+75%  {bottom:15px;}
+100% {bottom:20px;}
+}
+@-webkit-keyframes arrowShake /* Safari and Chrome */
+{
+0%   {bottom:20px;}
+25%   {bottom:15px;}
+50%  {bottom:10px;}
+75%  {bottom:15px;}
+100% {bottom:20px;}
+}

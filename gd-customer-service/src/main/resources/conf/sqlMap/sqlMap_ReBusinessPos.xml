@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="reBusinessPos">
+	<!-- 全查找 -->
+	<sql id="getByPosDevNo">
+	<![CDATA[
+		SELECT 
+			rbp.businessId, bb.shopsName, rbm.marketId, bb.businessNo
+		FROM 
+			re_business_pos rbp
+		LEFT JOIN business_baseinfo bb ON rbp.businessId = bb.businessId
+		LEFT JOIN re_business_market rbm ON bb.businessId = rbm.businessId
+		WHERE rbp.state=1
+		<#if posNumber?exists && posNumber!="" >
+		     and rbp.posNumber = :posNumber
+		</#if>
+		<#if businessNo?exists && businessNo!="" >
+		     and bb.businessNo = :businessNo
+		</#if>
+		LIMIT 1
+	]]>
+	</sql>
+
+	<sql id="deleteByBusinessId">
+	<![CDATA[
+		delete from 
+			re_business_pos 
+		where 
+			businessId=:businessId
+	]]>
+	
+	</sql>
+	<!-- 说明：这个参数使用传参规则：(newPosNum,oriPosNum,businessId) 或者 (state,oriPosNum,businessId)-->
+	<sql id="updateByOriNewPosNum">
+	<![CDATA[
+		UPDATE re_business_pos set 
+		<#if newPosNum?exists && newPosNum!="" >
+		     posNumber=:newPosNum 
+		</#if>
+		<#if state?exists && state!="" >
+		     state=:state 
+		</#if>
+		where 1=1
+		<#if posNumber?exists && posNumber!="" >
+		     and posNumber=:posNumber 
+		</#if>
+		<#if businessId?exists && businessId!="" >
+		    and businessId=:businessId
+		</#if>
+		
+	]]>
+	</sql>
+
+	<sql id="deleteById">
+	<![CDATA[
+		delete from 
+			re_business_pos 
+		where 
+			id=:id
+	]]>
+	</sql>
+
+	<sql id="queryByBusinessId">
+	<![CDATA[
+		SELECT
+			id, businessId, posNumber, type, 
+			CASE WHEN hasClear IS NULL THEN 1 ELSE hasClear END AS hasClear, 
+			createTime, creatUserId, updateTime, updateUserId
+		FROM
+			re_business_pos
+		WHERE 1=1 
+		   and businessId=:businessId
+		   and state=1
+			
+	]]>
+	</sql>
+	<!-- 获取最新的数据 -->
+	<sql id="queryNewByBusinessId">
+	<![CDATA[
+		SELECT 
+			id, businessId, posNumber, type, state,
+			CASE WHEN hasClear IS NULL THEN 1 ELSE hasClear END AS hasClear, 
+			createTime, creatUserId, updateTime, updateUserId 
+		FROM 
+			re_business_pos 
+		WHERE 
+			id IN(
+                 SELECT 
+                 	MAX(id) 
+                 FROM 
+                 	re_business_pos rb  
+                 WHERE 
+                 	businessId = :businessId AND state=1 
+                 GROUP BY posNumber
+                 ) 
+	]]>
+	</sql>
+
+	<sql id="queryByBusinessIdAndPosNumber">
+	<![CDATA[
+		select 
+			id,businessId,posNumber,type,createTime,updateTime,creatUserId,updateUserId
+		from 
+			re_business_pos
+		where
+			businessId=:businessId
+		AND   posNumber=:posNumber
+		and state=1
+	]]>
+	</sql>
+
+
+
+</sqlMap>

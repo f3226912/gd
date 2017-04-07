@@ -1,0 +1,115 @@
+{
+    "extra": null,
+    "msg": "",
+    "object": [
+        {
+    
+            "categoryId": 12,
+            "categoryName": "水产",
+            "productList":[]
+        }, {
+
+            "categoryId": 18,
+            "categoryName": "果蔬",
+            "productList":[
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "海燕呐你可长点心吧海燕呐",
+                    "categoryId": 18
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 18
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 18
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 18
+                },
+                {
+                    "id": 275748,
+                    "productId": "0002",
+                    "productName": "苹果"
+                },
+                {
+                    "id": 3848573,
+                    "productId": "0003",
+                    "productName": "香蕉",
+                    "categoryId": 18
+                }
+            ]
+        },
+        {
+   
+            "categoryId": 19,
+            "categoryName": "干调粮油",
+            "productList":[
+                {
+                    "id": 16447458,
+                    "productId": "00001",
+                    "productName": "大豆油",
+                    "categoryId": 19
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 19
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 19
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 19
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 19
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 19
+                },
+                {
+                    "id": 16457474,
+                    "productId": "0001",
+                    "productName": "梨",
+                    "categoryId": 19
+                },
+                {
+                    "id": 25685684574,
+                    "productId": "00002",
+                    "productName": "花生",
+                    "categoryId": 19
+                },
+                {
+                    "id": 3363463464,
+                    "productId": "00003",
+                    "productName": "香油",
+                    "categoryId": 19
+                }
+            ]
+        }
+    ]
+    
+}

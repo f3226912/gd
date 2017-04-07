@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlMap namespace="subPayRule">
+
+	<!-- 添加补贴规则的产品种类 -->
+	<sql id="addSubPayRuleCategory">
+	insert into sub_pay_category(ruleId,type,value)value(:ruleId,:type,:value)
+	</sql>
+	
+	<!--添加补贴规则的交易金额区间  -->
+	<sql id="addSubPayRuleRange">
+	insert into sub_range_pay_rule(ruleId,lowerLimit,upperLimit,unit,subUnit,carType,truck,subAmount)
+	value(:ruleId,:lowerLimit,:upperLimit,:unit,:subUnit,:carType,:truck,:subAmount)
+	</sql>
+	
+	<sql id="queryRuleById">
+		select * from sub_pay_rule where ruleId=:ruleId
+	</sql>
+	
+	<sql id="queryRangByRuleId">
+		select srpr.* ,cwp.type as carCate from sub_range_pay_rule srpr 
+		left join
+		car_weigh_pro cwp on cwp.cwpid=srpr.carType where  srpr.ruleId=:ruleId
+	</sql>
+	
+	<!-- 获取规则总数 -->
+	<sql id="getTotal">
+	<![CDATA[
+		SELECT 
+			count(1) 
+		FROM 
+				sub_pay_rule t,
+				gudeng_auth.sysregisteruser t2
+			WHERE
+				1 = 1
+			AND t.createUserId = t2.userID
+			
+	]]>
+	</sql>
+	
+	<!-- 获取查询规则总数 -->
+	<sql id="getSearchTotal">
+			<![CDATA[
+		select count(0) from(
+		SELECT
+			t.*, t2.userName,
+			CASE
+		WHEN t.memberType = 1 THEN
+			(
+				SELECT
+					SUM(opd.suppSubAmount)
+				FROM
+					order_product_detail opd
+				WHERE
+					t.ruleId = opd.ruleId
+			)
+		WHEN t.memberType = 2 THEN
+			(
+				SELECT
+					SUM(sellSubAmount)
+				FROM
+					order_product_detail opd
+				WHERE
+					t.ruleId = opd.ruleId
+			)
+		WHEN t.memberType = 3 THEN
+			(
+				SELECT
+					SUM(subAmount)
+				FROM
+					order_product_detail opd
+				WHERE
+					t.ruleId = opd.ruleId
+			)
+		END AS sumSubAmount,
+			CASE
+		WHEN t.memberType = 1 THEN
+			(
+				SELECT
+					SUM(opd.suppSubAmount)
+				FROM
+					order_product_detail opd
+				WHERE
+					t.ruleId = opd.ruleId and date_format(opd.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+			)
+		WHEN t.memberType = 2 THEN
+			(
+				SELECT
+					SUM(sellSubAmount)
+				FROM
+					order_product_detail opd
+				WHERE
+					t.ruleId = opd.ruleId and date_format(opd.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+			)
+		WHEN t.memberType = 3 THEN
+			(
+				SELECT
+					SUM(subAmount)
+				FROM
+					order_product_detail opd
+				WHERE
+					t.ruleId = opd.ruleId and date_format(opd.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+			)
+		END AS curDaySubAmount,
+		
+		(select st.subAmount from sub_limit_rule st where st.marketId = t.marketId  order by createTime desc limit 1) as mkSubAmount,
+		(select GROUP_CONCAT(pc.cateName) from sub_pay_category spc,product_category pc where spc.ruleId=t.ruleId and spc.`value` = pc.categoryId) as category
+		FROM
+			sub_pay_rule t,
+			gudeng_auth.sysregisteruser t2
+		WHERE
+			1 = 1
+		AND t.createUserId = t2.userID
+		ORDER BY
+			t.createTime DESC) as tt where tt.category like "%":categroy"%";
+			]]>
+	</sql>
+	
+	<!-- 更改状态 -->
+	<sql id="updateRuleStatus">
+	update sub_pay_rule set status=:status where ruleId=:ruleId
+	</sql>
+	
+	<sql id="getRuleList">
+		<![CDATA[
+			SELECT
+				t.*, t2.userName,
+			 (
+				SELECT marketName from market m where m.id = t.marketId 
+			) AS marketStr,				
+				CASE
+			WHEN t.memberType = 1 THEN
+				(
+					SELECT
+						SUM(os.suppSubAmount)
+					FROM
+						(
+							SELECT
+								opd.*
+							FROM
+								order_product_detail opd,
+								sub_audit sa
+							WHERE
+								sa.subStatus = 3
+							AND sa.orderNo = opd.orderNo
+						) AS os,
+						sub_pay_rule spr
+					WHERE
+						os.ruleId = spr.ruleId
+					AND spr.ruleId = t.ruleId
+				)
+			WHEN t.memberType = 2 THEN
+				(
+					SELECT
+						SUM(os.sellSubAmount)
+					FROM
+						(
+							SELECT
+								opd.*
+							FROM
+								order_product_detail opd,
+								sub_audit sa
+							WHERE
+								sa.subStatus = 3
+							AND sa.orderNo = opd.orderNo
+						) AS os,
+						sub_pay_rule spr
+					WHERE
+						os.sellRuleId = spr.ruleId
+					AND spr.ruleId = t.ruleId
+				)
+			WHEN t.memberType = 3 THEN
+				(
+					SELECT
+						SUM(os.subAmount)
+					FROM
+						(
+							SELECT
+								opd.*
+							FROM
+								order_product_detail opd,
+								sub_audit sa
+							WHERE
+								sa.subStatus = 3
+							AND sa.orderNo = opd.orderNo
+						) AS os,
+						sub_pay_rule spr
+					WHERE
+						os.ruleId = spr.ruleId
+					AND spr.ruleId = t.ruleId
+				)
+			END AS sumSubAmount,
+			 CASE
+			WHEN t.memberType = 1 THEN
+				(
+					SELECT
+						SUM(os.suppSubAmount)
+					FROM
+						(
+							SELECT
+								opd.*
+							FROM
+								order_product_detail opd,
+								sub_audit sa
+							WHERE
+								sa.subStatus = 3
+							AND sa.orderNo = opd.orderNo
+						) AS os,
+						sub_pay_rule spr
+					WHERE
+						os.ruleId = spr.ruleId
+					AND spr.ruleId = t.ruleId
+					AND date_format(t.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+				)
+			WHEN t.memberType = 2 THEN
+				(
+					SELECT
+						SUM(os.sellSubAmount)
+					FROM
+						(
+							SELECT
+								opd.*
+							FROM
+								order_product_detail opd,
+								sub_audit sa
+							WHERE
+								sa.subStatus = 3
+							AND sa.orderNo = opd.orderNo
+						) AS os,
+						sub_pay_rule spr
+					WHERE
+						os.sellRuleId = spr.ruleId
+					AND spr.ruleId = t.ruleId
+					AND date_format(t.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+				)
+			WHEN t.memberType = 3 THEN
+				(
+					SELECT
+						SUM(os.subAmount)
+					FROM
+						(
+							SELECT
+								opd.*
+							FROM
+								order_product_detail opd,
+								sub_audit sa
+							WHERE
+								sa.subStatus = 3
+							AND sa.orderNo = opd.orderNo
+						) AS os,
+						sub_pay_rule spr
+					WHERE
+						os.ruleId = spr.ruleId
+					AND spr.ruleId = t.ruleId
+					AND date_format(t.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+				)
+			END AS curDaySubAmount,
+			 (
+				SELECT
+					st.subAmount
+				FROM
+					sub_limit_rule st
+				WHERE
+					st.marketId = t.marketId  order by createTime desc limit 1
+			) AS mkSubAmount,
+			 (
+				SELECT
+					GROUP_CONCAT(pc.cateName)
+				FROM
+					sub_pay_category spc,
+					product_category pc
+				WHERE
+					spc.ruleId = t.ruleId
+				AND spc.`value` = pc.categoryId
+			) AS category
+			FROM
+				sub_pay_rule t,
+				gudeng_auth.sysregisteruser t2
+			WHERE
+				1 = 1
+			AND t.createUserId = t2.userID
+			ORDER BY
+				t.createTime DESC		
+				LIMIT 
+					:startRow,:endRow 
+			]]>	
+	</sql>
+	
+	<!-- 获取查询的规则列表 -->
+	<sql id="getSearchRuleList">
+		select * from(
+					SELECT
+						t.*, t2.userName,
+			 (
+				SELECT marketName from market m where m.id = t.marketId 
+			) AS marketStr,							
+						CASE
+					WHEN t.memberType = 1 THEN
+						(
+							SELECT
+								SUM(os.suppSubAmount)
+							FROM
+								(
+									SELECT
+										opd.*
+									FROM
+										order_product_detail opd,
+										sub_audit sa
+									WHERE
+										sa.subStatus = 3
+									AND sa.orderNo = opd.orderNo
+								) AS os,
+								sub_pay_rule spr
+							WHERE
+								os.ruleId = spr.ruleId
+							AND spr.ruleId = t.ruleId
+						)
+					WHEN t.memberType = 2 THEN
+						(
+							SELECT
+								SUM(os.sellSubAmount)
+							FROM
+								(
+									SELECT
+										opd.*
+									FROM
+										order_product_detail opd,
+										sub_audit sa
+									WHERE
+										sa.subStatus = 3
+									AND sa.orderNo = opd.orderNo
+								) AS os,
+								sub_pay_rule spr
+							WHERE
+								os.sellRuleId = spr.ruleId
+							AND spr.ruleId = t.ruleId
+						)
+					WHEN t.memberType = 3 THEN
+						(
+							SELECT
+								SUM(os.subAmount)
+							FROM
+								(
+									SELECT
+										opd.*
+									FROM
+										order_product_detail opd,
+										sub_audit sa
+									WHERE
+										sa.subStatus = 3
+									AND sa.orderNo = opd.orderNo
+								) AS os,
+								sub_pay_rule spr
+							WHERE
+								os.ruleId = spr.ruleId
+							AND spr.ruleId = t.ruleId
+						)
+					END AS sumSubAmount,
+					 CASE
+					WHEN t.memberType = 1 THEN
+						(
+							SELECT
+								SUM(os.suppSubAmount)
+							FROM
+								(
+									SELECT
+										opd.*
+									FROM
+										order_product_detail opd,
+										sub_audit sa
+									WHERE
+										sa.subStatus = 3
+									AND sa.orderNo = opd.orderNo
+								) AS os,
+								sub_pay_rule spr
+							WHERE
+								os.ruleId = spr.ruleId
+							AND spr.ruleId = t.ruleId
+							AND date_format(t.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+						)
+					WHEN t.memberType = 2 THEN
+						(
+							SELECT
+								SUM(os.sellSubAmount)
+							FROM
+								(
+									SELECT
+										opd.*
+									FROM
+										order_product_detail opd,
+										sub_audit sa
+									WHERE
+										sa.subStatus = 3
+									AND sa.orderNo = opd.orderNo
+								) AS os,
+								sub_pay_rule spr
+							WHERE
+								os.sellRuleId = spr.ruleId
+							AND spr.ruleId = t.ruleId
+							AND date_format(t.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+						)
+					WHEN t.memberType = 3 THEN
+						(
+							SELECT
+								SUM(os.subAmount)
+							FROM
+								(
+									SELECT
+										opd.*
+									FROM
+										order_product_detail opd,
+										sub_audit sa
+									WHERE
+										sa.subStatus = 3
+									AND sa.orderNo = opd.orderNo
+								) AS os,
+								sub_pay_rule spr
+							WHERE
+								os.ruleId = spr.ruleId
+							AND spr.ruleId = t.ruleId
+							AND date_format(t.createTime, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+						)
+					END AS curDaySubAmount,
+					 (
+						SELECT
+							st.subAmount
+						FROM
+							sub_limit_rule st
+						WHERE
+							st.marketId = t.marketId  order by createTime desc limit 1
+					) AS mkSubAmount,
+					 (
+						SELECT
+							GROUP_CONCAT(pc.cateName)
+						FROM
+							sub_pay_category spc,
+							product_category pc
+						WHERE
+							spc.ruleId = t.ruleId
+						AND spc.`value` = pc.categoryId
+					) AS category
+					FROM
+						sub_pay_rule t,
+						gudeng_auth.sysregisteruser t2
+					WHERE
+						1 = 1
+					AND t.createUserId = t2.userID
+					ORDER BY
+						t.createTime DESC) as tt where tt.category like "%":categroy"%"	
+					LIMIT  :startRow,:endRow 
+	</sql>
+	
+	<sql id="vailDateCate">
+	<![CDATA[
+		select pc.cateName as name,categoryId,curLevel,parentId from(
+		SELECT
+			b.`value`
+		FROM
+			sub_pay_rule a,
+			sub_pay_category b
+		WHERE 1=1 
+		<#if rId?exists && rId!="" >
+		AND	a.ruleId<>:rId
+		</#if>		
+		AND	a.ruleId = b.ruleId
+		AND a.marketId =  :marketId
+		AND a.memberType = :memberType
+		AND LEAST(a.timeEnd,:endTime)>GREATEST(a.timeStart,:startTime)
+		AND a.`status` != '2' 
+		and a.`status` != '4' 
+		AND b.`value` = :cateId
+		) as t LEFT JOIN product_category pc on pc.categoryId = t.`value`	
+	]]>	
+	</sql>
+	
+	<!-- 启用补贴规则 -->
+	<sql id="startRule">
+	<![CDATA[
+	update sub_pay_rule set status=1 where status=3 and timeStart<=date_format(now(), '%Y-%m-%d')
+	]]>	
+	</sql>
+	
+	<!-- 补贴规则设置为过期  -->
+	<sql id="endRule">
+	<![CDATA[
+		update sub_pay_rule set status=2 where (status=1 or status=0 or status=3)  and date_format(timeEnd, '%Y-%m-%d')<=date_format(now(), '%Y-%m-%d')
+	]]>	
+	</sql>	
+	
+	<sql id="querySubPayRuleByGoods">
+		<![CDATA[
+			SELECT *
+			FROM
+			  (SELECT pr.*
+			   FROM sub_pay_category pc
+			   LEFT JOIN sub_pay_rule pr ON pc.`ruleId` = pr.`ruleId`
+			   LEFT JOIN product_category c ON pc.`value` = c.`categoryId`
+			   WHERE pc.type <> -1
+			     AND FIND_IN_SET(c.categoryId, gd_sub_queryParentCategoryInfo(
+			                                                                    (SELECT b.`cateId`
+			                                                                     FROM product_baseinfo b
+			                                                                     WHERE b.`productId` = :productId) ))
+				 AND pr.`status` = '1'
+			     AND pr.`marketId` = :marketId
+			     AND pr.memberType = :memberType
+			     AND SYSDATE() >= pr.`timeStart`
+			     AND SYSDATE() <= pr.`timeEnd`
+			   ORDER BY pc.`type` DESC) a LIMIT 1
+		]]>
+	</sql>
+
+	<sql id="queryRuleInfo">
+		<![CDATA[
+		select * from sub_pay_rule where 1=1
+		<#if subRuleName?exists && subRuleName!="" >
+		and subRuleName=:subRuleName
+		</#if>
+		<#if ruleId?exists && ruleId!="" >
+		and ruleId=:ruleId
+		</#if>
+		<#if rId?exists && rId!="" >
+		and	ruleId<>:rId
+		</#if>
+		]]>	
+	</sql>
+	
+	<sql id="queryGoodsSubPayRuleByMap">
+		<![CDATA[
+			SELECT DISTINCT b.`productId`,
+			                pr.`memberType`,
+			                pr.`ruleId`
+			FROM product_baseinfo b,
+				 re_business_market m,
+			     sub_pay_category pc,
+			     sub_pay_rule pr
+			WHERE b.`cateId` = pc.`value`
+			  AND b.productType = '1'
+			  AND b.`businessId` = m.`businessId` 
+			  AND pr.`marketId` = m.`marketId` 
+			  AND pr.`ruleId` = pc.`ruleId`
+			  AND pr.`status` = '1'
+			  AND SYSDATE() >= pr.`timeStart`
+			  AND SYSDATE() <= pr.`timeEnd`
+			  AND pc.`type` <> -1
+			  <#if productIdIn?exists>
+				<#assign n = productIdIn?size />
+				<#if n gt 0>
+					and b.`productId` in (
+					<#list productIdIn as productId>
+						<#if productId_index != n-1>
+							${productId} ,
+						<#else>
+							${productId}
+						</#if>
+					</#list>
+					)
+				</#if>
+			</#if>
+			ORDER BY b.`productId`
+		]]>
+	</sql>
+	
+	<!-- 删除规则类目数据根据规则id -->
+	<sql id="delCategroyByRuleId">
+	delete from sub_pay_category where ruleId = :ruleId
+	</sql>
+	<!-- 删除规则范围限制数据根据规则id -->
+	<sql id="delRangByRuleId">
+	delete from sub_range_pay_rule where ruleId = :ruleId
+	</sql>
+	
+	<sql id="updateRuleByMarketId">
+	update sub_pay_rule set status=4,updateTime=now(),updateUserId=:userId,timeEnd=date_format(now(), '%Y-%m-%d 00:00:00')  where marketId=:marketId and (status=0 or status=1 or status=3)
+	</sql>
+
+</sqlMap>

@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="nstGoodAssignRule">
+	<sql id="insert">
+	<![CDATA[
+		INSERT nst_good_assign_rule (
+			provinceId,
+			cityId,
+			memberId,
+			companyName,
+			dayAssignMax,
+			monthAssignMax,
+			assignStartTime,
+			assignEndTime,
+			isEffective,
+			createTime,
+			createUserId,
+			updateTime,
+			updateUserId
+		)
+		VALUES
+		(
+			:provinceId,
+			:cityId,
+			:memberId,
+			:companyName,
+			:dayAssignMax,
+			:monthAssignMax,
+			:assignStartTime,
+			:assignEndTime,
+			:isEffective,
+			SYSDATE(),
+			:createUserId,
+			SYSDATE(),
+			:updateUserId
+		)
+	]]>
+	</sql>
+	
+	<sql id="update">
+	<![CDATA[
+		UPDATE nst_good_assign_rule
+		SET dayAssignMax =:dayAssignMax,
+		 monthAssignMax =:monthAssignMax,
+		 assignStartTime =:assignStartTime,
+		 assignEndTime =:assignEndTime,
+		 isEffective=:isEffective,
+		 updateTime=SYSDATE(),
+		 updateUserId=:updateUserId
+		WHERE id=:id
+	]]>
+	</sql>
+	<sql id="geAssignRuleDTOListByPage">
+	<![CDATA[
+		SELECT
+			ngar.id,
+			ngar.provinceId,
+			ngar.cityId,
+			a.area AS cityName,
+			a2.area AS provinceName,
+			ngar.companyName,
+			ngar.memberId,
+			mb.account,
+			ngar.createTime,
+			ngar.dayAssignMax,
+			ngar.monthAssignMax,
+			ngar.assignStartTime,
+			ngar.assignEndTime,
+			ngar.isEffective,
+			(SELECT `value` FROM nst_rule_switch WHERE `code`=1 ORDER BY id DESC LIMIT 1) as rule,
+			<#--获取分配的一手货源总数-->
+			(
+				SELECT
+					COUNT(id)
+				FROM
+					member_address ma
+				WHERE
+					ma.createUserId= CONCAT(ngar.memberId,'')
+				AND ma.clients IS NOT NULL
+				<#if assignSumQueryStartTime=="" && assignSumQueryEndTime=="" >
+			      AND DATE_FORMAT(ma.createTime, '%Y-%m-%d') BETWEEN ngar.assignStartTime AND ngar.assignEndTime
+		 		</#if>
+		 		<#if assignSumQueryStartTime?exists && assignSumQueryStartTime!="" >
+			      AND DATE_FORMAT(ma.createTime, '%Y-%m-%d')>=:assignSumQueryStartTime
+				</#if>
+				<#if assignSumQueryEndTime?exists && assignSumQueryEndTime!="" >
+			      AND DATE_FORMAT(ma.createTime, '%Y-%m-%d')<=:assignSumQueryEndTime
+				</#if>
+			) +
+			(
+				SELECT
+					COUNT(nsca.id)
+				FROM
+					nst_same_city_address nsca
+				WHERE
+					nsca.assignMemberId= ngar.memberId
+				AND nsca.clients IS NOT NULL
+				<#if assignSumQueryStartTime=="" && assignSumQueryEndTime=="" >
+			      AND DATE_FORMAT(nsca.createTime, '%Y-%m-%d') BETWEEN ngar.assignStartTime AND ngar.assignEndTime
+		 		</#if>
+		 		<#if assignSumQueryStartTime?exists && assignSumQueryStartTime!="" >
+			      AND DATE_FORMAT(nsca.createTime, '%Y-%m-%d')>=:assignSumQueryStartTime
+				</#if>
+				<#if assignSumQueryEndTime?exists && assignSumQueryEndTime!="" >
+			      AND DATE_FORMAT(nsca.createTime, '%Y-%m-%d')<=:assignSumQueryEndTime
+				</#if>
+			) AS assignedNum
+		FROM
+			nst_good_assign_rule ngar
+		LEFT JOIN area a ON ngar.cityId = a.areaID
+		LEFT JOIN area a2 ON ngar.provinceId=a2.areaID
+		LEFT JOIN member_baseinfo mb ON mb.memberId=ngar.memberId
+		where 1=1
+		 <#if cityId?exists && cityId!="" >
+			      AND ngar.cityId  =:cityId
+		 </#if>
+		 <#if provinceId?exists && provinceId!="" >
+			      AND ngar.provinceId  =:provinceId
+		 </#if>
+		 <#if account?exists && account!="" >
+			      AND mb.account  =:account
+		 </#if>
+		 <#if memberId?exists && memberId!="" >
+			      AND ngar.memberId =:memberId
+		 </#if>
+		 <#if isEffective?exists && isEffective!="" && isEffective=="0">
+			      AND (ngar.isEffective=0 and ngar.dayAssignMax is not null)
+		 </#if>
+		 <#if isEffective?exists && isEffective!="" && isEffective=="1" >
+			      AND (ngar.isEffective=1 or ngar.isEffective is null or ngar.dayAssignMax is null)
+		 </#if>
+		 <#if assignStartBeginTime?exists && assignStartBeginTime!="" >
+			      AND ngar.assignStartTime >=:assignStartBeginTime
+		 </#if>
+		 <#if assignStartEndTime?exists && assignStartEndTime!="" >
+			      AND ngar.assignStartTime <=:assignStartEndTime
+		 </#if>
+		  <#if assignEndBeginTime?exists && assignEndBeginTime!="" >
+			      AND ngar.assignEndTime >=:assignEndBeginTime
+		 </#if>
+		  <#if assignEndEndTime?exists && assignEndEndTime!="" >
+			      AND ngar.assignEndTime <=:assignEndEndTime
+		 </#if>
+		order by ngar.id desc
+		<#if startRow?exists && startRow!="" && endRow?exists && endRow!="" >
+				LIMIT :startRow,:endRow
+		</#if>
+	]]>
+	</sql>
+	<sql id="geAssignRuleDTOListByPageCount">
+	<![CDATA[
+		SELECT
+			COUNT(ngar.id)
+		FROM
+			nst_good_assign_rule ngar
+		LEFT JOIN area a ON ngar.cityId = a.areaID
+		LEFT JOIN member_baseinfo mb ON mb.memberId=ngar.memberId
+		where 1=1
+		  <#if cityId?exists && cityId!="" >
+			      AND ngar.cityId  =:cityId
+		 </#if>
+		 <#if provinceId?exists && provinceId!="" >
+			      AND ngar.provinceId  =:provinceId
+		 </#if>
+		 <#if account?exists && account!="" >
+			      AND mb.account  =:account
+		 </#if>
+		 <#if memberId?exists && memberId!="" >
+			      AND ngar.memberId =:memberId
+		 </#if>
+		 <#if isEffective?exists && isEffective!="" && isEffective=="0">
+			      AND (ngar.isEffective=0 and ngar.dayAssignMax is not null)
+		 </#if>
+		 <#if isEffective?exists && isEffective!="" && isEffective=="1" >
+			      AND (ngar.isEffective=1 or ngar.isEffective is null or ngar.dayAssignMax is null)
+		 </#if>
+		 <#if assignStartBeginTime?exists && assignStartBeginTime!="" >
+			      AND ngar.assignStartTime >=:assignStartBeginTime
+		 </#if>
+		  <#if assignStartEndTime?exists && assignStartEndTime!="" >
+			      AND ngar.assignStartTime <=:assignStartEndTime
+		 </#if>
+		  <#if assignEndBeginTime?exists && assignEndBeginTime!="" >
+			      AND ngar.assignEndTime >=:assignEndBeginTime
+		 </#if>
+		  <#if assignEndEndTime?exists && assignEndEndTime!="" >
+			      AND ngar.assignEndTime <=:assignEndEndTime
+		 </#if>
+	]]>
+	</sql>
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+			ngar.id,
+			ngar.provinceId,
+			ngar.cityId,
+			a.area AS cityName,
+			a2.area AS provinceName,
+			ngar.companyName,
+			ngar.memberId,
+			mb.account,
+			ngar.dayAssignMax,
+			ngar.monthAssignMax,
+			ngar.assignStartTime,
+			ngar.assignEndTime,
+			ngar.isEffective,
+			(SELECT `value` FROM nst_rule_switch WHERE `code`=1 ORDER BY id DESC LIMIT 1) as rule,
+			(
+				SELECT
+					COUNT(id)
+				FROM
+					member_address ma
+				WHERE
+					ma.createUserId= CONCAT(ngar.memberId,'')
+				AND ma.clients IS NOT NULL
+			    AND DATE_FORMAT(ma.createTime, '%Y-%m-%d') BETWEEN ngar.assignStartTime AND ngar.assignEndTime
+			) AS assignedNum
+		FROM
+			nst_good_assign_rule ngar
+		LEFT JOIN area a ON ngar.cityId = a.areaID
+		LEFT JOIN area a2 ON ngar.provinceId=a2.areaID
+		LEFT JOIN member_baseinfo mb ON mb.memberId = ngar.memberId
+		where ngar.id=:id
+	]]>
+	</sql>
+	<sql id="updateStaus">
+	<![CDATA[
+		UPDATE nst_good_assign_rule
+			SET isEffective =:isEffective,
+			 updateTime = SYSDATE(),
+			 updateUserId =:updateUserId
+		WHERE
+		id IN
+		<#assign n = idList?size />
+			<#if n gt 0>
+				(
+				<#list idList as omId>
+					<#if omId_index != n-1>
+							${omId} ,
+						<#else>
+							${omId}
+					</#if>
+				</#list>
+				) 
+		</#if>
+	]]>
+	</sql>
+	
+	<sql id="getDeptNameListByCityId">
+	<![CDATA[
+		SELECT
+			a.memberId,
+			a.account,
+			a.cCityId as cityId,
+			CONCAT(a.companyName,'(',a.account,')') AS deptName
+		FROM
+			(
+				SELECT
+					mb.memberId,
+					mb.account,
+					mb.cCityId,
+					mc.companyName
+				FROM
+			member_certifi mc
+		LEFT JOIN member_baseinfo mb  ON mb.memberId = mc.memberId 
+		WHERE mc.companyName IS NOT NULL
+		GROUP BY mb.account
+		) a
+		WHERE  a.memberId NOT in (SELECT ngar.memberId FROM nst_good_assign_rule ngar) AND a.cCityId=:cityId
+	]]>
+	</sql>
+	
+	<sql id="insertRuleSwith">
+	<![CDATA[
+		INSERT nst_rule_switch (
+			code,
+			value,
+			createTime,
+			createUserId
+		)
+		VALUES
+		(
+			:code,
+			:rule,
+			SYSDATE(),
+			:createUserId
+		)
+	]]>
+	</sql>
+	
+	<sql id="updateEffective">
+	<![CDATA[
+		update nst_good_assign_rule SET isEffective=:isEffective
+	]]>
+	</sql>
+	
+	<sql id="selectRuleSwith">
+	<![CDATA[
+		SELECT `value` as rule,`code` FROM nst_rule_switch WHERE `code`=1
+	]]>
+	</sql>
+	
+	<sql id="updateRuleSwithByCode">
+	<![CDATA[
+		UPDATE nst_rule_switch
+		SET `value` =:value,
+		 updateTime=SYSDATE(),
+		 updateUserId=:updateUserId
+		WHERE `code`=:code
+	]]>
+	</sql>
+	
+	<sql id="getQueryDeptNameListByCityId">
+	<![CDATA[
+		SELECT
+			a.memberId,
+			a.account,
+			a.cCityId as cityId,
+			a.companyName
+		FROM
+			(
+				SELECT
+					mb.memberId,
+					mb.account,
+					mb.cCityId,
+					mc.companyName
+				FROM
+			member_certifi mc
+		LEFT JOIN member_baseinfo mb  ON mb.memberId = mc.memberId 
+		WHERE mc.companyName IS NOT NULL
+		GROUP BY mb.account
+		) a
+		WHERE  a.cCityId=:cityId
+	]]>
+	</sql>
+	
+	<sql id="queryDeptGoodPage">
+	<![CDATA[	
+		SELECT
+			memberId,
+			account,
+			realName,
+			createTime,
+			CONCAT(IFNULL(sProvinceName,''), IFNULL(sCityName,''), IFNULL(sAreaName,'')) as s_address,
+			CONCAT(IFNULL(fProvinceName,''), IFNULL(fCityName,''), IFNULL(fAreaName,'')) as f_address,
+			orderStatus,
+			nstRule,
+			clients,
+			commonCityName,
+			sourceType
+		FROM(
+			SELECT
+				t1.memberId,
+				t2.account,
+				t2.realName,
+				t1.createTime,
+				(SELECT area FROM area WHERE areaID = t1.s_provinceId LIMIT 1) as sProvinceName,
+				(SELECT area FROM area WHERE areaID = t1.s_cityId LIMIT 1) as sCityName,
+				(SELECT area FROM area WHERE areaID = t1.s_areaId LIMIT 1) as sAreaName,
+				(SELECT area FROM area WHERE areaID = t1.f_provinceId LIMIT 1) as fProvinceName,
+				(SELECT area FROM area WHERE areaID = t1.f_cityId LIMIT 1) as fCityName,
+				(SELECT area FROM area WHERE areaID = t1.f_areaId LIMIT 1) as fAreaName,
+				(SELECT orderStatus FROM nst_order_baseinfo WHERE same_memberAddressId = t1.id ORDER BY createTime DESC limit 1)as orderStatus,
+				t1.nstRule,
+		    	t1.clients,
+				(SELECT area FROM area WHERE areaID = t2.cCityId LIMIT 1) as commonCityName,
+				1 as sourceType
+			FROM
+				nst_same_city_address t1
+			LEFT JOIN
+				member_baseinfo t2 ON t2.memberId = t1.memberId
+			WHERE
+				t1.clients is not null AND t1.nstRule = 1 AND t1.assignMemberId = :deptMemberId
+			<#if assignStartTime?exists && assignStartTime != "">
+				AND t1.createTime >= :assignStartTime
+			</#if>
+			<#if assignEndTime?exists && assignEndTime != "">
+				AND t1.createTime <= :assignEndTime
+			</#if>
+			
+			UNION ALL
+		
+			SELECT
+				t3.userId as memberId,
+				t4.account,
+				t4.realName,
+				t3.createTime,
+				(SELECT area FROM area WHERE areaID = t3.s_provinceId LIMIT 1) as sProvinceName,
+				(SELECT area FROM area WHERE areaID = t3.s_cityId LIMIT 1) as sCityName,
+				(SELECT area FROM area WHERE areaID = t3.s_areaId LIMIT 1) as sAreaName,
+				(SELECT area FROM area WHERE areaID = t3.f_provinceId LIMIT 1) as fProvinceName,
+				(SELECT area FROM area WHERE areaID = t3.f_cityId LIMIT 1) as fCityName,
+				(SELECT area FROM area WHERE areaID = t3.f_areaId LIMIT 1) as fAreaName,
+				(SELECT orderStatus FROM nst_order_baseinfo WHERE memberAddressId = t3.id ORDER BY createTime DESC limit 1)as orderStatus,
+				t3.nstRule,
+				t3.clients,
+			    (SELECT area FROM area WHERE areaID = t4.cCityId LIMIT 1) as commonCityName,
+			    0 as sourceType
+			FROM
+				member_address t3
+			LEFT JOIN
+				member_baseinfo t4 ON t4.memberId = t3.userId
+			WHERE
+				t3.clients is not null AND t3.nstRule = 1 AND t3.userId != t3.createUserId AND t3.createUserId = CONCAT(:deptMemberId,'')
+			<#if assignStartTime?exists && assignStartTime != "">
+				AND t3.createTime >= :assignStartTime
+			</#if>
+			<#if assignEndTime?exists && assignEndTime != "">
+				AND t3.createTime <= :assignEndTime
+			</#if>
+		) t
+		ORDER BY createTime DESC
+		LIMIT :startRow,:endRow
+	]]>
+	</sql>
+	
+	<sql id="getDeptGoodTotalCount">
+	<![CDATA[	
+		SELECT
+			SUM(totalCount) as totalCount
+		FROM
+		(
+			SELECT
+				COUNT(id) as totalCount
+			FROM
+				nst_same_city_address t1
+			WHERE
+				t1.clients is not null AND t1.nstRule = 1 AND t1.assignMemberId = :deptMemberId
+			<#if assignStartTime?exists && assignStartTime != "">
+				AND t1.createTime >= :assignStartTime
+			</#if>
+			<#if assignEndTime?exists && assignEndTime != "">
+				AND t1.createTime <= :assignEndTime
+			</#if>
+	
+			UNION ALL
+
+			SELECT
+				COUNT(id) as totalCount
+			FROM
+				member_address t2
+			WHERE
+				t2.clients is not null AND t2.nstRule = 1 AND t2.userId != t2.createUserId AND t2.createUserId = CONCAT(:deptMemberId,'')
+			<#if assignStartTime?exists && assignStartTime != "">
+				AND t2.createTime >= :assignStartTime
+			</#if>
+			<#if assignEndTime?exists && assignEndTime != "">
+				AND t2.createTime <= :assignEndTime
+			</#if>
+		) t
+	]]>
+	</sql>
+</sqlMap>

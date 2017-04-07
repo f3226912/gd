@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns:ss="http://www.springframework.org/schema/security"
+	 xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+	http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<bean id="propertyConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:conf/main-setting.properties</value>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+	</bean>
+	
+	<!-- 属性文件 -->
+	<bean id="gdConfigs" class="org.springframework.beans.factory.config.PropertiesFactoryBean">  
+	     <property name="locations">  
+	         <list>  
+	              <value>classpath:conf/gd-setting.properties</value>
+	              <value>classpath:conf/main-setting.properties</value>
+	              <value>classpath:conf/mail.properties</value>
+	          </list>  
+	     </property>  
+    </bean>  
+    
+    <!--属性文件 -->  
+    <bean id="gdProperties" class="com.gudeng.commerce.gd.task.util.GdProperties">  
+       <property name="properties" ref="gdConfigs" />  
+    </bean>
+	
+	<!-- 推送任务服务接口 semon -->
+	<bean id="pushTaskService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl">
+			 <!-- <value>http://127.0.0.1:8080/gd-customer/service/pushtaskService.hs</value> --> 
+			 <value>${maven.gd.customer.url}service/pushtaskService.hs</value>
+		</property>
+		<property name="serviceInterface">
+			<value>com.gudeng.commerce.gd.customer.service.PushTaskService</value>
+		</property>
+		<property name="overloadEnabled" value="true"/>  
+	</bean>	 
+	
+	<!-- 推送任务服务接口 semon -->
+	<bean id="pushRecordService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl">
+			 <!-- <value>http://127.0.0.1:8080/gd-customer/service/pushRecordService.hs</value> --> 
+			<value>${maven.gd.customer.url}service/pushtaskService.hs</value>
+		</property>
+		<property name="serviceInterface">
+			<value>com.gudeng.commerce.gd.customer.service.PushRecordService</value>
+		</property>
+		<property name="overloadEnabled" value="true"/>  
+	</bean>	 	 
+	
+	<!-- 友盟推送工具类 -->
+	<bean id="uMengPushMessage" class="com.gudeng.paltform.pushmsg.umeng.UMengPushMessage"></bean>
+
+	<!-- 产品接口服务 semon -->
+	<bean id="productService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl">
+			 <!-- <value>http://127.0.0.1:8080/gd-customer/service/productService.hs</value> --> 
+			<value>${maven.gd.supplier.url}/service/productService.hs</value>
+		</property>
+		<property name="serviceInterface">
+			<value>com.gudeng.commerce.gd.supplier.service.ProductService</value>
+		</property>
+		<property name="overloadEnabled" value="true"/>  
+	</bean>	 
+	
+	<!-- 启动补贴规则服务 semon -->
+	<bean id="subPayRuleService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl">
+			 <!-- <value>http://127.0.0.1:8080/gd-customer/service/productService.hs</value> --> 
+			<value>${maven.gd.order.url}/service/subPayRuleService.hs</value>
+		</property>
+		<property name="serviceInterface">
+			<value>com.gudeng.commerce.gd.order.service.SubPayRuleService</value>
+		</property>
+		<property name="overloadEnabled" value="true"/>  
+	</bean>	 
+	
+	<!-- 补贴限制规则 semon -->
+	<bean id="subLimitRuleService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl">
+			 <!-- <value>http://127.0.0.1:8080/gd-customer/service/productService.hs</value> --> 
+			<value>${maven.gd.order.url}/service/subLimitRuleService.hs</value>
+		</property>
+		<property name="serviceInterface">
+			<value>com.gudeng.commerce.gd.order.service.SubLimitRuleService</value>
+		</property>
+		<property name="overloadEnabled" value="true"/>  
+	</bean>	 	
+	
+	
+		<!-- 系统日志 semon -->
+	<bean id="systemLogService" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>${maven.gd.supplier.url}/service/systemLogService.hs</value>
+		</property>
+		<property name="serviceInterface">
+			<value>com.gudeng.commerce.gd.supplier.service.SystemLogService</value>
+		</property>
+		<property name="overloadEnabled" value="true"/>  
+	</bean>	 		
+
+</beans>

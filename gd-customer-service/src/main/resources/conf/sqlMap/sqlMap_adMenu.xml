@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sqlMap namespace="AdMenu">
+<sql id="insert">
+<![CDATA[
+	INSERT INTO
+	ad_menu(
+	menuName,fatherId,menuSign,createUserId,createUserName,createTime,updateUserId,
+	updateUserName,updateTime,state
+	) VALUES (
+	:menuName,:fatherId,:menuSign,:createUserId,:createUserName,SYSDATE(),:updateUserId,
+	:updateUserName,:updateTime,:state
+	)
+	]]>
+</sql>
+<sql id="update">
+<![CDATA[
+	UPDATE ad_menu SET
+	menuName=:menuName,menuSign=:menuSign,updateUserId=:updateUserId,updateUserName=:updateUserName,updateTime=SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+<sql id="delete">
+<![CDATA[
+	UPDATE ad_menu SET
+	state=2,updateUserId=:updateUserId,updateUserName=:updateUserName,updateTime=SYSDATE()
+	WHERE id=:id
+	]]>
+</sql>
+
+<sql id="getAdMenuByCondition">
+<![CDATA[
+SELECT 
+t.id,t.menuName,t.fatherId,t.menuSign,t.createUserId,t.createUserName,t.createTime,t.updateUserId,
+t.updateUserName,t.updateTime,r.`menuName` AS fatherName,t.state
+	FROM 
+ad_menu t 
+LEFT JOIN ad_menu r ON t.`fatherId`=r.id
+WHERE 1=1
+<#if id?exists && id!="" >
+AND t.id=:id
+</#if>
+<#if menuName?exists && menuName!="" >
+AND t.menuName=:menuName
+</#if>
+<#if fatherId?exists && fatherId!="" >
+AND t.fatherId=:fatherId
+</#if>
+<#if menuSign?exists && menuSign!="" >
+AND t.menuSign=:menuSign
+</#if>
+<#if state?exists && state!="" >
+AND t.state=:state
+</#if>
+]]>
+	</sql>
+	<sql id="queryByConditionPage">
+<![CDATA[
+	SELECT 
+
+id,menuName,fatherId,menuSign,createUserId,createUserName,createTime,updateUserId,
+updateUserName,updateTime
+	FROM 
+ad_menu WHERE 1=1
+
+<#if id?exists && id!="" >
+AND id=:id
+</#if>
+<#if menuName?exists && menuName!="" >
+AND menuName=:menuName
+</#if>
+<#if fatherId?exists && fatherId!="" >
+AND fatherId=:fatherId
+</#if>
+<#if menuSign?exists && menuSign!="" >
+AND menuSign=:menuSign
+</#if>
+<#if createUserId?exists && createUserId!="" >
+AND createUserId=:createUserId
+</#if>
+<#if createUserName?exists && createUserName!="" >
+AND createUserName=:createUserName
+</#if>
+<#if createTime?exists && createTime!="" >
+AND createTime=:createTime
+</#if>
+<#if updateUserId?exists && updateUserId!="" >
+AND updateUserId=:updateUserId
+</#if>
+
+<#if updateUserName?exists && updateUserName!="" >
+AND updateUserName=:updateUserName
+</#if>
+<#if updateTime?exists && updateTime!="" >
+AND updateTime=:updateTime
+</#if>
+LIMIT :startRow ,:endRow
+]]>
+	</sql>
+	
+	<sql id="getById">
+	<![CDATA[
+		SELECT
+		id,menuName,fatherId,menuSign,createUserId,createUserName,createTime,updateUserId,
+		updateUserName,updateTime
+		FROM
+			ad_menu
+		WHERE
+			id = :id	
+	]]>
+	</sql>
+</sqlMap>

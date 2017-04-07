@@ -1,0 +1,91 @@
+@CHARSET "UTF-8";
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,blockquote,th,td,p{margin:0;padding:0}
+input,button,select,textarea{outline:none}
+img{vertical-align:top;border:none;}
+textarea{overflow: auto;vertical-align: top;resize:none;}
+button,input,select,textarea {font-size:100%;}
+h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:normal}
+table {border-collapse:collapse;border-spacing:0}
+em,i,b{ font-style:normal; font-weight:normal;}
+body {
+	overflow-x:hidden;
+	font: normal 100% "Microsoft YaHei",'Helvetica Neue', Helvetica, Arial, sans-serif;  /*为了让电脑上和手机一样字体效果。手机是没有"Microsoft YaHei",'Helvetica Neue'*/
+	/***min-width: 300px;设置最小宽HTCG7***/
+	-webkit-text-size-adjust:none;/**避免重力感应时文字随分辨率增大而增大**/ 
+	/** display:-webkit-box;/**流布局**/
+	color:#404040;
+	background: #fff;
+}
+article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary{display:block;}
+ul, li, ol, dl, dd, dt{list-style:none;list-style-position:outside;}
+img	{ border:none;max-width: 100%;height: auto;}
+a{color:#565656;}
+a:link, a:hover{text-decoration:none;color:#666}
+a:link *, a:hover *{text-decoration:none;}
+@-ms-viewport {width: device-width;}
+.clear{clear:both}
+.clearfix:after{content:".";display:block;font-size:0;height:0;clear:both;visibility:hidden}
+.clearfix{zoom:1}
+
+.footer-wrap{font-size: 20px;padding: 1.5em 2em ;text-align: center;background-color: #fff;}
+/*.main-wrap{font-size: 20px;padding: 1.2em;background-color: #fff;}*/
+
+@media screen and (min-width:1200px){
+	.footer-wrap,.main-wrap,.head-wrap,.main{
+		font-size:20px;
+	}
+}
+
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+	.footer-wrap,.main-wrap,.head-wrap,.main{
+		font-size:16px;
+	}
+}
+
+@media screen and (max-width: 767px){
+	.footer-wrap,.main-wrap,.head-wrap,.main{
+		font-size:16px;
+	}
+}
+@media screen and (max-width: 479px) {
+	.footer-wrap,.main-wrap,.head-wrap,.main{
+		font-size:14px;
+	}
+}
+
+.top{max-width: 100%;background-color: #5a9331; font-size: 2em; color: #fff;/*font-weight: bold;*/ line-height: 3em; text-align: center;}
+body .banner-mob{ max-width: 100%; height: auto; text-align: center; margin-bottom:0;}
+.main{ margin-top: 1.5em;text-align: center; font-size: 1em; }
+.meg dt{ height: 4em; width: 100%; background-color: #f3f2f1;font-size: 1.3em; line-height: 4em; color: #000;}
+.meg-left,.meg-right{ display: inline-block;}
+.meg-left{ width: 6em; margin-right: 5em;}
+.meg-right{ width: 4.5em; }
+.main dd{ padding: 0 3em;}
+.meg-time{ color: #7d7b7b;}
+.meg-ico{ background: url(../images/mob-ico.png) no-repeat 0 0;}
+
+.title-wrap{background: #f3f2f1; font-size: 1.3em;padding: 0 1.5em;/*margin-top: 1.5em*/}
+.title-list{display: -webkit-box; display: -moz-box;  display: -ms-flexbox; display: -webkit-flex;display: flex; }
+.title-list li{line-height: 3em;color: #000;text-align: center;}
+.title-item1{width: 100%;}
+.list-wrap{padding: 0 1.5em;}
+.list-item{display: -webkit-box; display: -moz-box;  display: -ms-flexbox; display: -webkit-flex;display: flex;}
+.list-l{width: 100%;display: -webkit-box; display: -moz-box;  display: -ms-flexbox; display: -webkit-flex;display: flex;}
+.item-name{width: 35%;font-size: 1.2em;padding:1.1em 0;}
+.item-name2{width: 65%;border-left: 2px solid #eee;font-size: 1em;color: #404040;padding:1.1em 0;}
+/*.list-r{width: 38%;color: #7d7b7b;padding:1.1em 0;text-align: center;}*/
+/*.list-r{line-height: 1.7em;margin-top: 0.9em;display: inline-block; font-size: 0.9em;}*/
+.item-name1-txt{line-height: 2.4em;padding-right: 1.7em;}
+.item-name2-txt{margin-left: 2.5em;line-height: 1.7em;position: relative;margin-top: 0.8em;color: #404040}
+.list-cen{ display: inline-block; width: 10em; margin-left: 2.3em;}
+.list-r{font-size: 0.8em;color: #7d7b7b; display: inline-block; width: 10em; margin-left: 2.3em;}
+.item-ico{background:  url(../images/mob-ico.png) no-repeat;display: inline-block;width: 3.4em; height: 3.4em;-webkit-background-size: 5em 25em;background-size: 5em 25em;vertical-align: middle;position: absolute;left:-4.25em; margin-top: -0.7em;}
+.item-ico2{background-position: 0 -4.5em}
+.item-ico3{background-position: 0 -6em}
+.item-ico3{background-position: 0 -9em}
+.item-ico4{background-position: 0 -13.5em}
+.item-ico5{background-position: 0 -18em}
+.list-item:last-child .item-name2{padding-bottom: 3.5em;}
+/*.list-item:first-child .item-name2{padding-top: 2.4em}
+*/
+
